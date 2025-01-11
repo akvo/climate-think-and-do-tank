@@ -1,4 +1,4 @@
-# Byte-compiled / optimized / DLL files
+# Byte-compiled / optimized / DLL files.g
 __pycache__/
 *.py[cod]
 *$py.class
@@ -179,3 +179,5 @@ backend/node_modules/
 frontend/node_modules/
 
 node_modules
+
+.DS_Store
