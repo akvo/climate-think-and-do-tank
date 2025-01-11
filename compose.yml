@@ -1,0 +1,29 @@
+services:
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - 3000:3000
+    command: sh -c "npm install && npm run dev"
+    environment:
+      NEXT_TELEMETRY_DISABLED: 1
+
+  backend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    ports:
+      - 1337:1337
+    command: sh -c "npm install && npm run develop"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 1337
+      APP_KEYS: "mAzXoQi1qI3PzEhF1MNWPA==,dEkYXLPUuSlC26STB0ZyKA=="
+      API_TOKEN_SALT: Lniabeo/mh7ynqF/GTfpOw==
+      ADMIN_JWT_SECRET: Hr+r0OSOTgUzfce6q9/AvA==
+      TRANSFER_TOKEN_SALT: 95PYtBD/vlf9x0fB76N/sw==
+      JWT_SECRET: T+8DOhQmklZ+TH7ihClOKg==
