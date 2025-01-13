@@ -27,3 +27,13 @@ services:
       ADMIN_JWT_SECRET: Hr+r0OSOTgUzfce6q9/AvA==
       TRANSFER_TOKEN_SALT: 95PYtBD/vlf9x0fB76N/sw==
       JWT_SECRET: T+8DOhQmklZ+TH7ihClOKg==
+
+  mailpit:
+    image: axllent/mailpit:v1.21
+    restart: unless-stopped
+    ports:
+      - 8025:8025
+      - 1025:1025
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
