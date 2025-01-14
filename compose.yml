@@ -1,0 +1,78 @@
+services:
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - 3000:3000
+    command: sh -c "npm install && npm run dev"
+    environment:
+      NEXT_TELEMETRY_DISABLED: 1
+
+  backend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    ports:
+      - 1337:1337
+    command: sh -c "npm install && npm run develop"
+    depends_on:
+      - db
+    environment:
+      HOST: 0.0.0.0
+      PORT: 1337
+      APP_KEYS: "mAzXoQi1qI3PzEhF1MNWPA==,dEkYXLPUuSlC26STB0ZyKA=="
+      API_TOKEN_SALT: Lniabeo/mh7ynqF/GTfpOw==
+      ADMIN_JWT_SECRET: Hr+r0OSOTgUzfce6q9/AvA==
+      TRANSFER_TOKEN_SALT: 95PYtBD/vlf9x0fB76N/sw==
+      JWT_SECRET: T+8DOhQmklZ+TH7ihClOKg==
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: tdt
+      DATABASE_USERNAME: akvo
+      DATABASE_PASSWORD: password
+      DATABASE_SSL: false
+
+  db:
+    image: postgres:16-alpine
+    restart: always
+    volumes:
+      - ./db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - pg-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: password
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    restart: always
+    volumes:
+      - ./pgadmin4/servers.json:/pgadmin4/servers.json
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - 5050:5050
+    depends_on:
+      - db
+    environment:
+      - PGADMIN_LISTEN_PORT=5050
+      - PGADMIN_DEFAULT_EMAIL=dev@akvo.org
+      - PGADMIN_DEFAULT_PASSWORD=password
+
+  mailpit:
+    image: axllent/mailpit:v1.21
+    restart: unless-stopped
+    ports:
+      - 8025:8025
+      - 1025:1025
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+volumes:
+  pg-data:
+  pgadmin-data:
