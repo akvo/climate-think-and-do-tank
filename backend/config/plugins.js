@@ -1,4 +1,9 @@
 module.exports = ({ env }) => ({
+  'users-permissions': {
+    config: {
+      email_confirmation: false,
+    },
+  },
   email: {
     config: {
       provider: 'nodemailer',

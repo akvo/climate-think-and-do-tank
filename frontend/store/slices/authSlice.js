@@ -48,22 +48,27 @@ export const signIn = createAsyncThunk(
 
 export const signUp = createAsyncThunk(
   'auth/signUp',
-  async ({ username, email, password }, { rejectWithValue }) => {
+  async (
+    { username, email, password, organization, sector, country, role },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await axios.post(
-        `${STRAPI_URL}/api/auth/local/register`,
-        {
-          username,
-          email,
-          password,
-        }
-      );
+      const response = await axios.post(`${STRAPI_URL}/api/auth/register`, {
+        username,
+        email,
+        password,
+        organization,
+        sector,
+        country,
+        role,
+      });
 
-      const { user } = response.data;
+      const { user, message } = response.data;
 
       return {
         ...user,
         needsVerification: true,
+        message,
       };
     } catch (error) {
       return rejectWithValue(
@@ -77,13 +82,17 @@ export const resendVerification = createAsyncThunk(
   'auth/resendVerification',
   async (email, { rejectWithValue }) => {
     try {
-      await axios.post(`${STRAPI_URL}/api/auth/send-email-confirmation`, {
-        email,
-      });
-      return { success: true };
+      const response = await axios.post(
+        `${STRAPI_URL}/api/auth/send-email-confirmation`,
+        {
+          email,
+        }
+      );
+
+      return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || 'Failed to resend verification email'
+        error.response?.data?.error || 'Failed to resend verification email'
       );
     }
   }
@@ -125,16 +134,44 @@ export const verifyEmail = createAsyncThunk(
   'auth/verifyEmail',
   async (token, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        `${STRAPI_URL}/api/auth/email-confirmation`,
-        {
-          params: { token },
-        }
-      );
+      const response = await axios.get(`${STRAPI_URL}/api/auth/verify`, {
+        params: { token },
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || 'Verification failed'
+        error.response?.data?.error || 'Verification failed'
+      );
+    }
+  }
+);
+
+export const fetchOrganizationsAndSectors = createAsyncThunk(
+  'orgSector/fetchOrganizationsAndSectors',
+  async (_, { rejectWithValue }) => {
+    try {
+      const [
+        organizationsResponse,
+        sectorsResponse,
+        countryResponse,
+        rolesResponse,
+      ] = await Promise.all([
+        axios.get(`${STRAPI_URL}/api/organisations?status=published`),
+        axios.get(`${STRAPI_URL}/api/sectors?status=published`),
+        axios.get(`${STRAPI_URL}/api/countries?status=published`),
+        axios.get(`${STRAPI_URL}/api/users-permissions/roles`),
+      ]);
+      console.log(rolesResponse.data);
+      return {
+        organizations: organizationsResponse.data.data,
+        sectors: sectorsResponse.data.data,
+        country: countryResponse.data.data,
+        roles: rolesResponse.data.roles,
+      };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.error ||
+          'Failed to fetch organizations and sectors'
       );
     }
   }
@@ -147,6 +184,10 @@ const authSlice = createSlice({
     user: null,
     loading: false,
     error: null,
+    sectors: [],
+    organizations: [],
+    country: [],
+    roles: [],
   },
   reducers: {
     signOut: (state) => {
@@ -223,6 +264,21 @@ const authSlice = createSlice({
       })
       .addCase(resendVerification.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchOrganizationsAndSectors.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(fetchOrganizationsAndSectors.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.organizations = action.payload.organizations;
+        state.sectors = action.payload.sectors;
+        state.country = action.payload.country;
+        state.roles = action.payload.roles;
+      })
+      .addCase(fetchOrganizationsAndSectors.rejected, (state, action) => {
+        state.status = 'failed';
         state.error = action.payload;
       });
   },
