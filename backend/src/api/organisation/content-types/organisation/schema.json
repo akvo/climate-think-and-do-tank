@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "organisations",
+  "info": {
+    "singularName": "organisation",
+    "pluralName": "organisations",
+    "displayName": "Organisations",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "org_name": {
+      "type": "string"
+    },
+    "org_id": {
+      "type": "uid"
+    }
+  }
+}

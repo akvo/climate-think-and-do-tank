@@ -1,4 +1,3 @@
-// pages/verify-email.js
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,7 +18,8 @@ export default function VerifyEmail() {
 
   const verifyToken = async () => {
     const result = await dispatch(verifyEmail(token));
-    if (!result.error) {
+    if (result.payload?.message === 'Email verified successfully') {
+      // Updated to match our response
       setVerified(true);
       setTimeout(() => {
         router.push('/login');
@@ -32,6 +32,9 @@ export default function VerifyEmail() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <h2 className="text-xl font-semibold">Verifying your email...</h2>
+          <div className="mt-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          </div>
         </div>
       </div>
     );
@@ -45,6 +48,12 @@ export default function VerifyEmail() {
             Verification failed
           </h2>
           <p className="mt-2">{error}</p>
+          <button
+            onClick={() => router.push('/login')}
+            className="mt-4 text-blue-600 hover:text-blue-800 underline"
+          >
+            Return to login
+          </button>
         </div>
       </div>
     );
@@ -58,6 +67,15 @@ export default function VerifyEmail() {
             Email verified successfully!
           </h2>
           <p className="mt-2">Redirecting to login page...</p>
+          <div className="mt-4">
+            <p className="text-sm text-gray-600">Not redirected?</p>
+            <button
+              onClick={() => router.push('/login')}
+              className="text-blue-600 hover:text-blue-800 underline"
+            >
+              Click here to login
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -69,6 +87,9 @@ export default function VerifyEmail() {
         <h2 className="text-xl font-semibold">
           Waiting for verification token...
         </h2>
+        <div className="mt-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+        </div>
       </div>
     </div>
   );

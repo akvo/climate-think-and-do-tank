@@ -9,5 +9,10 @@ module.exports = ({ env }) => ({
         auth: false,
       },
     },
+    'users-permissions': {
+      config: {
+        email_confirmation: false,
+      },
+    },
   },
 });
