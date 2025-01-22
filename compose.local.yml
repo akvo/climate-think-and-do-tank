@@ -1,29 +1,18 @@
 services:
 
-  frontend:
-    image: node:20-alpine
-    working_dir: /app
-    volumes:
-      - ./frontend:/app
+  nginx:
+    image: tdt-nginx:local
+    build: ./nginx
     ports:
-      - 3000:3000
-    command: sh -c "npm install && npm run dev"
-    environment:
-      NEXT_TELEMETRY_DISABLED: 1
+      - 80:80
+
+  frontend:
+    image: tdt-frontend:local
+    build: ./frontend
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile-dev
-    volumes:
-      - ./backend/config:/opt/app/config
-      - ./backend/src:/opt/app/src
-      - ./backend/package.json:/opt/package.json
-      - ./backend/package-lock.json:/opt/package-lock.json
-      - ./backend/public/uploads:/opt/app/public/uploads
-    ports:
-      - 1337:1337
-      - 5173:5173
+    image: tdt-backend:local
+    build: ./backend
     depends_on:
       - db
     environment:
@@ -52,8 +41,6 @@ services:
     volumes:
       - ./db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - pg-data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_PASSWORD: password
 
@@ -76,7 +63,6 @@ services:
     image: axllent/mailpit:v1.21
     restart: unless-stopped
     ports:
-      - 1025:1025
       - 8025:8025
     environment:
       MP_SMTP_AUTH_ACCEPT_ANY: 1

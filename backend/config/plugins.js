@@ -1,11 +1,18 @@
-module.exports = ({ env }) => ({
-  'users-permissions': {
-    config: {
-      email_confirmation: false,
+module.exports = ({ env }) => {
+  // `PLUGIN_PROVIDERS` allows the use of local providers in production build containers for local testing.
+  const profile = env.oneOf('PLUGIN_PROVIDERS', ['local', 'external'], 'external');
+
+  const emails = {
+    local: {
+      provider: 'nodemailer',
+      providerOptions: {
+        host: 'mailpit',
+        port: 1025,
+        ignoreTLS: true,
+        auth: false,
+      },
     },
-  },
-  email: {
-    config: {
+    external: {
       provider: 'nodemailer',
       providerOptions: {
         host: env('SMTP_HOST'),
@@ -14,17 +21,30 @@ module.exports = ({ env }) => ({
           user: env('SMTP_USERNAME'),
           pass: env('SMTP_PASSWORD'),
         },
-        secure: false, // Changed to false for port 587
+        secure: true, // Changed to false for port 587
         requireTLS: true, // Added this
         tls: {
           ciphers: 'SSLv3', // Added this
           rejectUnauthorized: false, // Added this
         },
       },
-      settings: {
-        defaultFrom: env('SMTP_FROM'),
-        defaultReplyTo: env('SMTP_FROM'),
+    },
+  };
+
+  return {
+    'users-permissions': {
+      config: {
+        email_confirmation: false,
       },
     },
-  },
-});
+    email: {
+      config: {
+        ...emails[profile],
+        settings: {
+          defaultFrom: env('SMTP_FROM'),
+          defaultReplyTo: env('SMTP_FROM'),
+        },
+      },
+    },
+  };
+};
