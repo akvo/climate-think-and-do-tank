@@ -45,6 +45,12 @@ services:
       SMTP_USERNAME: ${SMTP_USERNAME:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       SMTP_FROM: ${SMTP_FROM:-}
+      GCS_SERVICE_ACCOUNT: ${GCS_SERVICE_ACCOUNT:-{}}
+      GCS_BUCKET_NAME: ${GCS_BUCKET_NAME:-}
+      GCS_BASE_PATH: ${GCS_BASE_PATH:-}
+      GCS_BASE_URL: ${GCS_BASE_URL:-}
+      GCS_PUBLIC_FILES: ${GCS_PUBLIC_FILES:-}
+      GCS_UNIFORM: ${GCS_UNIFORM:-}
 
   db:
     image: postgres:16-alpine
