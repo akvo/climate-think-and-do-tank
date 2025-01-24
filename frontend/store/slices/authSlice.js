@@ -78,6 +78,51 @@ export const signUp = createAsyncThunk(
   }
 );
 
+export const login = createAsyncThunk(
+  'auth/login',
+  async ({ email, password }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${STRAPI_URL}/api/auth/local`, {
+        identifier: email,
+        password,
+      });
+
+      return {
+        user: response.data.user,
+        jwt: response.data.jwt,
+      };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.error?.message || 'Login failed'
+      );
+    }
+  }
+);
+
+export const forgotPassword = createAsyncThunk(
+  'auth/forgotPassword',
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${STRAPI_URL}/api/auth/forgot-password`,
+        {
+          email,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        return rejectWithValue(error.response.data.error);
+      } else {
+        return rejectWithValue({
+          message: 'An error occurred during password reset',
+        });
+      }
+    }
+  }
+);
+
 export const resendVerification = createAsyncThunk(
   'auth/resendVerification',
   async (email, { rejectWithValue }) => {
@@ -98,34 +143,28 @@ export const resendVerification = createAsyncThunk(
   }
 );
 
-export const forgotPassword = createAsyncThunk(
-  'auth/forgotPassword',
-  async (email, { rejectWithValue }) => {
-    try {
-      await axios.post(`${STRAPI_URL}/api/auth/forgot-password`, { email });
-      return true;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.error?.message || 'Failed to process request'
-      );
-    }
-  }
-);
-
 export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
-  async ({ code, password, passwordConfirmation }, { rejectWithValue }) => {
+  async ({ resetCode, newPassword }, { rejectWithValue }) => {
     try {
-      await axios.post(`${STRAPI_URL}/api/auth/reset-password`, {
-        code,
-        password,
-        passwordConfirmation,
-      });
-      return true;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.error?.message || 'Failed to reset password'
+      const response = await axios.post(
+        `${STRAPI_URL}/api/auth/reset-password`,
+        {
+          code: resetCode,
+          password: newPassword,
+          passwordConfirmation: newPassword,
+        }
       );
+
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        return rejectWithValue(error.response.data.error);
+      } else {
+        return rejectWithValue({
+          message: 'An error occurred during password reset',
+        });
+      }
     }
   }
 );
@@ -182,6 +221,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: null,
+    jwt: null,
     loading: false,
     error: null,
     sectors: [],
@@ -278,6 +318,31 @@ const authSlice = createSlice({
         state.roles = action.payload.roles;
       })
       .addCase(fetchOrganizationsAndSectors.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(login.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.user = action.payload.user;
+        state.jwt = action.payload.jwt;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(forgotPassword.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.error = null;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       });
