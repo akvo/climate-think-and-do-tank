@@ -4,8 +4,7 @@ import { setCookie, deleteCookie } from 'cookies-next';
 import { gql } from 'graphql-request';
 import { GraphQLClient } from 'graphql-request';
 
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 const graphqlClient = new GraphQLClient(
   `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}/graphql`
@@ -59,7 +58,7 @@ export const signUp = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.post(`${STRAPI_URL}/api/auth/register`, {
+      const response = await axios.post(`${STRAPI_URL}/api/auth/local/register`, {
         username,
         email,
         password,
@@ -179,8 +178,8 @@ export const verifyEmail = createAsyncThunk(
   'auth/verifyEmail',
   async (token, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${STRAPI_URL}/api/auth/verify`, {
-        params: { token },
+      const response = await axios.get(`${STRAPI_URL}/api/auth/email-confirmation`, {
+        params: { confirmation: token },
       });
       return response.data;
     } catch (error) {
@@ -216,7 +215,7 @@ export const fetchOrganizationsAndSectors = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.error ||
-          'Failed to fetch organizations and sectors'
+        'Failed to fetch organizations and sectors'
       );
     }
   }
