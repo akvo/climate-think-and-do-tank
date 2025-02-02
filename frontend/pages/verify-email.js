@@ -3,7 +3,15 @@ import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { verifyEmail } from '../store/slices/authSlice';
 
-export default function VerifyEmail() {
+export const getServerSideProps = async () => {
+  return {
+    props: {
+      backendUrl: process.env.BACKEND_URL,
+    },
+  }
+}
+
+export default function VerifyEmail({ backendUrl }) {
   const [verified, setVerified] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -17,7 +25,7 @@ export default function VerifyEmail() {
   }, [token]);
 
   const verifyToken = async () => {
-    const result = await dispatch(verifyEmail(token));
+    const result = await dispatch(verifyEmail({ backendUrl, token }));
     if (result.payload?.user?.id) {
       // Updated to match our response
       setVerified(true);

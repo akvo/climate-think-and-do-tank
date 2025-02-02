@@ -4,7 +4,15 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { resendVerification } from '../store/slices/authSlice';
 
-export default function VerificationPending() {
+export const getServerSideProps = async () => {
+  return {
+    props: {
+      backendUrl: process.env.BACKEND_URL,
+    },
+  }
+}
+
+export default function VerificationPending({ backendUrl }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const { user, loading } = useSelector((state) => state.auth);
@@ -12,7 +20,7 @@ export default function VerificationPending() {
 
   useEffect(() => {
     if (!user) {
-      router.push('/signup');
+      //router.push('/signup');
     }
   }, [user, router]);
 
@@ -20,9 +28,9 @@ export default function VerificationPending() {
     if (loading) return;
 
     setResendStatus('sending');
-    const result = await dispatch(resendVerification(user.email));
+    const result = await dispatch(resendVerification({ backendUrl, email: user.email }));
 
-    if (result.payload?.success) {
+    if (result.payload?.sent) {
       setResendStatus('success');
       // Reset status after 3 seconds
       setTimeout(() => setResendStatus(''), 3000);

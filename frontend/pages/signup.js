@@ -6,7 +6,15 @@ import { validateSignUp } from '@/helpers/utilities';
 import { fetchOrganizationsAndSectors, signUp, resendVerification } from '@/store/slices/authSlice';
 import Link from 'next/link';
 
-export default function SignUpForm() {
+export const getServerSideProps = async () => {
+  return {
+    props: {
+      backendUrl: process.env.BACKEND_URL,
+    },
+  }
+}
+
+export default function SignUpForm({ backendUrl }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -73,11 +81,11 @@ export default function SignUpForm() {
   };
 
   const handleAdditionalDetailsSubmit = async (additionalData) => {
-    console.log(additionalData);
     try {
       setIsSubmitting(true);
       await dispatch(
         signUp({
+          backendUrl,
           ...formData,
           ...additionalData,
         })
@@ -328,6 +336,7 @@ export default function SignUpForm() {
           formData={formData}
           steps={steps}
           isSubmitting={isSubmitting}
+          backendUrl={backendUrl}
         />
       )}
     </div>
@@ -339,6 +348,7 @@ const AdditionalDetails = ({
   formData: form,
   steps,
   isSubmitting,
+  backendUrl,
 }) => {
   const dispatch = useDispatch();
   const { organizations, sectors, country, roles } = useSelector(
@@ -353,8 +363,7 @@ const AdditionalDetails = ({
   });
 
   useEffect(() => {
-    console.log('Fetching organizations and sectors');
-    dispatch(fetchOrganizationsAndSectors());
+    dispatch(fetchOrganizationsAndSectors(backendUrl));
   }, []);
 
   const handleChange = (e) => {
@@ -369,8 +378,6 @@ const AdditionalDetails = ({
     e.preventDefault();
     onSubmit(formData);
   };
-
-  console.log(steps);
 
   return (
     <div className="flex min-h-screen">
@@ -609,19 +616,19 @@ const AdditionalDetails = ({
             </form>
           </div>
         )}
-        {steps.find((step) => step.active)?.number === 3 && <ConfirmEmail user={form} />}
+        {steps.find((step) => step.active)?.number === 3 && <ConfirmEmail user={form} backendUrl={backendUrl} />}
       </div>
     </div>
   );
 };
 
-const ConfirmEmail = ({ user }) => {
+const ConfirmEmail = ({ backendUrl, user }) => {
   const dispatch = useDispatch();
   const [resendStatus, setResendStatus] = useState('');
   const handleResendVerification = async () => {
 
     setResendStatus('sending');
-    const result = await dispatch(resendVerification(user.email));
+    const result = await dispatch(resendVerification({ backendUrl, email: user.email }));
 
     if (result.payload?.sent) {
       setResendStatus('success');

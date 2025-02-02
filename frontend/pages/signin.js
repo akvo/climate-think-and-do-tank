@@ -5,7 +5,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login, forgotPassword, resetPassword } from '@/store/slices/authSlice';
 import { useRouter } from 'next/navigation';
 
-export default function LoginForm() {
+export const getServerSideProps = async () => {
+  return {
+    props: {
+      backendUrl: process.env.BACKEND_URL,
+    },
+  }
+}
+
+export default function LoginForm({ backendUrl }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const { status, error, user } = useSelector((state) => state.auth);
@@ -65,8 +73,9 @@ export default function LoginForm() {
     try {
       setIsSubmitting(true);
       if (formData.forgotPassword && formData.resetCode) {
-        await dispatch(
+        dispatch(
           resetPassword({
+            backendUrl,
             email: formData.email,
             resetCode: formData.resetCode,
             newPassword: formData.newPassword,
@@ -81,11 +90,11 @@ export default function LoginForm() {
         });
         setFormErrors({ general: 'Password reset successfully' });
       } else if (formData.forgotPassword) {
-        await dispatch(forgotPassword(formData.email));
+        dispatch(forgotPassword({ backendUrl, email: formData.email }));
         setFormData({ ...formData, resetCode: true, forgotPassword: false });
       } else {
-        await dispatch(
-          login({ email: formData.email, password: formData.password })
+        dispatch(
+          login({ backendUrl, email: formData.email, password: formData.password })
         );
         // Redirect to home page or dashboard
         router.push('/');
@@ -160,11 +169,10 @@ export default function LoginForm() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="user@address.com"
-                    className={`w-full px-3 py-2 bg-gray-50 border ${
-                      formErrors.email
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                    className={`w-full px-3 py-2 bg-gray-50 border ${formErrors.email
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-200 focus:ring-green-500'
+                      } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                   />
                   {formErrors.email && (
                     <p className="mt-1 text-sm text-red-600">
@@ -186,11 +194,10 @@ export default function LoginForm() {
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className={`w-full px-3 py-2 bg-gray-50 border ${
-                      formErrors.password
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                    className={`w-full px-3 py-2 bg-gray-50 border ${formErrors.password
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-200 focus:ring-green-500'
+                      } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                   />
                   {formErrors.password && (
                     <p className="mt-1 text-sm text-red-600">
@@ -221,11 +228,10 @@ export default function LoginForm() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="user@address.com"
-                    className={`w-full px-3 py-2 bg-gray-50 border ${
-                      formErrors.email
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                    className={`w-full px-3 py-2 bg-gray-50 border ${formErrors.email
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-200 focus:ring-green-500'
+                      } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                   />
                   {formErrors.email && (
                     <p className="mt-1 text-sm text-red-600">
@@ -244,10 +250,9 @@ export default function LoginForm() {
                       rounded-md 
                       transition-colors 
                       duration-200
-                      ${
-                        isSubmitting
-                          ? 'opacity-50 cursor-not-allowed'
-                          : 'hover:bg-zinc-800'
+                      ${isSubmitting
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'hover:bg-zinc-800'
                       }
                     `}
                   >
@@ -270,11 +275,10 @@ export default function LoginForm() {
                         type="text"
                         value={formData.resetCode}
                         onChange={handleChange}
-                        className={`w-full px-3 py-2 bg-gray-50 border ${
-                          formErrors.resetCode
-                            ? 'border-red-500 focus:ring-red-500'
-                            : 'border-gray-200 focus:ring-green-500'
-                        } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                        className={`w-full px-3 py-2 bg-gray-50 border ${formErrors.resetCode
+                          ? 'border-red-500 focus:ring-red-500'
+                          : 'border-gray-200 focus:ring-green-500'
+                          } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                       />
                       {formErrors.resetCode && (
                         <p className="mt-1 text-sm text-red-600">
@@ -296,11 +300,10 @@ export default function LoginForm() {
                         type="password"
                         value={formData.newPassword}
                         onChange={handleChange}
-                        className={`w-full px-3 py-2 bg-gray-50 border ${
-                          formErrors.newPassword
-                            ? 'border-red-500 focus:ring-red-500'
-                            : 'border-gray-200 focus:ring-green-500'
-                        } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                        className={`w-full px-3 py-2 bg-gray-50 border ${formErrors.newPassword
+                          ? 'border-red-500 focus:ring-red-500'
+                          : 'border-gray-200 focus:ring-green-500'
+                          } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                       />
                       {formErrors.newPassword && (
                         <p className="mt-1 text-sm text-red-600">
@@ -322,11 +325,10 @@ export default function LoginForm() {
                         type="password"
                         value={formData.confirmNewPassword}
                         onChange={handleChange}
-                        className={`w-full px-3 py-2 bg-gray-50 border ${
-                          formErrors.confirmNewPassword
-                            ? 'border-red-500 focus:ring-red-500'
-                            : 'border-gray-200 focus:ring-green-500'
-                        } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                        className={`w-full px-3 py-2 bg-gray-50 border ${formErrors.confirmNewPassword
+                          ? 'border-red-500 focus:ring-red-500'
+                          : 'border-gray-200 focus:ring-green-500'
+                          } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                       />
                       {formErrors.confirmNewPassword && (
                         <p className="mt-1 text-sm text-red-600">
@@ -344,10 +346,9 @@ export default function LoginForm() {
                           rounded-md 
                           transition-colors 
                           duration-200
-                          ${
-                            isSubmitting
-                              ? 'opacity-50 cursor-not-allowed'
-                              : 'hover:bg-zinc-800'
+                          ${isSubmitting
+                            ? 'opacity-50 cursor-not-allowed'
+                            : 'hover:bg-zinc-800'
                           }
                         `}
                       >
@@ -371,10 +372,9 @@ export default function LoginForm() {
                   rounded-md 
                   transition-colors 
                   duration-200
-                  ${
-                    isSubmitting
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'hover:bg-zinc-800'
+                  ${isSubmitting
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'hover:bg-zinc-800'
                   }
                 `}
               >
@@ -390,9 +390,8 @@ export default function LoginForm() {
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-500 ${
-              currentSlide === index ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`absolute inset-0 transition-opacity duration-500 ${currentSlide === index ? 'opacity-100' : 'opacity-0'
+              }`}
           >
             <Image
               src={slide}
@@ -411,9 +410,8 @@ export default function LoginForm() {
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                currentSlide === index ? 'bg-white' : 'bg-white/50'
-              }`}
+              className={`w-2 h-2 rounded-full transition-colors ${currentSlide === index ? 'bg-white' : 'bg-white/50'
+                }`}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}
