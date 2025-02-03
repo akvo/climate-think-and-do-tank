@@ -167,9 +167,9 @@ export default function KnowledgeHub() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [allData, setAllData] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState({
     topics: [],
@@ -182,26 +182,8 @@ export default function KnowledgeHub() {
     order: 'asc',
   });
 
-  // Update URL with current filters and sort
-  const updateQueryParams = (filters, sort, search, currentPage) => {
-    const params = new URLSearchParams();
-
-    if (search) params.set('search', search);
-    if (sort.field !== 'title') params.set('sortBy', sort.field);
-    if (sort.order !== 'asc') params.set('sortOrder', sort.order);
-    if (currentPage > 1) params.set('page', currentPage.toString());
-
-    Object.entries(filters).forEach(([key, values]) => {
-      if (values.length > 0) {
-        params.set(key, values.join(','));
-      }
-    });
-
-    router.push(`?${params.toString()}`, undefined, { shallow: true });
-  };
-
   // Load data based on current filters and sort
-  const loadData = async () => {
+  const loadData = async (isLoadMore = false) => {
     setIsLoading(true);
     try {
       const result = await fetchData({
@@ -209,10 +191,18 @@ export default function KnowledgeHub() {
         ...activeFilters,
         sortBy: sortConfig.field,
         sortOrder: sortConfig.order,
-        page,
+        page: isLoadMore ? currentPage + 1 : 1,
       });
-      setData(result.data);
-      setTotalPages(result.totalPages);
+
+      if (isLoadMore) {
+        setAllData((prev) => [...prev, ...result.data]);
+        setCurrentPage((prev) => prev + 1);
+      } else {
+        setAllData(result.data);
+        setCurrentPage(1);
+      }
+
+      setHasMore(result.data.length === 6);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
@@ -222,31 +212,58 @@ export default function KnowledgeHub() {
 
   // Initialize from URL params
   useEffect(() => {
-    const search = searchParams.get('search') || '';
-    const topics = searchParams.get('topics')?.split(',') || [];
-    const locations = searchParams.get('locations')?.split(',') || [];
-    const organizations = searchParams.get('organizations')?.split(',') || [];
-    const sortBy = searchParams.get('sortBy') || 'title';
-    const sortOrder = searchParams.get('sortOrder') || 'asc';
-    const currentPage = parseInt(searchParams.get('page') || '1');
+    const handleInitialLoad = () => {
+      const search = searchParams.get('search') || '';
+      const topics =
+        searchParams.get('topics')?.split(',').filter(Boolean) || [];
+      const locations =
+        searchParams.get('locations')?.split(',').filter(Boolean) || [];
+      const organizations =
+        searchParams.get('organizations')?.split(',').filter(Boolean) || [];
+      const sortBy = searchParams.get('sortBy') || 'title';
+      const sortOrder = searchParams.get('sortOrder') || 'asc';
 
-    setSearchQuery(search);
-    setPage(currentPage);
-    setActiveFilters({
-      topics: topics.filter((t) => filterOptions.topics.includes(t)),
-      locations: locations.filter((l) => filterOptions.locations.includes(l)),
-      organizations: organizations.filter((o) =>
-        filterOptions.organizations.includes(o)
-      ),
-    });
-    setSortConfig({ field: sortBy, order: sortOrder });
-  }, []);
+      setSearchQuery(search);
+      setActiveFilters({
+        topics: topics.filter((t) => filterOptions.topics.includes(t)),
+        locations: locations.filter((l) => filterOptions.locations.includes(l)),
+        organizations: organizations.filter((o) =>
+          filterOptions.organizations.includes(o)
+        ),
+      });
+      setSortConfig({ field: sortBy, order: sortOrder });
 
-  // Load data when filters or sort change
-  useEffect(() => {
+      setAllData([]);
+      setHasMore(true);
+      setCurrentPage(1);
+    };
+
+    handleInitialLoad();
     loadData();
-    updateQueryParams(activeFilters, sortConfig, searchQuery, page);
-  }, [activeFilters, sortConfig, searchQuery, page]);
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      loadData();
+      updateQueryParams(activeFilters, sortConfig, searchQuery);
+    }
+  }, [activeFilters, sortConfig, searchQuery]);
+
+  const updateQueryParams = (filters, sort, search) => {
+    const params = new URLSearchParams();
+
+    if (search) params.set('search', search);
+    if (sort.field !== 'title') params.set('sortBy', sort.field);
+    if (sort.order !== 'asc') params.set('sortOrder', sort.order);
+
+    Object.entries(filters).forEach(([key, values]) => {
+      if (values.length > 0) {
+        params.set(key, values.join(','));
+      }
+    });
+
+    router.push(`?${params.toString()}`, undefined, { shallow: true });
+  };
 
   // Handle click outside filters
   useEffect(() => {
@@ -267,7 +284,6 @@ export default function KnowledgeHub() {
         ? prev[type].filter((item) => item !== value)
         : [...prev[type], value],
     }));
-    setPage(1); // Reset to first page when filters change
   };
 
   const clearFilters = () => {
@@ -278,7 +294,9 @@ export default function KnowledgeHub() {
     });
     setSearchQuery('');
     setSortConfig({ field: 'title', order: 'asc' });
-    setPage(1);
+    setCurrentPage(1);
+    setAllData([]);
+    setHasMore(true);
   };
 
   const handleSort = (field) => {
@@ -286,12 +304,10 @@ export default function KnowledgeHub() {
       field,
       order: prev.field === field && prev.order === 'asc' ? 'desc' : 'asc',
     }));
-    setPage(1); // Reset to first page when sort changes
   };
 
   const handleSearch = (value) => {
     setSearchQuery(value);
-    setPage(1); // Reset to first page when search changes
   };
 
   const handleCardClick = (card) => {
@@ -433,7 +449,7 @@ export default function KnowledgeHub() {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {data.map((card) => (
+              {allData.map((card) => (
                 <div
                   key={card.id}
                   className="bg-white rounded-lg overflow-hidden shadow-sm border cursor-pointer hover:shadow-md transition-shadow"
@@ -479,7 +495,7 @@ export default function KnowledgeHub() {
               ))}
             </div>
 
-            {data.length === 0 && (
+            {allData.length === 0 && (
               <div className="text-center py-12">
                 <h3 className="text-lg font-semibold text-gray-900">
                   No results found
@@ -490,43 +506,22 @@ export default function KnowledgeHub() {
               </div>
             )}
 
-            {data.length > 0 && (
-              <div className="flex justify-center mt-8">
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                    disabled={page === 1}
-                    className="px-4 py-2 border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 text-black"
-                  >
-                    Previous
-                  </button>
-                  <div className="flex items-center gap-2">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                      (pageNum) => (
-                        <button
-                          key={pageNum}
-                          onClick={() => setPage(pageNum)}
-                          className={`w-8 h-8 rounded-md flex items-center justify-center ${
-                            pageNum === page
-                              ? 'bg-green-600 text-white'
-                              : 'border hover:bg-gray-50 text-black'
-                          }`}
-                        >
-                          {pageNum}
-                        </button>
-                      )
-                    )}
-                  </div>
-                  <button
-                    onClick={() =>
-                      setPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                    disabled={page === totalPages}
-                    className="px-4 py-2 border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 text-black"
-                  >
-                    Next
-                  </button>
-                </div>
+            {hasMore && allData.length > 0 && (
+              <div className="flex justify-center mt-12">
+                <button
+                  onClick={() => loadData(true)}
+                  disabled={isLoading}
+                  className="px-8 py-3 bg-zinc-900 text-white rounded-md hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Loading...
+                    </>
+                  ) : (
+                    'Load More'
+                  )}
+                </button>
               </div>
             )}
           </>
