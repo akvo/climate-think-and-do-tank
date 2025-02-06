@@ -3,10 +3,18 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { validateSignUp } from '@/helpers/utilities';
-import { fetchOrganizationsAndSectors, signUp } from '@/store/slices/authSlice';
+import { fetchOrganizationsAndSectors, signUp, resendVerification } from '@/store/slices/authSlice';
 import Link from 'next/link';
 
-export default function SignUpForm() {
+export const getServerSideProps = async () => {
+  return {
+    props: {
+      backendUrl: process.env.BACKEND_URL,
+    },
+  }
+}
+
+export default function SignUpForm({ backendUrl }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -73,11 +81,11 @@ export default function SignUpForm() {
   };
 
   const handleAdditionalDetailsSubmit = async (additionalData) => {
-    console.log(additionalData);
     try {
       setIsSubmitting(true);
       await dispatch(
         signUp({
+          backendUrl,
           ...formData,
           ...additionalData,
         })
@@ -147,11 +155,10 @@ export default function SignUpForm() {
                     value={formData.username}
                     onChange={handleChange}
                     placeholder="Choose a username"
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
-                      formErrors.username
-                        ? 'border-red-500 focus:ring-red-500 '
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${formErrors.username
+                      ? 'border-red-500 focus:ring-red-500 '
+                      : 'border-gray-200 focus:ring-green-500'
+                      } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                   />
                   {formErrors.username && (
                     <p className="mt-1 text-sm text-red-600">
@@ -175,11 +182,10 @@ export default function SignUpForm() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="user@address.com"
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
-                      formErrors.email
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${formErrors.email
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-200 focus:ring-green-500'
+                      } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                   />
                   {formErrors.email && (
                     <p className="mt-1 text-sm text-red-600">
@@ -202,11 +208,10 @@ export default function SignUpForm() {
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
-                      formErrors.password
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${formErrors.password
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-200 focus:ring-green-500'
+                      } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                   />
                   {formErrors.password && (
                     <p className="mt-1 text-sm text-red-600">
@@ -233,11 +238,10 @@ export default function SignUpForm() {
                     type="password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
-                      formErrors.confirmPassword
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${formErrors.confirmPassword
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-200 focus:ring-green-500'
+                      } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                   />
                   {formErrors.confirmPassword && (
                     <p className="mt-1 text-sm text-red-600">
@@ -257,11 +261,10 @@ export default function SignUpForm() {
                 rounded-md 
                 transition-colors 
                 duration-200
-                ${
-                  isSubmitting
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:bg-zinc-800'
-                }
+                ${isSubmitting
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:bg-zinc-800'
+                    }
               `}
                 >
                   {isSubmitting ? (
@@ -299,9 +302,8 @@ export default function SignUpForm() {
             {slides.map((slide, index) => (
               <div
                 key={index}
-                className={`absolute inset-0 transition-opacity duration-500 ${
-                  currentSlide === index ? 'opacity-100' : 'opacity-0'
-                }`}
+                className={`absolute inset-0 transition-opacity duration-500 ${currentSlide === index ? 'opacity-100' : 'opacity-0'
+                  }`}
               >
                 <Image
                   src={slide || 'https://placehold.co/600x400'}
@@ -320,9 +322,8 @@ export default function SignUpForm() {
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    currentSlide === index ? 'bg-white' : 'bg-white/50'
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-colors ${currentSlide === index ? 'bg-white' : 'bg-white/50'
+                    }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
@@ -335,6 +336,7 @@ export default function SignUpForm() {
           formData={formData}
           steps={steps}
           isSubmitting={isSubmitting}
+          backendUrl={backendUrl}
         />
       )}
     </div>
@@ -346,6 +348,7 @@ const AdditionalDetails = ({
   formData: form,
   steps,
   isSubmitting,
+  backendUrl,
 }) => {
   const dispatch = useDispatch();
   const { organizations, sectors, country, roles } = useSelector(
@@ -360,8 +363,7 @@ const AdditionalDetails = ({
   });
 
   useEffect(() => {
-    console.log('Fetching organizations and sectors');
-    dispatch(fetchOrganizationsAndSectors());
+    dispatch(fetchOrganizationsAndSectors(backendUrl));
   }, []);
 
   const handleChange = (e) => {
@@ -376,8 +378,6 @@ const AdditionalDetails = ({
     e.preventDefault();
     onSubmit(formData);
   };
-
-  console.log(steps);
 
   return (
     <div className="flex min-h-screen">
@@ -416,13 +416,12 @@ const AdditionalDetails = ({
             <div key={step.number} className="flex items-center gap-4">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center border-2 
-                ${
-                  step.completed
+                ${step.completed
                     ? 'border-green-500'
                     : step.active
-                    ? 'border-white'
-                    : 'border-zinc-700 text-zinc-700'
-                }`}
+                      ? 'border-white'
+                      : 'border-zinc-700 text-zinc-700'
+                  }`}
               >
                 {step.completed ? (
                   <svg
@@ -582,11 +581,10 @@ const AdditionalDetails = ({
                 rounded-md 
                 transition-colors 
                 duration-200
-                ${
-                  isSubmitting
+                ${isSubmitting
                     ? 'opacity-50 cursor-not-allowed'
                     : 'hover:bg-zinc-800'
-                }
+                  }
               `}
               >
                 {isSubmitting ? (
@@ -618,21 +616,21 @@ const AdditionalDetails = ({
             </form>
           </div>
         )}
-        {steps.find((step) => step.active)?.number === 3 && <ConfirmEmail />}
+        {steps.find((step) => step.active)?.number === 3 && <ConfirmEmail user={form} backendUrl={backendUrl} />}
       </div>
     </div>
   );
 };
 
-const ConfirmEmail = ({ formData }) => {
+const ConfirmEmail = ({ backendUrl, user }) => {
+  const dispatch = useDispatch();
   const [resendStatus, setResendStatus] = useState('');
   const handleResendVerification = async () => {
-    if (loading) return;
 
     setResendStatus('sending');
-    const result = await dispatch(resendVerification(user.email));
+    const result = await dispatch(resendVerification({ backendUrl, email: user.email }));
 
-    if (result.payload?.success) {
+    if (result.payload?.sent) {
       setResendStatus('success');
       setTimeout(() => setResendStatus(''), 3000);
     } else {
@@ -681,7 +679,7 @@ const ConfirmEmail = ({ formData }) => {
         </h2>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <p className="text-gray-600 mb-4">
-            We've sent a verification link to {formData?.email}. Please click
+            We've sent a verification link to {user.email}. Please click
             the link to verify your account.
           </p>
           <p className="text-sm text-gray-500">

@@ -3,7 +3,15 @@ import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { verifyEmail } from '../store/slices/authSlice';
 
-export default function VerifyEmail() {
+export const getServerSideProps = async () => {
+  return {
+    props: {
+      backendUrl: process.env.BACKEND_URL,
+    },
+  }
+}
+
+export default function VerifyEmail({ backendUrl }) {
   const [verified, setVerified] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -17,12 +25,12 @@ export default function VerifyEmail() {
   }, [token]);
 
   const verifyToken = async () => {
-    const result = await dispatch(verifyEmail(token));
-    if (result.payload?.message === 'Email verified successfully') {
+    const result = await dispatch(verifyEmail({ backendUrl, token }));
+    if (result.payload?.user?.id) {
       // Updated to match our response
       setVerified(true);
       setTimeout(() => {
-        router.push('/login');
+        router.push('/signin');
       }, 3000);
     }
   };
@@ -49,7 +57,7 @@ export default function VerifyEmail() {
           </h2>
           <p className="mt-2">{error}</p>
           <button
-            onClick={() => router.push('/login')}
+            onClick={() => router.push('/signin')}
             className="mt-4 text-blue-600 hover:text-blue-800 underline"
           >
             Return to login
@@ -70,7 +78,7 @@ export default function VerifyEmail() {
           <div className="mt-4">
             <p className="text-sm text-gray-600">Not redirected?</p>
             <button
-              onClick={() => router.push('/login')}
+              onClick={() => router.push('/signin')}
               className="text-blue-600 hover:text-blue-800 underline"
             >
               Click here to login

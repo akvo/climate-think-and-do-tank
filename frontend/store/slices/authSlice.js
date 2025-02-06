@@ -2,18 +2,15 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { setCookie, deleteCookie } from 'cookies-next';
 
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
-
 // Async thunks
 export const checkAuth = createAsyncThunk(
   'auth/checkAuth',
-  async (_, { rejectWithValue }) => {
+  async ({ backendUrl }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token found');
 
-      const response = await axios.get(`${STRAPI_URL}/api/users/me`, {
+      const response = await axios.get(`${backendUrl}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
@@ -26,9 +23,9 @@ export const checkAuth = createAsyncThunk(
 
 export const signIn = createAsyncThunk(
   'auth/signIn',
-  async ({ identifier, password }, { rejectWithValue }) => {
+  async ({ backendUrl, identifier, password }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${STRAPI_URL}/api/auth/local`, {
+      const response = await axios.post(`${backendUrl}/api/auth/local`, {
         identifier,
         password,
       });
@@ -49,11 +46,11 @@ export const signIn = createAsyncThunk(
 export const signUp = createAsyncThunk(
   'auth/signUp',
   async (
-    { username, email, password, organization, sector, country, role },
+    { backendUrl, username, email, password, organization, sector, country, role },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.post(`${STRAPI_URL}/api/auth/register`, {
+      const response = await axios.post(`${backendUrl}/api/auth/local/register`, {
         username,
         email,
         password,
@@ -80,9 +77,9 @@ export const signUp = createAsyncThunk(
 
 export const login = createAsyncThunk(
   'auth/login',
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ backendUrl, email, password }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${STRAPI_URL}/api/auth/local`, {
+      const response = await axios.post(`${backendUrl}/api/auth/local`, {
         identifier: email,
         password,
       });
@@ -101,10 +98,10 @@ export const login = createAsyncThunk(
 
 export const forgotPassword = createAsyncThunk(
   'auth/forgotPassword',
-  async (email, { rejectWithValue }) => {
+  async ({ backendUrl, email }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${STRAPI_URL}/api/auth/forgot-password`,
+        `${backendUrl}/api/auth/forgot-password`,
         {
           email,
         }
@@ -125,10 +122,10 @@ export const forgotPassword = createAsyncThunk(
 
 export const resendVerification = createAsyncThunk(
   'auth/resendVerification',
-  async (email, { rejectWithValue }) => {
+  async ({ backendUrl, email }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${STRAPI_URL}/api/auth/send-email-confirmation`,
+        `${backendUrl}/api/auth/send-email-confirmation`,
         {
           email,
         }
@@ -145,10 +142,10 @@ export const resendVerification = createAsyncThunk(
 
 export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
-  async ({ resetCode, newPassword }, { rejectWithValue }) => {
+  async ({ backendUrl, resetCode, newPassword }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${STRAPI_URL}/api/auth/reset-password`,
+        `${backendUrl}/api/auth/reset-password`,
         {
           code: resetCode,
           password: newPassword,
@@ -171,10 +168,10 @@ export const resetPassword = createAsyncThunk(
 
 export const verifyEmail = createAsyncThunk(
   'auth/verifyEmail',
-  async (token, { rejectWithValue }) => {
+  async ({ backendUrl, token }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${STRAPI_URL}/api/auth/verify`, {
-        params: { token },
+      const response = await axios.get(`${backendUrl}/api/auth/email-confirmation`, {
+        params: { confirmation: token },
       });
       return response.data;
     } catch (error) {
@@ -187,7 +184,7 @@ export const verifyEmail = createAsyncThunk(
 
 export const fetchOrganizationsAndSectors = createAsyncThunk(
   'orgSector/fetchOrganizationsAndSectors',
-  async (_, { rejectWithValue }) => {
+  async (backendUrl, { rejectWithValue }) => {
     try {
       const [
         organizationsResponse,
@@ -195,12 +192,11 @@ export const fetchOrganizationsAndSectors = createAsyncThunk(
         countryResponse,
         rolesResponse,
       ] = await Promise.all([
-        axios.get(`${STRAPI_URL}/api/organisations?status=published`),
-        axios.get(`${STRAPI_URL}/api/sectors?status=published`),
-        axios.get(`${STRAPI_URL}/api/countries?status=published`),
-        axios.get(`${STRAPI_URL}/api/users-permissions/roles`),
+        axios.get(`${backendUrl}/api/organisations?status=published`),
+        axios.get(`${backendUrl}/api/sectors?status=published`),
+        axios.get(`${backendUrl}/api/countries?status=published`),
+        axios.get(`${backendUrl}/api/users-permissions/roles`),
       ]);
-      console.log(rolesResponse.data);
       return {
         organizations: organizationsResponse.data.data,
         sectors: sectorsResponse.data.data,
@@ -210,7 +206,7 @@ export const fetchOrganizationsAndSectors = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.error ||
-          'Failed to fetch organizations and sectors'
+        'Failed to fetch organizations and sectors'
       );
     }
   }

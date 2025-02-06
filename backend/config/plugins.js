@@ -50,7 +50,9 @@ module.exports = ({ env }) => {
   return {
     'users-permissions': {
       config: {
-        email_confirmation: false,
+        register: {
+          allowedFields: ['country', 'organisation', 'sector'],
+        },
       },
     },
     email: {
