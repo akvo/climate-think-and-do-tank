@@ -65,7 +65,7 @@ export default function StakeholderDirectory() {
       organizations: query.organizations ? query.organizations.split(',') : [],
     };
     setActiveFilters(filters);
-  }, [router]);
+  }, []);
 
   // Update URL query parameters when filters change
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function StakeholderDirectory() {
     router.push({ pathname: router.pathname, query }, undefined, {
       shallow: true,
     });
-  }, [activeFilters, router]);
+  }, [activeFilters]);
 
   // Toggle filter option
   const toggleFilter = (filterType, option) => {
