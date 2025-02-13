@@ -7,10 +7,11 @@ services:
       - ./frontend:/app
     ports:
       - 3000:3000
+    entrypoint: /app/docker-entrypoint.sh
     command: sh -c "npm install && npm run dev"
     environment:
       NEXT_TELEMETRY_DISABLED: 1
-      NEXT_PUBLIC_STRAPI_URL: http://localhost:1337
+      NEXT_PUBLIC_BACKEND_URL: http://localhost:1337
 
   backend:
     build:
