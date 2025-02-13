@@ -8,12 +8,7 @@ const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
 
 const graphqlClient = new GraphQLClient(
-  `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}/graphql`,
-  {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }
+  `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}/graphql`
 );
 
 // Async thunks
@@ -228,52 +223,12 @@ export const fetchOrganizationsAndSectors = createAsyncThunk(
 );
 
 const SEARCH_QUERY = gql`
-  query Search($query: String!, $page: Int!, $pageSize: Int!) {
-    organisations(
-      filters: {
-        or: [{ name: { containsi: $query } }]
-        status: { eq: "published" }
-      }
-      pagination: { page: $page, pageSize: $pageSize }
-      sort: ["name:asc"]
-    ) {
-      data {
-        id
-        attributes {
-          name
-        }
-      }
-      meta {
-        pagination {
-          total
-          pageCount
-          page
-          pageSize
-        }
-      }
+  query Search($query: String!) {
+    organisations(filters: { name: { containsi: $query } }) {
+      name
     }
-    sectors(
-      filters: {
-        or: [{ name: { containsi: $query } }]
-        status: { eq: "published" }
-      }
-      pagination: { page: $page, pageSize: $pageSize }
-      sort: ["name:asc"]
-    ) {
-      data {
-        id
-        attributes {
-          name
-        }
-      }
-      meta {
-        pagination {
-          total
-          pageCount
-          page
-          pageSize
-        }
-      }
+    sectors(filters: { name: { containsi: $query } }) {
+      name
     }
   }
 `;
@@ -286,21 +241,36 @@ export async function searchContentAcrossTypes({
   try {
     const data = await graphqlClient.request(SEARCH_QUERY, {
       query,
-      page,
-      pageSize,
     });
+
     return {
       organizations: {
-        items: data.organisations.data,
-        pagination: data.organisations.meta.pagination,
+        items: data.organisations.map((org) => ({
+          id: org.id,
+          attributes: { name: org.name },
+        })),
+        pagination: {
+          page,
+          pageSize,
+          total: data.organisations.length,
+          pageCount: 1,
+        },
       },
       sectors: {
-        items: data.sectors.data,
-        pagination: data.sectors.meta.pagination,
+        items: data.sectors.map((sector) => ({
+          id: sector.id,
+          attributes: { name: sector.name },
+        })),
+        pagination: {
+          page,
+          pageSize,
+          total: data.sectors.length,
+          pageCount: 1,
+        },
       },
     };
   } catch (error) {
-    console.error('Search error:', error);
+    console.error('Search error:', error.response);
     throw error;
   }
 }
