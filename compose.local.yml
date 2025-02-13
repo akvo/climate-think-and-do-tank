@@ -10,7 +10,7 @@ services:
     image: tdt-frontend:local
     build: ./frontend
     environment:
-      NEXT_PUBLIC_STRAPI_URL: http://localhost/cms
+      NEXT_PUBLIC_BACKEND_URL: http://localhost/cms
 
   backend:
     image: tdt-backend:local
