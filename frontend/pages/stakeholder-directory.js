@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Search } from 'lucide-react';
+import {
+  Globe,
+  Link2,
+  Linkedin,
+  MapPin,
+  Search,
+  Sprout,
+  X,
+} from 'lucide-react';
 import Image from 'next/image';
 
 export default function StakeholderDirectory() {
@@ -12,6 +20,7 @@ export default function StakeholderDirectory() {
     focusRegions: [],
     organizations: [],
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const stakeholders = [
     {
@@ -38,13 +47,10 @@ export default function StakeholderDirectory() {
       focusRegions: ['Asia'],
       organizations: ['Blue Life'],
     },
-    // Add more stakeholders with relevant properties
   ];
 
-  // Repeat the array 3 times to show multiple rows
   const allStakeholders = [...stakeholders, ...stakeholders, ...stakeholders];
 
-  // Extract unique filter options
   const filterOptions = {
     topics: [
       'Agriculture',
@@ -56,62 +62,86 @@ export default function StakeholderDirectory() {
     organizations: ['UNEP', 'Blue Life'],
   };
 
-  // Read query parameters on page load
+  // Read query parameters on page load and router changes
   useEffect(() => {
-    const { query } = router;
+    if (!router.isReady) return;
+
     const filters = {
-      topics: query.topics ? query.topics.split(',') : [],
-      focusRegions: query.focusRegions ? query.focusRegions.split(',') : [],
-      organizations: query.organizations ? query.organizations.split(',') : [],
+      topics: router.query.topics ? router.query.topics.split(',') : [],
+      focusRegions: router.query.focusRegions
+        ? router.query.focusRegions.split(',')
+        : [],
+      organizations: router.query.organizations
+        ? router.query.organizations.split(',')
+        : [],
     };
     setActiveFilters(filters);
-  }, []);
+  }, [router.isReady, router.query]);
 
   // Update URL query parameters when filters change
-  useEffect(() => {
+  const updateFilters = (newFilters) => {
     const query = {};
-    if (activeFilters.topics.length > 0)
-      query.topics = activeFilters.topics.join(',');
-    if (activeFilters.focusRegions.length > 0)
-      query.focusRegions = activeFilters.focusRegions.join(',');
-    if (activeFilters.organizations.length > 0)
-      query.organizations = activeFilters.organizations.join(',');
-    router.push({ pathname: router.pathname, query }, undefined, {
-      shallow: true,
-    });
-  }, [activeFilters]);
+    if (newFilters.topics.length > 0)
+      query.topics = newFilters.topics.join(',');
+    if (newFilters.focusRegions.length > 0)
+      query.focusRegions = newFilters.focusRegions.join(',');
+    if (newFilters.organizations.length > 0)
+      query.organizations = newFilters.organizations.join(',');
 
-  // Toggle filter option
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { ...query },
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
+
+  // Toggle filter option with URL update
   const toggleFilter = (filterType, option) => {
-    setActiveFilters((prev) => {
-      const updatedFilters = { ...prev };
-      if (updatedFilters[filterType].includes(option)) {
-        updatedFilters[filterType] = updatedFilters[filterType].filter(
-          (item) => item !== option
-        );
-      } else {
-        updatedFilters[filterType] = [...updatedFilters[filterType], option];
-      }
-      return updatedFilters;
-    });
+    const updatedFilters = { ...activeFilters };
+    if (updatedFilters[filterType].includes(option)) {
+      updatedFilters[filterType] = updatedFilters[filterType].filter(
+        (item) => item !== option
+      );
+    } else {
+      updatedFilters[filterType] = [...updatedFilters[filterType], option];
+    }
+    setActiveFilters(updatedFilters);
+    updateFilters(updatedFilters);
+  };
+
+  // Clear all filters
+  const clearFilters = () => {
+    const emptyFilters = {
+      topics: [],
+      focusRegions: [],
+      organizations: [],
+    };
+    setActiveFilters(emptyFilters);
+    updateFilters(emptyFilters);
   };
 
   // Filter stakeholders based on active filters
   const filteredStakeholders = allStakeholders.filter((stakeholder) => {
-    return (
-      (activeFilters.topics.length === 0 ||
-        activeFilters.topics.some((topic) =>
-          stakeholder.topics.includes(topic)
-        )) &&
-      (activeFilters.focusRegions.length === 0 ||
-        activeFilters.focusRegions.some((region) =>
-          stakeholder.focusRegions.includes(region)
-        )) &&
-      (activeFilters.organizations.length === 0 ||
-        activeFilters.organizations.some((org) =>
-          stakeholder.organizations.includes(org)
-        ))
-    );
+    const topicsMatch =
+      activeFilters.topics.length === 0 ||
+      stakeholder.topics.some((topic) => activeFilters.topics.includes(topic));
+
+    const regionsMatch =
+      activeFilters.focusRegions.length === 0 ||
+      stakeholder.focusRegions.some((region) =>
+        activeFilters.focusRegions.includes(region)
+      );
+
+    const organizationsMatch =
+      activeFilters.organizations.length === 0 ||
+      stakeholder.organizations.some((org) =>
+        activeFilters.organizations.includes(org)
+      );
+
+    return topicsMatch && regionsMatch && organizationsMatch;
   });
 
   return (
@@ -187,13 +217,7 @@ export default function StakeholderDirectory() {
               ))}
             </div>
             <button
-              onClick={() =>
-                setActiveFilters({
-                  topics: [],
-                  focusRegions: [],
-                  organizations: [],
-                })
-              }
+              onClick={clearFilters}
               className="text-green-600 hover:text-green-700"
             >
               Clear filters
@@ -207,8 +231,9 @@ export default function StakeholderDirectory() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
           {filteredStakeholders.map((stakeholder, index) => (
             <div
-              key={index}
-              className="bg-[#f8f9fa] rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md transition-shadow"
+              key={`${stakeholder.name}-${index}`}
+              onClick={() => setIsModalOpen(true)}
+              className="bg-[#f8f9fa] rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md transition-shadow cursor-pointer"
             >
               <div className="relative w-24 h-24 mb-4">
                 <Image
@@ -235,6 +260,101 @@ export default function StakeholderDirectory() {
           </button>
         </div>
       </div>
+
+      <IndividualModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
+
+const IndividualModal = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
+        {/* Modal content remains the same */}
+        {/* Header */}
+        <div className="p-8 pb-6 flex justify-between items-start border-b">
+          <div className="text-green-600 text-sm font-semibold">INDIVIDUAL</div>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-8 flex justify-between">
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-3xl font-bold mb-2 text-black">
+                Sarah Chebet
+              </h2>
+              <p className="text-gray-600 text-lg mb-2">Environmentalist</p>
+              <p>
+                <span className="text-green-600">Kevin Ochieng</span>
+                <span className="text-gray-600"> and </span>
+                <span className="text-green-600">1 other</span>
+                <span className="text-gray-600"> mutual connection</span>
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 text-gray-600">
+                <MapPin size={20} />
+                <span>Kenya</span>
+              </div>
+              <div className="flex items-center gap-3 text-gray-600">
+                <Globe size={20} />
+                <span>Global</span>
+              </div>
+              <div className="flex items-center gap-3 text-gray-600">
+                <Link2 size={20} />
+                <a
+                  href="https://www.unep.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  https://www.unep.org/
+                </a>
+              </div>
+              <div className="flex items-center gap-3 text-gray-600">
+                <Linkedin size={20} />
+                <a href="#" className="hover:underline">
+                  Linked In Profile
+                </a>
+              </div>
+              <div className="flex items-center gap-3 text-gray-600">
+                <Sprout size={20} />
+                <span>Crop</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative w-64 h-64">
+            <div className="w-full h-full rounded-full bg-gray-100 overflow-hidden">
+              <Image
+                src="https://placehold.co/400x400"
+                alt="Sarah Chebet"
+                fill
+                className="object-cover position-relative"
+                unoptimized
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="p-8 pt-6 flex justify-end border-t">
+          <button className="px-8 py-2 border-2 border-zinc-900 rounded-full text-zinc-900 hover:bg-zinc-50 transition-colors">
+            Connect
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
