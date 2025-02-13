@@ -3,12 +3,10 @@ import axios from 'axios';
 import { setCookie, deleteCookie } from 'cookies-next';
 import { gql } from 'graphql-request';
 import { GraphQLClient } from 'graphql-request';
+import { env } from '@/helpers/env-vars';
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
-
-const graphqlClient = new GraphQLClient(
-  `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}/graphql`
-);
+const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
+const graphqlClient = new GraphQLClient(`${BACKEND_URL}/graphql`);
 
 // Async thunks
 export const checkAuth = createAsyncThunk(
@@ -18,7 +16,7 @@ export const checkAuth = createAsyncThunk(
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token found');
 
-      const response = await axios.get(`${STRAPI_URL}/api/users/me`, {
+      const response = await axios.get(`${BACKEND_URL}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
@@ -33,7 +31,7 @@ export const signIn = createAsyncThunk(
   'auth/signIn',
   async ({ identifier, password }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${STRAPI_URL}/api/auth/local`, {
+      const response = await axios.post(`${BACKEND_URL}/api/auth/local`, {
         identifier,
         password,
       });
@@ -58,7 +56,7 @@ export const signUp = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.post(`${STRAPI_URL}/api/auth/local/register`, {
+      const response = await axios.post(`${BACKEND_URL}/api/auth/local/register`, {
         username,
         email,
         password,
@@ -87,7 +85,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${STRAPI_URL}/api/auth/local`, {
+      const response = await axios.post(`${BACKEND_URL}/api/auth/local`, {
         identifier: email,
         password,
       });
@@ -109,7 +107,7 @@ export const forgotPassword = createAsyncThunk(
   async (email, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${STRAPI_URL}/api/auth/forgot-password`,
+        `${BACKEND_URL}/api/auth/forgot-password`,
         {
           email,
         }
@@ -133,7 +131,7 @@ export const resendVerification = createAsyncThunk(
   async (email, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${STRAPI_URL}/api/auth/send-email-confirmation`,
+        `${BACKEND_URL}/api/auth/send-email-confirmation`,
         {
           email,
         }
@@ -153,7 +151,7 @@ export const resetPassword = createAsyncThunk(
   async ({ resetCode, newPassword }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${STRAPI_URL}/api/auth/reset-password`,
+        `${BACKEND_URL}/api/auth/reset-password`,
         {
           code: resetCode,
           password: newPassword,
@@ -178,7 +176,7 @@ export const verifyEmail = createAsyncThunk(
   'auth/verifyEmail',
   async (token, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${STRAPI_URL}/api/auth/email-confirmation`, {
+      const response = await axios.get(`${BACKEND_URL}/api/auth/email-confirmation`, {
         params: { confirmation: token },
       });
       return response.data;
@@ -200,10 +198,10 @@ export const fetchOrganizationsAndSectors = createAsyncThunk(
         countryResponse,
         rolesResponse,
       ] = await Promise.all([
-        axios.get(`${STRAPI_URL}/api/organisations?status=published`),
-        axios.get(`${STRAPI_URL}/api/sectors?status=published`),
-        axios.get(`${STRAPI_URL}/api/countries?status=published`),
-        axios.get(`${STRAPI_URL}/api/users-permissions/roles`),
+        axios.get(`${BACKEND_URL}/api/organisations?status=published`),
+        axios.get(`${BACKEND_URL}/api/sectors?status=published`),
+        axios.get(`${BACKEND_URL}/api/countries?status=published`),
+        axios.get(`${BACKEND_URL}/api/users-permissions/roles`),
       ]);
       console.log(rolesResponse.data);
       return {
