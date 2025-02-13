@@ -1,9 +1,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { setCookie, deleteCookie } from 'cookies-next';
+import { gql } from 'graphql-request';
+import { GraphQLClient } from 'graphql-request';
 
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+
+const graphqlClient = new GraphQLClient(
+  `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}/graphql`,
+  {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }
+);
 
 // Async thunks
 export const checkAuth = createAsyncThunk(
@@ -215,6 +226,84 @@ export const fetchOrganizationsAndSectors = createAsyncThunk(
     }
   }
 );
+
+const SEARCH_QUERY = gql`
+  query Search($query: String!, $page: Int!, $pageSize: Int!) {
+    organisations(
+      filters: {
+        or: [{ name: { containsi: $query } }]
+        status: { eq: "published" }
+      }
+      pagination: { page: $page, pageSize: $pageSize }
+      sort: ["name:asc"]
+    ) {
+      data {
+        id
+        attributes {
+          name
+        }
+      }
+      meta {
+        pagination {
+          total
+          pageCount
+          page
+          pageSize
+        }
+      }
+    }
+    sectors(
+      filters: {
+        or: [{ name: { containsi: $query } }]
+        status: { eq: "published" }
+      }
+      pagination: { page: $page, pageSize: $pageSize }
+      sort: ["name:asc"]
+    ) {
+      data {
+        id
+        attributes {
+          name
+        }
+      }
+      meta {
+        pagination {
+          total
+          pageCount
+          page
+          pageSize
+        }
+      }
+    }
+  }
+`;
+
+export async function searchContentAcrossTypes({
+  query,
+  page = 1,
+  pageSize = 10,
+}) {
+  try {
+    const data = await graphqlClient.request(SEARCH_QUERY, {
+      query,
+      page,
+      pageSize,
+    });
+    return {
+      organizations: {
+        items: data.organisations.data,
+        pagination: data.organisations.meta.pagination,
+      },
+      sectors: {
+        items: data.sectors.data,
+        pagination: data.sectors.meta.pagination,
+      },
+    };
+  } catch (error) {
+    console.error('Search error:', error);
+    throw error;
+  }
+}
 
 // Slice
 const authSlice = createSlice({

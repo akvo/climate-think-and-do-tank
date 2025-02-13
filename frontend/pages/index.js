@@ -1,11 +1,22 @@
-'use client';
-
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
+import { searchContentAcrossTypes } from '@/store/slices/authSlice';
 
 export default function HomePage() {
-  const [searchQuery, setSearchQuery] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState({
+    organizations: {
+      items: [],
+      pagination: { total: 0, pageCount: 0, page: 1, pageSize: 10 },
+    },
+    sectors: {
+      items: [],
+      pagination: { total: 0, pageCount: 0, page: 1, pageSize: 10 },
+    },
+  });
+  const searchTimeoutRef = useRef();
 
   const investments = [
     {
@@ -38,6 +49,47 @@ export default function HomePage() {
     },
   ];
 
+  const handleSearch = async (searchQuery, currentPage = 1) => {
+    if (!searchQuery.trim()) {
+      setResults({
+        organizations: {
+          items: [],
+          pagination: { total: 0, pageCount: 0, page: 1, pageSize: 10 },
+        },
+        sectors: {
+          items: [],
+          pagination: { total: 0, pageCount: 0, page: 1, pageSize: 10 },
+        },
+      });
+      return;
+    }
+
+    try {
+      const data = await searchContentAcrossTypes({
+        query: searchQuery,
+        page: currentPage,
+        pageSize: 10,
+      });
+      setResults(data);
+    } catch (error) {
+      console.error('Search error:', error);
+    } finally {
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      handleSearch(value, 1);
+    }, 300);
+  };
+
   return (
     <main className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -57,8 +109,8 @@ export default function HomePage() {
               type="text"
               placeholder="Search all platform content"
               className="px-4 py-2 pr-12 rounded-[40px] flex-1"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={query}
+              onChange={handleInputChange}
             />
             <button className="px-4 py-1 bg-zinc-900 text-white rounded-[100px]">
               Search
