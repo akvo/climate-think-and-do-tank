@@ -17,6 +17,9 @@
     },
     "org_id": {
       "type": "uid"
+    },
+    "name": {
+      "type": "string"
     }
   }
 }

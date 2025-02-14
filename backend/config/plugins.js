@@ -1,6 +1,10 @@
 module.exports = ({ env }) => {
   // `PLUGIN_PROVIDERS` allows the use of local providers in production build containers for local testing.
-  const profile = env.oneOf('PLUGIN_PROVIDERS', ['local', 'external'], 'external');
+  const profile = env.oneOf(
+    'PLUGIN_PROVIDERS',
+    ['local', 'external'],
+    'external'
+  );
 
   const emails = {
     local: {
@@ -44,10 +48,23 @@ module.exports = ({ env }) => {
         uniform: env('GCS_UNIFORM'),
         skipCheckBucket: true,
       },
-    }
-  }
+    },
+  };
 
   return {
+    graphql: {
+      enabled: true,
+      config: {
+        endpoint: '/graphql',
+        shadowCRUD: true,
+        playgroundAlways: true,
+        depthLimit: 7,
+        amountLimit: 100,
+        apolloServer: {
+          tracing: false,
+        },
+      },
+    },
     'users-permissions': {
       config: {
         email_confirmation: false,
@@ -64,6 +81,6 @@ module.exports = ({ env }) => {
     },
     upload: {
       config: uploads[profile],
-    }
+    },
   };
 };

@@ -10,6 +10,8 @@ module.exports = [
           'connect-src': ["'self'", 'https:'],
           'img-src': ["'self'", 'data:', 'blob:', 'storage.googleapis.com'],
           'media-src': ["'self'", 'data:', 'blob:', 'storage.googleapis.com'],
+          'default-src': ["'self'", "'unsafe-inline'", 'ws://localhost:*'],
+          'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
           upgradeInsecureRequests: null,
         },
       },
