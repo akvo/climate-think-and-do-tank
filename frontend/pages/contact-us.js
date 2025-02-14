@@ -9,11 +9,46 @@ export default function ContactPage() {
     subject: '',
     message: '',
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      organization: '',
+      email: '',
+      subject: '',
+      message: '',
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'
+        }/api/contact/send`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      resetForm();
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -136,12 +171,12 @@ export default function ContactPage() {
                 onChange={handleChange}
               />
             </div>
-
             <button
               type="submit"
-              className="w-full px-4 py-3 bg-zinc-900 text-white rounded-md hover:bg-zinc-800 transition-colors"
+              disabled={loading}
+              className="w-full px-4 py-3 bg-zinc-900 text-white rounded-md hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Submit
+              {loading ? 'Sending...' : 'Submit'}
             </button>
           </form>
         </div>
