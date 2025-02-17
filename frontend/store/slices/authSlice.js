@@ -1,9 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { setCookie, deleteCookie } from 'cookies-next';
+import { gql } from 'graphql-request';
+import { GraphQLClient } from 'graphql-request';
 
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+
+const graphqlClient = new GraphQLClient(
+  `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}/graphql`
+);
 
 // Async thunks
 export const checkAuth = createAsyncThunk(
@@ -215,6 +221,59 @@ export const fetchOrganizationsAndSectors = createAsyncThunk(
     }
   }
 );
+
+const SEARCH_QUERY = gql`
+  query Search($query: String!) {
+    organisations(filters: { name: { containsi: $query } }) {
+      name
+    }
+    sectors(filters: { name: { containsi: $query } }) {
+      name
+    }
+  }
+`;
+
+export async function searchContentAcrossTypes({
+  query,
+  page = 1,
+  pageSize = 10,
+}) {
+  try {
+    const data = await graphqlClient.request(SEARCH_QUERY, {
+      query,
+    });
+
+    return {
+      organizations: {
+        items: data.organisations.map((org) => ({
+          id: org.id,
+          attributes: { name: org.name },
+        })),
+        pagination: {
+          page,
+          pageSize,
+          total: data.organisations.length,
+          pageCount: 1,
+        },
+      },
+      sectors: {
+        items: data.sectors.map((sector) => ({
+          id: sector.id,
+          attributes: { name: sector.name },
+        })),
+        pagination: {
+          page,
+          pageSize,
+          total: data.sectors.length,
+          pageCount: 1,
+        },
+      },
+    };
+  } catch (error) {
+    console.error('Search error:', error.response);
+    throw error;
+  }
+}
 
 // Slice
 const authSlice = createSlice({
