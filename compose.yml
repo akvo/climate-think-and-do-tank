@@ -7,9 +7,11 @@ services:
       - ./frontend:/app
     ports:
       - 3000:3000
+    entrypoint: /app/docker-entrypoint.sh
     command: sh -c "npm install && npm run dev"
     environment:
       NEXT_TELEMETRY_DISABLED: 1
+      NEXT_PUBLIC_BACKEND_URL: http://localhost:1337
 
   backend:
     build:
@@ -39,6 +41,8 @@ services:
       DATABASE_USERNAME: akvo
       DATABASE_PASSWORD: password
       DATABASE_SSL: false
+      EMAIL_CONFIRMATION_URL: http://localhost:3000/verify-email
+      PASSWORD_RESET_URL: http://localhost:3000/reset-password
       PLUGIN_PROVIDERS: ${PLUGIN_PROVIDERS:-local}
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-}

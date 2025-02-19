@@ -143,3 +143,5 @@ out/
 build
 .vercel
 next-env.d.ts
+
+frontend/public/__ENV.js
