@@ -4,7 +4,7 @@ import KenyaMap from '@/components/KenyaMap';
 
 export default function StakeholderMap() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCounty, setSelectedCounty] = useState(null);
+  const [selectedCounty, setSelectedCounty] = useState('Turkana');
   const [activeTab, setActiveTab] = useState('highlighted');
 
   const communityVoices = [
