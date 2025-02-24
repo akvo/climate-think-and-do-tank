@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "looking_fors",
+  "info": {
+    "singularName": "looking-for",
+    "pluralName": "looking-fors",
+    "displayName": "Looking For",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "enumeration",
+      "enum": [
+        "Investment Opportunity"
+      ]
+    }
+  }
+}
