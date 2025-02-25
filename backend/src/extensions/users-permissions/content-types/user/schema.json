@@ -75,10 +75,45 @@
       "relation": "oneToOne",
       "target": "api::sector.sector"
     },
-    "country": {
+    "full_name": {
+      "type": "string"
+    },
+    "stakeholder_role": {
+      "type": "enumeration",
+      "enum": [
+        "Investor",
+        "Government",
+        "Farmer",
+        "NGO"
+      ]
+    },
+    "linkedin": {
+      "type": "string"
+    },
+    "news_consent": {
+      "type": "boolean"
+    },
+    "looking_fors": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::country.country"
+      "relation": "oneToMany",
+      "target": "api::looking-for.looking-for"
+    },
+    "focus_regions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::region.region"
+    },
+    "connection_requests_sent": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::stakeholder-connection.stakeholder-connection",
+      "mappedBy": "requester"
+    },
+    "connection_requests_received": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::stakeholder-connection.stakeholder-connection",
+      "mappedBy": "receiver"
     }
   }
 }
