@@ -3,8 +3,21 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { validateSignUp } from '@/helpers/utilities';
-import { fetchOrganizationsAndSectors, signUp, resendVerification } from '@/store/slices/authSlice';
+import {
+  fetchOrganizationsAndSectors,
+  signUp,
+  resendVerification,
+} from '@/store/slices/authSlice';
 import Link from 'next/link';
+import {
+  ChevronDown,
+  Globe,
+  Link2,
+  LinkIcon,
+  MapPin,
+  Plus,
+  X,
+} from 'lucide-react';
 
 export default function SignUpForm() {
   const dispatch = useDispatch();
@@ -18,7 +31,7 @@ export default function SignUpForm() {
   });
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
+  const [showAdditionalDetails, setShowAdditionalDetails] = useState(true);
   const [showConfirmEmail, setShowConfirmEmail] = useState(false);
   const [steps, setSteps] = useState([
     { number: 1, label: 'Sign Up', completed: true },
@@ -147,10 +160,11 @@ export default function SignUpForm() {
                     value={formData.username}
                     onChange={handleChange}
                     placeholder="Choose a username"
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${formErrors.username
-                      ? 'border-red-500 focus:ring-red-500 '
-                      : 'border-gray-200 focus:ring-green-500'
-                      } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
+                      formErrors.username
+                        ? 'border-red-500 focus:ring-red-500 '
+                        : 'border-gray-200 focus:ring-green-500'
+                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                   />
                   {formErrors.username && (
                     <p className="mt-1 text-sm text-red-600">
@@ -174,10 +188,11 @@ export default function SignUpForm() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="user@address.com"
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${formErrors.email
-                      ? 'border-red-500 focus:ring-red-500'
-                      : 'border-gray-200 focus:ring-green-500'
-                      } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
+                      formErrors.email
+                        ? 'border-red-500 focus:ring-red-500'
+                        : 'border-gray-200 focus:ring-green-500'
+                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                   />
                   {formErrors.email && (
                     <p className="mt-1 text-sm text-red-600">
@@ -200,10 +215,11 @@ export default function SignUpForm() {
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${formErrors.password
-                      ? 'border-red-500 focus:ring-red-500'
-                      : 'border-gray-200 focus:ring-green-500'
-                      } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
+                      formErrors.password
+                        ? 'border-red-500 focus:ring-red-500'
+                        : 'border-gray-200 focus:ring-green-500'
+                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                   />
                   {formErrors.password && (
                     <p className="mt-1 text-sm text-red-600">
@@ -230,10 +246,11 @@ export default function SignUpForm() {
                     type="password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${formErrors.confirmPassword
-                      ? 'border-red-500 focus:ring-red-500'
-                      : 'border-gray-200 focus:ring-green-500'
-                      } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
+                      formErrors.confirmPassword
+                        ? 'border-red-500 focus:ring-red-500'
+                        : 'border-gray-200 focus:ring-green-500'
+                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
                   />
                   {formErrors.confirmPassword && (
                     <p className="mt-1 text-sm text-red-600">
@@ -253,10 +270,11 @@ export default function SignUpForm() {
                 rounded-md 
                 transition-colors 
                 duration-200
-                ${isSubmitting
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'hover:bg-zinc-800'
-                    }
+                ${
+                  isSubmitting
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'hover:bg-zinc-800'
+                }
               `}
                 >
                   {isSubmitting ? (
@@ -294,8 +312,9 @@ export default function SignUpForm() {
             {slides.map((slide, index) => (
               <div
                 key={index}
-                className={`absolute inset-0 transition-opacity duration-500 ${currentSlide === index ? 'opacity-100' : 'opacity-0'
-                  }`}
+                className={`absolute inset-0 transition-opacity duration-500 ${
+                  currentSlide === index ? 'opacity-100' : 'opacity-0'
+                }`}
               >
                 <Image
                   src={slide || 'https://placehold.co/600x400'}
@@ -314,8 +333,9 @@ export default function SignUpForm() {
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
-                  className={`w-2 h-2 rounded-full transition-colors ${currentSlide === index ? 'bg-white' : 'bg-white/50'
-                    }`}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    currentSlide === index ? 'bg-white' : 'bg-white/50'
+                  }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
@@ -348,10 +368,15 @@ const AdditionalDetails = ({
   const [formData, setFormData] = useState({
     organisation: '',
     sector: '',
-    country: '',
     acceptTerms: false,
+    topics: [],
+    name: '',
+    website: '',
+    type: '',
+    country: '',
   });
 
+  const [isOrgModal, setIsOrgModal] = useState(false);
   useEffect(() => {
     console.log('Fetching organizations and sectors');
     dispatch(fetchOrganizationsAndSectors());
@@ -409,12 +434,13 @@ const AdditionalDetails = ({
             <div key={step.number} className="flex items-center gap-4">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center border-2 
-                ${step.completed
+                ${
+                  step.completed
                     ? 'border-green-500'
                     : step.active
-                      ? 'border-white'
-                      : 'border-zinc-700 text-zinc-700'
-                  }`}
+                    ? 'border-white'
+                    : 'border-zinc-700 text-zinc-700'
+                }`}
               >
                 {step.completed ? (
                   <svg
@@ -475,26 +501,25 @@ const AdditionalDetails = ({
               </div>
 
               <div className="space-y-2">
-                <label
-                  htmlFor="organisation"
-                  className="block text-sm font-medium text-black"
-                >
-                  Organization
+                <label className="block text-sm font-medium">
+                  Organization name
                 </label>
-                <select
-                  id="organisation"
-                  name="organisation"
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-500 text-black"
-                  value={formData.organisation}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Organization</option>
-                  {organizations.map((org) => (
-                    <option key={org.id} value={org.id}>
-                      {org.org_name}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Enter your organization name"
+                    className="flex-1 px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    value={formData.organisation}
+                    onChange={handleChange}
+                  />
+                  <button
+                    onClick={() => setIsOrgModal(true)}
+                    className="px-4 py-2 rounded-full bg-gray-50 hover:bg-gray-100 text-gray-700 flex items-center gap-2"
+                  >
+                    Add Organization
+                    <Plus size={20} />
+                  </button>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -574,10 +599,11 @@ const AdditionalDetails = ({
                 rounded-md 
                 transition-colors 
                 duration-200
-                ${isSubmitting
+                ${
+                  isSubmitting
                     ? 'opacity-50 cursor-not-allowed'
                     : 'hover:bg-zinc-800'
-                  }
+                }
               `}
               >
                 {isSubmitting ? (
@@ -609,7 +635,16 @@ const AdditionalDetails = ({
             </form>
           </div>
         )}
-        {steps.find((step) => step.active)?.number === 3 && <ConfirmEmail user={form} />}
+        {steps.find((step) => step.active)?.number === 3 && (
+          <ConfirmEmail user={form} />
+        )}
+        {isOrgModal && (
+          <OrganizationModal
+            onClose={() => setIsOrgModal(false)}
+            formData={formData}
+            setFormData={setFormData}
+          />
+        )}
       </div>
     </div>
   );
@@ -619,7 +654,6 @@ const ConfirmEmail = ({ user }) => {
   const dispatch = useDispatch();
   const [resendStatus, setResendStatus] = useState('');
   const handleResendVerification = async () => {
-
     setResendStatus('sending');
     const result = await dispatch(resendVerification(user.email));
 
@@ -672,14 +706,182 @@ const ConfirmEmail = ({ user }) => {
         </h2>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <p className="text-gray-600 mb-4">
-            We've sent a verification link to {user.email}. Please click
-            the link to verify your account.
+            We've sent a verification link to {user.email}. Please click the
+            link to verify your account.
           </p>
           <p className="text-sm text-gray-500">
             If you don't see the email, check your spam folder or{' '}
             {getResendButton()}
           </p>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const OrganizationModal = ({ onClose, formData, setFormData }) => {
+  const handleSubmit = (e) => {};
+
+  const handleTopicSelect = (topic) => {
+    setFormData((prev) => ({
+      ...prev,
+      topics: prev.topics.includes(topic)
+        ? prev.topics.filter((t) => t !== topic)
+        : [...prev.topics, topic],
+    }));
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 text-black">
+      <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-xl font-bold">Add Organization</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {/* Name */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Name</label>
+            <input
+              type="text"
+              placeholder="Enter your organization name"
+              className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+            />
+          </div>
+
+          {/* Website */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Website</label>
+            <div className="relative">
+              <input
+                type="url"
+                placeholder="www.myorg.com"
+                className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 pr-10"
+                value={formData.website}
+                onChange={(e) =>
+                  setFormData({ ...formData, website: e.target.value })
+                }
+              />
+              <Link2
+                className="absolute right-4 top-3.5 text-gray-400"
+                size={20}
+              />
+            </div>
+          </div>
+
+          {/* Organization Type */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">
+              Organization type
+            </label>
+            <div className="relative">
+              <select
+                className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
+                value={formData.type}
+                onChange={(e) =>
+                  setFormData({ ...formData, type: e.target.value })
+                }
+              >
+                <option value="">Select organization type</option>
+                <option value="ngo">NGO</option>
+                <option value="company">Company</option>
+                <option value="government">Government</option>
+              </select>
+              <ChevronDown
+                className="absolute right-4 top-3.5 text-gray-400"
+                size={20}
+              />
+            </div>
+          </div>
+
+          {/* Country */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Country</label>
+            <div className="relative">
+              <select
+                className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
+                value={formData.country}
+                onChange={(e) =>
+                  setFormData({ ...formData, country: e.target.value })
+                }
+              >
+                <option value="">Select country</option>
+                <option value="kenya">Kenya</option>
+                <option value="uganda">Uganda</option>
+                <option value="tanzania">Tanzania</option>
+              </select>
+              <ChevronDown
+                className="absolute right-4 top-3.5 text-gray-400"
+                size={20}
+              />
+            </div>
+          </div>
+
+          {/* Topics */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Topics</label>
+            <div className="relative">
+              <div className="flex flex-wrap gap-2 p-2 border border-gray-200 rounded-2xl bg-white min-h-[48px]">
+                {formData.topics.map((topic) => (
+                  <span
+                    key={topic}
+                    className="px-3 py-1 bg-gray-100 rounded-full text-sm flex items-center gap-1"
+                  >
+                    {topic}
+                    <button
+                      type="button"
+                      onClick={() => handleTopicSelect(topic)}
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      <X size={14} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <div className="mt-2">
+                <button
+                  type="button"
+                  onClick={() => handleTopicSelect('Agrifood')}
+                  className={`mr-2 px-3 py-1 rounded-full text-sm ${
+                    formData.topics.includes('Agrifood')
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-gray-100 text-gray-800'
+                  }`}
+                >
+                  Agrifood
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTopicSelect('Social Accountability')}
+                  className={`px-3 py-1 rounded-full text-sm ${
+                    formData.topics.includes('Social Accountability')
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-gray-100 text-gray-800'
+                  }`}
+                >
+                  Social Accountability
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full px-4 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors"
+          >
+            Save
+          </button>
+        </form>
       </div>
     </div>
   );
