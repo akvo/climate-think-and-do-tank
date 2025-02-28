@@ -6,8 +6,8 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "org_name",
-      "defaultSortBy": "org_name",
+      "mainField": "name",
+      "defaultSortBy": "name",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -19,30 +19,74 @@
           "sortable": true
         }
       },
-      "org_name": {
+      "name": {
         "edit": {
-          "label": "org_name",
+          "label": "name",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "org_name",
+          "label": "name",
           "searchable": true,
           "sortable": true
         }
       },
-      "org_id": {
+      "website": {
         "edit": {
-          "label": "org_id",
+          "label": "website",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "org_id",
+          "label": "website",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "type": {
+        "edit": {
+          "label": "type",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "type",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "topics": {
+        "edit": {
+          "label": "topics",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "name"
+        },
+        "list": {
+          "label": "topics",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "country": {
+        "edit": {
+          "label": "country",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "country_name"
+        },
+        "list": {
+          "label": "country",
           "searchable": true,
           "sortable": true
         }
@@ -109,18 +153,34 @@
     "layouts": {
       "list": [
         "id",
-        "org_name",
-        "org_id",
-        "createdAt"
+        "createdAt",
+        "website",
+        "type"
       ],
       "edit": [
         [
           {
-            "name": "org_name",
+            "name": "name",
             "size": 6
           },
           {
-            "name": "org_id",
+            "name": "website",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "type",
+            "size": 6
+          },
+          {
+            "name": "topics",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "country",
             "size": 6
           }
         ]

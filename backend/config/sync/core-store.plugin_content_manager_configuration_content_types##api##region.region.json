@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_content_types::plugin::users-permissions.role",
+  "key": "plugin_content_manager_configuration_content_types::api::region.region",
   "value": {
     "settings": {
       "bulkable": true,
@@ -33,62 +33,34 @@
           "sortable": true
         }
       },
-      "description": {
+      "parent_region": {
         "edit": {
-          "label": "description",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "description",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "type": {
-        "edit": {
-          "label": "type",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "type",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "permissions": {
-        "edit": {
-          "label": "permissions",
+          "label": "parent_region",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "action"
+          "mainField": "name"
         },
         "list": {
-          "label": "permissions",
-          "searchable": false,
-          "sortable": false
+          "label": "parent_region",
+          "searchable": true,
+          "sortable": true
         }
       },
-      "users": {
+      "country": {
         "edit": {
-          "label": "users",
+          "label": "country",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "provider"
+          "mainField": "country_name"
         },
         "list": {
-          "label": "users",
-          "searchable": false,
-          "sortable": false
+          "label": "country",
+          "searchable": true,
+          "sortable": true
         }
       },
       "createdAt": {
@@ -153,9 +125,9 @@
     "layouts": {
       "list": [
         "id",
-        "name",
-        "description",
-        "type"
+        "createdAt",
+        "updatedAt",
+        "name"
       ],
       "edit": [
         [
@@ -164,29 +136,19 @@
             "size": 6
           },
           {
-            "name": "description",
+            "name": "parent_region",
             "size": 6
           }
         ],
         [
           {
-            "name": "type",
-            "size": 6
-          },
-          {
-            "name": "permissions",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "users",
+            "name": "country",
             "size": 6
           }
         ]
       ]
     },
-    "uid": "plugin::users-permissions.role"
+    "uid": "api::region.region"
   },
   "type": "object",
   "environment": null,

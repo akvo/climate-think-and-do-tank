@@ -33,6 +33,20 @@
           "sortable": true
         }
       },
+      "name": {
+        "edit": {
+          "label": "name",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "name",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -103,6 +117,10 @@
         [
           {
             "name": "sector_name",
+            "size": 6
+          },
+          {
+            "name": "name",
             "size": 6
           }
         ]

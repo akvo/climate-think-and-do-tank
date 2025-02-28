@@ -1,47 +1,17 @@
 {
-  "documentId": "np79ris0x6znij59v77gsos3",
+  "documentId": "l8szyt6aqujlikwdxfl9d5c6",
   "name": "Authenticated",
   "description": "Default role given to authenticated user.",
   "type": "authenticated",
   "locale": null,
   "permissions": [
     {
-      "documentId": "okica7nb8qgxsxix4nsiprxh",
-      "action": "api::country.country.find",
-      "locale": null
-    },
-    {
-      "documentId": "jebfqf5krnce81et48l3g6k1",
-      "action": "api::country.country.findOne",
-      "locale": null
-    },
-    {
-      "documentId": "qaz0f23mstcrq12mwutd4404",
-      "action": "api::organisation.organisation.find",
-      "locale": null
-    },
-    {
-      "documentId": "guumsy3c22tw53orplo3f175",
-      "action": "api::organisation.organisation.findOne",
-      "locale": null
-    },
-    {
-      "documentId": "hdwmq63gl3qo66tcw6lyzec2",
-      "action": "api::sector.sector.find",
-      "locale": null
-    },
-    {
-      "documentId": "dps56okl9jy6w87mesnfve20",
-      "action": "api::sector.sector.findOne",
-      "locale": null
-    },
-    {
-      "documentId": "c9xjp38jd5d16khuvs0t6quf",
+      "documentId": "j9ne8cavr0d1e5ws2ssuq2vd",
       "action": "plugin::users-permissions.auth.changePassword",
       "locale": null
     },
     {
-      "documentId": "qvekm626kr4329nkmiykrzm9",
+      "documentId": "hd4pnpehyiujlwb2wcgmypjt",
       "action": "plugin::users-permissions.user.me",
       "locale": null
     }

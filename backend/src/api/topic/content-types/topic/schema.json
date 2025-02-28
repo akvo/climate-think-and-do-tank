@@ -8,15 +8,12 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
     "name": {
-      "type": "enumeration",
-      "enum": [
-        "Irrigation"
-      ]
+      "type": "string"
     }
   }
 }

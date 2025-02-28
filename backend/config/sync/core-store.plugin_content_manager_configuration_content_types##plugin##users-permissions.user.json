@@ -6,7 +6,7 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "username",
+      "mainField": "provider",
       "defaultSortBy": "username",
       "defaultSortOrder": "ASC"
     },
@@ -153,7 +153,7 @@
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "org_name"
+          "mainField": "name"
         },
         "list": {
           "label": "organisation",
@@ -176,19 +176,120 @@
           "sortable": true
         }
       },
-      "country": {
+      "full_name": {
         "edit": {
-          "label": "country",
+          "label": "full_name",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "full_name",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "stakeholder_role": {
+        "edit": {
+          "label": "stakeholder_role",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "stakeholder_role",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "linkedin": {
+        "edit": {
+          "label": "linkedin",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "linkedin",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "news_consent": {
+        "edit": {
+          "label": "news_consent",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "news_consent",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "looking_fors": {
+        "edit": {
+          "label": "looking_fors",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "country_name"
+          "mainField": "id"
         },
         "list": {
-          "label": "country",
-          "searchable": true,
-          "sortable": true
+          "label": "looking_fors",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "focus_regions": {
+        "edit": {
+          "label": "focus_regions",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "name"
+        },
+        "list": {
+          "label": "focus_regions",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "connection_requests_sent": {
+        "edit": {
+          "label": "connection_requests_sent",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "id"
+        },
+        "list": {
+          "label": "connection_requests_sent",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "connection_requests_received": {
+        "edit": {
+          "label": "connection_requests_received",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "id"
+        },
+        "list": {
+          "label": "connection_requests_received",
+          "searchable": false,
+          "sortable": false
         }
       },
       "createdAt": {
@@ -253,16 +354,12 @@
     "layouts": {
       "list": [
         "id",
-        "username",
         "email",
-        "confirmed"
+        "confirmed",
+        "username"
       ],
       "edit": [
         [
-          {
-            "name": "username",
-            "size": 6
-          },
           {
             "name": "email",
             "size": 6
@@ -300,7 +397,47 @@
         ],
         [
           {
-            "name": "country",
+            "name": "username",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "linkedin",
+            "size": 6
+          },
+          {
+            "name": "full_name",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "stakeholder_role",
+            "size": 6
+          },
+          {
+            "name": "news_consent",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "looking_fors",
+            "size": 6
+          },
+          {
+            "name": "focus_regions",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "connection_requests_sent",
+            "size": 6
+          },
+          {
+            "name": "connection_requests_received",
             "size": 6
           }
         ]
