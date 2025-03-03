@@ -13,7 +13,8 @@
   "pluginOptions": {},
   "attributes": {
     "country_name": {
-      "type": "string"
+      "type": "string",
+      "unique": true
     }
   }
 }
