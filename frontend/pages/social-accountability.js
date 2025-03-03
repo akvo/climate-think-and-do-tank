@@ -39,24 +39,24 @@ export default function StakeholderMap() {
       {/* Search and Filters */}
       <div className="border-b">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="mb-6">
+          <div className="mb-6 bg-gray-50 p-4">
             <div className="relative max-w-3xl mx-auto">
               <input
                 type="text"
                 placeholder="Try keywords like: 'tilapia' or 'horticulture'"
-                className="w-full px-4 py-2 pr-10 border border-gray-200 rounded-md"
+                className="w-full px-4 py-2 pr-10 border border-gray-200 rounded-[20px]"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <Search
-                className="absolute right-3 top-2.5 text-gray-400"
+                className="absolute right-3 top-2.5 text-black"
                 size={20}
               />
             </div>
           </div>
 
           <div className="flex justify-between items-center">
-            <div className="flex gap-6">
+            <div className="flex gap-6 pb-4">
               <button className="text-gray-700 hover:text-gray-900 flex items-center gap-1">
                 Value Chain
                 <svg
