@@ -1,0 +1,19 @@
+{
+  "kind": "collectionType",
+  "collectionName": "looking_fors",
+  "info": {
+    "singularName": "looking-for",
+    "pluralName": "looking-fors",
+    "displayName": "Looking For",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    }
+  }
+}

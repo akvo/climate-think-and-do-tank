@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "stakeholder_connections",
+  "info": {
+    "singularName": "stakeholder-connection",
+    "pluralName": "stakeholder-connections",
+    "displayName": "Stakeholder Connections",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "connection_status": {
+      "type": "enumeration",
+      "enum": [
+        "Accepted",
+        "Rejected",
+        "Pending"
+      ]
+    },
+    "requester": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "connection_requests_sent"
+    },
+    "receiver": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "connection_requests_received"
+    }
+  }
+}

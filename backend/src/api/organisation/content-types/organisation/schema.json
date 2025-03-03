@@ -12,14 +12,28 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "org_name": {
-      "type": "string"
-    },
-    "org_id": {
-      "type": "uid"
-    },
     "name": {
       "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "NGO",
+        "Company"
+      ]
+    },
+    "topics": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::topic.topic"
+    },
+    "country": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::country.country"
     }
   }
 }

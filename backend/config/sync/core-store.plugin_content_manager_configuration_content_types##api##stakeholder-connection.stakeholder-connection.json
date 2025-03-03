@@ -1,13 +1,13 @@
 {
-  "key": "plugin_content_manager_configuration_content_types::plugin::users-permissions.role",
+  "key": "plugin_content_manager_configuration_content_types::api::stakeholder-connection.stakeholder-connection",
   "value": {
     "settings": {
       "bulkable": true,
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "name",
-      "defaultSortBy": "name",
+      "mainField": "id",
+      "defaultSortBy": "id",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -19,76 +19,48 @@
           "sortable": true
         }
       },
-      "name": {
+      "connection_status": {
         "edit": {
-          "label": "name",
+          "label": "connection_status",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "name",
+          "label": "connection_status",
           "searchable": true,
           "sortable": true
         }
       },
-      "description": {
+      "requester": {
         "edit": {
-          "label": "description",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "description",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "type": {
-        "edit": {
-          "label": "type",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "type",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "permissions": {
-        "edit": {
-          "label": "permissions",
+          "label": "requester",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "action"
+          "mainField": "username"
         },
         "list": {
-          "label": "permissions",
-          "searchable": false,
-          "sortable": false
+          "label": "requester",
+          "searchable": true,
+          "sortable": true
         }
       },
-      "users": {
+      "receiver": {
         "edit": {
-          "label": "users",
+          "label": "receiver",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "provider"
+          "mainField": "username"
         },
         "list": {
-          "label": "users",
-          "searchable": false,
-          "sortable": false
+          "label": "receiver",
+          "searchable": true,
+          "sortable": true
         }
       },
       "createdAt": {
@@ -153,40 +125,30 @@
     "layouts": {
       "list": [
         "id",
-        "name",
-        "description",
-        "type"
+        "connection_status",
+        "createdAt",
+        "updatedAt"
       ],
       "edit": [
         [
           {
-            "name": "name",
+            "name": "connection_status",
             "size": 6
           },
           {
-            "name": "description",
+            "name": "requester",
             "size": 6
           }
         ],
         [
           {
-            "name": "type",
-            "size": 6
-          },
-          {
-            "name": "permissions",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "users",
+            "name": "receiver",
             "size": 6
           }
         ]
       ]
     },
-    "uid": "plugin::users-permissions.role"
+    "uid": "api::stakeholder-connection.stakeholder-connection"
   },
   "type": "object",
   "environment": null,

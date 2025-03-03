@@ -1,13 +1,13 @@
 {
-  "key": "plugin_content_manager_configuration_content_types::plugin::users-permissions.role",
+  "key": "plugin_content_manager_configuration_content_types::api::looking-for.looking-for",
   "value": {
     "settings": {
       "bulkable": true,
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "name",
-      "defaultSortBy": "name",
+      "mainField": "id",
+      "defaultSortBy": "id",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -31,64 +31,6 @@
           "label": "name",
           "searchable": true,
           "sortable": true
-        }
-      },
-      "description": {
-        "edit": {
-          "label": "description",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "description",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "type": {
-        "edit": {
-          "label": "type",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "type",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "permissions": {
-        "edit": {
-          "label": "permissions",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "action"
-        },
-        "list": {
-          "label": "permissions",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "users": {
-        "edit": {
-          "label": "users",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "provider"
-        },
-        "list": {
-          "label": "users",
-          "searchable": false,
-          "sortable": false
         }
       },
       "createdAt": {
@@ -153,40 +95,20 @@
     "layouts": {
       "list": [
         "id",
-        "name",
-        "description",
-        "type"
+        "createdAt",
+        "updatedAt",
+        "name"
       ],
       "edit": [
         [
           {
             "name": "name",
             "size": 6
-          },
-          {
-            "name": "description",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "type",
-            "size": 6
-          },
-          {
-            "name": "permissions",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "users",
-            "size": 6
           }
         ]
       ]
     },
-    "uid": "plugin::users-permissions.role"
+    "uid": "api::looking-for.looking-for"
   },
   "type": "object",
   "environment": null,
