@@ -70,11 +70,6 @@
       "relation": "oneToOne",
       "target": "api::organisation.organisation"
     },
-    "sector": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::sector.sector"
-    },
     "full_name": {
       "type": "string"
     },

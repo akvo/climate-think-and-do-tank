@@ -591,66 +591,6 @@
       "locale": null
     },
     {
-      "documentId": "mpd31wpkk0yslqdm8asj2z3m",
-      "action": "plugin::content-manager.explorer.create",
-      "actionParameters": {},
-      "subject": "api::sector.sector",
-      "properties": {
-        "fields": [
-          "sector_name",
-          "name"
-        ]
-      },
-      "conditions": [],
-      "locale": null
-    },
-    {
-      "documentId": "q1zhfsmu1679juvhb7xxr39a",
-      "action": "plugin::content-manager.explorer.delete",
-      "actionParameters": {},
-      "subject": "api::sector.sector",
-      "properties": {},
-      "conditions": [],
-      "locale": null
-    },
-    {
-      "documentId": "xpaam3i8zfwyimfgmc84s8so",
-      "action": "plugin::content-manager.explorer.publish",
-      "actionParameters": {},
-      "subject": "api::sector.sector",
-      "properties": {},
-      "conditions": [],
-      "locale": null
-    },
-    {
-      "documentId": "paj4egvy85l2j0d0m7chn0v8",
-      "action": "plugin::content-manager.explorer.read",
-      "actionParameters": {},
-      "subject": "api::sector.sector",
-      "properties": {
-        "fields": [
-          "sector_name",
-          "name"
-        ]
-      },
-      "conditions": [],
-      "locale": null
-    },
-    {
-      "documentId": "tbf84ff2zrgcu53aousalm7d",
-      "action": "plugin::content-manager.explorer.update",
-      "actionParameters": {},
-      "subject": "api::sector.sector",
-      "properties": {
-        "fields": [
-          "sector_name",
-          "name"
-        ]
-      },
-      "conditions": [],
-      "locale": null
-    },
-    {
       "documentId": "vhddujin86i9yskh3zbx1uy7",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
@@ -1050,7 +990,7 @@
       "locale": null
     },
     {
-      "documentId": "vimcr8cds9msi37u9vfsb7js",
+      "documentId": "fpbd3b1c404nqjjqnqvvx2tx",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "plugin::users-permissions.user",
@@ -1066,7 +1006,6 @@
           "blocked",
           "role",
           "organisation",
-          "sector",
           "full_name",
           "stakeholder_role",
           "linkedin",
@@ -1099,7 +1038,7 @@
       "locale": null
     },
     {
-      "documentId": "has9z5t9j63ydnizy9s0uhmq",
+      "documentId": "v6cht5auvlhsa9pkcwy7mcim",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "plugin::users-permissions.user",
@@ -1115,7 +1054,6 @@
           "blocked",
           "role",
           "organisation",
-          "sector",
           "full_name",
           "stakeholder_role",
           "linkedin",
@@ -1130,7 +1068,7 @@
       "locale": null
     },
     {
-      "documentId": "g7xsjr0hhc9oiugfevgoiwwv",
+      "documentId": "x3w0ovxwds5bxq6kzjcwn8uy",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "plugin::users-permissions.user",
@@ -1146,7 +1084,6 @@
           "blocked",
           "role",
           "organisation",
-          "sector",
           "full_name",
           "stakeholder_role",
           "linkedin",

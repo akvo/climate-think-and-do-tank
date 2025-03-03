@@ -161,21 +161,6 @@
           "sortable": true
         }
       },
-      "sector": {
-        "edit": {
-          "label": "sector",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "sector_name"
-        },
-        "list": {
-          "label": "sector",
-          "searchable": true,
-          "sortable": true
-        }
-      },
       "full_name": {
         "edit": {
           "label": "full_name",
@@ -388,10 +373,6 @@
         [
           {
             "name": "organisation",
-            "size": 6
-          },
-          {
-            "name": "sector",
             "size": 6
           }
         ],
