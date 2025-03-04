@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { env } from '@/helpers/env-vars';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -27,9 +28,7 @@ export default function ContactPage() {
 
     try {
       const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'
-        }/api/contact/send`,
+        `${env('NEXT_PUBLIC_BACKEND_URL')}/api/contact/send`,
         {
           method: 'POST',
           headers: {
