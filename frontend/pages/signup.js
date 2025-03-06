@@ -11,6 +11,8 @@ import {
 import Link from 'next/link';
 import {
   ChevronDown,
+  Eye,
+  EyeOff,
   Globe,
   Link2,
   LinkIcon,
@@ -18,6 +20,7 @@ import {
   Plus,
   X,
 } from 'lucide-react';
+import CustomDropdown from '@/components/CustomDropdown';
 
 export default function SignUpForm() {
   const dispatch = useDispatch();
@@ -33,6 +36,9 @@ export default function SignUpForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(true);
   const [showConfirmEmail, setShowConfirmEmail] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [steps, setSteps] = useState([
     { number: 1, label: 'Sign Up', completed: true },
     {
@@ -116,194 +122,219 @@ export default function SignUpForm() {
     <div>
       {!showAdditionalDetails ? (
         <div className="flex min-h-screen bg-white">
-          {/* Left Section */}
-          <div className="w-1/2 p-12 flex flex-col justify-center">
-            <div className="max-w-md mx-auto w-full">
-              <div className="mb-8">
-                <h1 className="text-xl font-semibold flex items-center gap-1 text-black">
-                  THINK
-                  <span className="text-green-600">&</span>
-                  DO TANK
-                </h1>
-              </div>
-
-              <div className="mb-12">
-                <h2 className="text-4xl font-bold flex items-center gap-2 text-black">
-                  Welcome to the Think and Do Tank Network
-                </h2>
-                <p className="mt-4 text-gray-600">
-                  Sign Up for your user account to access the platform's
-                  features
-                </p>
-              </div>
-
-              {/* General error message */}
-              {formErrors.general && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded">
-                  {formErrors.general}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Username Field */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="username"
-                    className="block text-sm font-medium text-black"
-                  >
-                    Username
-                  </label>
-                  <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    value={formData.username}
-                    onChange={handleChange}
-                    placeholder="Choose a username"
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
-                      formErrors.username
-                        ? 'border-red-500 focus:ring-red-500 '
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
-                  />
-                  {formErrors.username && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {formErrors.username}
-                    </p>
-                  )}
-                </div>
-
-                {/* Email Field */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-black"
-                  >
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="user@address.com"
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
-                      formErrors.email
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
-                  />
-                  {formErrors.email && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {formErrors.email}
-                    </p>
-                  )}
-                </div>
-
-                {/* Password Field */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-black"
-                  >
-                    Password
-                  </label>
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
-                      formErrors.password
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
-                  />
-                  {formErrors.password && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {formErrors.password}
-                    </p>
-                  )}
-                  <p className="mt-1 text-xs text-gray-500">
-                    Must be at least 8 characters with uppercase, lowercase,
-                    number, and special character
+          <div className="w-1/2 p-12 flex flex-col justify-center min-h-screen">
+            <Link href="/" className="mb-4 block">
+              <Image
+                src="/images/logo.png"
+                alt="Kenya Drylands Investment Hub Logo"
+                width={230}
+                height={40}
+                priority
+              />
+            </Link>
+            <div className="flex-grow flex items-center">
+              <div className="max-w-4xl mx-auto w-full">
+                <div className="mb-12">
+                  <h1 className="text-4xl font-bold text-black mb-6">
+                    Welcome to the Think and Do Tank Network
+                  </h1>
+                  <p className="text-gray-600">
+                    Sign Up for your user account to access the platform's
+                    features
                   </p>
                 </div>
 
-                {/* Confirm Password Field */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-black"
-                  >
-                    Confirm Password
-                  </label>
-                  <input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
-                      formErrors.confirmPassword
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
-                  />
-                  {formErrors.confirmPassword && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {formErrors.confirmPassword}
-                    </p>
-                  )}
-                </div>
+                {formErrors.general && (
+                  <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 rounded-full">
+                    {formErrors.general}
+                  </div>
+                )}
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`
-                w-full 
-                bg-zinc-900 
-                text-white 
-                py-2 
-                rounded-md 
-                transition-colors 
-                duration-200
-                ${
-                  isSubmitting
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:bg-zinc-800'
-                }
-              `}
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center justify-center">
-                      <svg
-                        className="animate-spin h-5 w-5 mr-3"
-                        viewBox="0 0 24 24"
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  {/* Email Field */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="Enter your email"
+                      className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                        formErrors.email ? 'border-red-500' : 'border-gray-200'
+                      } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                    />
+                    {formErrors.email && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {formErrors.email}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Password Field */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="password"
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={formData.password}
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                          formErrors.password
+                            ? 'border-red-500'
+                            : 'border-gray-200'
+                        } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent pr-10`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
                       >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Signing Up...
+                        {showPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </button>
                     </div>
-                  ) : (
-                    'Sign Up'
-                  )}
-                </button>
-              </form>
+                    {formErrors.password && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {formErrors.password}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Confirm Password Field */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="confirmPassword"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Confirm Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                          formErrors.confirmPassword
+                            ? 'border-red-500'
+                            : 'border-gray-200'
+                        } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent pr-10`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </button>
+                    </div>
+                    {formErrors.confirmPassword && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {formErrors.confirmPassword}
+                      </p>
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`
+                    w-full 
+                    bg-green-600 
+                    text-white 
+                    py-3 
+                    rounded-full 
+                    transition-colors 
+                    duration-200
+                    ${
+                      isSubmitting
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'hover:bg-green-700'
+                    }
+                  `}
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center justify-center">
+                        <svg
+                          className="animate-spin h-5 w-5 mr-3"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Signing Up...
+                      </div>
+                    ) : (
+                      'Sign Up'
+                    )}
+                  </button>
+
+                  <div className="text-center text-sm text-gray-600 space-y-2">
+                    <p>
+                      By submitting your files to the platform, you acknowledge
+                      that you agree to our{' '}
+                      <a
+                        href="/terms"
+                        className="text-green-600 hover:underline"
+                      >
+                        Terms of Service
+                      </a>{' '}
+                      and{' '}
+                      <a
+                        href="/guidelines"
+                        className="text-green-600 hover:underline"
+                      >
+                        Community Guidelines
+                      </a>
+                    </p>
+                    <p>
+                      Please be sure not to violate others' copyright or privacy
+                      rights.{' '}
+                      <a
+                        href="/learn-more"
+                        className="text-green-600 hover:underline"
+                      >
+                        Learn more
+                      </a>
+                    </p>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
 
@@ -374,9 +405,17 @@ const AdditionalDetails = ({
     website: '',
     type: '',
     country: '',
+    regions: [
+      { id: '1', name: 'Kenya' },
+      { id: '2', name: 'Kajiado' },
+      { id: '3', name: 'Nairobi' },
+      { id: '4', name: 'Mombasa' },
+      { id: '5', name: 'Nakuru' },
+    ],
   });
 
   const [isOrgModal, setIsOrgModal] = useState(false);
+
   useEffect(() => {
     console.log('Fetching organizations and sectors');
     dispatch(fetchOrganizationsAndSectors());
@@ -395,216 +434,298 @@ const AdditionalDetails = ({
     onSubmit(formData);
   };
 
-  console.log(steps);
+  const roleOptions = [
+    { id: '1', label: 'CEO' },
+    { id: '2', label: 'CTO' },
+    { id: '3', label: 'Manager' },
+    { id: '4', label: 'Developer' },
+    { id: '5', label: 'Designer' },
+  ];
+
+  const regionOptions = [
+    { id: '1', label: 'Kenya' },
+    { id: '2', label: 'Kajiado' },
+    { id: '3', label: 'Nairobi' },
+    { id: '4', label: 'Mombasa' },
+    { id: '5', label: 'Nakuru' },
+  ];
+
+  const lookingForOptions = [
+    { id: 'investors', label: 'Investors' },
+    { id: 'partners', label: 'Partners' },
+    { id: 'funding', label: 'Funding' },
+    { id: 'mentorship', label: 'Mentorship' },
+  ];
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left Panel */}
-      <div className="w-1/2 bg-zinc-900 p-12 text-white">
-        <div className="mb-16">
-          <h1 className="text-xl font-bold flex items-center gap-1">
-            THINK
-            <span className="text-green-500">&</span>
-            DO TANK
-          </h1>
-        </div>
+    <div className="flex min-h-screen ">
+      <div className="w-1/2 flex flex-col justify-center min-h-screen bg-zinc-900 p-12 text-white">
+        <Link href="/" className="mb-4 block">
+          <Image
+            src="/images/logo-white.png"
+            alt="Kenya Drylands Investment Hub Logo"
+            width={230}
+            height={40}
+            priority
+          />
+        </Link>
 
-        {/* User Icon */}
-        <div className="mb-8">
-          <div className="w-12 h-12 bg-zinc-700 rounded-full flex items-center justify-center">
-            <svg
-              className="w-6 h-6 text-zinc-400"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-            </svg>
-          </div>
-        </div>
-
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-2">
-            Create your account in a few clicks
-          </h2>
-        </div>
-
-        {/* Steps */}
-        <div className="space-y-8">
-          {steps.map((step, index) => (
-            <div key={step.number} className="flex items-center gap-4">
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center border-2 
-                ${
-                  step.completed
-                    ? 'border-green-500'
-                    : step.active
-                    ? 'border-white'
-                    : 'border-zinc-700 text-zinc-700'
-                }`}
-              >
-                {step.completed ? (
-                  <svg
-                    className="w-4 h-4 text-green-500"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M5 13l4 4L19 7" />
-                  </svg>
-                ) : (
-                  step.number
-                )}
+        <div className="flex-grow flex items-center">
+          <div className="max-w-4xl mx-auto w-full">
+            <div className="mb-8">
+              <div className="w-12 h-12 bg-zinc-700 rounded-full flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-zinc-400"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
               </div>
-              <span className={step.active ? 'text-white' : 'text-zinc-600'}>
-                {step.label}
-              </span>
             </div>
-          ))}
-        </div>
 
-        <div className="mt-auto pt-8">
-          <p className="text-zinc-400">{form.email}</p>
+            <div className="mb-10">
+              <h2 className="text-2xl font-bold mb-2">
+                Create your account in a few clicks
+              </h2>
+            </div>
+
+            {/* Steps */}
+            <div className="flex flex-col">
+              {steps.map((step, index) => (
+                <div key={step.number} className="flex">
+                  <div className="flex flex-col items-center">
+                    <div
+                      className={`w-16 h-16 rounded-full flex items-center justify-center ${
+                        step.completed
+                          ? 'bg-transparent border-2 border-white'
+                          : step.active
+                          ? 'bg-zinc-600'
+                          : 'bg-transparent border-2 border-white'
+                      }`}
+                    >
+                      {step.completed ? (
+                        <svg
+                          className="w-8 h-8 text-white"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <span className="text-3xl text-white">
+                          {step.number}
+                        </span>
+                      )}
+                    </div>
+
+                    {index < steps.length - 1 && (
+                      <div className="w-0.5 h-24 bg-white"></div>
+                    )}
+                  </div>
+
+                  <div className="ml-12 mt-4">
+                    <span className="text-2xl text-white">{step.label}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-auto pt-8">
+              <p className="text-zinc-400">{form.email}</p>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Right Panel */}
-      <div className="w-1/2 p-12 bg-white">
+      <div className="w-1/2 p-12 bg-white flex items-center text-black">
         {steps.find((step) => step.active)?.number === 2 && (
           <div className="max-w-xl mx-auto">
             <h2 className="text-3xl font-bold mb-12 text-black">
-              Let's get started
+              Basic Information
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-2">
                 <label
-                  htmlFor="role"
-                  className="block text-sm font-medium text-black"
+                  htmlFor="name"
+                  className="block text-lg font-medium text-gray-700"
                 >
-                  Role
+                  Names
                 </label>
-                <select
-                  id="role"
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-500 text-black"
-                  name="role"
-                  value={formData.role}
+                <input
+                  id="name"
+                  type="text"
+                  placeholder="Enter your full name"
+                  className="w-full p-4 py-2 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  name="name"
+                  value={formData.name || ''}
                   onChange={handleChange}
-                >
-                  <option value="">Select Role</option>
-                  {roles.map((role) => (
-                    <option key={role.id} value={role.id}>
-                      {role.name}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium">
+                <label
+                  htmlFor="organisation"
+                  className="block text-lg font-medium text-gray-700"
+                >
                   Organization name
                 </label>
                 <div className="flex gap-2">
                   <input
+                    id="organisation"
                     type="text"
                     placeholder="Enter your organization name"
-                    className="flex-1 px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
-                    value={formData.organisation}
+                    className="flex-1 p-4 py-2 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    name="organisation"
+                    value={formData.organisation || ''}
                     onChange={handleChange}
                   />
                   <button
+                    type="button"
                     onClick={() => setIsOrgModal(true)}
-                    className="px-4 py-2 rounded-full bg-gray-50 hover:bg-gray-100 text-gray-700 flex items-center gap-2"
+                    className="px-6 py-4 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center gap-2"
                   >
                     Add Organization
-                    <Plus size={20} />
+                    <span className="font-bold">+</span>
                   </button>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label
-                  htmlFor="country"
-                  className="block text-sm font-medium text-black"
-                >
-                  County
-                </label>
-                <select
-                  id="country"
-                  name="country"
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-500 text-black"
-                  value={formData.country}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Organization</option>
-                  {country.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.country_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <CustomDropdown
+                id="role"
+                label="Role"
+                options={roleOptions}
+                isMulti={false}
+                value={formData.role}
+                onChange={(value) => setFormData({ ...formData, role: value })}
+                placeholder="Enter your role"
+              />
+
+              <CustomDropdown
+                id="focusRegions"
+                label="Focus Region"
+                options={regionOptions}
+                isMulti={true}
+                value={formData.focusRegions}
+                onChange={(value) =>
+                  setFormData({ ...formData, focusRegions: value })
+                }
+                placeholder="Select regions"
+              />
+
+              <CustomDropdown
+                id="lookingFor"
+                label="Looking for"
+                options={lookingForOptions}
+                isMulti={false}
+                value={formData.lookingFor}
+                onChange={(value) =>
+                  setFormData({ ...formData, lookingFor: value })
+                }
+                placeholder="Select option"
+              />
 
               <div className="space-y-2">
                 <label
-                  htmlFor="sector"
-                  className="block text-sm font-medium text-black"
+                  htmlFor="linkedin"
+                  className="block text-lg font-medium text-gray-700"
                 >
-                  Sector
+                  Linkedin Profile
                 </label>
-
-                <select
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-500 text-black"
-                  id="sector"
-                  name="sector"
-                  value={formData.sector}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Sector</option>
-                  {sectors.map((sector) => (
-                    <option key={sector.id} value={sector.id}>
-                      {sector.sector_name}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <input
+                    id="linkedin"
+                    type="text"
+                    placeholder="https://www.linkedin.com/in/user-o-bb6123b2/"
+                    className="w-full p-4 py-2 pl-6 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    name="linkedin"
+                    value={formData.linkedin || ''}
+                    onChange={handleChange}
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-4 flex items-center text-gray-400"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
               </div>
 
-              <div className="flex items-start gap-2">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  className="mt-1"
-                  checked={formData.acceptTerms}
-                  onChange={(e) =>
-                    setFormData({ ...formData, acceptTerms: e.target.checked })
-                  }
-                />
-                <label htmlFor="terms" className="text-sm text-black">
-                  I accept the{' '}
-                  <Link href="#" className="text-blue-600 hover:underline">
-                    Terms of Service
-                  </Link>{' '}
-                  and I'm authorised to accept for my organization
-                </label>
+              <div className="space-y-4 mt-6">
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="newsletter"
+                    className="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    checked={formData.newsletter || false}
+                    onChange={(e) =>
+                      setFormData({ ...formData, newsletter: e.target.checked })
+                    }
+                  />
+                  <label
+                    htmlFor="newsletter"
+                    className="text-base text-gray-700"
+                  >
+                    Send me the latest News and Updates
+                  </label>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    className="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    checked={formData.acceptTerms || false}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        acceptTerms: e.target.checked,
+                      })
+                    }
+                  />
+                  <label htmlFor="terms" className="text-base text-gray-700">
+                    I accept the{' '}
+                    <span className="font-bold">Terms of Service</span> and I'm
+                    authorised to accept for my organization
+                  </label>
+                </div>
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className={`
-                w-full 
-                bg-zinc-900 
-                text-white 
-                py-2 
-                rounded-md 
-                transition-colors 
-                duration-200
-                ${
-                  isSubmitting
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:bg-zinc-800'
-                }
-              `}
+                  w-full 
+                  bg-green-600 
+                  text-white 
+                  py-2 
+                  rounded-full 
+                  text-lg
+                  font-medium
+                  transition-colors 
+                  duration-200
+                  ${
+                    isSubmitting
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:bg-green-700'
+                  }
+                `}
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center">

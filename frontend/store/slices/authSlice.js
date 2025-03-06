@@ -56,15 +56,18 @@ export const signUp = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/auth/local/register`, {
-        username,
-        email,
-        password,
-        organization,
-        sector,
-        country,
-        role,
-      });
+      const response = await axios.post(
+        `${BACKEND_URL}/api/auth/local/register`,
+        {
+          username,
+          email,
+          password,
+          organization,
+          sector,
+          country,
+          role,
+        }
+      );
 
       const { user, message } = response.data;
 
@@ -176,9 +179,12 @@ export const verifyEmail = createAsyncThunk(
   'auth/verifyEmail',
   async (token, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/auth/email-confirmation`, {
-        params: { confirmation: token },
-      });
+      const response = await axios.get(
+        `${BACKEND_URL}/api/auth/email-confirmation`,
+        {
+          params: { confirmation: token },
+        }
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -188,32 +194,32 @@ export const verifyEmail = createAsyncThunk(
   }
 );
 
-export const fetchOrganizationsAndSectors = createAsyncThunk(
-  'orgSector/fetchOrganizationsAndSectors',
+export const fetchOrganizationsAndRegions = createAsyncThunk(
+  'orgSector/fetchOrganizationsAndRectors',
   async (_, { rejectWithValue }) => {
     try {
       const [
         organizationsResponse,
-        sectorsResponse,
+        regionsResponse,
         countryResponse,
         rolesResponse,
       ] = await Promise.all([
         axios.get(`${BACKEND_URL}/api/organisations?status=published`),
-        axios.get(`${BACKEND_URL}/api/sectors?status=published`),
+        axios.get(`${BACKEND_URL}/api/regions?status=published`),
         axios.get(`${BACKEND_URL}/api/countries?status=published`),
         axios.get(`${BACKEND_URL}/api/users-permissions/roles`),
       ]);
       console.log(rolesResponse.data);
       return {
         organizations: organizationsResponse.data.data,
-        sectors: sectorsResponse.data.data,
+        regions: regionsResponse.data.data,
         country: countryResponse.data.data,
         roles: rolesResponse.data.roles,
       };
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.error ||
-        'Failed to fetch organizations and sectors'
+          'Failed to fetch organizations and regions'
       );
     }
   }
@@ -224,7 +230,7 @@ const SEARCH_QUERY = gql`
     organisations(filters: { name: { containsi: $query } }) {
       name
     }
-    sectors(filters: { name: { containsi: $query } }) {
+    regions(filters: { name: { containsi: $query } }) {
       name
     }
   }
@@ -253,15 +259,15 @@ export async function searchContentAcrossTypes({
           pageCount: 1,
         },
       },
-      sectors: {
-        items: data.sectors.map((sector) => ({
+      regions: {
+        items: data.regions.map((sector) => ({
           id: sector.id,
           attributes: { name: sector.name },
         })),
         pagination: {
           page,
           pageSize,
-          total: data.sectors.length,
+          total: data.regions.length,
           pageCount: 1,
         },
       },
@@ -280,7 +286,7 @@ const authSlice = createSlice({
     jwt: null,
     loading: false,
     error: null,
-    sectors: [],
+    regions: [],
     organizations: [],
     country: [],
     roles: [],
@@ -362,18 +368,18 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(fetchOrganizationsAndSectors.pending, (state) => {
+      .addCase(fetchOrganizationsAndRegions.pending, (state) => {
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(fetchOrganizationsAndSectors.fulfilled, (state, action) => {
+      .addCase(fetchOrganizationsAndRegions.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.organizations = action.payload.organizations;
-        state.sectors = action.payload.sectors;
+        state.regions = action.payload.regions;
         state.country = action.payload.country;
         state.roles = action.payload.roles;
       })
-      .addCase(fetchOrganizationsAndSectors.rejected, (state, action) => {
+      .addCase(fetchOrganizationsAndRegions.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       })
