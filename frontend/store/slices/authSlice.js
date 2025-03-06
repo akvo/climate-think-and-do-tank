@@ -52,7 +52,17 @@ export const signIn = createAsyncThunk(
 export const signUp = createAsyncThunk(
   'auth/signUp',
   async (
-    { username, email, password, organization, sector, country, role },
+    {
+      username,
+      email,
+      password,
+      organisation,
+      regions,
+      looking_fors,
+      stakeholder_role,
+      linkedin,
+      full_name,
+    },
     { rejectWithValue }
   ) => {
     try {
@@ -62,10 +72,12 @@ export const signUp = createAsyncThunk(
           username,
           email,
           password,
-          organization,
-          sector,
-          country,
-          role,
+          organisation,
+          focus_regions: regions,
+          looking_fors,
+          stakeholder_role,
+          linkedin,
+          full_name,
         }
       );
 
@@ -194,6 +206,28 @@ export const verifyEmail = createAsyncThunk(
   }
 );
 
+export const createOrganization = createAsyncThunk(
+  'auth/createOrganization',
+  async (organizationData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${BACKEND_URL}/api/organisations`, {
+        data: {
+          name: organizationData.org_name,
+          website: organizationData.website,
+          type: organizationData.type,
+          country: organizationData.country,
+          topics: organizationData.topics,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.error || 'Failed to create organization'
+      );
+    }
+  }
+);
+
 export const fetchOrganizationsAndRegions = createAsyncThunk(
   'orgSector/fetchOrganizationsAndRectors',
   async (_, { rejectWithValue }) => {
@@ -201,20 +235,26 @@ export const fetchOrganizationsAndRegions = createAsyncThunk(
       const [
         organizationsResponse,
         regionsResponse,
-        countryResponse,
+        lookingForResponse,
         rolesResponse,
+        countryResponse,
+        topicsResponse,
       ] = await Promise.all([
         axios.get(`${BACKEND_URL}/api/organisations?status=published`),
         axios.get(`${BACKEND_URL}/api/regions?status=published`),
-        axios.get(`${BACKEND_URL}/api/countries?status=published`),
+        axios.get(`${BACKEND_URL}/api/looking-fors?status=published`),
         axios.get(`${BACKEND_URL}/api/users-permissions/roles`),
+        axios.get(`${BACKEND_URL}/api/countries?status=published`),
+        axios.get(`${BACKEND_URL}/api/topics?status=published`),
       ]);
-      console.log(rolesResponse.data);
+
       return {
         organizations: organizationsResponse.data.data,
         regions: regionsResponse.data.data,
-        country: countryResponse.data.data,
+        lookingFors: lookingForResponse.data.data,
         roles: rolesResponse.data.roles,
+        country: countryResponse.data.data,
+        topics: topicsResponse.data.data,
       };
     } catch (error) {
       return rejectWithValue(
@@ -288,8 +328,10 @@ const authSlice = createSlice({
     error: null,
     regions: [],
     organizations: [],
-    country: [],
+    lookingFors: [],
     roles: [],
+    country: [],
+    topics: [],
   },
   reducers: {
     signOut: (state) => {
@@ -376,8 +418,10 @@ const authSlice = createSlice({
         state.status = 'succeeded';
         state.organizations = action.payload.organizations;
         state.regions = action.payload.regions;
-        state.country = action.payload.country;
+        state.lookingFors = action.payload.lookingFors;
         state.roles = action.payload.roles;
+        state.country = action.payload.country;
+        state.topics = action.payload.topics;
       })
       .addCase(fetchOrganizationsAndRegions.rejected, (state, action) => {
         state.status = 'failed';
@@ -406,6 +450,18 @@ const authSlice = createSlice({
       })
       .addCase(forgotPassword.rejected, (state, action) => {
         state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(createOrganization.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createOrganization.fulfilled, (state, action) => {
+        state.loading = false;
+        state.organizations = [...state.organizations, action.payload.data];
+      })
+      .addCase(createOrganization.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       });
   },

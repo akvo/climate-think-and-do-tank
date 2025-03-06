@@ -4,23 +4,15 @@ import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { validateSignUp } from '@/helpers/utilities';
 import {
-  fetchOrganizationsAndSectors,
   signUp,
   resendVerification,
+  fetchOrganizationsAndRegions,
+  createOrganization,
 } from '@/store/slices/authSlice';
 import Link from 'next/link';
-import {
-  ChevronDown,
-  Eye,
-  EyeOff,
-  Globe,
-  Link2,
-  LinkIcon,
-  MapPin,
-  Plus,
-  X,
-} from 'lucide-react';
+import { Eye, EyeOff, Link2, X } from 'lucide-react';
 import CustomDropdown from '@/components/CustomDropdown';
+import { VerifyEmailIcon } from '@/components/Icons';
 
 export default function SignUpForm() {
   const dispatch = useDispatch();
@@ -34,7 +26,7 @@ export default function SignUpForm() {
   });
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showAdditionalDetails, setShowAdditionalDetails] = useState(true);
+  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
   const [showConfirmEmail, setShowConfirmEmail] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -92,13 +84,18 @@ export default function SignUpForm() {
   };
 
   const handleAdditionalDetailsSubmit = async (additionalData) => {
-    console.log(additionalData);
     try {
       setIsSubmitting(true);
       await dispatch(
         signUp({
           ...formData,
           ...additionalData,
+          username: formData.email,
+          stakeholder_role: additionalData.role,
+          full_name: additionalData.name,
+          looking_fors: { id: additionalData.looking_fors },
+          regions: additionalData.regions.map((r) => ({ id: r })),
+          organisation: { id: additionalData.organisation },
         })
       );
 
@@ -392,9 +389,10 @@ const AdditionalDetails = ({
   isSubmitting,
 }) => {
   const dispatch = useDispatch();
-  const { organizations, sectors, country, roles } = useSelector(
-    (state) => state.auth
-  );
+  const { organizations, regions, lookingFors, roles, country, topics } =
+    useSelector((state) => state.auth);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const [formData, setFormData] = useState({
     organisation: '',
@@ -405,21 +403,21 @@ const AdditionalDetails = ({
     website: '',
     type: '',
     country: '',
-    regions: [
-      { id: '1', name: 'Kenya' },
-      { id: '2', name: 'Kajiado' },
-      { id: '3', name: 'Nairobi' },
-      { id: '4', name: 'Mombasa' },
-      { id: '5', name: 'Nakuru' },
-    ],
+    regions: [],
+    org_name: '',
   });
 
   const [isOrgModal, setIsOrgModal] = useState(false);
 
   useEffect(() => {
-    console.log('Fetching organizations and sectors');
-    dispatch(fetchOrganizationsAndSectors());
+    dispatch(fetchOrganizationsAndRegions());
   }, []);
+
+  const filteredOrganizations = searchTerm
+    ? organizations.filter((org) =>
+        org.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : organizations;
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
@@ -434,28 +432,7 @@ const AdditionalDetails = ({
     onSubmit(formData);
   };
 
-  const roleOptions = [
-    { id: '1', label: 'CEO' },
-    { id: '2', label: 'CTO' },
-    { id: '3', label: 'Manager' },
-    { id: '4', label: 'Developer' },
-    { id: '5', label: 'Designer' },
-  ];
-
-  const regionOptions = [
-    { id: '1', label: 'Kenya' },
-    { id: '2', label: 'Kajiado' },
-    { id: '3', label: 'Nairobi' },
-    { id: '4', label: 'Mombasa' },
-    { id: '5', label: 'Nakuru' },
-  ];
-
-  const lookingForOptions = [
-    { id: 'investors', label: 'Investors' },
-    { id: 'partners', label: 'Partners' },
-    { id: 'funding', label: 'Funding' },
-    { id: 'mentorship', label: 'Mentorship' },
-  ];
+  console.log(formData);
 
   return (
     <div className="flex min-h-screen ">
@@ -543,7 +520,7 @@ const AdditionalDetails = ({
       {/* Right Panel */}
       <div className="w-1/2 p-12 bg-white flex items-center text-black">
         {steps.find((step) => step.active)?.number === 2 && (
-          <div className="max-w-xl mx-auto">
+          <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold mb-12 text-black">
               Basic Information
             </h2>
@@ -569,25 +546,60 @@ const AdditionalDetails = ({
 
               <div className="space-y-2">
                 <label
-                  htmlFor="organisation"
+                  htmlFor="organization"
                   className="block text-lg font-medium text-gray-700"
                 >
                   Organization name
                 </label>
-                <div className="flex gap-2">
-                  <input
-                    id="organisation"
-                    type="text"
-                    placeholder="Enter your organization name"
-                    className="flex-1 p-4 py-2 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    name="organisation"
-                    value={formData.organisation || ''}
-                    onChange={handleChange}
-                  />
+                <div className="relative flex gap-2 border border-gray-200 rounded-full p-1">
+                  <div className="relative flex-1">
+                    <input
+                      id="organisation"
+                      type="text"
+                      placeholder="Enter your organisation name"
+                      className="w-full p-4 py-2 bg-white rounded-full focus:outline-none"
+                      name="organisation"
+                      value={searchTerm || ''}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setShowSuggestions(true);
+                      }}
+                      onFocus={() => setShowSuggestions(true)}
+                    />
+
+                    {showSuggestions && searchTerm && (
+                      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                        {filteredOrganizations.length > 0 ? (
+                          filteredOrganizations.map((org) => (
+                            <div
+                              key={org.id}
+                              className="p-3 hover:bg-gray-50 cursor-pointer"
+                              onClick={() => {
+                                setFormData({
+                                  ...formData,
+                                  organisation: org.id,
+                                  organisationName: org.name,
+                                });
+                                setSearchTerm(org.name);
+                                setShowSuggestions(false);
+                              }}
+                            >
+                              {org.name}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="p-3 text-gray-500">
+                            No organizations found
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
                   <button
                     type="button"
                     onClick={() => setIsOrgModal(true)}
-                    className="px-6 py-4 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center gap-2"
+                    className="px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center gap-2 whitespace-nowrap"
                   >
                     Add Organization
                     <span className="font-bold">+</span>
@@ -598,7 +610,12 @@ const AdditionalDetails = ({
               <CustomDropdown
                 id="role"
                 label="Role"
-                options={roleOptions}
+                options={[
+                  { id: 'Investor', label: 'Investor' },
+                  { id: 'Government', label: 'Government' },
+                  { id: 'Farmer', label: 'Farmer' },
+                  { id: 'NGO', label: 'NGO' },
+                ]}
                 isMulti={false}
                 value={formData.role}
                 onChange={(value) => setFormData({ ...formData, role: value })}
@@ -606,25 +623,41 @@ const AdditionalDetails = ({
               />
 
               <CustomDropdown
-                id="focusRegions"
+                id="regions"
                 label="Focus Region"
-                options={regionOptions}
+                options={
+                  regions &&
+                  regions.map((f) => {
+                    return {
+                      id: f.id,
+                      label: f.name,
+                    };
+                  })
+                }
                 isMulti={true}
-                value={formData.focusRegions}
+                value={formData.regions}
                 onChange={(value) =>
-                  setFormData({ ...formData, focusRegions: value })
+                  setFormData({ ...formData, regions: value })
                 }
                 placeholder="Select regions"
               />
 
               <CustomDropdown
-                id="lookingFor"
+                id="looking_fors"
                 label="Looking for"
-                options={lookingForOptions}
+                options={
+                  lookingFors &&
+                  lookingFors.map((f) => {
+                    return {
+                      id: f.id,
+                      label: f.name,
+                    };
+                  })
+                }
                 isMulti={false}
-                value={formData.lookingFor}
+                value={formData.looking_fors}
                 onChange={(value) =>
-                  setFormData({ ...formData, lookingFor: value })
+                  setFormData({ ...formData, looking_fors: value })
                 }
                 placeholder="Select option"
               />
@@ -764,6 +797,8 @@ const AdditionalDetails = ({
             onClose={() => setIsOrgModal(false)}
             formData={formData}
             setFormData={setFormData}
+            country={country}
+            topics={topics}
           />
         )}
       </div>
@@ -820,36 +855,47 @@ const ConfirmEmail = ({ user }) => {
     }
   };
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
-          Check your email
-        </h2>
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <p className="text-gray-600 mb-4">
-            We've sent a verification link to {user.email}. Please click the
-            link to verify your account.
-          </p>
-          <p className="text-sm text-gray-500">
-            If you don't see the email, check your spam folder or{' '}
-            {getResendButton()}
-          </p>
-        </div>
-      </div>
+    <div className="flex flex-col items-center justify-center min-h-screen w-[100%] gap-2">
+      <VerifyEmailIcon />
+      <h2 className="text-3xl font-extrabold text-gray-900 mt-4">
+        Verify your email
+      </h2>{' '}
+      <p className="text-gray-600 mb-4">
+        We’ll send you a link to the email address you signed up with
+      </p>
+      <button className="px-4 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors min-w-72">
+        Continue
+      </button>
     </div>
   );
 };
 
-const OrganizationModal = ({ onClose, formData, setFormData }) => {
-  const handleSubmit = (e) => {};
+const OrganizationModal = ({
+  onClose,
+  formData,
+  setFormData,
+  country,
+  topics,
+}) => {
+  const dispatch = useDispatch();
 
-  const handleTopicSelect = (topic) => {
-    setFormData((prev) => ({
-      ...prev,
-      topics: prev.topics.includes(topic)
-        ? prev.topics.filter((t) => t !== topic)
-        : [...prev.topics, topic],
-    }));
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const resultAction = await dispatch(createOrganization(formData));
+      if (createOrganization.fulfilled.match(resultAction)) {
+        const newOrganization = resultAction.payload.data;
+        setFormData({
+          ...formData,
+          organisation: newOrganization.id,
+          organisationName: newOrganization.name,
+        });
+        onClose();
+      }
+    } catch (error) {
+      console.error('Error creating organization:', error);
+    }
   };
 
   return (
@@ -873,9 +919,9 @@ const OrganizationModal = ({ onClose, formData, setFormData }) => {
               type="text"
               placeholder="Enter your organization name"
               className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
-              value={formData.name}
+              value={formData.org_name}
               onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
+                setFormData({ ...formData, org_name: e.target.value })
               }
             />
           </div>
@@ -900,101 +946,55 @@ const OrganizationModal = ({ onClose, formData, setFormData }) => {
             </div>
           </div>
 
-          {/* Organization Type */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">
-              Organization type
-            </label>
-            <div className="relative">
-              <select
-                className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
-                value={formData.type}
-                onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value })
-                }
-              >
-                <option value="">Select organization type</option>
-                <option value="ngo">NGO</option>
-                <option value="company">Company</option>
-                <option value="government">Government</option>
-              </select>
-              <ChevronDown
-                className="absolute right-4 top-3.5 text-gray-400"
-                size={20}
-              />
-            </div>
-          </div>
+          <CustomDropdown
+            id="type"
+            label="Type"
+            options={[
+              { id: 'NGO', label: 'NGO' },
+              { id: 'Company', label: 'Company' },
+            ]}
+            isMulti={false}
+            value={formData.type}
+            onChange={(value) => setFormData({ ...formData, type: value })}
+            placeholder="Select organization type"
+          />
 
-          {/* Country */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Country</label>
-            <div className="relative">
-              <select
-                className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
-                value={formData.country}
-                onChange={(e) =>
-                  setFormData({ ...formData, country: e.target.value })
-                }
-              >
-                <option value="">Select country</option>
-                <option value="kenya">Kenya</option>
-                <option value="uganda">Uganda</option>
-                <option value="tanzania">Tanzania</option>
-              </select>
-              <ChevronDown
-                className="absolute right-4 top-3.5 text-gray-400"
-                size={20}
-              />
-            </div>
-          </div>
+          <CustomDropdown
+            id="country"
+            label="Country"
+            options={
+              country &&
+              country.map((f) => {
+                return {
+                  id: f.id,
+                  label: f.country_name,
+                };
+              })
+            }
+            isMulti={false}
+            value={formData.country}
+            onChange={(value) => setFormData({ ...formData, country: value })}
+            placeholder="Select country"
+          />
 
           {/* Topics */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Topics</label>
-            <div className="relative">
-              <div className="flex flex-wrap gap-2 p-2 border border-gray-200 rounded-2xl bg-white min-h-[48px]">
-                {formData.topics.map((topic) => (
-                  <span
-                    key={topic}
-                    className="px-3 py-1 bg-gray-100 rounded-full text-sm flex items-center gap-1"
-                  >
-                    {topic}
-                    <button
-                      type="button"
-                      onClick={() => handleTopicSelect(topic)}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      <X size={14} />
-                    </button>
-                  </span>
-                ))}
-              </div>
-              <div className="mt-2">
-                <button
-                  type="button"
-                  onClick={() => handleTopicSelect('Agrifood')}
-                  className={`mr-2 px-3 py-1 rounded-full text-sm ${
-                    formData.topics.includes('Agrifood')
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}
-                >
-                  Agrifood
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleTopicSelect('Social Accountability')}
-                  className={`px-3 py-1 rounded-full text-sm ${
-                    formData.topics.includes('Social Accountability')
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}
-                >
-                  Social Accountability
-                </button>
-              </div>
-            </div>
-          </div>
+          <CustomDropdown
+            id="topics"
+            label="Topics"
+            options={
+              topics &&
+              topics.map((f) => {
+                return {
+                  id: f.id,
+                  label: f.name,
+                };
+              })
+            }
+            isMulti={true}
+            value={formData.topics}
+            onChange={(value) => setFormData({ ...formData, topics: value })}
+            placeholder="Select topics"
+          />
 
           <button
             type="submit"

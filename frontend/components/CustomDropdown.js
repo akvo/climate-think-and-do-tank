@@ -111,7 +111,7 @@ const CustomDropdown = ({
                 selectedItems.map((item) => (
                   <span
                     key={item.id}
-                    className="inline-flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full"
+                    className="inline-flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full text-[12px]"
                   >
                     {item.label}
                     <button

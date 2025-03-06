@@ -59,10 +59,6 @@ export const validateConfirmPassword = (password, confirmPassword) => {
 export const validateSignUp = (data) => {
   const errors = {};
 
-  // Validate username
-  const usernameError = validateUsername(data.username);
-  if (usernameError) errors.username = usernameError;
-
   // Validate email
   const emailError = validateEmail(data.email);
   if (emailError) errors.email = emailError;
