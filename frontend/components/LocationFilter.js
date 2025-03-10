@@ -88,13 +88,12 @@ export default function LocationsFilter({ onApply, onClear, locations }) {
               location !== 'All Locations' && (
                 <label
                   key={location}
-                  className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer"
+                  className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer text-black"
                 >
                   <input
                     type="checkbox"
                     checked={selectedLocations.includes(location)}
                     onChange={() => handleLocationClick(location)}
-                    disabled={isAllSelected}
                     className="h-5 w-5 text-green-600 border-gray-300 rounded"
                   />
                   <span

@@ -268,7 +268,7 @@ export const fetchStakeholders = createAsyncThunk(
             region
           );
           orgQueryParams.append(
-            `filters[country][name][$in][${index}]`,
+            `filters[country][country_name][$in][${index}]`,
             region
           );
         });
