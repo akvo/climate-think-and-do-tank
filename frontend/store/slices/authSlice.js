@@ -248,14 +248,15 @@ export const fetchStakeholders = createAsyncThunk(
       const userQueryParams = new URLSearchParams(baseQueryParams);
       userQueryParams.append('populate[1]', 'focus_regions');
       userQueryParams.append('populate[2]', 'organisation');
+      // userQueryParams.append('populate[3]', 'profile_image');
 
       const orgQueryParams = new URLSearchParams(baseQueryParams);
       orgQueryParams.append('populate[0]', 'topics');
       orgQueryParams.append('populate[1]', 'country');
+      // orgQueryParams.append('populate[3]', 'logo');
 
       if (filters.topics && filters.topics.length > 0) {
         filters.topics.forEach((topic, index) => {
-          userQueryParams.append(`filters[topics][name][$in][${index}]`, topic);
           orgQueryParams.append(`filters[topics][name][$in][${index}]`, topic);
         });
       }
@@ -266,49 +267,68 @@ export const fetchStakeholders = createAsyncThunk(
             `filters[focus_regions][name][$in][${index}]`,
             region
           );
-        });
-      }
-
-      if (filters.organizations && filters.organizations.length > 0) {
-        filters.organizations.forEach((org, index) => {
-          userQueryParams.append(
-            `filters[organisation][name][$in][${index}]`,
-            org
+          orgQueryParams.append(
+            `filters[country][name][$in][${index}]`,
+            region
           );
         });
-
-        filters.organizations.forEach((org, index) => {
-          orgQueryParams.append(`filters[name][$in][${index}]`, org);
-        });
       }
 
-      const [usersResponse, organizationsResponse] = await Promise.all([
-        axios.get(`${BACKEND_URL}/api/users?${userQueryParams}`),
-        axios.get(`${BACKEND_URL}/api/organisations?${orgQueryParams}`),
-      ]);
-      console.log(usersResponse, organizationsResponse);
-      const users = usersResponse.data.map((user) => ({
-        id: user.id,
-        type: 'INDIVIDUAL',
-        name: user.full_name || user.username,
-        image: user.profile_image?.url || 'https://placehold.co/200x200',
-        // topics: user.topics?.map((t) => t.name) || [],
-        focusRegions: user.focus_regions?.map((r) => r.name) || [],
-        organisation: user.organisation ? [user.organisation.name] : [],
-        data: user,
-      }));
+      let usersResponse = { data: { data: [] } };
+      let organizationsResponse = { data: { data: [] } };
 
-      // Process organization data
-      const organizations = organizationsResponse.data.data.map((org) => ({
-        id: org.id,
-        type: 'ORGANIZATION',
-        name: org.name,
-        image: org.logo?.url || 'https://placehold.co/200x200',
-        topics: org.topics?.map((t) => t.name) || [],
-        country: org.country?.country_name,
-        organizations: [org.name],
-        data: org,
-      }));
+      const fetchUsers =
+        !filters.type ||
+        filters.type.length === 0 ||
+        filters.type.includes('Individual');
+
+      const fetchOrgs =
+        !filters.type ||
+        filters.type.length === 0 ||
+        filters.type.includes('Organization');
+
+      const requests = [];
+      if (fetchUsers) {
+        requests.push(axios.get(`${BACKEND_URL}/api/users?${userQueryParams}`));
+      } else {
+        requests.push(Promise.resolve({ data: { data: [] } }));
+      }
+
+      if (fetchOrgs) {
+        requests.push(
+          axios.get(`${BACKEND_URL}/api/organisations?${orgQueryParams}`)
+        );
+      } else {
+        requests.push(Promise.resolve({ data: { data: [] } }));
+      }
+
+      [usersResponse, organizationsResponse] = await Promise.all(requests);
+
+      const users = fetchUsers
+        ? usersResponse.data.map((user) => ({
+            id: user.id,
+            type: 'Individual',
+            name: user.full_name || user.username,
+            image: user.profile_image?.url || 'https://placehold.co/200x200',
+            // topics: user.topics?.map((t) => t.name) || [],
+            focusRegions: user.focus_regions?.map((r) => r.name) || [],
+            organization: user.organisation ? user.organisation.name : '',
+            data: user,
+          }))
+        : [];
+
+      const organizations = fetchOrgs
+        ? organizationsResponse.data.data.map((org) => ({
+            id: org.id,
+            type: 'Organization',
+            name: org.name,
+            image: org.logo?.url || 'https://placehold.co/200x200',
+            topics: org.topics?.map((t) => t.name) || [],
+
+            country: org.country?.country_name,
+            data: org,
+          }))
+        : [];
 
       return {
         users,

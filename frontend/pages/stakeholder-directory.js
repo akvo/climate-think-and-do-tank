@@ -13,6 +13,8 @@ import Image from 'next/image';
 import { useModal } from '@/hooks/useModal';
 import { clearStakeholders, fetchStakeholders } from '@/store/slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import TopicsFilter from '@/components/TopicFilter';
+import LocationsFilter from '@/components/LocationFilter';
 
 export default function StakeholderDirectory() {
   const router = useRouter();
@@ -23,7 +25,7 @@ export default function StakeholderDirectory() {
   const [activeFilters, setActiveFilters] = useState({
     topics: [],
     focusRegions: [],
-    organizations: [],
+    type: [],
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStakeholder, setSelectedStakeholder] = useState(null);
@@ -39,11 +41,16 @@ export default function StakeholderDirectory() {
   } = useSelector((state) => state.auth);
 
   const filterOptions = {
-    topics: topics.map((topic) => topic.name || topic.attributes?.name),
+    topics: [
+      'All',
+      ...topics
+        .map((topic) => topic.name || topic.attributes?.name)
+        .filter(Boolean),
+    ],
     focusRegions: regions.map(
       (region) => region.name || region.attributes?.name
     ),
-    organizations: organizations.map((org) => org.name || org.attributes?.name),
+    type: ['Individual', 'Organization'],
   };
 
   useEffect(() => {
@@ -54,9 +61,7 @@ export default function StakeholderDirectory() {
       focusRegions: router.query.focusRegions
         ? router.query.focusRegions.split(',')
         : [],
-      organizations: router.query.organizations
-        ? router.query.organizations.split(',')
-        : [],
+      type: router.query.type ? router.query.type.split(',') : [],
     };
 
     setActiveFilters(filters);
@@ -95,8 +100,7 @@ export default function StakeholderDirectory() {
       query.topics = newFilters.topics.join(',');
     if (newFilters.focusRegions.length > 0)
       query.focusRegions = newFilters.focusRegions.join(',');
-    if (newFilters.organizations.length > 0)
-      query.organizations = newFilters.organizations.join(',');
+    if (newFilters.type.length > 0) query.type = newFilters.type.join(',');
 
     router.push(
       {
@@ -124,7 +128,7 @@ export default function StakeholderDirectory() {
 
   const clearFilters = () => {
     const emptyFilters = {
-      topics: [],
+      type: [],
       focusRegions: [],
       organizations: [],
     };
@@ -134,7 +138,7 @@ export default function StakeholderDirectory() {
     const query = { ...router.query };
     delete query.topics;
     delete query.focusRegions;
-    delete query.organizations;
+    delete query.type;
     delete query.query;
 
     router.push(
@@ -213,7 +217,10 @@ export default function StakeholderDirectory() {
                     }
                     className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
                   >
-                    {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
+                    {filterType === 'focusRegions'
+                      ? 'Location'
+                      : filterType.charAt(0).toUpperCase() +
+                        filterType.slice(1)}
                     <svg
                       className="w-4 h-4"
                       fill="none"
@@ -229,27 +236,90 @@ export default function StakeholderDirectory() {
                     </svg>
                   </button>
                   {openFilter === filterType && (
-                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border max-h-60 overflow-y-auto">
-                      {filterOptions[filterType].length > 0 ? (
-                        filterOptions[filterType].map((option) => (
-                          <label
-                            key={option}
-                            className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={activeFilters[filterType].includes(
-                                option
-                              )}
-                              onChange={() => toggleFilter(filterType, option)}
-                              className="mr-2"
-                            />
-                            {option}
-                          </label>
-                        ))
+                    <div className="absolute top-full left-0 mt-2 z-10 min-w-[600px]">
+                      {filterType === 'topics' ? (
+                        <TopicsFilter
+                          topics={filterOptions[filterType]}
+                          onApply={(selectedTopics) => {
+                            const topicsToApply = selectedTopics.includes('All')
+                              ? []
+                              : selectedTopics;
+
+                            const newFilters = {
+                              ...activeFilters,
+                              [filterType]: topicsToApply,
+                            };
+                            setActiveFilters(newFilters);
+                            updateFilters(newFilters);
+                            setOpenFilter(null);
+                          }}
+                          onClear={() => {
+                            const newFilters = {
+                              ...activeFilters,
+                              [filterType]: [],
+                            };
+                            setActiveFilters(newFilters);
+                            updateFilters(newFilters);
+                            setOpenFilter(null);
+                          }}
+                        />
+                      ) : filterType === 'focusRegions' ? (
+                        <LocationsFilter
+                          locations={[
+                            'All Locations',
+                            ...filterOptions[filterType],
+                          ]}
+                          onApply={(selectedLocations) => {
+                            const locationsToApply = selectedLocations.includes(
+                              'All Locations'
+                            )
+                              ? []
+                              : selectedLocations;
+
+                            const newFilters = {
+                              ...activeFilters,
+                              [filterType]: locationsToApply,
+                            };
+                            setActiveFilters(newFilters);
+                            updateFilters(newFilters);
+                            setOpenFilter(null);
+                          }}
+                          onClear={() => {
+                            const newFilters = {
+                              ...activeFilters,
+                              [filterType]: [],
+                            };
+                            setActiveFilters(newFilters);
+                            updateFilters(newFilters);
+                            setOpenFilter(null);
+                          }}
+                        />
                       ) : (
-                        <div className="px-4 py-2 text-gray-500">
-                          No options available
+                        <div className="w-48 bg-white rounded-md shadow-lg border max-h-60 overflow-y-auto">
+                          {filterOptions[filterType].length > 0 ? (
+                            filterOptions[filterType].map((option) => (
+                              <label
+                                key={option}
+                                className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={activeFilters[filterType].includes(
+                                    option
+                                  )}
+                                  onChange={() =>
+                                    toggleFilter(filterType, option)
+                                  }
+                                  className="mr-2"
+                                />
+                                {option}
+                              </label>
+                            ))
+                          ) : (
+                            <div className="px-4 py-2 text-gray-500">
+                              No options available
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -265,9 +335,42 @@ export default function StakeholderDirectory() {
             </button>
           </div>
         </div>
+
+        {(activeFilters.topics?.length > 0 ||
+          activeFilters.focusRegions?.length > 0 ||
+          activeFilters.type?.length > 0) && (
+          <div className="max-w-7xl mx-auto px-4 pb-3 text-black">
+            <div className="flex items-center gap-2 flex-wrap">
+              {Object.entries(activeFilters).map(([filterType, values]) =>
+                values.map((value) => (
+                  <span
+                    key={`${filterType}-${value}`}
+                    className="bg-gray-100 px-3 py-1 rounded-full text-sm flex items-center gap-1"
+                  >
+                    {value}
+                    <button
+                      onClick={() => {
+                        const newFilters = {
+                          ...activeFilters,
+                          [filterType]: activeFilters[filterType].filter(
+                            (v) => v !== value
+                          ),
+                        };
+                        setActiveFilters(newFilters);
+                        updateFilters(newFilters);
+                      }}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Stakeholder Grid */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {error && (
           <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
