@@ -211,7 +211,7 @@ export default function StakeholderDirectory() {
     <div className="min-h-screen bg-white">
       {/* Search Section */}
       <div className="py-4 px-4 bg-[#f1f3f5]">
-        <div className="max-w-7xl mx-auto">
+        <div className="container mx-auto">
           <form onSubmit={handleSearch}>
             <div className="relative">
               <input
@@ -234,7 +234,7 @@ export default function StakeholderDirectory() {
 
       {/* Filters */}
       <div className="border-t border-b border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="flex gap-6 flex-wrap">
               {Object.keys(filterOptions).map((filterType) => (
@@ -387,7 +387,7 @@ export default function StakeholderDirectory() {
         {(activeFilters.topics?.length > 0 ||
           activeFilters.focusRegions?.length > 0 ||
           activeFilters.type?.length > 0) && (
-          <div className="max-w-7xl mx-auto px-4 pb-3 text-black">
+          <div className="container mx-auto px-4 pb-3 text-black">
             <div className="flex items-center gap-2 flex-wrap">
               {Object.entries(activeFilters).map(([filterType, values]) =>
                 values.map((value) => (
@@ -419,7 +419,7 @@ export default function StakeholderDirectory() {
         )}
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         {error && (
           <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
             {error}
