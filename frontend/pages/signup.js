@@ -86,7 +86,9 @@ export default function SignUpForm() {
   const handleAdditionalDetailsSubmit = async (additionalData) => {
     try {
       setIsSubmitting(true);
-      await dispatch(
+      setFormErrors({});
+
+      const result = await dispatch(
         signUp({
           ...formData,
           ...additionalData,
@@ -99,6 +101,27 @@ export default function SignUpForm() {
         })
       );
 
+      if (signUp.rejected.match(result)) {
+        const error = result.payload;
+
+        if (error.fieldErrors && Object.keys(error.fieldErrors).length > 0) {
+          setFormErrors({
+            ...error.fieldErrors,
+            general: error.message,
+          });
+
+          document
+            .getElementById('error-summary')
+            ?.scrollIntoView({ behavior: 'smooth' });
+          return;
+        }
+
+        setFormErrors({
+          general: error.message || 'Signup failed. Please try again.',
+        });
+        return;
+      }
+
       setSteps((prevSteps) => [
         { ...prevSteps[0], completed: true },
         { ...prevSteps[1], completed: true, active: false },
@@ -107,8 +130,9 @@ export default function SignUpForm() {
 
       setShowConfirmEmail(true);
     } catch (error) {
+      console.error('Unexpected error during signup:', error);
       setFormErrors({
-        general: error.message || 'Signup failed. Please try again.',
+        general: 'An unexpected error occurred. Please try again.',
       });
     } finally {
       setIsSubmitting(false);
@@ -376,6 +400,7 @@ export default function SignUpForm() {
           formData={formData}
           steps={steps}
           isSubmitting={isSubmitting}
+          formErrors={formErrors}
         />
       )}
     </div>
@@ -387,6 +412,7 @@ const AdditionalDetails = ({
   formData: form,
   steps,
   isSubmitting,
+  formErrors,
 }) => {
   const dispatch = useDispatch();
   const { organizations, regions, lookingFors, roles, country, topics } =
@@ -525,6 +551,26 @@ const AdditionalDetails = ({
               Basic Information
             </h2>
 
+            {formErrors.general && (
+              <div
+                id="error-summary"
+                className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6"
+              >
+                <p className="font-medium">{formErrors.general}</p>
+                {Object.keys(formErrors).length > 1 && (
+                  <ul className="mt-2 list-disc pl-5">
+                    {Object.entries(formErrors)
+                      .filter(([key]) => key !== 'general')
+                      .map(([field, message]) => (
+                        <li key={field}>
+                          {field.charAt(0).toUpperCase() + field.slice(1)}:{' '}
+                          {message}
+                        </li>
+                      ))}
+                  </ul>
+                )}
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-2">
                 <label

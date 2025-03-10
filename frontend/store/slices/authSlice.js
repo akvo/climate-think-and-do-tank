@@ -89,9 +89,31 @@ export const signUp = createAsyncThunk(
         message,
       };
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.error?.message || 'Registration failed'
-      );
+      if (error.response) {
+        const errorData = error.response.data;
+
+        if (errorData.error?.details?.errors) {
+          const fieldErrors = {};
+          errorData.error.details.errors.forEach((err) => {
+            fieldErrors[err.path[0]] = err.message;
+          });
+          return rejectWithValue({
+            message: errorData.error.message || 'Validation failed',
+            fieldErrors,
+          });
+        } else if (errorData.error?.message) {
+          return rejectWithValue({
+            message: errorData.error.message,
+            fieldErrors: {},
+          });
+        }
+      }
+
+      return rejectWithValue({
+        message:
+          'Unable to connect to server. Please check your internet connection.',
+        fieldErrors: {},
+      });
     }
   }
 );
