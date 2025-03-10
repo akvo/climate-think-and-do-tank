@@ -117,7 +117,7 @@ export default function LocationsFilter({ onApply, onClear, locations }) {
         </div>
       </div>
 
-      <div className="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-between">
+      <div className="px-6 py-4 border-t border-gray-100 rounded-b-xl flex justify-between">
         <button
           onClick={handleClear}
           className="text-gray-600 font-medium hover:text-gray-800"

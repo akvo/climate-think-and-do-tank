@@ -239,6 +239,8 @@ export const fetchStakeholders = createAsyncThunk(
       baseQueryParams.append('pagination[page]', page);
       baseQueryParams.append('pagination[pageSize]', pageSize);
 
+      // baseQueryParams.append('sort[0]', filters.type === '' ? 'full_name:asc' : 'name:asc');
+
       if (query) {
         baseQueryParams.append('filters[$or][0][full_name][$containsi]', query);
         baseQueryParams.append('filters[$or][1][name][$containsi]', query);
@@ -248,11 +250,13 @@ export const fetchStakeholders = createAsyncThunk(
       const userQueryParams = new URLSearchParams(baseQueryParams);
       userQueryParams.append('populate[1]', 'focus_regions');
       userQueryParams.append('populate[2]', 'organisation');
+      userQueryParams.append('sort[0]', 'full_name:asc');
       // userQueryParams.append('populate[3]', 'profile_image');
 
       const orgQueryParams = new URLSearchParams(baseQueryParams);
       orgQueryParams.append('populate[0]', 'topics');
       orgQueryParams.append('populate[1]', 'country');
+      orgQueryParams.append('sort[0]', 'name:asc');
       // orgQueryParams.append('populate[3]', 'logo');
 
       if (filters.topics && filters.topics.length > 0) {
@@ -305,29 +309,32 @@ export const fetchStakeholders = createAsyncThunk(
       [usersResponse, organizationsResponse] = await Promise.all(requests);
 
       const users = fetchUsers
-        ? usersResponse.data.map((user) => ({
-            id: user.id,
-            type: 'Individual',
-            name: user.full_name || user.username,
-            image: user.profile_image?.url || 'https://placehold.co/200x200',
-            // topics: user.topics?.map((t) => t.name) || [],
-            focusRegions: user.focus_regions?.map((r) => r.name) || [],
-            organization: user.organisation ? user.organisation.name : '',
-            data: user,
-          }))
+        ? usersResponse.data
+            .map((user) => ({
+              id: user.id,
+              type: 'Individual',
+              name: user.full_name || user.username,
+              image: user.profile_image?.url || 'https://placehold.co/200x200',
+              // topics: user.topics?.map((t) => t.name) || [],
+              focusRegions: user.focus_regions?.map((r) => r.name) || [],
+              organization: user.organisation ? user.organisation.name : '',
+              data: user,
+            }))
+            .sort((a, b) => a.name.localeCompare(b.name))
         : [];
 
       const organizations = fetchOrgs
-        ? organizationsResponse.data.data.map((org) => ({
-            id: org.id,
-            type: 'Organization',
-            name: org.name,
-            image: org.logo?.url || 'https://placehold.co/200x200',
-            topics: org.topics?.map((t) => t.name) || [],
-
-            country: org.country?.country_name,
-            data: org,
-          }))
+        ? organizationsResponse.data.data
+            .map((org) => ({
+              id: org.id,
+              type: 'Organization',
+              name: org.name,
+              image: org.logo?.url || 'https://placehold.co/200x200',
+              topics: org.topics?.map((t) => t.name) || [],
+              country: org.country?.country_name,
+              data: org,
+            }))
+            .sort((a, b) => a.name.localeCompare(b.name))
         : [];
 
       return {

@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
+  ArrowDown,
+  ArrowUp,
+  Building,
   Globe,
   Link2,
   Linkedin,
+  Mail,
   MapPin,
   Search,
   Sprout,
@@ -29,7 +33,7 @@ export default function StakeholderDirectory() {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStakeholder, setSelectedStakeholder] = useState(null);
-
+  const [sortOrder, setSortOrder] = useState('asc');
   const { stakeholders, loading, error, currentPage, hasMore } = useSelector(
     (state) => state.auth
   );
@@ -162,7 +166,29 @@ export default function StakeholderDirectory() {
   };
 
   const openStakeholderModal = (stakeholder) => {
-    setSelectedStakeholder(stakeholder);
+    const enhancedStakeholder = {
+      ...stakeholder,
+      mutualConnections: {
+        names: ['Kevin Ochieng'],
+        count: 2,
+      },
+      ...(stakeholder.type === 'Individual'
+        ? {
+            location: 'Kenya',
+            focusRegions: ['Kijado', 'Marsabit', 'Turkana'],
+            organization: 'United Nations Environment Program',
+            organizationWebsite: 'https://www.unep.org/',
+            profession: 'Environmentalist',
+            valueChains: ['Crop'],
+          }
+        : {
+            country: 'Kenya',
+            website: 'https://www.unep.org/',
+            organizationType: 'Non-Profit Environmental Organization',
+            valueChains: ['Fish', 'Crop'],
+          }),
+    };
+    setSelectedStakeholder(enhancedStakeholder);
     setIsModalOpen(true);
   };
 
@@ -176,6 +202,10 @@ export default function StakeholderDirectory() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [openFilter]);
+
+  const toggleSortOrder = () => {
+    setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -326,6 +356,24 @@ export default function StakeholderDirectory() {
                   )}
                 </div>
               ))}
+              <div className="flex justify-end mb-4">
+                <button
+                  onClick={toggleSortOrder}
+                  className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+                >
+                  {sortOrder === 'asc' ? (
+                    <>
+                      <ArrowUp size={16} />
+                      Sort A-Z
+                    </>
+                  ) : (
+                    <>
+                      <ArrowDown size={16} />
+                      Sort Z-A
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
             <button
               onClick={clearFilters}
@@ -428,7 +476,7 @@ export default function StakeholderDirectory() {
             <button
               onClick={loadMoreStakeholders}
               disabled={loading && currentPage > 1}
-              className="px-8 py-3 bg-zinc-900 text-white rounded-md hover:bg-zinc-800 transition-colors disabled:bg-zinc-400"
+              className="px-8 py-3  text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-zinc-400 bg-green-600"
             >
               {loading && currentPage > 1 ? (
                 <div className="flex items-center">
@@ -443,18 +491,20 @@ export default function StakeholderDirectory() {
         )}
       </div>
 
-      <IndividualModal
+      <StakeholderModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        stakeholder={selectedStakeholder}
       />
     </div>
   );
 }
 
-const IndividualModal = ({ isOpen, onClose }) => {
+const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
   const overlayRef = useModal(isOpen, onClose);
 
-  if (!isOpen) return null;
+  if (!isOpen || !stakeholder) return null;
+
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
@@ -464,10 +514,11 @@ const IndividualModal = ({ isOpen, onClose }) => {
         className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Modal content remains the same */}
         {/* Header */}
         <div className="p-8 pb-6 flex justify-between items-start border-b">
-          <div className="text-green-600 text-sm font-semibold">INDIVIDUAL</div>
+          <div className="text-green-600 text-sm font-semibold uppercase">
+            {stakeholder.type}
+          </div>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -478,72 +529,159 @@ const IndividualModal = ({ isOpen, onClose }) => {
 
         {/* Content */}
         <div className="p-8 flex justify-between">
-          <div className="space-y-6">
+          <div className="space-y-6 flex-grow">
             <div>
               <h2 className="text-3xl font-bold mb-2 text-black">
-                Sarah Chebet
+                {stakeholder.name}
               </h2>
-              <p className="text-gray-600 text-lg mb-2">Environmentalist</p>
-              <p>
-                <span className="text-green-600">Kevin Ochieng</span>
-                <span className="text-gray-600"> and </span>
-                <span className="text-green-600">1 other</span>
-                <span className="text-gray-600"> mutual connection</span>
-              </p>
+
+              {/* Profession/Title */}
+              {stakeholder.profession && (
+                <p className="text-gray-600 text-lg mb-2">
+                  {stakeholder.profession}
+                </p>
+              )}
+
+              {/* Mutual Connections */}
+              {stakeholder.mutualConnections && (
+                <p>
+                  <span className="text-green-600">
+                    {stakeholder.mutualConnections.names.join(', ')}
+                  </span>
+                  <span className="text-gray-600"> and </span>
+                  <span className="text-green-600">
+                    {stakeholder.mutualConnections.count - 1} other
+                  </span>
+                  <span className="text-gray-600"> mutual connection</span>
+                </p>
+              )}
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center gap-3 text-gray-600">
-                <MapPin size={20} />
-                <span>Kenya</span>
-              </div>
-              <div className="flex items-center gap-3 text-gray-600">
-                <Globe size={20} />
-                <span>Global</span>
-              </div>
-              <div className="flex items-center gap-3 text-gray-600">
-                <Link2 size={20} />
-                <a
-                  href="https://www.unep.org/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  https://www.unep.org/
-                </a>
-              </div>
-              <div className="flex items-center gap-3 text-gray-600">
-                <Linkedin size={20} />
-                <a href="#" className="hover:underline">
-                  Linked In Profile
-                </a>
-              </div>
+              {/* Location */}
+
+              {stakeholder.type === 'Individual' && (
+                <div className="flex items-center gap-3 text-gray-600">
+                  <MapPin size={20} />
+                  <span>{stakeholder.location || 'Kenya'}</span>
+                </div>
+              )}
+
+              {/* Focus Regions */}
+              {stakeholder.type === 'Individual' && (
+                <div className="flex items-center gap-3 text-gray-600">
+                  <Globe size={20} />
+                  <span>
+                    {stakeholder.focusRegions?.length
+                      ? stakeholder.focusRegions.join(', ')
+                      : 'Kijado, Marsabit, Turkana'}
+                  </span>
+                </div>
+              )}
+
+              {/* Organization (for Individuals) */}
+              {stakeholder.type === 'Individual' &&
+                stakeholder.organization && (
+                  <div className="flex items-center gap-3 text-gray-600">
+                    <Building size={20} />
+                    <a
+                      href={stakeholder.organizationWebsite || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      {stakeholder.organization}
+                    </a>
+                  </div>
+                )}
+
+              {/* Country (for Organizations) */}
+              {stakeholder.type === 'Organization' && (
+                <div className="flex items-center gap-3 text-gray-600">
+                  <MapPin size={20} />
+                  <span>{stakeholder.country || 'Not specified'}</span>
+                </div>
+              )}
+
+              {/* Website */}
+              {stakeholder.website && (
+                <div className="flex items-center gap-3 text-gray-600">
+                  <Link2 size={20} />
+                  <a
+                    href={stakeholder.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    {stakeholder.website}
+                  </a>
+                </div>
+              )}
+
+              {/* Organization Type (for Organizations) */}
+              {stakeholder.type === 'Organization' &&
+                stakeholder.organizationType && (
+                  <div className="flex items-center gap-3 text-gray-600">
+                    <Building size={20} />
+                    <span>{stakeholder.organizationType}</span>
+                  </div>
+                )}
+
+              {/* LinkedIn Profile (for Individuals) */}
+              {stakeholder.type === 'Individual' && (
+                <div className="flex items-center gap-3 text-gray-600">
+                  <Linkedin size={20} />
+                  <span className="text-gray-400">
+                    LinkedIn Profile (Pending Connection)
+                  </span>
+                </div>
+              )}
+
+              {/* Email Address (for Individuals) */}
+              {stakeholder.type === 'Individual' && (
+                <div className="flex items-center gap-3 text-gray-600">
+                  <Mail size={20} />
+                  <span className="text-gray-400">
+                    Email Address (Pending Connection)
+                  </span>
+                </div>
+              )}
+
+              {/* Value Chains */}
               <div className="flex items-center gap-3 text-gray-600">
                 <Sprout size={20} />
-                <span>Crop</span>
+                <span>
+                  {stakeholder.valueChains && stakeholder.valueChains.length > 0
+                    ? stakeholder.valueChains.join(', ')
+                    : 'No Value Chains Selected'}
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="relative w-64 h-64">
-            <div className="w-full h-full rounded-full bg-gray-100 overflow-hidden">
+          {/* Profile Image */}
+          <div className="relative w-64 h-64 ml-8">
+            <div className="w-full h-full rounded-full bg-gray-100 overflow-hidden relative">
               <Image
-                src="https://placehold.co/400x400"
-                alt="Sarah Chebet"
-                fill
-                className="object-cover position-relative"
+                src={stakeholder.image || '/placeholder.svg'}
+                alt={stakeholder.name}
+                className="object-cover relative"
                 unoptimized
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-8 pt-6 flex justify-end border-t">
-          <button className="px-8 py-2 border-2 border-zinc-900 rounded-full text-zinc-900 hover:bg-zinc-50 transition-colors">
-            Connect
-          </button>
-        </div>
+        {stakeholder.type === 'Individual' && (
+          <div className="p-8 pt-6 flex justify-end border-t">
+            <button className="px-8 py-2 border-2 border-zinc-900 rounded-full text-zinc-900 hover:bg-zinc-50 transition-colors">
+              Connect
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
