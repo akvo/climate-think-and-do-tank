@@ -228,6 +228,111 @@ export const verifyEmail = createAsyncThunk(
   }
 );
 
+export const fetchStakeholders = createAsyncThunk(
+  'stakeholders/fetchStakeholders',
+  async (
+    { page = 1, pageSize = 12, query = '', filters = {} },
+    { rejectWithValue }
+  ) => {
+    try {
+      const baseQueryParams = new URLSearchParams();
+      baseQueryParams.append('pagination[page]', page);
+      baseQueryParams.append('pagination[pageSize]', pageSize);
+
+      if (query) {
+        baseQueryParams.append('filters[$or][0][full_name][$containsi]', query);
+        baseQueryParams.append('filters[$or][1][name][$containsi]', query);
+        baseQueryParams.append('filters[$or][2][username][$containsi]', query);
+      }
+
+      const userQueryParams = new URLSearchParams(baseQueryParams);
+      userQueryParams.append('populate[1]', 'focus_regions');
+      userQueryParams.append('populate[2]', 'organisation');
+
+      const orgQueryParams = new URLSearchParams(baseQueryParams);
+      orgQueryParams.append('populate[0]', 'topics');
+      orgQueryParams.append('populate[1]', 'country');
+
+      if (filters.topics && filters.topics.length > 0) {
+        filters.topics.forEach((topic, index) => {
+          userQueryParams.append(`filters[topics][name][$in][${index}]`, topic);
+          orgQueryParams.append(`filters[topics][name][$in][${index}]`, topic);
+        });
+      }
+
+      if (filters.focusRegions && filters.focusRegions.length > 0) {
+        filters.focusRegions.forEach((region, index) => {
+          userQueryParams.append(
+            `filters[focus_regions][name][$in][${index}]`,
+            region
+          );
+        });
+      }
+
+      if (filters.organizations && filters.organizations.length > 0) {
+        filters.organizations.forEach((org, index) => {
+          userQueryParams.append(
+            `filters[organisation][name][$in][${index}]`,
+            org
+          );
+        });
+
+        filters.organizations.forEach((org, index) => {
+          orgQueryParams.append(`filters[name][$in][${index}]`, org);
+        });
+      }
+
+      const [usersResponse, organizationsResponse] = await Promise.all([
+        axios.get(`${BACKEND_URL}/api/users?${userQueryParams}`),
+        axios.get(`${BACKEND_URL}/api/organisations?${orgQueryParams}`),
+      ]);
+      console.log(usersResponse, organizationsResponse);
+      const users = usersResponse.data.map((user) => ({
+        id: user.id,
+        type: 'INDIVIDUAL',
+        name: user.full_name || user.username,
+        image: user.profile_image?.url || 'https://placehold.co/200x200',
+        // topics: user.topics?.map((t) => t.name) || [],
+        focusRegions: user.focus_regions?.map((r) => r.name) || [],
+        organisation: user.organisation ? [user.organisation.name] : [],
+        data: user,
+      }));
+
+      // Process organization data
+      const organizations = organizationsResponse.data.data.map((org) => ({
+        id: org.id,
+        type: 'ORGANIZATION',
+        name: org.name,
+        image: org.logo?.url || 'https://placehold.co/200x200',
+        topics: org.topics?.map((t) => t.name) || [],
+        country: org.country?.country_name,
+        organizations: [org.name],
+        data: org,
+      }));
+
+      return {
+        users,
+        organizations,
+        meta: {
+          page,
+          hasMore:
+            users.length + organizations.length > 0 &&
+            (users.length >= pageSize / 2 ||
+              organizations.length >= pageSize / 2),
+        },
+      };
+    } catch (error) {
+      console.error(
+        'Stakeholder fetch error:',
+        error.response?.data || error.message
+      );
+      return rejectWithValue(
+        error.response?.data?.error || 'Failed to fetch stakeholders'
+      );
+    }
+  }
+);
+
 export const createOrganization = createAsyncThunk(
   'auth/createOrganization',
   async (organizationData, { rejectWithValue }) => {
@@ -354,6 +459,7 @@ const authSlice = createSlice({
     roles: [],
     country: [],
     topics: [],
+    stakeholders: [],
   },
   reducers: {
     signOut: (state) => {
@@ -364,6 +470,11 @@ const authSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null;
+    },
+    clearStakeholders: (state) => {
+      state.stakeholders = [];
+      state.currentPage = 1;
+      state.hasMore = true;
     },
   },
   extraReducers: (builder) => {
@@ -485,9 +596,36 @@ const authSlice = createSlice({
       .addCase(createOrganization.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchStakeholders.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchStakeholders.fulfilled, (state, action) => {
+        state.loading = false;
+
+        if (action.payload.meta.page === 1) {
+          state.stakeholders = [
+            ...action.payload.users,
+            ...action.payload.organizations,
+          ];
+        } else {
+          state.stakeholders = [
+            ...state.stakeholders,
+            ...action.payload.users,
+            ...action.payload.organizations,
+          ];
+        }
+
+        state.currentPage = action.payload.meta.page;
+        state.hasMore = action.payload.meta.hasMore;
+      })
+      .addCase(fetchStakeholders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to fetch stakeholders';
       });
   },
 });
 
-export const { signOut, clearError } = authSlice.actions;
+export const { signOut, clearError, clearStakeholders } = authSlice.actions;
 export default authSlice.reducer;

@@ -11,9 +11,13 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { useModal } from '@/hooks/useModal';
+import { clearStakeholders, fetchStakeholders } from '@/store/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function StakeholderDirectory() {
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [openFilter, setOpenFilter] = useState(null);
   const [activeFilters, setActiveFilters] = useState({
@@ -22,48 +26,26 @@ export default function StakeholderDirectory() {
     organizations: [],
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStakeholder, setSelectedStakeholder] = useState(null);
 
-  const stakeholders = [
-    {
-      type: 'INDIVIDUAL',
-      name: 'Sarah Chebet',
-      image: 'https://placehold.co/200x200',
-      topics: ['Agriculture', 'Environment'],
-      focusRegions: ['Africa'],
-      organizations: [],
-    },
-    {
-      type: 'ORGANIZATION',
-      name: 'United Nations Environment Programme (UNEP)',
-      image: 'https://placehold.co/200x200',
-      topics: ['Environment', 'Sustainability'],
-      focusRegions: ['Global'],
-      organizations: ['UNEP'],
-    },
-    {
-      type: 'ORGANIZATION',
-      name: 'Blue Life Ecoservices',
-      image: 'https://placehold.co/200x200',
-      topics: ['Marine Conservation'],
-      focusRegions: ['Asia'],
-      organizations: ['Blue Life'],
-    },
-  ];
+  const { stakeholders, loading, error, currentPage, hasMore } = useSelector(
+    (state) => state.auth
+  );
 
-  const allStakeholders = [...stakeholders, ...stakeholders, ...stakeholders];
+  const {
+    topics = [],
+    regions = [],
+    organizations = [],
+  } = useSelector((state) => state.auth);
 
   const filterOptions = {
-    topics: [
-      'Agriculture',
-      'Environment',
-      'Sustainability',
-      'Marine Conservation',
-    ],
-    focusRegions: ['Africa', 'Global', 'Asia'],
-    organizations: ['UNEP', 'Blue Life'],
+    topics: topics.map((topic) => topic.name || topic.attributes?.name),
+    focusRegions: regions.map(
+      (region) => region.name || region.attributes?.name
+    ),
+    organizations: organizations.map((org) => org.name || org.attributes?.name),
   };
 
-  // Read query parameters on page load and router changes
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -76,12 +58,39 @@ export default function StakeholderDirectory() {
         ? router.query.organizations.split(',')
         : [],
     };
+
     setActiveFilters(filters);
+    setSearchQuery(router.query.query || '');
+
+    dispatch(clearStakeholders());
+    dispatch(
+      fetchStakeholders({
+        page: 1,
+        query: router.query.query || '',
+        filters,
+      })
+    );
   }, [router.isReady, router.query]);
 
-  // Update URL query parameters when filters change
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    const query = { ...router.query, query: searchQuery };
+    if (!searchQuery) delete query.query;
+
+    router.push(
+      {
+        pathname: router.pathname,
+        query,
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
+
   const updateFilters = (newFilters) => {
     const query = {};
+    if (searchQuery) query.query = searchQuery;
     if (newFilters.topics.length > 0)
       query.topics = newFilters.topics.join(',');
     if (newFilters.focusRegions.length > 0)
@@ -99,7 +108,6 @@ export default function StakeholderDirectory() {
     );
   };
 
-  // Toggle filter option with URL update
   const toggleFilter = (filterType, option) => {
     const updatedFilters = { ...activeFilters };
     if (updatedFilters[filterType].includes(option)) {
@@ -109,11 +117,11 @@ export default function StakeholderDirectory() {
     } else {
       updatedFilters[filterType] = [...updatedFilters[filterType], option];
     }
+
     setActiveFilters(updatedFilters);
     updateFilters(updatedFilters);
   };
 
-  // Clear all filters
   const clearFilters = () => {
     const emptyFilters = {
       topics: [],
@@ -121,48 +129,72 @@ export default function StakeholderDirectory() {
       organizations: [],
     };
     setActiveFilters(emptyFilters);
-    updateFilters(emptyFilters);
+    setSearchQuery('');
+
+    const query = { ...router.query };
+    delete query.topics;
+    delete query.focusRegions;
+    delete query.organizations;
+    delete query.query;
+
+    router.push(
+      {
+        pathname: router.pathname,
+        query,
+      },
+      undefined,
+      { shallow: true }
+    );
   };
 
-  // Filter stakeholders based on active filters
-  const filteredStakeholders = allStakeholders.filter((stakeholder) => {
-    const topicsMatch =
-      activeFilters.topics.length === 0 ||
-      stakeholder.topics.some((topic) => activeFilters.topics.includes(topic));
+  const loadMoreStakeholders = () => {
+    dispatch(
+      fetchStakeholders({
+        page: currentPage + 1,
+        query: searchQuery,
+        filters: activeFilters,
+      })
+    );
+  };
 
-    const regionsMatch =
-      activeFilters.focusRegions.length === 0 ||
-      stakeholder.focusRegions.some((region) =>
-        activeFilters.focusRegions.includes(region)
-      );
+  const openStakeholderModal = (stakeholder) => {
+    setSelectedStakeholder(stakeholder);
+    setIsModalOpen(true);
+  };
 
-    const organizationsMatch =
-      activeFilters.organizations.length === 0 ||
-      stakeholder.organizations.some((org) =>
-        activeFilters.organizations.includes(org)
-      );
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (openFilter && !e.target.closest('.filter-dropdown')) {
+        setOpenFilter(null);
+      }
+    };
 
-    return topicsMatch && regionsMatch && organizationsMatch;
-  });
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [openFilter]);
 
   return (
     <div className="min-h-screen bg-white">
       {/* Search Section */}
       <div className="py-4 px-4 bg-[#f1f3f5]">
         <div className="max-w-7xl mx-auto">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Try keywords like: 'tilapia' or 'horticulture'"
-              className="w-full pl-4 pr-10 py-3 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <Search
-              className="absolute right-3 top-3.5 text-gray-400"
-              size={20}
-            />
-          </div>
+          <form onSubmit={handleSearch}>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Try keywords like: 'tilapia' or 'horticulture'"
+                className="w-full pl-4 pr-10 py-3 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button
+                type="submit"
+                className="absolute right-3 top-3.5 text-gray-400"
+              >
+                <Search size={20} />
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 
@@ -170,9 +202,9 @@ export default function StakeholderDirectory() {
       <div className="border-t border-b border-gray-200 bg-white">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex gap-6">
+            <div className="flex gap-6 flex-wrap">
               {Object.keys(filterOptions).map((filterType) => (
-                <div key={filterType} className="relative">
+                <div key={filterType} className="relative filter-dropdown">
                   <button
                     onClick={() =>
                       setOpenFilter(
@@ -197,21 +229,29 @@ export default function StakeholderDirectory() {
                     </svg>
                   </button>
                   {openFilter === filterType && (
-                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border">
-                      {filterOptions[filterType].map((option) => (
-                        <label
-                          key={option}
-                          className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={activeFilters[filterType].includes(option)}
-                            onChange={() => toggleFilter(filterType, option)}
-                            className="mr-2"
-                          />
-                          {option}
-                        </label>
-                      ))}
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border max-h-60 overflow-y-auto">
+                      {filterOptions[filterType].length > 0 ? (
+                        filterOptions[filterType].map((option) => (
+                          <label
+                            key={option}
+                            className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={activeFilters[filterType].includes(
+                                option
+                              )}
+                              onChange={() => toggleFilter(filterType, option)}
+                              className="mr-2"
+                            />
+                            {option}
+                          </label>
+                        ))
+                      ) : (
+                        <div className="px-4 py-2 text-gray-500">
+                          No options available
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -229,37 +269,75 @@ export default function StakeholderDirectory() {
 
       {/* Stakeholder Grid */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-          {filteredStakeholders.map((stakeholder, index) => (
-            <div
-              key={`${stakeholder.name}-${index}`}
-              onClick={() => setIsModalOpen(true)}
-              className="bg-[#f8f9fa] rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md transition-shadow cursor-pointer"
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
+            {error}
+          </div>
+        )}
+        {loading && currentPage === 1 ? (
+          <div className="flex justify-center py-12">
+            <div className="animate-spin h-8 w-8 border-4 border-green-500 rounded-full border-t-transparent"></div>
+          </div>
+        ) : stakeholders.length === 0 ? (
+          <div className="text-center py-12">
+            <h3 className="text-lg font-medium text-gray-500">
+              No stakeholders found
+            </h3>
+            <p className="mt-2 text-gray-400">
+              Try adjusting your filters or search terms
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+            {stakeholders.map((stakeholder, index) => (
+              <div
+                key={`${stakeholder.type}-${stakeholder.id}-${index}`}
+                onClick={() => openStakeholderModal(stakeholder)}
+                className="bg-[#f8f9fa] rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md transition-shadow cursor-pointer"
+              >
+                <div className="relative w-24 h-24 mb-4">
+                  <Image
+                    src={stakeholder.image || '/placeholder.svg'}
+                    alt={stakeholder.name}
+                    fill
+                    className="rounded-full object-cover"
+                    unoptimized
+                  />
+                </div>
+                <div className="text-xs font-semibold text-green-600 mb-2">
+                  {stakeholder.type}
+                </div>
+                <h3 className="text-sm font-medium text-gray-900">
+                  {stakeholder.name}
+                </h3>
+                {stakeholder.topics && stakeholder.topics.length > 0 && (
+                  <div className="mt-2 text-xs text-gray-500">
+                    {stakeholder.topics.slice(0, 2).join(', ')}
+                    {stakeholder.topics.length > 2 && '...'}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}{' '}
+        {hasMore && (
+          <div className="flex justify-center mt-12">
+            <button
+              onClick={loadMoreStakeholders}
+              disabled={loading && currentPage > 1}
+              className="px-8 py-3 bg-zinc-900 text-white rounded-md hover:bg-zinc-800 transition-colors disabled:bg-zinc-400"
             >
-              <div className="relative w-24 h-24 mb-4">
-                <Image
-                  src={stakeholder.image || '/placeholder.svg'}
-                  alt={stakeholder.name}
-                  fill
-                  className="rounded-full object-cover"
-                  unoptimized
-                />
-              </div>
-              <div className="text-xs font-semibold text-green-600 mb-2">
-                {stakeholder.type}
-              </div>
-              <h3 className="text-sm font-medium text-gray-900">
-                {stakeholder.name}
-              </h3>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex justify-center mt-12">
-          <button className="px-8 py-3 bg-zinc-900 text-white rounded-md hover:bg-zinc-800 transition-colors">
-            Load More
-          </button>
-        </div>
+              {loading && currentPage > 1 ? (
+                <div className="flex items-center">
+                  <div className="animate-spin h-4 w-4 border-2 border-white rounded-full border-t-transparent mr-2"></div>
+                  Loading...
+                </div>
+              ) : (
+                'Load More'
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       <IndividualModal

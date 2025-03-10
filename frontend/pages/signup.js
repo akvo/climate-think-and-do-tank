@@ -435,10 +435,6 @@ const AdditionalDetails = ({
 
   const [isOrgModal, setIsOrgModal] = useState(false);
 
-  useEffect(() => {
-    dispatch(fetchOrganizationsAndRegions());
-  }, []);
-
   const filteredOrganizations = searchTerm
     ? organizations.filter((org) =>
         org.name.toLowerCase().includes(searchTerm.toLowerCase())
