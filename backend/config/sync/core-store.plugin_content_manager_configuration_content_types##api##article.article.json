@@ -119,6 +119,20 @@
           "sortable": false
         }
       },
+      "rich_text": {
+        "edit": {
+          "label": "rich_text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "rich_text",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -219,6 +233,12 @@
         [
           {
             "name": "blocks",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "rich_text",
             "size": 12
           }
         ]

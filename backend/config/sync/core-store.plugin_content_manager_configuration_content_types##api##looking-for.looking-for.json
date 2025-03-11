@@ -6,8 +6,8 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "id",
-      "defaultSortBy": "id",
+      "mainField": "name",
+      "defaultSortBy": "name",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -95,9 +95,9 @@
     "layouts": {
       "list": [
         "id",
+        "name",
         "createdAt",
-        "updatedAt",
-        "name"
+        "updatedAt"
       ],
       "edit": [
         [

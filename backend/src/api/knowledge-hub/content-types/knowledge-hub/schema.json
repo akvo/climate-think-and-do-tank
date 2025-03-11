@@ -1,0 +1,68 @@
+{
+  "kind": "collectionType",
+  "collectionName": "knowledge_hubs",
+  "info": {
+    "singularName": "knowledge-hub",
+    "pluralName": "knowledge-hubs",
+    "displayName": "Knowledge Hub",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "description": {
+      "type": "text"
+    },
+    "web_link": {
+      "type": "string"
+    },
+    "resource_type": {
+      "type": "enumeration",
+      "enum": [
+        "PDF",
+        "WEB_LINK"
+      ]
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "topics": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::topic.topic"
+    },
+    "regions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::region.region"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    }
+  }
+}
