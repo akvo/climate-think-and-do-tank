@@ -6,7 +6,7 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "provider",
+      "mainField": "username",
       "defaultSortBy": "username",
       "defaultSortOrder": "ASC"
     },
@@ -224,7 +224,7 @@
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "id"
+          "mainField": "name"
         },
         "list": {
           "label": "looking_fors",
@@ -339,12 +339,16 @@
     "layouts": {
       "list": [
         "id",
+        "username",
         "email",
-        "confirmed",
-        "username"
+        "confirmed"
       ],
       "edit": [
         [
+          {
+            "name": "username",
+            "size": 6
+          },
           {
             "name": "email",
             "size": 6
@@ -374,18 +378,6 @@
           {
             "name": "organisation",
             "size": 6
-          }
-        ],
-        [
-          {
-            "name": "username",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "linkedin",
-            "size": 6
           },
           {
             "name": "full_name",
@@ -398,25 +390,31 @@
             "size": 6
           },
           {
-            "name": "news_consent",
-            "size": 4
+            "name": "linkedin",
+            "size": 6
           }
         ],
         [
+          {
+            "name": "news_consent",
+            "size": 4
+          },
           {
             "name": "looking_fors",
             "size": 6
-          },
-          {
-            "name": "focus_regions",
-            "size": 6
           }
         ],
         [
           {
-            "name": "connection_requests_sent",
+            "name": "focus_regions",
             "size": 6
           },
+          {
+            "name": "connection_requests_sent",
+            "size": 6
+          }
+        ],
+        [
           {
             "name": "connection_requests_received",
             "size": 6

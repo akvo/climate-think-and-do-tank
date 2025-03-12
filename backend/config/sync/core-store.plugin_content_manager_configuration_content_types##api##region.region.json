@@ -125,9 +125,9 @@
     "layouts": {
       "list": [
         "id",
-        "createdAt",
-        "updatedAt",
-        "name"
+        "name",
+        "parent_region",
+        "country"
       ],
       "edit": [
         [
