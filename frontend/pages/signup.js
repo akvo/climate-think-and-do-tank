@@ -4,20 +4,15 @@ import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { validateSignUp } from '@/helpers/utilities';
 import {
-  fetchOrganizationsAndSectors,
   signUp,
   resendVerification,
+  fetchOrganizationsAndRegions,
+  createOrganization,
 } from '@/store/slices/authSlice';
 import Link from 'next/link';
-import {
-  ChevronDown,
-  Globe,
-  Link2,
-  LinkIcon,
-  MapPin,
-  Plus,
-  X,
-} from 'lucide-react';
+import { Eye, EyeOff, Link2, X } from 'lucide-react';
+import CustomDropdown from '@/components/CustomDropdown';
+import { VerifyEmailIcon } from '@/components/Icons';
 
 export default function SignUpForm() {
   const dispatch = useDispatch();
@@ -31,8 +26,11 @@ export default function SignUpForm() {
   });
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showAdditionalDetails, setShowAdditionalDetails] = useState(true);
+  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
   const [showConfirmEmail, setShowConfirmEmail] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [steps, setSteps] = useState([
     { number: 1, label: 'Sign Up', completed: true },
     {
@@ -86,15 +84,43 @@ export default function SignUpForm() {
   };
 
   const handleAdditionalDetailsSubmit = async (additionalData) => {
-    console.log(additionalData);
     try {
       setIsSubmitting(true);
-      await dispatch(
+      setFormErrors({});
+
+      const result = await dispatch(
         signUp({
           ...formData,
           ...additionalData,
+          username: formData.email,
+          stakeholder_role: additionalData.role,
+          full_name: additionalData.name,
+          looking_fors: { id: additionalData.looking_fors },
+          regions: additionalData.regions.map((r) => ({ id: r })),
+          organisation: { id: additionalData.organisation },
         })
       );
+
+      if (signUp.rejected.match(result)) {
+        const error = result.payload;
+
+        if (error.fieldErrors && Object.keys(error.fieldErrors).length > 0) {
+          setFormErrors({
+            ...error.fieldErrors,
+            general: error.message,
+          });
+
+          document
+            .getElementById('error-summary')
+            ?.scrollIntoView({ behavior: 'smooth' });
+          return;
+        }
+
+        setFormErrors({
+          general: error.message || 'Signup failed. Please try again.',
+        });
+        return;
+      }
 
       setSteps((prevSteps) => [
         { ...prevSteps[0], completed: true },
@@ -104,8 +130,9 @@ export default function SignUpForm() {
 
       setShowConfirmEmail(true);
     } catch (error) {
+      console.error('Unexpected error during signup:', error);
       setFormErrors({
-        general: error.message || 'Signup failed. Please try again.',
+        general: 'An unexpected error occurred. Please try again.',
       });
     } finally {
       setIsSubmitting(false);
@@ -116,194 +143,219 @@ export default function SignUpForm() {
     <div>
       {!showAdditionalDetails ? (
         <div className="flex min-h-screen bg-white">
-          {/* Left Section */}
-          <div className="w-1/2 p-12 flex flex-col justify-center">
-            <div className="max-w-md mx-auto w-full">
-              <div className="mb-8">
-                <h1 className="text-xl font-semibold flex items-center gap-1 text-black">
-                  THINK
-                  <span className="text-green-600">&</span>
-                  DO TANK
-                </h1>
-              </div>
-
-              <div className="mb-12">
-                <h2 className="text-4xl font-bold flex items-center gap-2 text-black">
-                  Welcome to the Think and Do Tank Network
-                </h2>
-                <p className="mt-4 text-gray-600">
-                  Sign Up for your user account to access the platform's
-                  features
-                </p>
-              </div>
-
-              {/* General error message */}
-              {formErrors.general && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded">
-                  {formErrors.general}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Username Field */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="username"
-                    className="block text-sm font-medium text-black"
-                  >
-                    Username
-                  </label>
-                  <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    value={formData.username}
-                    onChange={handleChange}
-                    placeholder="Choose a username"
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
-                      formErrors.username
-                        ? 'border-red-500 focus:ring-red-500 '
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
-                  />
-                  {formErrors.username && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {formErrors.username}
-                    </p>
-                  )}
-                </div>
-
-                {/* Email Field */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-black"
-                  >
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="user@address.com"
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
-                      formErrors.email
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
-                  />
-                  {formErrors.email && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {formErrors.email}
-                    </p>
-                  )}
-                </div>
-
-                {/* Password Field */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-black"
-                  >
-                    Password
-                  </label>
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
-                      formErrors.password
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
-                  />
-                  {formErrors.password && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {formErrors.password}
-                    </p>
-                  )}
-                  <p className="mt-1 text-xs text-gray-500">
-                    Must be at least 8 characters with uppercase, lowercase,
-                    number, and special character
+          <div className="w-1/2 p-12 flex flex-col justify-center min-h-screen">
+            <Link href="/" className="mb-4 block">
+              <Image
+                src="/images/logo.png"
+                alt="Kenya Drylands Investment Hub Logo"
+                width={230}
+                height={40}
+                priority
+              />
+            </Link>
+            <div className="flex-grow flex items-center">
+              <div className="max-w-4xl mx-auto w-full">
+                <div className="mb-12">
+                  <h1 className="text-4xl font-bold text-black mb-6">
+                    Welcome to the Think and Do Tank Network
+                  </h1>
+                  <p className="text-gray-600">
+                    Sign Up for your user account to access the platform's
+                    features
                   </p>
                 </div>
 
-                {/* Confirm Password Field */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-black"
-                  >
-                    Confirm Password
-                  </label>
-                  <input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-2 bg-gray-50 border placeholder-gray-500 text-black ${
-                      formErrors.confirmPassword
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-200 focus:ring-green-500'
-                    } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
-                  />
-                  {formErrors.confirmPassword && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {formErrors.confirmPassword}
-                    </p>
-                  )}
-                </div>
+                {formErrors.general && (
+                  <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 rounded-full">
+                    {formErrors.general}
+                  </div>
+                )}
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`
-                w-full 
-                bg-zinc-900 
-                text-white 
-                py-2 
-                rounded-md 
-                transition-colors 
-                duration-200
-                ${
-                  isSubmitting
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:bg-zinc-800'
-                }
-              `}
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center justify-center">
-                      <svg
-                        className="animate-spin h-5 w-5 mr-3"
-                        viewBox="0 0 24 24"
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  {/* Email Field */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="Enter your email"
+                      className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                        formErrors.email ? 'border-red-500' : 'border-gray-200'
+                      } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                    />
+                    {formErrors.email && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {formErrors.email}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Password Field */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="password"
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={formData.password}
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                          formErrors.password
+                            ? 'border-red-500'
+                            : 'border-gray-200'
+                        } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent pr-10`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
                       >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Signing Up...
+                        {showPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </button>
                     </div>
-                  ) : (
-                    'Sign Up'
-                  )}
-                </button>
-              </form>
+                    {formErrors.password && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {formErrors.password}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Confirm Password Field */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="confirmPassword"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Confirm Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                          formErrors.confirmPassword
+                            ? 'border-red-500'
+                            : 'border-gray-200'
+                        } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent pr-10`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </button>
+                    </div>
+                    {formErrors.confirmPassword && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {formErrors.confirmPassword}
+                      </p>
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`
+                    w-full 
+                    bg-green-600 
+                    text-white 
+                    py-3 
+                    rounded-full 
+                    transition-colors 
+                    duration-200
+                    ${
+                      isSubmitting
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'hover:bg-green-700'
+                    }
+                  `}
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center justify-center">
+                        <svg
+                          className="animate-spin h-5 w-5 mr-3"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Signing Up...
+                      </div>
+                    ) : (
+                      'Sign Up'
+                    )}
+                  </button>
+
+                  <div className="text-center text-sm text-gray-600 space-y-2">
+                    <p>
+                      By submitting your files to the platform, you acknowledge
+                      that you agree to our{' '}
+                      <a
+                        href="/terms"
+                        className="text-green-600 hover:underline"
+                      >
+                        Terms of Service
+                      </a>{' '}
+                      and{' '}
+                      <a
+                        href="/guidelines"
+                        className="text-green-600 hover:underline"
+                      >
+                        Community Guidelines
+                      </a>
+                    </p>
+                    <p>
+                      Please be sure not to violate others' copyright or privacy
+                      rights.{' '}
+                      <a
+                        href="/learn-more"
+                        className="text-green-600 hover:underline"
+                      >
+                        Learn more
+                      </a>
+                    </p>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
 
@@ -348,6 +400,7 @@ export default function SignUpForm() {
           formData={formData}
           steps={steps}
           isSubmitting={isSubmitting}
+          formErrors={formErrors}
         />
       )}
     </div>
@@ -359,11 +412,13 @@ const AdditionalDetails = ({
   formData: form,
   steps,
   isSubmitting,
+  formErrors,
 }) => {
   const dispatch = useDispatch();
-  const { organizations, sectors, country, roles } = useSelector(
-    (state) => state.auth
-  );
+  const { organizations, regions, lookingFors, roles, country, topics } =
+    useSelector((state) => state.auth);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const [formData, setFormData] = useState({
     organisation: '',
@@ -374,13 +429,17 @@ const AdditionalDetails = ({
     website: '',
     type: '',
     country: '',
+    regions: [],
+    org_name: '',
   });
 
   const [isOrgModal, setIsOrgModal] = useState(false);
-  useEffect(() => {
-    console.log('Fetching organizations and sectors');
-    dispatch(fetchOrganizationsAndSectors());
-  }, []);
+
+  const filteredOrganizations = searchTerm
+    ? organizations.filter((org) =>
+        org.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : organizations;
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
@@ -395,216 +454,353 @@ const AdditionalDetails = ({
     onSubmit(formData);
   };
 
-  console.log(steps);
+  console.log(formData);
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left Panel */}
-      <div className="w-1/2 bg-zinc-900 p-12 text-white">
-        <div className="mb-16">
-          <h1 className="text-xl font-bold flex items-center gap-1">
-            THINK
-            <span className="text-green-500">&</span>
-            DO TANK
-          </h1>
-        </div>
+    <div className="flex min-h-screen ">
+      <div className="w-1/2 flex flex-col justify-center min-h-screen bg-zinc-900 p-12 text-white">
+        <Link href="/" className="mb-4 block">
+          <Image
+            src="/images/logo-white.png"
+            alt="Kenya Drylands Investment Hub Logo"
+            width={230}
+            height={40}
+            priority
+          />
+        </Link>
 
-        {/* User Icon */}
-        <div className="mb-8">
-          <div className="w-12 h-12 bg-zinc-700 rounded-full flex items-center justify-center">
-            <svg
-              className="w-6 h-6 text-zinc-400"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-            </svg>
-          </div>
-        </div>
-
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-2">
-            Create your account in a few clicks
-          </h2>
-        </div>
-
-        {/* Steps */}
-        <div className="space-y-8">
-          {steps.map((step, index) => (
-            <div key={step.number} className="flex items-center gap-4">
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center border-2 
-                ${
-                  step.completed
-                    ? 'border-green-500'
-                    : step.active
-                    ? 'border-white'
-                    : 'border-zinc-700 text-zinc-700'
-                }`}
-              >
-                {step.completed ? (
-                  <svg
-                    className="w-4 h-4 text-green-500"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M5 13l4 4L19 7" />
-                  </svg>
-                ) : (
-                  step.number
-                )}
+        <div className="flex-grow flex items-center">
+          <div className="max-w-4xl mx-auto w-full">
+            <div className="mb-8">
+              <div className="w-12 h-12 bg-zinc-700 rounded-full flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-zinc-400"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
               </div>
-              <span className={step.active ? 'text-white' : 'text-zinc-600'}>
-                {step.label}
-              </span>
             </div>
-          ))}
-        </div>
 
-        <div className="mt-auto pt-8">
-          <p className="text-zinc-400">{form.email}</p>
+            <div className="mb-10">
+              <h2 className="text-2xl font-bold mb-2">
+                Create your account in a few clicks
+              </h2>
+            </div>
+
+            {/* Steps */}
+            <div className="flex flex-col">
+              {steps.map((step, index) => (
+                <div key={step.number} className="flex">
+                  <div className="flex flex-col items-center">
+                    <div
+                      className={`w-16 h-16 rounded-full flex items-center justify-center ${
+                        step.completed
+                          ? 'bg-transparent border-2 border-white'
+                          : step.active
+                          ? 'bg-zinc-600'
+                          : 'bg-transparent border-2 border-white'
+                      }`}
+                    >
+                      {step.completed ? (
+                        <svg
+                          className="w-8 h-8 text-white"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <span className="text-3xl text-white">
+                          {step.number}
+                        </span>
+                      )}
+                    </div>
+
+                    {index < steps.length - 1 && (
+                      <div className="w-0.5 h-24 bg-white"></div>
+                    )}
+                  </div>
+
+                  <div className="ml-12 mt-4">
+                    <span className="text-2xl text-white">{step.label}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-auto pt-8">
+              <p className="text-zinc-400">{form.email}</p>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Right Panel */}
-      <div className="w-1/2 p-12 bg-white">
+      <div className="w-1/2 p-12 bg-white flex items-center text-black">
         {steps.find((step) => step.active)?.number === 2 && (
-          <div className="max-w-xl mx-auto">
+          <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold mb-12 text-black">
-              Let's get started
+              Basic Information
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            {formErrors.general && (
+              <div
+                id="error-summary"
+                className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6"
+              >
+                <p className="font-medium">{formErrors.general}</p>
+                {Object.keys(formErrors).length > 1 && (
+                  <ul className="mt-2 list-disc pl-5">
+                    {Object.entries(formErrors)
+                      .filter(([key]) => key !== 'general')
+                      .map(([field, message]) => (
+                        <li key={field}>
+                          {field.charAt(0).toUpperCase() + field.slice(1)}:{' '}
+                          {message}
+                        </li>
+                      ))}
+                  </ul>
+                )}
+              </div>
+            )}
+            <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-2">
                 <label
-                  htmlFor="role"
-                  className="block text-sm font-medium text-black"
+                  htmlFor="name"
+                  className="block text-lg font-medium text-gray-700"
                 >
-                  Role
+                  Names
                 </label>
-                <select
-                  id="role"
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-500 text-black"
-                  name="role"
-                  value={formData.role}
+                <input
+                  id="name"
+                  type="text"
+                  placeholder="Enter your full name"
+                  className="w-full p-4 py-2 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  name="name"
+                  value={formData.name || ''}
                   onChange={handleChange}
-                >
-                  <option value="">Select Role</option>
-                  {roles.map((role) => (
-                    <option key={role.id} value={role.id}>
-                      {role.name}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium">
+                <label
+                  htmlFor="organization"
+                  className="block text-lg font-medium text-gray-700"
+                >
                   Organization name
                 </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Enter your organization name"
-                    className="flex-1 px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
-                    value={formData.organisation}
-                    onChange={handleChange}
-                  />
+                <div className="relative flex gap-2 border border-gray-200 rounded-full p-1">
+                  <div className="relative flex-1">
+                    <input
+                      id="organisation"
+                      type="text"
+                      placeholder="Enter your organisation name"
+                      className="w-full p-4 py-2 bg-white rounded-full focus:outline-none"
+                      name="organisation"
+                      value={searchTerm || ''}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setShowSuggestions(true);
+                      }}
+                      onFocus={() => setShowSuggestions(true)}
+                    />
+
+                    {showSuggestions && searchTerm && (
+                      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                        {filteredOrganizations.length > 0 ? (
+                          filteredOrganizations.map((org) => (
+                            <div
+                              key={org.id}
+                              className="p-3 hover:bg-gray-50 cursor-pointer"
+                              onClick={() => {
+                                setFormData({
+                                  ...formData,
+                                  organisation: org.id,
+                                  organisationName: org.name,
+                                });
+                                setSearchTerm(org.name);
+                                setShowSuggestions(false);
+                              }}
+                            >
+                              {org.name}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="p-3 text-gray-500">
+                            No organizations found
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
                   <button
+                    type="button"
                     onClick={() => setIsOrgModal(true)}
-                    className="px-4 py-2 rounded-full bg-gray-50 hover:bg-gray-100 text-gray-700 flex items-center gap-2"
+                    className="px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center gap-2 whitespace-nowrap"
                   >
                     Add Organization
-                    <Plus size={20} />
+                    <span className="font-bold">+</span>
                   </button>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label
-                  htmlFor="country"
-                  className="block text-sm font-medium text-black"
-                >
-                  County
-                </label>
-                <select
-                  id="country"
-                  name="country"
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-500 text-black"
-                  value={formData.country}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Organization</option>
-                  {country.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.country_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <CustomDropdown
+                id="role"
+                label="Role"
+                options={[
+                  { id: 'Investor', label: 'Investor' },
+                  { id: 'Government', label: 'Government' },
+                  { id: 'Farmer', label: 'Farmer' },
+                  { id: 'NGO', label: 'NGO' },
+                ]}
+                isMulti={false}
+                value={formData.role}
+                onChange={(value) => setFormData({ ...formData, role: value })}
+                placeholder="Enter your role"
+              />
+
+              <CustomDropdown
+                id="regions"
+                label="Focus Region"
+                options={
+                  regions &&
+                  regions.map((f) => {
+                    return {
+                      id: f.id,
+                      label: f.name,
+                    };
+                  })
+                }
+                isMulti={true}
+                value={formData.regions}
+                onChange={(value) =>
+                  setFormData({ ...formData, regions: value })
+                }
+                placeholder="Select regions"
+              />
+
+              <CustomDropdown
+                id="looking_fors"
+                label="Looking for"
+                options={
+                  lookingFors &&
+                  lookingFors.map((f) => {
+                    return {
+                      id: f.id,
+                      label: f.name,
+                    };
+                  })
+                }
+                isMulti={false}
+                value={formData.looking_fors}
+                onChange={(value) =>
+                  setFormData({ ...formData, looking_fors: value })
+                }
+                placeholder="Select option"
+              />
 
               <div className="space-y-2">
                 <label
-                  htmlFor="sector"
-                  className="block text-sm font-medium text-black"
+                  htmlFor="linkedin"
+                  className="block text-lg font-medium text-gray-700"
                 >
-                  Sector
+                  Linkedin Profile
                 </label>
-
-                <select
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-500 text-black"
-                  id="sector"
-                  name="sector"
-                  value={formData.sector}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Sector</option>
-                  {sectors.map((sector) => (
-                    <option key={sector.id} value={sector.id}>
-                      {sector.sector_name}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <input
+                    id="linkedin"
+                    type="text"
+                    placeholder="https://www.linkedin.com/in/user-o-bb6123b2/"
+                    className="w-full p-4 py-2 pl-6 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    name="linkedin"
+                    value={formData.linkedin || ''}
+                    onChange={handleChange}
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-4 flex items-center text-gray-400"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
               </div>
 
-              <div className="flex items-start gap-2">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  className="mt-1"
-                  checked={formData.acceptTerms}
-                  onChange={(e) =>
-                    setFormData({ ...formData, acceptTerms: e.target.checked })
-                  }
-                />
-                <label htmlFor="terms" className="text-sm text-black">
-                  I accept the{' '}
-                  <Link href="#" className="text-blue-600 hover:underline">
-                    Terms of Service
-                  </Link>{' '}
-                  and I'm authorised to accept for my organization
-                </label>
+              <div className="space-y-4 mt-6">
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="newsletter"
+                    className="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    checked={formData.newsletter || false}
+                    onChange={(e) =>
+                      setFormData({ ...formData, newsletter: e.target.checked })
+                    }
+                  />
+                  <label
+                    htmlFor="newsletter"
+                    className="text-base text-gray-700"
+                  >
+                    Send me the latest News and Updates
+                  </label>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    className="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    checked={formData.acceptTerms || false}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        acceptTerms: e.target.checked,
+                      })
+                    }
+                  />
+                  <label htmlFor="terms" className="text-base text-gray-700">
+                    I accept the{' '}
+                    <span className="font-bold">Terms of Service</span> and I'm
+                    authorised to accept for my organization
+                  </label>
+                </div>
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className={`
-                w-full 
-                bg-zinc-900 
-                text-white 
-                py-2 
-                rounded-md 
-                transition-colors 
-                duration-200
-                ${
-                  isSubmitting
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:bg-zinc-800'
-                }
-              `}
+                  w-full 
+                  bg-green-600 
+                  text-white 
+                  py-2 
+                  rounded-full 
+                  text-lg
+                  font-medium
+                  transition-colors 
+                  duration-200
+                  ${
+                    isSubmitting
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:bg-green-700'
+                  }
+                `}
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center">
@@ -643,6 +839,8 @@ const AdditionalDetails = ({
             onClose={() => setIsOrgModal(false)}
             formData={formData}
             setFormData={setFormData}
+            country={country}
+            topics={topics}
           />
         )}
       </div>
@@ -699,36 +897,47 @@ const ConfirmEmail = ({ user }) => {
     }
   };
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
-          Check your email
-        </h2>
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <p className="text-gray-600 mb-4">
-            We've sent a verification link to {user.email}. Please click the
-            link to verify your account.
-          </p>
-          <p className="text-sm text-gray-500">
-            If you don't see the email, check your spam folder or{' '}
-            {getResendButton()}
-          </p>
-        </div>
-      </div>
+    <div className="flex flex-col items-center justify-center min-h-screen w-[100%] gap-2">
+      <VerifyEmailIcon />
+      <h2 className="text-3xl font-extrabold text-gray-900 mt-4">
+        Verify your email
+      </h2>{' '}
+      <p className="text-gray-600 mb-4">
+        We’ll send you a link to the email address you signed up with
+      </p>
+      <button className="px-4 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors min-w-72">
+        Continue
+      </button>
     </div>
   );
 };
 
-const OrganizationModal = ({ onClose, formData, setFormData }) => {
-  const handleSubmit = (e) => {};
+const OrganizationModal = ({
+  onClose,
+  formData,
+  setFormData,
+  country,
+  topics,
+}) => {
+  const dispatch = useDispatch();
 
-  const handleTopicSelect = (topic) => {
-    setFormData((prev) => ({
-      ...prev,
-      topics: prev.topics.includes(topic)
-        ? prev.topics.filter((t) => t !== topic)
-        : [...prev.topics, topic],
-    }));
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const resultAction = await dispatch(createOrganization(formData));
+      if (createOrganization.fulfilled.match(resultAction)) {
+        const newOrganization = resultAction.payload.data;
+        setFormData({
+          ...formData,
+          organisation: newOrganization.id,
+          organisationName: newOrganization.name,
+        });
+        onClose();
+      }
+    } catch (error) {
+      console.error('Error creating organization:', error);
+    }
   };
 
   return (
@@ -752,9 +961,9 @@ const OrganizationModal = ({ onClose, formData, setFormData }) => {
               type="text"
               placeholder="Enter your organization name"
               className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
-              value={formData.name}
+              value={formData.org_name}
               onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
+                setFormData({ ...formData, org_name: e.target.value })
               }
             />
           </div>
@@ -779,101 +988,55 @@ const OrganizationModal = ({ onClose, formData, setFormData }) => {
             </div>
           </div>
 
-          {/* Organization Type */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">
-              Organization type
-            </label>
-            <div className="relative">
-              <select
-                className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
-                value={formData.type}
-                onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value })
-                }
-              >
-                <option value="">Select organization type</option>
-                <option value="ngo">NGO</option>
-                <option value="company">Company</option>
-                <option value="government">Government</option>
-              </select>
-              <ChevronDown
-                className="absolute right-4 top-3.5 text-gray-400"
-                size={20}
-              />
-            </div>
-          </div>
+          <CustomDropdown
+            id="type"
+            label="Type"
+            options={[
+              { id: 'NGO', label: 'NGO' },
+              { id: 'Company', label: 'Company' },
+            ]}
+            isMulti={false}
+            value={formData.type}
+            onChange={(value) => setFormData({ ...formData, type: value })}
+            placeholder="Select organization type"
+          />
 
-          {/* Country */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Country</label>
-            <div className="relative">
-              <select
-                className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
-                value={formData.country}
-                onChange={(e) =>
-                  setFormData({ ...formData, country: e.target.value })
-                }
-              >
-                <option value="">Select country</option>
-                <option value="kenya">Kenya</option>
-                <option value="uganda">Uganda</option>
-                <option value="tanzania">Tanzania</option>
-              </select>
-              <ChevronDown
-                className="absolute right-4 top-3.5 text-gray-400"
-                size={20}
-              />
-            </div>
-          </div>
+          <CustomDropdown
+            id="country"
+            label="Country"
+            options={
+              country &&
+              country.map((f) => {
+                return {
+                  id: f.id,
+                  label: f.country_name,
+                };
+              })
+            }
+            isMulti={false}
+            value={formData.country}
+            onChange={(value) => setFormData({ ...formData, country: value })}
+            placeholder="Select country"
+          />
 
           {/* Topics */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Topics</label>
-            <div className="relative">
-              <div className="flex flex-wrap gap-2 p-2 border border-gray-200 rounded-2xl bg-white min-h-[48px]">
-                {formData.topics.map((topic) => (
-                  <span
-                    key={topic}
-                    className="px-3 py-1 bg-gray-100 rounded-full text-sm flex items-center gap-1"
-                  >
-                    {topic}
-                    <button
-                      type="button"
-                      onClick={() => handleTopicSelect(topic)}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      <X size={14} />
-                    </button>
-                  </span>
-                ))}
-              </div>
-              <div className="mt-2">
-                <button
-                  type="button"
-                  onClick={() => handleTopicSelect('Agrifood')}
-                  className={`mr-2 px-3 py-1 rounded-full text-sm ${
-                    formData.topics.includes('Agrifood')
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}
-                >
-                  Agrifood
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleTopicSelect('Social Accountability')}
-                  className={`px-3 py-1 rounded-full text-sm ${
-                    formData.topics.includes('Social Accountability')
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}
-                >
-                  Social Accountability
-                </button>
-              </div>
-            </div>
-          </div>
+          <CustomDropdown
+            id="topics"
+            label="Topics"
+            options={
+              topics &&
+              topics.map((f) => {
+                return {
+                  id: f.id,
+                  label: f.name,
+                };
+              })
+            }
+            isMulti={true}
+            value={formData.topics}
+            onChange={(value) => setFormData({ ...formData, topics: value })}
+            placeholder="Select topics"
+          />
 
           <button
             type="submit"

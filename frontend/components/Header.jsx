@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -8,18 +9,18 @@ export default function Header() {
 
   return (
     <header className="border-b border-gray-200 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-green-500 rounded-lg" />
-              <div className="text-zinc-900">
-                <div className="text-sm font-bold leading-none">
-                  Kenya Drylands
-                </div>
-                <div className="text-xs">Investment Hub.</div>
-              </div>
+              <Image
+                src="/images/logo.png"
+                alt="Kenya Drylands Investment Hub Logo"
+                width={230}
+                height={40}
+                priority
+              />
             </Link>
           </div>
 

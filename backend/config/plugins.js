@@ -68,7 +68,15 @@ module.exports = ({ env }) => {
     'users-permissions': {
       config: {
         register: {
-          allowedFields: ['country', 'organisation', 'sector'],
+          allowedFields: [
+            'organisation',
+            'full_name',
+            'stakeholder_role',
+            'linkedin',
+            'news_consent',
+            'looking_fors',
+            'focus_regions',
+          ],
         },
       },
     },
