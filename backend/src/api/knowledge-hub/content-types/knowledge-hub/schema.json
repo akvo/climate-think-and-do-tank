@@ -50,10 +50,11 @@
         "audios"
       ]
     },
-    "topics": {
+    "thematic": {
       "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::topic.topic"
+      "relation": "oneToOne",
+      "target": "api::thematic.thematic",
+      "inversedBy": "knowledge_hub"
     },
     "regions": {
       "type": "relation",

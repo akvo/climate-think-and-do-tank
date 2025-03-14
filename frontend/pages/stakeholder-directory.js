@@ -476,7 +476,7 @@ export default function StakeholderDirectory() {
             <button
               onClick={loadMoreStakeholders}
               disabled={loading && currentPage > 1}
-              className="px-8 py-3  text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-zinc-400 bg-green-600"
+              className="px-8 py-3  text-white rounded-[100px] hover:bg-green-700 transition-colors disabled:bg-zinc-400 bg-green-600 font-semibold"
             >
               {loading && currentPage > 1 ? (
                 <div className="flex items-center">

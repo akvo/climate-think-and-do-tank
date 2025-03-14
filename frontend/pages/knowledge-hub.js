@@ -1,274 +1,149 @@
-import { useState, useEffect } from 'react';
-import { Search } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { ArrowDown, ArrowUp, Search } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useSearchParams } from 'next/navigation';
 import OrganizationModal from '@/components/OrganizationModal';
-
-// Dummy data
-const dummyData = [
-  {
-    id: 1,
-    type: 'FINANCING RESOURCE',
-    title: 'Implementing Sustainable Low and Non-Chemical Development in SIDS',
-    description:
-      'Project focusing on sustainable development practices in Small Island Developing States, with emphasis on reducing chemical usage.',
-    image: 'https://placehold.co/400x200',
-    topic: 'Sustainability',
-    location: 'Caribbean',
-    organization: 'UNEP',
-  },
-  {
-    id: 2,
-    type: 'TECHNICAL GUIDE',
-    title: 'Best Practices in Tilapia Farming',
-    description:
-      'Comprehensive guide on sustainable tilapia farming methods, including water management and feed optimization.',
-    image: 'https://placehold.co/400x200',
-    topic: 'Aquaculture',
-    location: 'Southeast Asia',
-    organization: 'FAO',
-  },
-  {
-    id: 3,
-    type: 'CASE STUDY',
-    title: 'Urban Horticulture Success Stories',
-    description:
-      'Collection of successful urban farming initiatives from major cities, highlighting innovative growing techniques.',
-    image: 'https://placehold.co/400x200',
-    topic: 'Horticulture',
-    location: 'Global',
-    organization: 'World Bank',
-  },
-  {
-    id: 4,
-    type: 'FINANCING RESOURCE',
-    title: 'Green Climate Fund for Agriculture',
-    description:
-      'Funding opportunities for climate-smart agriculture projects in developing nations.',
-    image: 'https://placehold.co/400x200',
-    topic: 'Climate Change',
-    location: 'Africa',
-    organization: 'GCF',
-  },
-  {
-    id: 5,
-    type: 'RESEARCH PAPER',
-    title: 'Sustainable Fishing Practices in Pacific Islands',
-    description:
-      'Research on traditional and modern sustainable fishing methods in Pacific Island communities.',
-    image: 'https://placehold.co/400x200',
-    topic: 'Fisheries',
-    location: 'Pacific',
-    organization: 'WorldFish',
-  },
-  {
-    id: 6,
-    type: 'TECHNICAL GUIDE',
-    title: 'Organic Certification Guidelines',
-    description:
-      'Step-by-step guide for obtaining organic certification for small-scale farmers.',
-    image: 'https://placehold.co/400x200',
-    topic: 'Organic Farming',
-    location: 'Global',
-    organization: 'IFOAM',
-  },
-];
-
-// Filter options
-const filterOptions = {
-  topics: [
-    'Sustainability',
-    'Aquaculture',
-    'Horticulture',
-    'Climate Change',
-    'Fisheries',
-    'Organic Farming',
-  ],
-  locations: ['Caribbean', 'Southeast Asia', 'Global', 'Africa', 'Pacific'],
-  organizations: ['UNEP', 'FAO', 'World Bank', 'GCF', 'WorldFish', 'IFOAM'],
-};
-
-// Simulated API call
-const fetchData = async ({
-  search = '',
-  topics = [],
-  locations = [],
-  organizations = [],
-  sortBy = 'title',
-  sortOrder = 'asc',
-  page = 1,
-  perPage = 6,
-}) => {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 800));
-
-  let filteredData = [...dummyData];
-
-  // Apply filters
-  if (search) {
-    filteredData = filteredData.filter(
-      (card) =>
-        card.title.toLowerCase().includes(search.toLowerCase()) ||
-        card.description.toLowerCase().includes(search.toLowerCase())
-    );
-  }
-
-  if (topics.length > 0) {
-    filteredData = filteredData.filter((card) => topics.includes(card.topic));
-  }
-
-  if (locations.length > 0) {
-    filteredData = filteredData.filter((card) =>
-      locations.includes(card.location)
-    );
-  }
-
-  if (organizations.length > 0) {
-    filteredData = filteredData.filter((card) =>
-      organizations.includes(card.organization)
-    );
-  }
-
-  // Apply sorting
-  filteredData.sort((a, b) => {
-    let comparison = 0;
-    switch (sortBy) {
-      case 'title':
-        comparison = a.title.localeCompare(b.title);
-        break;
-      case 'type':
-        comparison = a.type.localeCompare(b.type);
-        break;
-      case 'organization':
-        comparison = a.organization.localeCompare(b.organization);
-        break;
-      default:
-        comparison = a.title.localeCompare(b.title);
-    }
-    return sortOrder === 'asc' ? comparison : -comparison;
-  });
-
-  // Calculate pagination
-  const totalItems = filteredData.length;
-  const start = (page - 1) * perPage;
-  const paginatedData = filteredData.slice(start, start + perPage);
-
-  return {
-    data: paginatedData,
-    total: totalItems,
-    totalPages: Math.ceil(totalItems / perPage),
-  };
-};
+import { useDispatch, useSelector } from 'react-redux';
+import LocationsFilter from '@/components/LocationFilter';
+import TopicsFilter from '@/components/TopicFilter';
+import Image from 'next/image';
+import {
+  fetchKnowledgeHubs,
+  clearKnowledgeHubs,
+} from '@/store/slices/knowledgeHubSlice';
+import debounce from 'lodash/debounce';
 
 export default function KnowledgeHub() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const dispatch = useDispatch();
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [openFilter, setOpenFilter] = useState(null);
+  const [activeFilters, setActiveFilters] = useState({
+    thematicFocus: [],
+    focusRegions: [],
+    type: [],
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [allData, setAllData] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilters, setActiveFilters] = useState({
-    topics: [],
-    locations: [],
-    organizations: [],
-  });
-  const [openFilter, setOpenFilter] = useState(null);
-  const [sortConfig, setSortConfig] = useState({
-    field: 'title',
-    order: 'asc',
-  });
 
-  // Load data based on current filters and sort
-  const loadData = async (isLoadMore = false) => {
-    setIsLoading(true);
-    try {
-      const result = await fetchData({
-        search: searchQuery,
-        ...activeFilters,
-        sortBy: sortConfig.field,
-        sortOrder: sortConfig.order,
-        page: isLoadMore ? currentPage + 1 : 1,
-      });
+  const { knowledgeHubs, loading, error, currentPage, hasMore } = useSelector(
+    (state) => state.knowledgeHub
+  );
 
-      if (isLoadMore) {
-        setAllData((prev) => [...prev, ...result.data]);
-        setCurrentPage((prev) => prev + 1);
-      } else {
-        setAllData(result.data);
-        setCurrentPage(1);
-      }
+  const { thematics = [], regions = [] } = useSelector((state) => state.auth);
 
-      setHasMore(result.data.length === 6);
-    } catch (error) {
-      console.error('Error loading data:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  const filterOptions = {
+    thematicFocus: [
+      'All',
+      ...thematics
+        .map((topic) => topic.name || topic.attributes?.name)
+        .filter(Boolean),
+    ],
+    focusRegions: [
+      'All Locations',
+      ...regions.map((region) => region.name || region.attributes?.name),
+    ],
+    type: ['PDF', 'WEB_LINK'],
   };
 
-  // Initialize from URL params
   useEffect(() => {
-    const handleInitialLoad = () => {
-      const search = searchParams.get('search') || '';
-      const topics =
-        searchParams.get('topics')?.split(',').filter(Boolean) || [];
-      const locations =
-        searchParams.get('locations')?.split(',').filter(Boolean) || [];
-      const organizations =
-        searchParams.get('organizations')?.split(',').filter(Boolean) || [];
-      const sortBy = searchParams.get('sortBy') || 'title';
-      const sortOrder = searchParams.get('sortOrder') || 'asc';
+    if (!router.isReady) return;
 
-      setSearchQuery(search);
-      setActiveFilters({
-        topics: topics.filter((t) => filterOptions.topics.includes(t)),
-        locations: locations.filter((l) => filterOptions.locations.includes(l)),
-        organizations: organizations.filter((o) =>
-          filterOptions.organizations.includes(o)
-        ),
-      });
-      setSortConfig({ field: sortBy, order: sortOrder });
-
-      setAllData([]);
-      setHasMore(true);
-      setCurrentPage(1);
+    const filters = {
+      thematicFocus: router.query.thematicFocus
+        ? router.query.thematicFocus.split(',')
+        : [],
+      focusRegions: router.query.focusRegions
+        ? router.query.focusRegions.split(',')
+        : [],
+      type: router.query.type ? router.query.type.split(',') : [],
     };
 
-    handleInitialLoad();
-    loadData();
-  }, [searchParams]);
+    setActiveFilters(filters);
+    setSearchQuery(router.query.query || '');
 
-  useEffect(() => {
-    if (!isLoading) {
-      loadData();
-      updateQueryParams(activeFilters, sortConfig, searchQuery);
-    }
-  }, [activeFilters, sortConfig, searchQuery]);
+    dispatch(clearKnowledgeHubs());
+    dispatch(
+      fetchKnowledgeHubs({
+        page: 1,
+        query: router.query.query || '',
+        filters,
+      })
+    );
+  }, [router.isReady, router.query]);
 
-  const updateQueryParams = (filters, sort, search) => {
-    const params = new URLSearchParams();
+  const updateFilters = (newFilters) => {
+    const query = {};
+    if (searchQuery) query.query = searchQuery;
+    if (newFilters.thematicFocus.length > 0)
+      query.thematicFocus = newFilters.thematicFocus.join(',');
+    if (newFilters.focusRegions.length > 0)
+      query.focusRegions = newFilters.focusRegions.join(',');
+    if (newFilters.type.length > 0) query.type = newFilters.type.join(',');
 
-    if (search) params.set('search', search);
-    if (sort.field !== 'title') params.set('sortBy', sort.field);
-    if (sort.order !== 'asc') params.set('sortOrder', sort.order);
-
-    Object.entries(filters).forEach(([key, values]) => {
-      if (values.length > 0) {
-        params.set(key, values.join(','));
-      }
-    });
-
-    router.push(`?${params.toString()}`, undefined, { shallow: true });
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { ...query },
+      },
+      undefined,
+      { shallow: true }
+    );
   };
 
-  // Handle click outside filters
+  const clearFilters = () => {
+    const emptyFilters = {
+      thematicFocus: [],
+      focusRegions: [],
+      type: [],
+    };
+    setActiveFilters(emptyFilters);
+    setSearchQuery('');
+
+    const query = { ...router.query };
+    delete query.thematicFocus;
+    delete query.focusRegions;
+    delete query.type;
+    delete query.query;
+
+    router.push(
+      {
+        pathname: router.pathname,
+        query,
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
+
+  const loadMoreKnowledgeHubs = () => {
+    dispatch(
+      fetchKnowledgeHubs({
+        page: currentPage + 1,
+        query: searchQuery,
+        filters: activeFilters,
+      })
+    );
+  };
+
+  const toggleFilter = (filterType, option) => {
+    const updatedFilters = { ...activeFilters };
+    if (updatedFilters[filterType].includes(option)) {
+      updatedFilters[filterType] = updatedFilters[filterType].filter(
+        (item) => item !== option
+      );
+    } else {
+      updatedFilters[filterType] = [...updatedFilters[filterType], option];
+    }
+
+    setActiveFilters(updatedFilters);
+    updateFilters(updatedFilters);
+  };
+
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (openFilter && !event.target.closest('.filter-dropdown')) {
+    const handleClickOutside = (e) => {
+      if (openFilter && !e.target.closest('.filter-dropdown')) {
         setOpenFilter(null);
       }
     };
@@ -277,192 +152,275 @@ export default function KnowledgeHub() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [openFilter]);
 
-  const toggleFilter = (type, value) => {
-    setActiveFilters((prev) => ({
-      ...prev,
-      [type]: prev[type].includes(value)
-        ? prev[type].filter((item) => item !== value)
-        : [...prev[type], value],
-    }));
+  const handleSearch = useCallback(
+    debounce((query) => {
+      const queryParams = { ...router.query, query };
+
+      // Remove query if it's empty
+      if (!query) {
+        delete queryParams.query;
+      }
+
+      router.push(
+        {
+          pathname: router.pathname,
+          query: queryParams,
+        },
+        undefined,
+        { shallow: true }
+      );
+
+      dispatch(
+        fetchKnowledgeHubs({
+          page: 1,
+          query,
+          filters: activeFilters,
+        })
+      );
+    }, 500),
+    []
+  );
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    handleSearch(searchQuery);
   };
 
-  const clearFilters = () => {
-    setActiveFilters({
-      topics: [],
-      locations: [],
-      organizations: [],
-    });
-    setSearchQuery('');
-    setSortConfig({ field: 'title', order: 'asc' });
-    setCurrentPage(1);
-    setAllData([]);
-    setHasMore(true);
-  };
-
-  const handleSort = (field) => {
-    setSortConfig((prev) => ({
-      field,
-      order: prev.field === field && prev.order === 'asc' ? 'desc' : 'asc',
-    }));
-  };
-
-  const handleSearch = (value) => {
-    setSearchQuery(value);
-  };
-
-  const handleCardClick = (card) => {
+  const openCardModal = (card) => {
     setSelectedCard(card);
     setIsModalOpen(true);
   };
 
-  const hasActiveFilters =
-    Object.values(activeFilters).some((filter) => filter.length > 0) ||
-    searchQuery !== '';
-
   return (
     <div className="min-h-screen bg-white">
       {/* Search Header */}
-      <div className="bg-zinc-900 py-6 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-white">Knowledge Hub</h1>
-            <div className="relative w-96">
+      <div className="py-4 px-4 bg-[#f1f3f5] text-black">
+        <div className="container mx-auto">
+          <form onSubmit={handleSearchSubmit}>
+            <div className="relative">
               <input
                 type="text"
                 placeholder="Try keywords like: 'tilapia' or 'horticulture'"
-                className="w-full pl-4 pr-10 py-2 rounded-md bg-white text-black"
+                className="w-full pl-4 pr-10 py-3 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  handleSearch(e.target.value);
+                }}
               />
-              <Search
-                className="absolute right-3 top-2.5 text-gray-400"
-                size={20}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Sort Options */}
-      <div className="border-b">
-        <div className="max-w-7xl mx-auto px-4 py-2">
-          <div className="flex items-center gap-4 text-sm">
-            <span className="text-gray-500">Sort by:</span>
-            {[
-              { label: 'Title', value: 'title' },
-              { label: 'Type', value: 'type' },
-              { label: 'Organization', value: 'organization' },
-            ].map((option) => (
               <button
-                key={option.value}
-                onClick={() => handleSort(option.value)}
-                className={`flex items-center gap-1 ${
-                  sortConfig.field === option.value
-                    ? 'text-green-600 font-semibold'
-                    : 'text-gray-600'
-                }`}
+                type="submit"
+                className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                {option.label}
-                {sortConfig.field === option.value && (
-                  <span className="ml-1">
-                    {sortConfig.order === 'asc' ? '↑' : '↓'}
-                  </span>
-                )}
+                <Search size={20} />
               </button>
-            ))}
-          </div>
+            </div>
+          </form>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="border-b relative">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-6">
-            {Object.entries(filterOptions).map(([filterType, options]) => (
-              <div key={filterType} className="relative filter-dropdown">
-                <button
-                  className={`text-gray-700 hover:text-gray-900 flex items-center gap-1 ${
-                    activeFilters[filterType].length > 0
-                      ? 'font-semibold text-green-600'
-                      : ''
-                  }`}
-                  onClick={() =>
-                    setOpenFilter(openFilter === filterType ? null : filterType)
-                  }
-                >
-                  {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
-                  <svg
-                    className={`w-4 h-4 transition-transform ${
-                      openFilter === filterType ? 'transform rotate-180' : ''
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+      {/* Filters Section */}
+      <div className="border-t border-b border-gray-200 bg-white">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex gap-6 flex-wrap">
+              {Object.keys(filterOptions).map((filterType) => (
+                <div key={filterType} className="relative filter-dropdown">
+                  <button
+                    onClick={() =>
+                      setOpenFilter(
+                        openFilter === filterType ? null : filterType
+                      )
+                    }
+                    className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </button>
-                {openFilter === filterType && (
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border">
-                    {options.map((option) => (
-                      <label
-                        key={option}
-                        className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={activeFilters[filterType].includes(option)}
-                          onChange={() => toggleFilter(filterType, option)}
-                          className="mr-2"
-                        />
-                        {option}
-                      </label>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+                    {filterType === 'focusRegions'
+                      ? 'Location'
+                      : filterType === 'thematicFocus'
+                      ? 'Topics'
+                      : filterType.charAt(0).toUpperCase() +
+                        filterType.slice(1)}
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  {openFilter === filterType && (
+                    <div className="absolute top-full left-0 mt-2 z-10 min-w-[600px]">
+                      {filterType === 'thematicFocus' ? (
+                        <TopicsFilter
+                          topics={filterOptions[filterType]}
+                          onApply={(selectedTopics) => {
+                            const topicsToApply = selectedTopics.includes('All')
+                              ? []
+                              : selectedTopics;
 
-            {hasActiveFilters && (
+                            const newFilters = {
+                              ...activeFilters,
+                              [filterType]: topicsToApply,
+                            };
+                            setActiveFilters(newFilters);
+                            updateFilters(newFilters);
+                            setOpenFilter(null);
+                          }}
+                          onClear={() => {
+                            const newFilters = {
+                              ...activeFilters,
+                              [filterType]: [],
+                            };
+                            setActiveFilters(newFilters);
+                            updateFilters(newFilters);
+                            setOpenFilter(null);
+                          }}
+                        />
+                      ) : filterType === 'focusRegions' ? (
+                        <LocationsFilter
+                          locations={[
+                            'All Locations',
+                            ...filterOptions[filterType],
+                          ]}
+                          onApply={(selectedLocations) => {
+                            const locationsToApply = selectedLocations.includes(
+                              'All Locations'
+                            )
+                              ? []
+                              : selectedLocations;
+
+                            const newFilters = {
+                              ...activeFilters,
+                              [filterType]: locationsToApply,
+                            };
+                            setActiveFilters(newFilters);
+                            updateFilters(newFilters);
+                            setOpenFilter(null);
+                          }}
+                          onClear={() => {
+                            const newFilters = {
+                              ...activeFilters,
+                              [filterType]: [],
+                            };
+                            setActiveFilters(newFilters);
+                            updateFilters(newFilters);
+                            setOpenFilter(null);
+                          }}
+                        />
+                      ) : (
+                        <div className="w-48 bg-white rounded-md shadow-lg border max-h-60 overflow-y-auto">
+                          {filterOptions[filterType].length > 0 ? (
+                            filterOptions[filterType].map((option) => (
+                              <label
+                                key={option}
+                                className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={activeFilters[filterType].includes(
+                                    option
+                                  )}
+                                  onChange={() =>
+                                    toggleFilter(filterType, option)
+                                  }
+                                  className="mr-2"
+                                />
+                                {option}
+                              </label>
+                            ))
+                          ) : (
+                            <div className="px-4 py-2 text-gray-500">
+                              No options available
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            {(activeFilters.thematicFocus.length > 0 ||
+              activeFilters.focusRegions.length > 0 ||
+              activeFilters.type.length > 0) && (
               <button
-                className="text-green-600 hover:text-green-700"
                 onClick={clearFilters}
+                className="text-green-600 hover:text-green-700"
               >
                 Clear filters
               </button>
             )}
           </div>
         </div>
+
+        {/* Active Filters Tags */}
+        {(activeFilters.thematicFocus?.length > 0 ||
+          activeFilters.focusRegions?.length > 0 ||
+          activeFilters.type?.length > 0) && (
+          <div className="container mx-auto px-4 pb-3 text-black">
+            <div className="flex items-center gap-2 flex-wrap">
+              {Object.entries(activeFilters).map(([filterType, values]) =>
+                values.map((value) => (
+                  <span
+                    key={`${filterType}-${value}`}
+                    className="bg-gray-100 px-3 py-1 rounded-full text-sm flex items-center gap-1"
+                  >
+                    {value}
+                    <button
+                      onClick={() => {
+                        const newFilters = {
+                          ...activeFilters,
+                          [filterType]: activeFilters[filterType].filter(
+                            (v) => v !== value
+                          ),
+                        };
+                        setActiveFilters(newFilters);
+                        updateFilters(newFilters);
+                      }}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Card Grid */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+      <div className="container mx-auto px-4 py-8">
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <div className="animate-spin h-8 w-8 border-4 border-green-500 rounded-full border-t-transparent"></div>
           </div>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {allData.map((card) => (
+              {knowledgeHubs.map((card) => (
                 <div
                   key={card.id}
                   className="bg-white rounded-lg overflow-hidden shadow-sm border cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => handleCardClick(card)}
+                  onClick={() => openCardModal(card)}
                 >
-                  <img
+                  <Image
                     src={card.image}
-                    alt=""
+                    alt={card.title}
+                    width={500}
+                    height={300}
                     className="w-full h-48 object-cover bg-gray-100"
+                    unoptimized
                   />
                   <div className="p-6">
                     <div className="text-green-600 text-xs font-semibold tracking-wider mb-2">
-                      {card.type}
+                      {card.thematicFocus}
                     </div>
                     <h3 className="text-lg font-semibold mb-2 text-black line-clamp-2">
                       {card.title}
@@ -472,20 +430,14 @@ export default function KnowledgeHub() {
                     </p>
                     <div className="flex flex-wrap gap-2 mb-4">
                       <span className="px-2 py-1 bg-gray-100 text-xs rounded-full text-black">
-                        {card.topic}
-                      </span>
-                      <span className="px-2 py-1 bg-gray-100 text-xs rounded-full text-black">
-                        {card.location}
-                      </span>
-                      <span className="px-2 py-1 bg-gray-100 text-xs rounded-full text-black">
-                        {card.organization}
+                        {card.focusRegions}
                       </span>
                     </div>
                     <button
                       className="px-6 py-2 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors text-black"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleCardClick(card);
+                        openCardModal(card);
                       }}
                     >
                       Learn More
@@ -495,7 +447,7 @@ export default function KnowledgeHub() {
               ))}
             </div>
 
-            {allData.length === 0 && (
+            {knowledgeHubs.length === 0 && (
               <div className="text-center py-12">
                 <h3 className="text-lg font-semibold text-gray-900">
                   No results found
@@ -506,16 +458,16 @@ export default function KnowledgeHub() {
               </div>
             )}
 
-            {hasMore && allData.length > 0 && (
+            {hasMore && knowledgeHubs.length > 0 && (
               <div className="flex justify-center mt-12">
                 <button
-                  onClick={() => loadData(true)}
-                  disabled={isLoading}
-                  className="px-8 py-3 bg-zinc-900 text-white rounded-md hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  onClick={loadMoreKnowledgeHubs}
+                  disabled={loading}
+                  className="px-8 py-3  text-white rounded-[100px] hover:bg-green-700 transition-colors disabled:bg-zinc-400 bg-green-600 font-semibold"
                 >
-                  {isLoading ? (
+                  {loading ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <div className="animate-spin h-4 w-4 border-2 border-white rounded-full border-t-transparent mr-2"></div>
                       Loading...
                     </>
                   ) : (
@@ -527,9 +479,12 @@ export default function KnowledgeHub() {
           </>
         )}
       </div>
+
+      {/* Modal Component - you'd need to create this */}
       <OrganizationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        card={selectedCard}
       />
     </div>
   );
