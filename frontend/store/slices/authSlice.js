@@ -556,15 +556,14 @@ const authSlice = createSlice({
       localStorage.removeItem('token');
       deleteCookie('token');
     },
-    logout: (state, action) => {
-      const { req, res } = action.payload;
-
+    logout: (state) => {
       state.user = null;
+      state.token = null;
       state.isAuthenticated = false;
       state.error = null;
 
-      deleteCookie('token', { req, res });
-      deleteCookie('user', { req, res });
+      deleteCookie('token', { req: undefined, res: undefined });
+      deleteCookie('user', { req: undefined, res: undefined });
     },
     clearError: (state) => {
       state.error = null;

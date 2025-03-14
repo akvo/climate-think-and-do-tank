@@ -3,10 +3,13 @@ import { logout } from '@/store/slices/authSlice';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 
 export default function Header() {
   const pathname = usePathname();
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const isActive = (path) => pathname === path;
   const { isAuthenticated, loading, user } = useSelector((state) => state.auth);
