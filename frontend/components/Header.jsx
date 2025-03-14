@@ -1,11 +1,20 @@
+import { useState } from 'react';
+import { logout } from '@/store/slices/authSlice';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSelector } from 'react-redux';
 
 export default function Header() {
   const pathname = usePathname();
 
   const isActive = (path) => pathname === path;
+  const { isAuthenticated, loading, user } = useSelector((state) => state.auth);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push('/signin');
+  };
 
   return (
     <header className="border-b border-gray-200 bg-white">
@@ -138,20 +147,75 @@ export default function Header() {
             </nav>
 
             {/* Auth Buttons */}
-            <div className="flex items-center gap-3">
-              <Link
-                href="/signin"
-                className="px-6 py-2 text-sm font-medium text-zinc-900 border border-zinc-200 rounded-full hover:bg-gray-50 transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                href="/signup"
-                className="px-6 py-2 text-sm font-medium text-white bg-black rounded-full hover:bg-zinc-800 transition-colors"
-              >
-                Sign Up
-              </Link>
-            </div>
+
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center gap-2 hover:bg-gray-100 px-3 py-2 rounded-full text-black"
+                >
+                  <span className="font-semibold">
+                    {user?.full_name || 'User'}
+                  </span>
+                  <div className="w-10 h-10 rounded-full overflow-hidden">
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user?.profile_image?.url}`}
+                      alt={user?.full_name || 'User'}
+                      width={100}
+                      height={100}
+                      className="object-cover w-[100%] h-[100%]"
+                      unoptimized
+                    />
+                  </div>
+                </button>
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg z-50 text-black">
+                    <div className="px-4 py-3 border-b">
+                      <p className="text-sm font-medium text-gray-900">
+                        {user?.full_name}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {user?.email}
+                      </p>
+                    </div>
+                    <ul className="py-1">
+                      <li>
+                        <Link
+                          href="/profile"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          Profile
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/signin"
+                  className="px-6 py-2 text-sm font-semibold text-zinc-900 border border-zinc-800 rounded-full hover:bg-green-600 hover:text-white transition-colors hover:border-transparent"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/signup"
+                  className="px-6 py-2 text-sm font-semibold text-white border bg-green-600 rounded-full hover:bg-white hover:text-zinc-800 transition-colors hover:border-green-600 hover:border"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

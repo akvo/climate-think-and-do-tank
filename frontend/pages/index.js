@@ -93,7 +93,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-4 py-24 text-black">
+      <section className="container mx-auto px-4 py-24 text-black">
         <div className="max-w-3xl">
           <h1 className="text-4xl font-bold mb-4">
             Investing in Agri-food, Water, and Energy in Kenya's ASALs
@@ -121,7 +121,7 @@ export default function HomePage() {
 
       {/* Features Section */}
       <section className="bg-gray-50 py-16 text-black">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-12 text-black">
             Connect. Convene. Catalyse.
           </h2>
@@ -180,7 +180,7 @@ export default function HomePage() {
 
       {/* Partners Section */}
       <section className="py-16 text-black">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="container mx-auto px-4">
           <h2 className="text-center text-gray-600 mb-8">Our Partners</h2>
           <div className="flex flex-wrap justify-center items-center gap-12">
             {[
@@ -211,7 +211,7 @@ export default function HomePage() {
 
       {/* Investment Opportunities Section */}
       <section className="bg-gray-50 py-16 text-black">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-4">
             Investment Opportunity Profiles (IOPs)
           </h2>

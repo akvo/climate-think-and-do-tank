@@ -5,17 +5,21 @@ import '@/styles/globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useRouter } from 'next/router';
-import { fetchOrganizationsAndRegions } from '@/store/slices/authSlice';
+import {
+  checkAuthStatus,
+  fetchOrganizationsAndRegions,
+} from '@/store/slices/authSlice';
 
 function AppContent({ Component, pageProps }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const pagesWithoutHeader = ['/login', '/signup', '/admin'];
+  const pagesWithoutHeader = ['/signin', '/signup', '/admin'];
   const shouldShowHeader = !pagesWithoutHeader.includes(router.pathname);
 
   useEffect(() => {
     dispatch(fetchOrganizationsAndRegions());
+    dispatch(checkAuthStatus());
   }, [dispatch]);
 
   return (

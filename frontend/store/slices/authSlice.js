@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { setCookie, deleteCookie } from 'cookies-next';
+import { setCookie, deleteCookie, getCookie } from 'cookies-next';
 import { gql } from 'graphql-request';
 import { GraphQLClient } from 'graphql-request';
 import { env } from '@/helpers/env-vars';
@@ -27,24 +27,21 @@ export const checkAuth = createAsyncThunk(
   }
 );
 
-export const signIn = createAsyncThunk(
-  'auth/signIn',
-  async ({ identifier, password }, { rejectWithValue }) => {
+export const checkAuthStatus = createAsyncThunk(
+  'auth/checkStatus',
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/auth/local`, {
-        identifier,
-        password,
-      });
+      const token = getCookie('token');
+      const userCookie = getCookie('user');
 
-      const { jwt, user } = response.data;
-      localStorage.setItem('token', jwt);
-      setCookie('token', jwt);
+      if (!token || !userCookie) {
+        return rejectWithValue('No active session');
+      }
 
-      return user;
+      const user = JSON.parse(userCookie);
+      return { user, token };
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.error?.message || 'Login failed'
-      );
+      return rejectWithValue('Invalid session');
     }
   }
 );
@@ -129,14 +126,34 @@ export const login = createAsyncThunk(
         password,
       });
 
-      return {
-        user: response.data.user,
-        jwt: response.data.jwt,
-      };
+      const { user, jwt } = response.data;
+
+      setCookie('token', jwt, {
+        req: undefined,
+        res: undefined,
+        maxAge: 30 * 24 * 60 * 60,
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+      });
+
+      setCookie('user', JSON.stringify(user), {
+        req: undefined,
+        res: undefined,
+        maxAge: 30 * 24 * 60 * 60,
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+      });
+
+      return { user, jwt };
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.error?.message || 'Login failed'
-      );
+      const errorMessage =
+        error.response?.data?.error?.message ||
+        error.response?.data?.message ||
+        'Login failed';
+
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -520,7 +537,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: null,
-    jwt: null,
+    token: null,
     loading: false,
     error: null,
     regions: [],
@@ -538,6 +555,16 @@ const authSlice = createSlice({
       state.error = null;
       localStorage.removeItem('token');
       deleteCookie('token');
+    },
+    logout: (state, action) => {
+      const { req, res } = action.payload;
+
+      state.user = null;
+      state.isAuthenticated = false;
+      state.error = null;
+
+      deleteCookie('token', { req, res });
+      deleteCookie('user', { req, res });
     },
     clearError: (state) => {
       state.error = null;
@@ -562,19 +589,6 @@ const authSlice = createSlice({
       .addCase(checkAuth.rejected, (state, action) => {
         state.loading = false;
         state.user = null;
-        state.error = action.payload;
-      })
-      // Sign In
-      .addCase(signIn.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(signIn.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-      })
-      .addCase(signIn.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload;
       })
       // Sign Up
@@ -633,17 +647,28 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(login.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
         state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.user = action.payload.user;
-        state.jwt = action.payload.jwt;
+        const { user, jwt } = action.payload;
+
+        if (!user.profile_image || !user.profile_image.url) {
+          user.profile_image = {
+            url: '/uploads/placeholder_image_1625231395.jpg',
+          };
+        }
+        state.user = user;
+        state.token = jwt;
+        state.isAuthenticated = true;
+        state.loading = false;
+        state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
+        state.loading = false;
+        state.user = null;
+        state.isAuthenticated = false;
+        state.error = action.payload || 'Login failed';
       })
       .addCase(forgotPassword.pending, (state) => {
         state.status = 'loading';
@@ -695,9 +720,34 @@ const authSlice = createSlice({
       .addCase(fetchStakeholders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Failed to fetch stakeholders';
+      })
+      .addCase(checkAuthStatus.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(checkAuthStatus.fulfilled, (state, action) => {
+        const user = action.payload.user;
+
+        if (!user.profile_image || !user.profile_image.url) {
+          user.profile_image = {
+            url: '/uploads/placeholder_image_1625231395.jpg',
+          };
+        }
+
+        state.user = user;
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
+        state.loading = false;
+      })
+      .addCase(checkAuthStatus.rejected, (state, action) => {
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { signOut, clearError, clearStakeholders } = authSlice.actions;
+export const { signOut, clearError, clearStakeholders, logout } =
+  authSlice.actions;
 export default authSlice.reducer;
