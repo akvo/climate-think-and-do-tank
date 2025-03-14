@@ -19,6 +19,7 @@ import { clearStakeholders, fetchStakeholders } from '@/store/slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import TopicsFilter from '@/components/TopicFilter';
 import LocationsFilter from '@/components/LocationFilter';
+import { env } from '@/helpers/env-vars';
 
 export default function StakeholderDirectory() {
   const router = useRouter();
@@ -248,7 +249,7 @@ export default function StakeholderDirectory() {
                     className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
                   >
                     {filterType === 'focusRegions'
-                      ? 'Location'
+                      ? 'Focus regions'
                       : filterType.charAt(0).toUpperCase() +
                         filterType.slice(1)}
                     <svg
@@ -314,6 +315,7 @@ export default function StakeholderDirectory() {
                             updateFilters(newFilters);
                             setOpenFilter(null);
                           }}
+                          name={'Focus Regions'}
                           onClear={() => {
                             const newFilters = {
                               ...activeFilters,
@@ -444,21 +446,21 @@ export default function StakeholderDirectory() {
               <div
                 key={`${stakeholder.type}-${stakeholder.id}-${index}`}
                 onClick={() => openStakeholderModal(stakeholder)}
-                className="bg-[#f8f9fa] rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md transition-shadow cursor-pointer"
+                className="bg-[#f8f9fa] rounded-lg p-4 flex flex-col  text-left hover:shadow-md transition-shadow cursor-pointer"
               >
-                <div className="relative w-24 h-24 mb-4">
+                <div className="relative w-24 h-24 m-auto">
                   <Image
-                    src={stakeholder.image || '/placeholder.svg'}
+                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${stakeholder.image}`}
                     alt={stakeholder.name}
                     fill
                     className="rounded-full object-cover"
                     unoptimized
                   />
                 </div>
-                <div className="text-xs font-semibold text-green-600 mb-2">
+                <div className="text-xs font-semibold text-green-600 mb-0 mt-4 uppercase">
                   {stakeholder.type}
                 </div>
-                <h3 className="text-sm font-medium text-gray-900">
+                <h3 className="text-md font-semibold text-gray-900">
                   {stakeholder.name}
                 </h3>
                 {stakeholder.topics && stakeholder.topics.length > 0 && (
@@ -663,7 +665,7 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
           <div className="relative w-64 h-64 ml-8">
             <div className="w-full h-full rounded-full bg-gray-100 overflow-hidden relative">
               <Image
-                src={stakeholder.image || '/placeholder.svg'}
+                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${stakeholder.image}`}
                 alt={stakeholder.name}
                 className="object-cover relative"
                 unoptimized

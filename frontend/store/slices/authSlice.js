@@ -254,18 +254,13 @@ export const fetchStakeholders = createAsyncThunk(
       userQueryParams.append('populate[2]', 'organisation');
       userQueryParams.append('sort[0]', 'full_name:asc');
       // userQueryParams.append('populate[3]', 'profile_image');
+      userQueryParams.append('populate[0]', 'topics');
 
       const orgQueryParams = new URLSearchParams(baseQueryParams);
-      orgQueryParams.append('populate[0]', 'topics');
+      // orgQueryParams.append('populate[0]', 'topics');
       orgQueryParams.append('populate[1]', 'country');
       orgQueryParams.append('sort[0]', 'name:asc');
-      // orgQueryParams.append('populate[3]', 'logo');
-
-      if (filters.topics && filters.topics.length > 0) {
-        filters.topics.forEach((topic, index) => {
-          orgQueryParams.append(`filters[topics][name][$in][${index}]`, topic);
-        });
-      }
+      orgQueryParams.append('populate[3]', 'org_image');
 
       if (filters.focusRegions && filters.focusRegions.length > 0) {
         filters.focusRegions.forEach((region, index) => {
@@ -280,6 +275,15 @@ export const fetchStakeholders = createAsyncThunk(
         });
       }
 
+      if (filters.topics && filters.topics.length > 0) {
+        filters.topics.forEach((region, index) => {
+          userQueryParams.append(
+            `filters[topics][name][$in][${index}]`,
+            region
+          );
+        });
+      }
+
       let usersResponse = { data: { data: [] } };
       let organizationsResponse = { data: { data: [] } };
 
@@ -289,9 +293,11 @@ export const fetchStakeholders = createAsyncThunk(
         filters.type.includes('Individual');
 
       const fetchOrgs =
-        !filters.type ||
-        filters.type.length === 0 ||
-        filters.type.includes('Organization');
+        (!filters.type ||
+          filters.type.length === 0 ||
+          filters.type.includes('Organization')) &&
+        (!filters.focusRegions || filters.focusRegions.length === 0) &&
+        (!filters.topics || filters.topics.length === 0);
 
       const requests = [];
       if (fetchUsers) {
@@ -316,7 +322,9 @@ export const fetchStakeholders = createAsyncThunk(
               id: user.id,
               type: 'Individual',
               name: user.full_name || user.username,
-              image: user.profile_image?.url || 'https://placehold.co/200x200',
+              image:
+                user.profile_image?.url ||
+                '/uploads/placeholder_image_1625231395.jpg',
               // topics: user.topics?.map((t) => t.name) || [],
               focusRegions: user.focus_regions?.map((r) => r.name) || [],
               organization: user.organisation ? user.organisation.name : '',
@@ -331,8 +339,9 @@ export const fetchStakeholders = createAsyncThunk(
               id: org.id,
               type: 'Organization',
               name: org.name,
-              image: org.logo?.url || 'https://placehold.co/200x200',
-              topics: org.topics?.map((t) => t.name) || [],
+              image:
+                org.org_image?.formats?.medium?.url ||
+                '/uploads/placeholder_image_1625231395.jpg',
               country: org.country?.country_name,
               data: org,
             }))
