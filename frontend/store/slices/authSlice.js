@@ -62,6 +62,7 @@ export const signUp = createAsyncThunk(
       stakeholder_role,
       linkedin,
       full_name,
+      topics,
     },
     { rejectWithValue }
   ) => {
@@ -78,6 +79,7 @@ export const signUp = createAsyncThunk(
           stakeholder_role,
           linkedin,
           full_name,
+          topics,
         }
       );
 
@@ -364,17 +366,46 @@ export const createOrganization = createAsyncThunk(
   'auth/createOrganization',
   async (organizationData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/organisations`, {
+      console.log(organizationData);
+      let imageResponse = null;
+      if (organizationData.org_image instanceof File) {
+        const fileFormData = new FormData();
+        fileFormData.append('files', organizationData.org_image);
+
+        const uploadResponse = await axios.post(
+          `${BACKEND_URL}/api/upload`,
+          fileFormData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        console.log(uploadResponse);
+        imageResponse = uploadResponse.data[0];
+      }
+
+      const orgData = {
         data: {
           name: organizationData.org_name,
           website: organizationData.website,
           type: organizationData.type,
           country: organizationData.country,
-          topics: organizationData.topics,
+          org_image: imageResponse ? { id: imageResponse.id } : null,
         },
-      });
+      };
+
+      const response = await axios.post(
+        `${BACKEND_URL}/api/organisations`,
+        orgData
+      );
+
       return response.data;
     } catch (error) {
+      console.error(
+        'Organization creation error:',
+        error.response?.data || error
+      );
       return rejectWithValue(
         error.response?.data?.error || 'Failed to create organization'
       );

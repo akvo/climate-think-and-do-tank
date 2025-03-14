@@ -356,7 +356,7 @@ export default function StakeholderDirectory() {
                   )}
                 </div>
               ))}
-              <div className="flex justify-end mb-4">
+              <div className="flex justify-end ">
                 <button
                   onClick={toggleSortOrder}
                   className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
