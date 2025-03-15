@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 
-export default function LocationsFilter({ onApply, onClear, locations }) {
+export default function LocationsFilter({ onApply, onClear, locations, name }) {
   const [selectedLocations, setSelectedLocations] = useState(['All Locations']);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredLocations, setFilteredLocations] = useState(locations);
@@ -49,7 +49,9 @@ export default function LocationsFilter({ onApply, onClear, locations }) {
   return (
     <div className="bg-white rounded-xl shadow-lg w-full max-w-md">
       <div className="p-6 space-y-6">
-        <h2 className="text-xl font-bold text-zinc-800">LOCATIONS</h2>
+        <h2 className="text-xl font-bold text-zinc-800">
+          {name ? name : 'LOCATIONS'}
+        </h2>
 
         <div className="relative">
           <input

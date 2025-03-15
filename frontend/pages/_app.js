@@ -5,22 +5,35 @@ import '@/styles/globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useRouter } from 'next/router';
-import { fetchOrganizationsAndRegions } from '@/store/slices/authSlice';
+import {
+  checkAuthStatus,
+  fetchOrganizationsAndRegions,
+} from '@/store/slices/authSlice';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function AppContent({ Component, pageProps }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const pagesWithoutHeader = ['/login', '/signup', '/admin'];
+  const pagesWithoutHeader = ['/signin', '/signup', '/admin'];
   const shouldShowHeader = !pagesWithoutHeader.includes(router.pathname);
 
   useEffect(() => {
     dispatch(fetchOrganizationsAndRegions());
+    dispatch(checkAuthStatus());
   }, [dispatch]);
 
   return (
     <>
       {shouldShowHeader && <Header />}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+      />
       <Component {...pageProps} />
       <Footer />
     </>

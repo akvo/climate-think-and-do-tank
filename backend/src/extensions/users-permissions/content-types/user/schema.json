@@ -109,6 +109,11 @@
       "relation": "oneToMany",
       "target": "api::stakeholder-connection.stakeholder-connection",
       "mappedBy": "receiver"
+    },
+    "topics": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::topic.topic"
     }
   }
 }

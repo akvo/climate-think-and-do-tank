@@ -5,23 +5,22 @@ const forgotPasswordSchema = yup
     email: yup.string().email().required(),
   })
   .noUnknown();
-const validateForgotPasswordBody = validateYupSchema(forgotPasswordSchema)
+const validateForgotPasswordBody = validateYupSchema(forgotPasswordSchema);
 
 module.exports = (plugin) => {
-
   /// Override confirmation email to allow getting the URL from the environment
   const originalUserServiceFactory = plugin.services.user;
   plugin.services.user = ({ strapi }) => {
     const service = originalUserServiceFactory({ strapi });
     service.sendConfirmationEmail = async (user) => {
       await strapi.service('api::auth.email').sendConfirmationEmail(user);
-    }
+    };
     return service;
   };
 
   const originalAuhtControllerFactory = plugin.controllers.auth;
   plugin.controllers.auth = ({ strapi }) => {
-    const controller = originalAuhtControllerFactory({ strapi })
+    const controller = originalAuhtControllerFactory({ strapi });
 
     /// Override email confirmation to return user object instead of redirect
     const originalConfirmationHandler = controller.emailConfirmation;
@@ -46,8 +45,35 @@ module.exports = (plugin) => {
       ctx.send({ ok: true });
     };
 
+    const originalCallback = controller.callback;
+    controller.callback = async (ctx) => {
+      await originalCallback(ctx);
+
+      if (!ctx.body || !ctx.body.user) {
+        return;
+      }
+      const { user, jwt } = ctx.body;
+      const userId = user.id;
+
+      const fullUser = await strapi.entityService.findOne(
+        'plugin::users-permissions.user',
+        userId,
+        {
+          populate: {
+            connection_requests_sent: true,
+            connection_requests_received: true,
+          },
+        }
+      );
+
+      ctx.body = {
+        jwt,
+        user: fullUser,
+      };
+    };
+
     return controller;
-  }
+  };
 
   return plugin;
 };
