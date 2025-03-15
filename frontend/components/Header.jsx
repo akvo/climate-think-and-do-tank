@@ -182,7 +182,7 @@ export default function Header() {
                         {user?.email}
                       </p>
                     </div>
-                    <ul className="py-1">
+                    <ul className="py-1 px-1">
                       <li>
                         <Link
                           href="/profile"

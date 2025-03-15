@@ -109,7 +109,7 @@ export default function LoginForm() {
         const loginResult = await dispatch(
           login({ email: formData.email, password: formData.password })
         );
-        console.log(loginResult, login);
+
         if (login.fulfilled.match(loginResult)) {
           router.push('/');
         } else {

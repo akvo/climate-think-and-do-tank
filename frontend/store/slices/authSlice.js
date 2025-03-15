@@ -670,7 +670,7 @@ const authSlice = createSlice({
   initialState: {
     user: null,
     token: null,
-    loading: false,
+    loading: true,
     error: null,
     regions: [],
     organizations: [],
