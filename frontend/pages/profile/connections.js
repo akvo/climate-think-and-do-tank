@@ -45,7 +45,6 @@ const MyConnections = () => {
     loadConnections();
   }, [user]);
 
-  console.log(user);
   const renderConnections = () => {
     const filteredConnections = connections[activeTab];
 
