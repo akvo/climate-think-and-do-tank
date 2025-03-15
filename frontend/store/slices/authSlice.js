@@ -8,6 +8,138 @@ import { env } from '@/helpers/env-vars';
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 const graphqlClient = new GraphQLClient(`${BACKEND_URL}/graphql`);
 
+export const getAuthToken = () => {
+  const token = getCookie('token');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+  return token;
+};
+
+export const fetchUserDetails = async (userId) => {
+  try {
+    const token = getAuthToken();
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        params: {
+          populate: [
+            'connection_requests_received',
+            'connection_requests_sent',
+          ],
+        },
+      }
+    );
+
+    return {
+      id: response.data.id,
+      connection_requests_received: response.data.connection_requests_received,
+      connection_requests_sent: response.data.connection_requests_sent,
+      documentId: response.data.documentId,
+    };
+  } catch (error) {
+    if (error.response) {
+      if (error.response.status === 401) {
+        throw new Error('Authentication expired. Please log in again.');
+      }
+      throw new Error(
+        error.response.data.error?.message || 'Failed to fetch user details'
+      );
+    } else if (error.request) {
+      throw new Error(
+        'No response from server. Check your internet connection.'
+      );
+    } else {
+      throw new Error('Error setting up the request');
+    }
+  }
+};
+
+export const sendConnectionRequest = createAsyncThunk(
+  'auth/sendConnectionRequest',
+  async ({ requester, receiver }, { rejectWithValue, getState }) => {
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/api/stakeholder-connections`,
+        {
+          data: {
+            requester,
+            receiver,
+            connection_status: 'Pending',
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const currentState = getState();
+      const currentUser = currentState.auth.user;
+
+      const updatedUser = {
+        ...currentUser,
+        connection_requests_sent: [
+          ...(currentUser.connection_requests_sent || []),
+          {
+            id: response.data.data.id,
+            documentId: response.data.data.documentId,
+            connection_status: 'Pending',
+          },
+        ],
+      };
+
+      return {
+        connectionRequest: response.data.data,
+        updatedUser,
+      };
+    } catch (error) {
+      console.error('Connection request error:', error);
+      return rejectWithValue(
+        error.response?.data?.error?.message ||
+          'Failed to send connection request'
+      );
+    }
+  }
+);
+
+export const acceptConnectionRequest = createAsyncThunk(
+  'auth/acceptConnectionRequest',
+  async ({ connectionId }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `${BACKEND_URL}/api/stakeholder-connections/${connectionId}`,
+        {
+          data: {
+            connection_status: 'Accepted',
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error('Accept connection request error:', error);
+      return rejectWithValue(
+        error.response?.data?.error?.message ||
+          'Failed to accept connection request'
+      );
+    }
+  }
+);
+
 // Async thunks
 export const checkAuth = createAsyncThunk(
   'auth/checkAuth',
@@ -743,6 +875,12 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(sendConnectionRequest.fulfilled, (state, action) => {
+        state.user = action.payload.updatedUser;
+      })
+      .addCase(sendConnectionRequest.rejected, (state, action) => {
+        console.error('Connection request failed', action.payload);
       });
   },
 });

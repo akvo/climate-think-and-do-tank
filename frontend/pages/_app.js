@@ -9,6 +9,8 @@ import {
   checkAuthStatus,
   fetchOrganizationsAndRegions,
 } from '@/store/slices/authSlice';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function AppContent({ Component, pageProps }) {
   const dispatch = useDispatch();
@@ -25,6 +27,13 @@ function AppContent({ Component, pageProps }) {
   return (
     <>
       {shouldShowHeader && <Header />}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+      />
       <Component {...pageProps} />
       <Footer />
     </>
