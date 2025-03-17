@@ -16,6 +16,7 @@ import {
 import Image from 'next/image';
 import { useModal } from '@/hooks/useModal';
 import {
+  acceptConnectionRequest,
   clearStakeholders,
   fetchStakeholders,
   fetchUserDetails,
@@ -24,8 +25,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import TopicsFilter from '@/components/TopicFilter';
 import LocationsFilter from '@/components/LocationFilter';
-import { env } from '@/helpers/env-vars';
 import { toast } from 'react-toastify';
+import debounce from 'lodash/debounce';
 
 export default function StakeholderDirectory() {
   const router = useRouter();
@@ -87,20 +88,38 @@ export default function StakeholderDirectory() {
     );
   }, [router, dispatch]);
 
-  const handleSearch = (e) => {
+  const handleSearch = useCallback(
+    debounce((query) => {
+      const queryParams = { ...router.query, query };
+
+      // Remove query if it's empty
+      if (!query) {
+        delete queryParams.query;
+      }
+
+      router.push(
+        {
+          pathname: router.pathname,
+          query: queryParams,
+        },
+        undefined,
+        { shallow: true }
+      );
+
+      dispatch(
+        fetchKnowledgeHubs({
+          page: 1,
+          query,
+          filters: activeFilters,
+        })
+      );
+    }, 500),
+    []
+  );
+
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
-
-    const query = { ...router.query, query: searchQuery };
-    if (!searchQuery) delete query.query;
-
-    router.push(
-      {
-        pathname: router.pathname,
-        query,
-      },
-      undefined,
-      { shallow: true }
-    );
+    handleSearch(searchQuery);
   };
 
   const updateFilters = (newFilters) => {
@@ -218,19 +237,22 @@ export default function StakeholderDirectory() {
     <div className="min-h-screen bg-white">
       {/* Search Section */}
       <div className="py-4 px-4 bg-[#f1f3f5]">
-        <div className="container mx-auto">
-          <form onSubmit={handleSearch}>
+        <div className="container mx-auto text-black">
+          <form onSubmit={handleSearchSubmit}>
             <div className="relative">
               <input
                 type="text"
                 placeholder="Try keywords like: 'tilapia' or 'horticulture'"
-                className="w-full pl-4 pr-10 py-3 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
+                className="w-full pl-4 pr-10 py-3 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  handleSearch(e.target.value);
+                }}
               />
               <button
                 type="submit"
-                className="absolute right-3 top-3.5 text-gray-400"
+                className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <Search size={20} />
               </button>
@@ -518,6 +540,7 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
   const dispatch = useDispatch();
   const overlayRef = useModal(isOpen, onClose);
   const { isAuthenticated, loading, user } = useSelector((state) => state.auth);
+  const [currentUser, setCurrentUser] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingConnection, setLoadingConnection] = useState(false);
@@ -529,9 +552,12 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
       try {
         setIsLoading(true);
         setError(null);
+        const currentUserDetails = await fetchUserDetails(user.id);
+        setCurrentUser(currentUserDetails);
+
         const details = await fetchUserDetails(stakeholder.id);
         setUserDetails(details);
-        checkConnectionStatus(user, details);
+        checkConnectionStatus(currentUserDetails, details);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -542,7 +568,7 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
 
   const checkConnectionStatus = (currentUser, targetStakeholderDetails) => {
     const sentRequest = currentUser.connection_requests_sent.some((sentReq) =>
-      targetStakeholderDetails.connection_requests_received.find(
+      targetStakeholderDetails.connection_requests_received.some(
         (receivedReq) =>
           receivedReq.documentId === sentReq.documentId &&
           ['Pending', 'Accepted', 'Rejected'].includes(
@@ -550,9 +576,10 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
           )
       )
     );
+
     const receivedRequest =
       targetStakeholderDetails.connection_requests_sent.some((sentReq) =>
-        currentUser.connection_requests_received.find(
+        currentUser.connection_requests_received.some(
           (receivedReq) =>
             receivedReq.documentId === sentReq.documentId &&
             ['Pending', 'Accepted', 'Rejected'].includes(
@@ -571,7 +598,7 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
 
       switch (actualRequest.connection_status) {
         case 'Pending':
-          setConnectionStatus('received_pending');
+          setConnectionStatus('sent_pending');
           break;
         case 'Accepted':
           setConnectionStatus('connected');
@@ -592,7 +619,7 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
 
       switch (actualRequest.connection_status) {
         case 'Pending':
-          setConnectionStatus('sent_pending');
+          setConnectionStatus('received_pending');
           break;
         case 'Accepted':
           setConnectionStatus('connected');
@@ -638,16 +665,32 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
     }
   };
 
-  const handleAcceptRequest = async () => {};
+  const handleAcceptRequest = async (id) => {
+    try {
+      setLoadingConnection(true);
+      const result = await dispatch(
+        acceptConnectionRequest({
+          connectionId: id,
+          requester: userDetails.documentId,
+          receiver: currentUser.documentId,
+        })
+      );
+
+      if (acceptConnectionRequest.fulfilled.match(result)) {
+        toast.success('Connection request accepted');
+        setConnectionStatus('connected');
+      } else {
+        toast.error(result.payload);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Failed to accept connection request');
+    } finally {
+      setLoadingConnection(false);
+    }
+  };
 
   const renderConnectionButton = () => {
-    const currentUserDocumentId =
-      user.connection_requests_sent.find((request) => request.documentId)
-        ?.documentId ||
-      user.connection_requests_received.find((request) => request.documentId)
-        ?.documentId ||
-      null;
-
     switch (connectionStatus) {
       case 'sent_pending':
         return (
@@ -659,18 +702,20 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
           </button>
         );
       case 'received_pending':
-        const isReceiver = userDetails.connection_requests_sent.some(
-          (request) =>
-            request.documentId === currentUserDocumentId &&
-            request.connection_status === 'Pending'
+        const isReceiver = currentUser?.connection_requests_received?.find(
+          (req) =>
+            userDetails?.connection_requests_sent.some(
+              (sentReq) => sentReq.documentId === req.documentId
+            )
         );
 
         return isReceiver ? (
           <button
             className="px-8 py-2 border-2 border-green-600 rounded-full text-green-600 hover:bg-green-50"
-            onClick={handleAcceptRequest}
+            onClick={() => handleAcceptRequest(isReceiver.documentId)}
+            disabled={loadingConnection}
           >
-            Accept Request
+            {loadingConnection ? 'Accepting...' : 'Accept Request'}
           </button>
         ) : (
           <button
@@ -748,20 +793,6 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
               {stakeholder.profession && (
                 <p className="text-gray-600 text-lg mb-2">
                   {stakeholder.profession}
-                </p>
-              )}
-
-              {/* Mutual Connections */}
-              {stakeholder.mutualConnections && (
-                <p>
-                  <span className="text-green-600">
-                    {stakeholder.mutualConnections.names.join(', ')}
-                  </span>
-                  <span className="text-gray-600"> and </span>
-                  <span className="text-green-600">
-                    {stakeholder.mutualConnections.count - 1} other
-                  </span>
-                  <span className="text-gray-600"> mutual connection</span>
                 </p>
               )}
             </div>

@@ -112,7 +112,10 @@ export const sendConnectionRequest = createAsyncThunk(
 
 export const acceptConnectionRequest = createAsyncThunk(
   'auth/acceptConnectionRequest',
-  async ({ connectionId }, { rejectWithValue }) => {
+  async (
+    { connectionId, requester, receiver },
+    { rejectWithValue, getState }
+  ) => {
     try {
       const response = await axios.put(
         `${BACKEND_URL}/api/stakeholder-connections/${connectionId}`,
@@ -129,7 +132,26 @@ export const acceptConnectionRequest = createAsyncThunk(
         }
       );
 
-      return response.data;
+      const currentState = getState();
+      const currentUser = currentState.auth.user;
+
+      const updatedReceivedRequests =
+        currentUser.connection_requests_received.map((request) =>
+          request.documentId === requester &&
+          request.connection_status === 'Pending'
+            ? { ...request, connection_status: 'Accepted' }
+            : request
+        );
+
+      const updatedUser = {
+        ...currentUser,
+        connection_requests_received: updatedReceivedRequests,
+      };
+
+      return {
+        connectionRequest: response.data.data,
+        updatedUser,
+      };
     } catch (error) {
       console.error('Accept connection request error:', error);
       return rejectWithValue(
@@ -192,6 +214,7 @@ export const signUp = createAsyncThunk(
       linkedin,
       full_name,
       topics,
+      country,
     },
     { rejectWithValue }
   ) => {
@@ -209,6 +232,7 @@ export const signUp = createAsyncThunk(
           linkedin,
           full_name,
           topics,
+          country,
         }
       );
 
@@ -392,12 +416,6 @@ export const fetchStakeholders = createAsyncThunk(
 
       // baseQueryParams.append('sort[0]', filters.type === '' ? 'full_name:asc' : 'name:asc');
 
-      if (query) {
-        baseQueryParams.append('filters[$or][0][full_name][$containsi]', query);
-        baseQueryParams.append('filters[$or][1][name][$containsi]', query);
-        baseQueryParams.append('filters[$or][2][username][$containsi]', query);
-      }
-
       const userQueryParams = new URLSearchParams(baseQueryParams);
       userQueryParams.append('populate[1]', 'focus_regions');
       userQueryParams.append('populate[2]', 'organisation');
@@ -431,6 +449,12 @@ export const fetchStakeholders = createAsyncThunk(
             region
           );
         });
+      }
+
+      if (query) {
+        orgQueryParams.append('filters[$or][1][name][$containsi]', query);
+        userQueryParams.append('filters[$or][0][full_name][$containsi]', query);
+        userQueryParams.append('filters[$or][2][username][$containsi]', query);
       }
 
       let usersResponse = { data: { data: [] } };
@@ -881,6 +905,9 @@ const authSlice = createSlice({
       })
       .addCase(sendConnectionRequest.rejected, (state, action) => {
         console.error('Connection request failed', action.payload);
+      })
+      .addCase(acceptConnectionRequest.fulfilled, (state, action) => {
+        state.user = action.payload.updatedUser;
       });
   },
 });

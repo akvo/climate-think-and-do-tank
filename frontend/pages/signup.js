@@ -99,6 +99,7 @@ export default function SignUpForm() {
           looking_fors: { id: additionalData.looking_fors },
           regions: additionalData.regions.map((r) => ({ id: r })),
           topics: additionalData.topics.map((r) => ({ id: r })),
+          country: additionalData.topics.map((r) => ({ id: country })),
           organisation: { id: additionalData.organisation },
         })
       );
@@ -456,8 +457,6 @@ const AdditionalDetails = ({
     onSubmit(formData);
   };
 
-  console.log('formData', formData);
-
   return (
     <div className="flex min-h-screen ">
       <div className="w-1/2 flex flex-col justify-center min-h-screen bg-zinc-900 p-12 text-white">
@@ -666,6 +665,25 @@ const AdditionalDetails = ({
                 placeholder="Enter your role"
               />
 
+              <CustomDropdown
+                id="country"
+                label="Country of residence"
+                options={
+                  country &&
+                  country.map((f) => {
+                    return {
+                      id: f.id,
+                      label: f.country_name,
+                    };
+                  })
+                }
+                isMulti={true}
+                value={formData.country}
+                onChange={(value) =>
+                  setFormData({ ...formData, country: value })
+                }
+                placeholder="Select country"
+              />
               <CustomDropdown
                 id="regions"
                 label="Focus Region"
