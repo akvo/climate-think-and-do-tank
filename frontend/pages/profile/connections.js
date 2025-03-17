@@ -124,7 +124,7 @@ const MyConnections = () => {
 
   const renderConnections = () => {
     const filteredConnections = connections[activeTab];
-    console.log('filteredConnections', filteredConnections);
+
     return filteredConnections.map((connection) => (
       <div
         key={connection.id}
