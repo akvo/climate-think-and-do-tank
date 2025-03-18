@@ -15,6 +15,9 @@
     "country_name": {
       "type": "string",
       "unique": true
+    },
+    "country_code": {
+      "type": "string"
     }
   }
 }
