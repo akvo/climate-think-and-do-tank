@@ -14,6 +14,8 @@ import { Eye, EyeOff, Link2, X } from 'lucide-react';
 import CustomDropdown from '@/components/CustomDropdown';
 import { VerifyEmailIcon } from '@/components/Icons';
 import ImageUploader from '@/components/ImageUploader';
+import { env } from '@/helpers/env-vars';
+import axios from 'axios';
 
 export default function SignUpForm() {
   const dispatch = useDispatch();
@@ -69,19 +71,53 @@ export default function SignUpForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const finalErrors = validateSignUp(formData);
-    if (Object.keys(finalErrors).length > 0) {
-      setFormErrors(finalErrors);
+    setFormErrors({});
+
+    const validationErrors = validateSignUp(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setFormErrors(validationErrors);
       return;
     }
 
-    setSteps((prevSteps) => [
-      { ...prevSteps[0], completed: true },
-      { ...prevSteps[1], active: true },
-      { ...prevSteps[2], active: true },
-    ]);
+    try {
+      setIsSubmitting(true);
+      const response = await axios.post(
+        `${env('NEXT_PUBLIC_BACKEND_URL')}/api/email-check`,
+        { email: formData.email },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (!response.data.exists) {
+        setSteps((prevSteps) => [
+          { ...prevSteps[0], completed: true },
+          { ...prevSteps[1], active: true },
+          { ...prevSteps[2], active: true },
+        ]);
 
-    setShowAdditionalDetails(true);
+        setShowAdditionalDetails(true);
+      } else {
+        setFormErrors({
+          email:
+            'This email is already registered. Please use another email or try logging in.',
+        });
+      }
+    } catch (error) {
+      if (error.response?.data?.error?.message?.includes('email')) {
+        setFormErrors({
+          email:
+            'This email is already registered. Please use another email or try logging in.',
+        });
+      } else {
+        setFormErrors({
+          general: 'An error occurred. Please try again later.',
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleAdditionalDetailsSubmit = async (additionalData) => {
@@ -95,7 +131,7 @@ export default function SignUpForm() {
           username: formData.email,
           stakeholder_role: additionalData.role,
           full_name: additionalData.name,
-          looking_fors: { id: additionalData.looking_fors },
+          looking_fors: additionalData.looking_fors.map((r) => ({ id: r })),
           regions: additionalData.regions.map((r) => ({ id: r })),
           topics: additionalData.topics.map((r) => ({ id: r })),
           country: additionalData.country,
@@ -475,6 +511,13 @@ const AdditionalDetails = ({
     onSubmit(formData);
   };
 
+  const formatFieldName = (fieldName) => {
+    return fieldName
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   return (
     <div className="flex min-h-screen ">
       <div className="w-1/2 flex flex-col justify-center min-h-screen bg-zinc-900 p-12 text-white">
@@ -488,7 +531,7 @@ const AdditionalDetails = ({
           />
         </Link>
 
-        <div className="flex-grow flex items-center">
+        <div className="flex-grow flex items-center justify-center">
           <div className="max-w-4xl mx-auto w-full">
             <div className="mb-8">
               <div className="w-12 h-12 bg-zinc-700 rounded-full flex items-center justify-center">
@@ -551,7 +594,7 @@ const AdditionalDetails = ({
               ))}
             </div>
 
-            <div className="mt-auto pt-8">
+            <div className="mt-8">
               <p className="text-zinc-400">{form.email}</p>
             </div>
           </div>
@@ -572,18 +615,6 @@ const AdditionalDetails = ({
                 className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6"
               >
                 <p className="font-medium">{formErrors.general}</p>
-                {Object.keys(formErrors).length > 1 && (
-                  <ul className="mt-2 list-disc pl-5">
-                    {Object.entries(formErrors)
-                      .filter(([key]) => key !== 'general')
-                      .map(([field, message]) => (
-                        <li key={field}>
-                          {field.charAt(0).toUpperCase() + field.slice(1)}:{' '}
-                          {message}
-                        </li>
-                      ))}
-                  </ul>
-                )}
               </div>
             )}
             <form onSubmit={handleSubmit} className="space-y-8">
@@ -609,18 +640,31 @@ const AdditionalDetails = ({
               </div>
 
               <div className="space-y-2">
-                <label
-                  htmlFor="organization"
-                  className="block text-lg font-medium text-gray-700"
-                >
-                  Organization name
-                </label>
+                <div className="flex items-center">
+                  <label
+                    htmlFor="organization"
+                    className="block text-lg font-medium text-gray-700"
+                  >
+                    Organization name
+                  </label>
+                  <div className="relative inline-block ml-2 group">
+                    <div className="flex items-center justify-center w-5 h-5 text-xs font-medium text-gray-800 bg-gray-300 rounded-full cursor-help">
+                      i
+                    </div>
+                    <div className="absolute z-10 w-64 p-3 text-sm text-left text-white bg-gray-800 rounded-md shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 transition-opacity duration-300">
+                      Take care when setting your organisation as these will be
+                      checked by an admin as part of the approval process, who
+                      may reach out with further questions
+                      <div className="absolute w-3 h-3 bg-gray-800 transform rotate-45 left-1/2 -translate-x-1/2 -bottom-1.5"></div>
+                    </div>
+                  </div>
+                </div>
                 <div className="relative flex gap-2 border border-gray-200 rounded-full p-1">
                   <div className="relative flex-1">
                     <input
                       id="organisation"
                       type="text"
-                      placeholder="Enter your organisation name"
+                      placeholder="Search by organisation name"
                       className="w-full p-4 py-2 bg-white rounded-full focus:outline-none"
                       name="organisation"
                       value={searchTerm || ''}
@@ -676,100 +720,135 @@ const AdditionalDetails = ({
                 )}
               </div>
 
-              <CustomDropdown
-                id="role"
-                label="Role"
-                options={[
-                  { id: 'Investor', label: 'Investor' },
-                  { id: 'Government', label: 'Government' },
-                  { id: 'Farmer', label: 'Farmer' },
-                  { id: 'NGO', label: 'NGO' },
-                ]}
-                isMulti={false}
-                value={formData.role}
-                onChange={(value) => setFormData({ ...formData, role: value })}
-                placeholder="Enter your role"
-              />
+              <div>
+                <CustomDropdown
+                  id="role"
+                  label="Role"
+                  options={[
+                    { id: 'Investor', label: 'Investor' },
+                    { id: 'Government', label: 'Government' },
+                    { id: 'Farmer', label: 'Farmer' },
+                    { id: 'NGO', label: 'NGO' },
+                  ]}
+                  isMulti={false}
+                  value={formData.role}
+                  onChange={(value) =>
+                    setFormData({ ...formData, role: value })
+                  }
+                  placeholder="Enter your role"
+                />
+                {formErrors.role && (
+                  <p className="text-red-500 text-sm mt-1">{formErrors.role}</p>
+                )}
+              </div>
 
-              <CustomDropdown
-                id="country"
-                label="Country of residence"
-                options={
-                  country &&
-                  country.map((f) => {
-                    return {
-                      id: f.id,
-                      label: f.country_name,
-                    };
-                  })
-                }
-                isMulti={false}
-                value={formData.country}
-                onChange={(value) =>
-                  setFormData({ ...formData, country: value })
-                }
-                placeholder="Select country"
-              />
+              <div>
+                <CustomDropdown
+                  id="country"
+                  label="Country of residence"
+                  options={
+                    country &&
+                    country.map((f) => {
+                      return {
+                        id: f.id,
+                        label: f.country_name,
+                      };
+                    })
+                  }
+                  isMulti={false}
+                  value={formData.country}
+                  onChange={(value) =>
+                    setFormData({ ...formData, country: value })
+                  }
+                  placeholder="Select country"
+                />
+                {formErrors.country && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.country}
+                  </p>
+                )}
+              </div>
 
-              <CustomDropdown
-                id="regions"
-                label="Focus Region"
-                options={
-                  regions &&
-                  regions.map((f) => {
-                    return {
-                      id: f.id,
-                      label: f.name,
-                    };
-                  })
-                }
-                isMulti={true}
-                value={formData.regions}
-                onChange={(value) =>
-                  setFormData({ ...formData, regions: value })
-                }
-                placeholder="Select regions"
-              />
+              <div>
+                <CustomDropdown
+                  id="regions"
+                  label="Focus Region"
+                  options={
+                    regions &&
+                    regions.map((f) => {
+                      return {
+                        id: f.id,
+                        label: f.name,
+                      };
+                    })
+                  }
+                  isMulti={true}
+                  value={formData.regions}
+                  onChange={(value) =>
+                    setFormData({ ...formData, regions: value })
+                  }
+                  placeholder="Select regions"
+                />
+                {formErrors.regions && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.regions}
+                  </p>
+                )}
+              </div>
 
-              <CustomDropdown
-                id="topics"
-                label="Topics"
-                options={
-                  topics &&
-                  topics.map((f) => {
-                    return {
-                      id: f.id,
-                      label: f.name,
-                    };
-                  })
-                }
-                isMulti={true}
-                value={formData.topics}
-                onChange={(value) =>
-                  setFormData({ ...formData, topics: value })
-                }
-                placeholder="Select topics"
-              />
+              <div>
+                <CustomDropdown
+                  id="topics"
+                  label="Topics"
+                  options={
+                    topics &&
+                    topics.map((f) => {
+                      return {
+                        id: f.id,
+                        label: f.name,
+                      };
+                    })
+                  }
+                  isMulti={true}
+                  value={formData.topics}
+                  onChange={(value) =>
+                    setFormData({ ...formData, topics: value })
+                  }
+                  placeholder="Select topics"
+                />
+                {formErrors.topics && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.topics}
+                  </p>
+                )}
+              </div>
 
-              <CustomDropdown
-                id="looking_fors"
-                label="Looking for"
-                options={
-                  lookingFors &&
-                  lookingFors.map((f) => {
-                    return {
-                      id: f.id,
-                      label: f.name,
-                    };
-                  })
-                }
-                isMulti={false}
-                value={formData.looking_fors}
-                onChange={(value) =>
-                  setFormData({ ...formData, looking_fors: value })
-                }
-                placeholder="Select option"
-              />
+              <div>
+                <CustomDropdown
+                  id="looking_fors"
+                  label="Looking for"
+                  options={
+                    lookingFors &&
+                    lookingFors.map((f) => {
+                      return {
+                        id: f.id,
+                        label: f.name,
+                      };
+                    })
+                  }
+                  isMulti={true}
+                  value={formData.looking_fors}
+                  onChange={(value) =>
+                    setFormData({ ...formData, looking_fors: value })
+                  }
+                  placeholder="Select option"
+                />
+                {formErrors.looking_fors && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.looking_fors}
+                  </p>
+                )}
+              </div>
 
               <div className="space-y-2">
                 <label
@@ -1001,47 +1080,55 @@ const OrganizationModal = ({
     e.preventDefault();
     setError(null);
 
-    if (!formData.org_name) {
-      setError('Organization name is required');
-      return;
-    }
-
-    if (!formData.type) {
-      setError('Organization type is required');
-      return;
-    }
-
-    if (!formData.country) {
-      setError('Country is required');
-      return;
-    }
-
-    const organizationData = {
-      org_name: formData.org_name,
-      website: formData.website,
-      type: formData.type,
-      country: formData.country,
-      org_image: formData.org_image,
-    };
-
     try {
+      if (!formData.org_name) {
+        setError('Organization name is required');
+        return;
+      }
+
+      if (!formData.type) {
+        setError('Organization type is required');
+        return;
+      }
+
+      if (!formData.country) {
+        setError('Country is required');
+        return;
+      }
+
+      const organizationData = {
+        org_name: formData.org_name,
+        website: formData.website,
+        type: formData.type,
+        country: formData.country,
+        org_image: formData.org_image,
+      };
+
       const resultAction = await dispatch(createOrganization(organizationData));
 
       if (createOrganization.fulfilled.match(resultAction)) {
-        console.log(resultAction);
         const newOrganization = resultAction.payload.data;
+
         setFormData({
           ...formData,
           organisation: newOrganization.id,
           organisationName: newOrganization.name,
+          country: '',
         });
+
         setSearchTerm(newOrganization.name);
+
+        toast.success('Organization created successfully!');
+
         onClose();
-      } else if (createOrganization.rejected.match(resultAction)) {
-        setError(resultAction.payload || 'Failed to create organization');
+      } else {
+        const errorMessage =
+          resultAction.payload || 'Failed to create organization';
+        setError(errorMessage);
+        console.error('Organization creation failed:', errorMessage);
       }
     } catch (error) {
-      console.error('Error creating organization:', error);
+      console.error('Unexpected error in handleSubmit:', error);
       setError(error.message || 'An unexpected error occurred');
     }
   };
