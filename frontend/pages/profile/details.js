@@ -7,6 +7,7 @@ import ImageUploader from '@/components/ImageUploader';
 import Image from 'next/image';
 import { updateProfile } from '@/store/slices/authSlice';
 import { toast } from 'react-toastify';
+import { env } from '@/helpers/env-vars';
 
 const ProfileDetails = () => {
   const { user } = useSelector((state) => state.auth);
@@ -66,7 +67,9 @@ const ProfileDetails = () => {
                 </label>
                 {editMode ? (
                   <ImageUploader
-                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user?.profile_image?.url}`}
+                    src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
+                      user?.profile_image?.url
+                    }`}
                     onChange={setProfileImage}
                     className="w-64"
                     placeholder="Upload Profile Picture"
@@ -74,7 +77,9 @@ const ProfileDetails = () => {
                 ) : (
                   <div className="w-64 h-64 rounded-full overflow-hidden">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user?.profile_image?.url}`}
+                      src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
+                        user?.profile_image?.url
+                      }`}
                       alt={user?.full_name}
                       className="object-cover relative w-[100%] h-[100%]"
                       unoptimized

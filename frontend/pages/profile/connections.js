@@ -273,7 +273,7 @@ const MyConnections = () => {
             <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
               {profileImage?.url ? (
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${profileImage.url}`}
+                  src={`${env('NEXT_PUBLIC_BACKEND_URL')}${profileImage.url}`}
                   alt={userData.full_name}
                   width={48}
                   height={48}

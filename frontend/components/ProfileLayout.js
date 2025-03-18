@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
+import { env } from '@/helpers/env-vars';
 
 const ProfileLayout = ({ children }) => {
   const { user } = useSelector((state) => state.auth);
@@ -28,7 +29,9 @@ const ProfileLayout = ({ children }) => {
         <div className="flex items-center p-6 border-b">
           <div className="w-24 h-24 rounded-full overflow-hidden mr-6">
             <Image
-              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user?.profile_image?.url}`}
+              src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
+                user?.profile_image?.url
+              }`}
               alt={user?.full_name}
               width={96}
               height={96}

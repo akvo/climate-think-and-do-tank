@@ -27,6 +27,7 @@ import TopicsFilter from '@/components/TopicFilter';
 import LocationsFilter from '@/components/LocationFilter';
 import { toast } from 'react-toastify';
 import debounce from 'lodash/debounce';
+import { env } from '@/helpers/env-vars';
 
 export default function StakeholderDirectory() {
   const router = useRouter();
@@ -490,7 +491,9 @@ export default function StakeholderDirectory() {
                 >
                   <div className="relative w-24 h-24 m-auto">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${stakeholder.image}`}
+                      src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
+                        stakeholder.image
+                      }`}
                       alt={stakeholder.name}
                       fill
                       className="rounded-full object-cover"
@@ -954,7 +957,7 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
           <div className="relative w-64 h-64 ml-8">
             <div className="w-full h-full rounded-full bg-gray-100 overflow-hidden relative">
               <Image
-                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${stakeholder.image}`}
+                src={`${env('NEXT_PUBLIC_BACKEND_URL')}${stakeholder.image}`}
                 alt={stakeholder.name}
                 className="object-cover relative"
                 unoptimized
