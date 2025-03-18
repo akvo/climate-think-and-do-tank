@@ -701,7 +701,9 @@ export const fetchOrganizationsAndRegions = createAsyncThunk(
         axios.get(`${BACKEND_URL}/api/regions?status=published`),
         axios.get(`${BACKEND_URL}/api/looking-fors?status=published`),
         axios.get(`${BACKEND_URL}/api/users-permissions/roles`),
-        axios.get(`${BACKEND_URL}/api/countries?status=published`),
+        axios.get(
+          `${BACKEND_URL}/api/countries?status=published&pagination[pageSize]=250`
+        ),
         axios.get(`${BACKEND_URL}/api/topics?status=published`),
         axios.get(`${BACKEND_URL}/api/thematics?status=published`),
       ]);
