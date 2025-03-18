@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-// import { updateProfile } from '@/redux/authSlice';
 import ProfileNavigation from '@/components/ProfileNavigation';
 import withAuth from '@/components/withAuth';
 import ProfileLayout from '@/components/ProfileLayout';
+import ImageUploader from '@/components/ImageUploader';
+import Image from 'next/image';
+import { updateProfile } from '@/store/slices/authSlice';
+import { toast } from 'react-toastify';
 
 const ProfileDetails = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [editMode, setEditMode] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
   const [formData, setFormData] = useState({
     full_name: user?.full_name || '',
     stakeholder_role: user?.stakeholder_role || '',
@@ -26,10 +30,23 @@ const ProfileDetails = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      //   await dispatch(updateProfile(formData));
-      setEditMode(false);
+      const updateData = {
+        ...formData,
+        profile_image: profileImage,
+        id: user.id,
+      };
+
+      const result = await dispatch(updateProfile(updateData));
+
+      if (updateProfile.fulfilled.match(result)) {
+        setEditMode(false);
+        toast.success('Profile updated successfully');
+      } else {
+        toast.error('Failed to update profile');
+      }
     } catch (error) {
       console.error('Update failed', error);
+      toast.error('An error occurred while updating profile');
     }
   };
 
@@ -43,6 +60,30 @@ const ProfileDetails = () => {
             <h2 className="text-xl font-semibold mb-6">Profile Details</h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Profile Image
+                </label>
+                {editMode ? (
+                  <ImageUploader
+                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user.profile_image?.url}`}
+                    onChange={setProfileImage}
+                    className="w-64"
+                    placeholder="Upload Profile Picture"
+                  />
+                ) : (
+                  <div className="w-64 h-64 rounded-full overflow-hidden">
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user.profile_image?.url}`}
+                      alt={user.full_name}
+                      className="object-cover relative w-[100%] h-[100%]"
+                      unoptimized
+                      width={256}
+                      height={256}
+                    />
+                  </div>
+                )}
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Full Name

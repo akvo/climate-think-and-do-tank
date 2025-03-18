@@ -403,6 +403,89 @@ export const verifyEmail = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async (updateData, { rejectWithValue }) => {
+    try {
+      let profileImageId = null;
+
+      if (updateData.profile_image instanceof File) {
+        const imageFormData = new FormData();
+        imageFormData.append('files', updateData.profile_image);
+
+        const uploadResponse = await axios.post(
+          `${BACKEND_URL}/api/upload`,
+          imageFormData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${getAuthToken()}`,
+            },
+          }
+        );
+
+        profileImageId = uploadResponse.data[0];
+      }
+
+      const updatePayload = {
+        full_name: updateData.full_name,
+        stakeholder_role: updateData.stakeholder_role,
+        linkedin: updateData.linkedin,
+        profile_image: profileImageId ? { id: profileImageId.id } : null,
+      };
+
+      const response = await axios.put(
+        `${BACKEND_URL}/api/users/${updateData.id}?populate=profile_image`,
+        updatePayload,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${getAuthToken()}`,
+          },
+        }
+      );
+
+      if (!response.data.profile_image && profileImageId) {
+        console.log(
+          'Profile image not in response, fetching complete user data'
+        );
+
+        const userResponse = await axios.get(
+          `${BACKEND_URL}/api/users/${updateData.id}?populate=profile_image`,
+          {
+            headers: {
+              Authorization: `Bearer ${getAuthToken()}`,
+            },
+          }
+        );
+
+        console.log('Complete user data:', userResponse.data);
+
+        setCookie('user', JSON.stringify(userResponse.data), {
+          path: '/',
+          req: undefined,
+          res: undefined,
+        });
+
+        return userResponse.data;
+      }
+
+      setCookie('user', JSON.stringify(response.data), {
+        path: '/',
+        req: undefined,
+        res: undefined,
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('Profile update error:', error.response?.data || error);
+      return rejectWithValue(
+        error.response?.data?.error?.message || 'Failed to update profile'
+      );
+    }
+  }
+);
+
 export const fetchStakeholders = createAsyncThunk(
   'stakeholders/fetchStakeholders',
   async (
@@ -420,7 +503,7 @@ export const fetchStakeholders = createAsyncThunk(
       userQueryParams.append('populate[1]', 'focus_regions');
       userQueryParams.append('populate[2]', 'organisation');
       userQueryParams.append('sort[0]', 'full_name:asc');
-      // userQueryParams.append('populate[3]', 'profile_image');
+      userQueryParams.append('populate[3]', 'profile_image');
       userQueryParams.append('populate[0]', 'topics');
 
       const orgQueryParams = new URLSearchParams(baseQueryParams);
@@ -908,6 +991,12 @@ const authSlice = createSlice({
       })
       .addCase(acceptConnectionRequest.fulfilled, (state, action) => {
         state.user = action.payload.updatedUser;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.user = {
+          ...state.user,
+          ...action.payload,
+        };
       });
   },
 });

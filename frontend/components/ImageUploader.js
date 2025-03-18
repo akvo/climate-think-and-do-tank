@@ -55,9 +55,7 @@ const ImageUploader = ({
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <label className="block text-sm font-medium mb-2">
-        Organization Logo
-      </label>
+      <label className="block text-sm font-medium mb-2">{placeholder}</label>
       <div
         className="w-full h-48 border-2 border-dashed rounded-xl flex flex-col items-center justify-center 
         hover:border-green-500 transition-colors cursor-pointer 
