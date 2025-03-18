@@ -131,10 +131,139 @@ const MyConnections = () => {
   const renderConnections = () => {
     const filteredConnections = connections[activeTab];
 
+    if (isLoading) {
+      return (
+        <div className="flex flex-col items-center justify-center py-16">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mb-4"></div>
+          <p className="text-gray-600">Loading connections...</p>
+        </div>
+      );
+    }
+
+    if (filteredConnections.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center py-16">
+          {activeTab === 'pending' ? (
+            <>
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-gray-500"
+                >
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                No pending requests
+              </h3>
+              <p className="text-gray-500 text-center max-w-sm">
+                You don't have any pending connection requests at the moment.
+              </p>
+            </>
+          ) : activeTab === 'accepted' ? (
+            <>
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-gray-500"
+                >
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                No connections yet
+              </h3>
+              <p className="text-gray-500 text-center max-w-sm">
+                You haven't accepted any connection requests yet. Start building
+                your network!
+              </p>
+            </>
+          ) : activeTab === 'rejected' ? (
+            <>
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-gray-500"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                No rejected requests
+              </h3>
+              <p className="text-gray-500 text-center max-w-sm">
+                You don't have any rejected connection requests.
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-gray-500"
+                >
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                No connections
+              </h3>
+              <p className="text-gray-500 text-center max-w-sm">
+                You don't have any connections yet. Connect with other
+                stakeholders to expand your network.
+              </p>
+            </>
+          )}
+        </div>
+      );
+    }
+
     return filteredConnections.map((connection) => {
-      const userData = connection.requester;
+      const userData = connection.requester || connection.receiver || {};
       const profileImage = userData?.profile_image;
-      console.log(userData);
+
       return (
         <div
           key={connection.id}

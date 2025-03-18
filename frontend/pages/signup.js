@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { validateSignUp } from '@/helpers/utilities';
+import { validateAdditionalDetails, validateSignUp } from '@/helpers/utilities';
 import {
   signUp,
   resendVerification,
@@ -88,7 +88,6 @@ export default function SignUpForm() {
     try {
       setIsSubmitting(true);
       setFormErrors({});
-
       const result = await dispatch(
         signUp({
           ...formData,
@@ -99,7 +98,7 @@ export default function SignUpForm() {
           looking_fors: { id: additionalData.looking_fors },
           regions: additionalData.regions.map((r) => ({ id: r })),
           topics: additionalData.topics.map((r) => ({ id: r })),
-          country: additionalData.topics.map((r) => ({ id: country })),
+          country: additionalData.country,
           organisation: { id: additionalData.organisation },
         })
       );
@@ -404,6 +403,7 @@ export default function SignUpForm() {
           steps={steps}
           isSubmitting={isSubmitting}
           formErrors={formErrors}
+          setFormErrors={setFormErrors}
         />
       )}
     </div>
@@ -416,6 +416,7 @@ const AdditionalDetails = ({
   steps,
   isSubmitting,
   formErrors,
+  setFormErrors,
 }) => {
   const dispatch = useDispatch();
   const { organizations, regions, lookingFors, roles, country, topics } =
@@ -431,7 +432,7 @@ const AdditionalDetails = ({
     name: '',
     website: '',
     type: '',
-    country: '',
+    country: [],
     regions: [],
     org_name: '',
   });
@@ -454,6 +455,23 @@ const AdditionalDetails = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const validationErrors = validateAdditionalDetails(formData);
+
+    if (Object.keys(validationErrors).length > 0) {
+      validationErrors.general = 'Please fix the errors before continuing';
+
+      setFormErrors(validationErrors);
+
+      document
+        .getElementById('error-summary')
+        ?.scrollIntoView({ behavior: 'smooth' });
+
+      return;
+    }
+
+    setFormErrors({});
+
     onSubmit(formData);
   };
 
@@ -584,7 +602,10 @@ const AdditionalDetails = ({
                   name="name"
                   value={formData.name || ''}
                   onChange={handleChange}
-                />
+                />{' '}
+                {formErrors.name && (
+                  <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -648,6 +669,11 @@ const AdditionalDetails = ({
                     <span className="font-bold">+</span>
                   </button>
                 </div>
+                {formErrors.organisation && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.organisation}
+                  </p>
+                )}
               </div>
 
               <CustomDropdown
@@ -677,13 +703,14 @@ const AdditionalDetails = ({
                     };
                   })
                 }
-                isMulti={true}
+                isMulti={false}
                 value={formData.country}
                 onChange={(value) =>
                   setFormData({ ...formData, country: value })
                 }
                 placeholder="Select country"
               />
+
               <CustomDropdown
                 id="regions"
                 label="Focus Region"
@@ -818,8 +845,13 @@ const AdditionalDetails = ({
                     I accept the{' '}
                     <span className="font-bold">Terms of Service</span> and I'm
                     authorised to accept for my organization
-                  </label>
+                  </label>{' '}
                 </div>
+                {formErrors.acceptTerms && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.acceptTerms}
+                  </p>
+                )}
               </div>
 
               <button
@@ -959,6 +991,7 @@ const OrganizationModal = ({
   setFormData,
   country,
   topics,
+  setSearchTerm,
 }) => {
   const dispatch = useDispatch();
 

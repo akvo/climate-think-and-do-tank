@@ -75,7 +75,7 @@ const ProfileDetails = () => {
                   <div className="w-64 h-64 rounded-full overflow-hidden">
                     <Image
                       src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user?.profile_image?.url}`}
-                      alt={user.full_name}
+                      alt={user?.full_name}
                       className="object-cover relative w-[100%] h-[100%]"
                       unoptimized
                       width={256}
@@ -92,12 +92,12 @@ const ProfileDetails = () => {
                   <input
                     type="text"
                     name="full_name"
-                    value={formData.full_name}
+                    value={formData?.full_name}
                     onChange={handleChange}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                   />
                 ) : (
-                  <p className="text-gray-900">{user.full_name}</p>
+                  <p className="text-gray-900">{user?.full_name}</p>
                 )}
               </div>
 
@@ -105,7 +105,7 @@ const ProfileDetails = () => {
                 <label className="block text-sm font-medium text-gray-700">
                   Email
                 </label>
-                <p className="text-gray-900">{user.email}</p>
+                <p className="text-gray-900">{user?.email}</p>
               </div>
 
               <div>
@@ -125,7 +125,7 @@ const ProfileDetails = () => {
                     <option value="NGO">NGO</option>
                   </select>
                 ) : (
-                  <p className="text-gray-900">{user.stakeholder_role}</p>
+                  <p className="text-gray-900">{user?.stakeholder_role}</p>
                 )}
               </div>
 
@@ -143,7 +143,7 @@ const ProfileDetails = () => {
                   />
                 ) : (
                   <p className="text-gray-900">
-                    {user.linkedin || 'Not provided'}
+                    {user?.linkedin || 'Not provided'}
                   </p>
                 )}
               </div>
