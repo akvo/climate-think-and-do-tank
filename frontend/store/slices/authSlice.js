@@ -1,12 +1,166 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { setCookie, deleteCookie } from 'cookies-next';
+import { setCookie, deleteCookie, getCookie } from 'cookies-next';
 import { gql } from 'graphql-request';
 import { GraphQLClient } from 'graphql-request';
 import { env } from '@/helpers/env-vars';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 const graphqlClient = new GraphQLClient(`${BACKEND_URL}/graphql`);
+
+export const getAuthToken = () => {
+  const token = getCookie('token');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+  return token;
+};
+
+export const fetchUserDetails = async (userId) => {
+  try {
+    const token = getAuthToken();
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        params: {
+          populate: [
+            'connection_requests_received',
+            'connection_requests_sent',
+          ],
+        },
+      }
+    );
+
+    return {
+      id: response.data.id,
+      connection_requests_received: response.data.connection_requests_received,
+      connection_requests_sent: response.data.connection_requests_sent,
+      documentId: response.data.documentId,
+    };
+  } catch (error) {
+    if (error.response) {
+      if (error.response.status === 401) {
+        throw new Error('Authentication expired. Please log in again.');
+      }
+      throw new Error(
+        error.response.data.error?.message || 'Failed to fetch user details'
+      );
+    } else if (error.request) {
+      throw new Error(
+        'No response from server. Check your internet connection.'
+      );
+    } else {
+      throw new Error('Error setting up the request');
+    }
+  }
+};
+
+export const sendConnectionRequest = createAsyncThunk(
+  'auth/sendConnectionRequest',
+  async ({ requester, receiver }, { rejectWithValue, getState }) => {
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/api/stakeholder-connections`,
+        {
+          data: {
+            requester,
+            receiver,
+            connection_status: 'Pending',
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const currentState = getState();
+      const currentUser = currentState.auth.user;
+
+      const updatedUser = {
+        ...currentUser,
+        connection_requests_sent: [
+          ...(currentUser.connection_requests_sent || []),
+          {
+            id: response.data.data.id,
+            documentId: response.data.data.documentId,
+            connection_status: 'Pending',
+          },
+        ],
+      };
+
+      return {
+        connectionRequest: response.data.data,
+        updatedUser,
+      };
+    } catch (error) {
+      console.error('Connection request error:', error);
+      return rejectWithValue(
+        error.response?.data?.error?.message ||
+          'Failed to send connection request'
+      );
+    }
+  }
+);
+
+export const acceptConnectionRequest = createAsyncThunk(
+  'auth/acceptConnectionRequest',
+  async (
+    { connectionId, requester, receiver },
+    { rejectWithValue, getState }
+  ) => {
+    try {
+      const response = await axios.put(
+        `${BACKEND_URL}/api/stakeholder-connections/${connectionId}`,
+        {
+          data: {
+            connection_status: 'Accepted',
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const currentState = getState();
+      const currentUser = currentState.auth.user;
+
+      const updatedReceivedRequests =
+        currentUser.connection_requests_received.map((request) =>
+          request.documentId === requester &&
+          request.connection_status === 'Pending'
+            ? { ...request, connection_status: 'Accepted' }
+            : request
+        );
+
+      const updatedUser = {
+        ...currentUser,
+        connection_requests_received: updatedReceivedRequests,
+      };
+
+      return {
+        connectionRequest: response.data.data,
+        updatedUser,
+      };
+    } catch (error) {
+      console.error('Accept connection request error:', error);
+      return rejectWithValue(
+        error.response?.data?.error?.message ||
+          'Failed to accept connection request'
+      );
+    }
+  }
+);
 
 // Async thunks
 export const checkAuth = createAsyncThunk(
@@ -27,24 +181,21 @@ export const checkAuth = createAsyncThunk(
   }
 );
 
-export const signIn = createAsyncThunk(
-  'auth/signIn',
-  async ({ identifier, password }, { rejectWithValue }) => {
+export const checkAuthStatus = createAsyncThunk(
+  'auth/checkStatus',
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/auth/local`, {
-        identifier,
-        password,
-      });
+      const token = getCookie('token');
+      const userCookie = getCookie('user');
 
-      const { jwt, user } = response.data;
-      localStorage.setItem('token', jwt);
-      setCookie('token', jwt);
+      if (!token || !userCookie) {
+        return rejectWithValue('No active session');
+      }
 
-      return user;
+      const user = JSON.parse(userCookie);
+      return { user, token };
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.error?.message || 'Login failed'
-      );
+      return rejectWithValue('Invalid session');
     }
   }
 );
@@ -62,6 +213,8 @@ export const signUp = createAsyncThunk(
       stakeholder_role,
       linkedin,
       full_name,
+      topics,
+      country,
     },
     { rejectWithValue }
   ) => {
@@ -78,6 +231,8 @@ export const signUp = createAsyncThunk(
           stakeholder_role,
           linkedin,
           full_name,
+          topics,
+          country,
         }
       );
 
@@ -127,14 +282,34 @@ export const login = createAsyncThunk(
         password,
       });
 
-      return {
-        user: response.data.user,
-        jwt: response.data.jwt,
-      };
+      const { user, jwt } = response.data;
+
+      setCookie('token', jwt, {
+        req: undefined,
+        res: undefined,
+        maxAge: 30 * 24 * 60 * 60,
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+      });
+
+      setCookie('user', JSON.stringify(user), {
+        req: undefined,
+        res: undefined,
+        maxAge: 30 * 24 * 60 * 60,
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+      });
+
+      return { user, jwt };
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.error?.message || 'Login failed'
-      );
+      const errorMessage =
+        error.response?.data?.error?.message ||
+        error.response?.data?.message ||
+        'Login failed';
+
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -228,10 +403,93 @@ export const verifyEmail = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async (updateData, { rejectWithValue }) => {
+    try {
+      let profileImageId = null;
+
+      if (updateData.profile_image instanceof File) {
+        const imageFormData = new FormData();
+        imageFormData.append('files', updateData.profile_image);
+
+        const uploadResponse = await axios.post(
+          `${BACKEND_URL}/api/upload`,
+          imageFormData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${getAuthToken()}`,
+            },
+          }
+        );
+
+        profileImageId = uploadResponse.data[0];
+      }
+
+      const updatePayload = {
+        full_name: updateData.full_name,
+        stakeholder_role: updateData.stakeholder_role,
+        linkedin: updateData.linkedin,
+        profile_image: profileImageId ? { id: profileImageId.id } : null,
+      };
+
+      const response = await axios.put(
+        `${BACKEND_URL}/api/users/${updateData.id}?populate=profile_image`,
+        updatePayload,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${getAuthToken()}`,
+          },
+        }
+      );
+
+      if (!response.data.profile_image && profileImageId) {
+        console.log(
+          'Profile image not in response, fetching complete user data'
+        );
+
+        const userResponse = await axios.get(
+          `${BACKEND_URL}/api/users/${updateData.id}?populate=profile_image`,
+          {
+            headers: {
+              Authorization: `Bearer ${getAuthToken()}`,
+            },
+          }
+        );
+
+        console.log('Complete user data:', userResponse.data);
+
+        setCookie('user', JSON.stringify(userResponse.data), {
+          path: '/',
+          req: undefined,
+          res: undefined,
+        });
+
+        return userResponse.data;
+      }
+
+      setCookie('user', JSON.stringify(response.data), {
+        path: '/',
+        req: undefined,
+        res: undefined,
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('Profile update error:', error.response?.data || error);
+      return rejectWithValue(
+        error.response?.data?.error?.message || 'Failed to update profile'
+      );
+    }
+  }
+);
+
 export const fetchStakeholders = createAsyncThunk(
   'stakeholders/fetchStakeholders',
   async (
-    { page = 1, pageSize = 12, query = '', filters = {} },
+    { page = 1, pageSize = 12, query = '', filters = {}, sortOrder = 'asc' },
     { rejectWithValue }
   ) => {
     try {
@@ -239,31 +497,20 @@ export const fetchStakeholders = createAsyncThunk(
       baseQueryParams.append('pagination[page]', page);
       baseQueryParams.append('pagination[pageSize]', pageSize);
 
-      // baseQueryParams.append('sort[0]', filters.type === '' ? 'full_name:asc' : 'name:asc');
-
-      if (query) {
-        baseQueryParams.append('filters[$or][0][full_name][$containsi]', query);
-        baseQueryParams.append('filters[$or][1][name][$containsi]', query);
-        baseQueryParams.append('filters[$or][2][username][$containsi]', query);
-      }
+      const sortDirection = sortOrder === 'asc' ? 'asc' : 'desc';
 
       const userQueryParams = new URLSearchParams(baseQueryParams);
       userQueryParams.append('populate[1]', 'focus_regions');
       userQueryParams.append('populate[2]', 'organisation');
-      userQueryParams.append('sort[0]', 'full_name:asc');
-      // userQueryParams.append('populate[3]', 'profile_image');
+      userQueryParams.append('sort[0]', `full_name:${sortDirection}`);
+      userQueryParams.append('populate[3]', 'profile_image');
+      userQueryParams.append('populate[0]', 'topics');
 
       const orgQueryParams = new URLSearchParams(baseQueryParams);
-      orgQueryParams.append('populate[0]', 'topics');
+      // orgQueryParams.append('populate[0]', 'topics');
       orgQueryParams.append('populate[1]', 'country');
-      orgQueryParams.append('sort[0]', 'name:asc');
-      // orgQueryParams.append('populate[3]', 'logo');
-
-      if (filters.topics && filters.topics.length > 0) {
-        filters.topics.forEach((topic, index) => {
-          orgQueryParams.append(`filters[topics][name][$in][${index}]`, topic);
-        });
-      }
+      orgQueryParams.append('sort[0]', `name:${sortDirection}`);
+      orgQueryParams.append('populate[3]', 'org_image');
 
       if (filters.focusRegions && filters.focusRegions.length > 0) {
         filters.focusRegions.forEach((region, index) => {
@@ -278,6 +525,21 @@ export const fetchStakeholders = createAsyncThunk(
         });
       }
 
+      if (filters.topics && filters.topics.length > 0) {
+        filters.topics.forEach((region, index) => {
+          userQueryParams.append(
+            `filters[topics][name][$in][${index}]`,
+            region
+          );
+        });
+      }
+
+      if (query) {
+        orgQueryParams.append('filters[$or][1][name][$containsi]', query);
+        userQueryParams.append('filters[$or][0][full_name][$containsi]', query);
+        userQueryParams.append('filters[$or][2][username][$containsi]', query);
+      }
+
       let usersResponse = { data: { data: [] } };
       let organizationsResponse = { data: { data: [] } };
 
@@ -287,9 +549,11 @@ export const fetchStakeholders = createAsyncThunk(
         filters.type.includes('Individual');
 
       const fetchOrgs =
-        !filters.type ||
-        filters.type.length === 0 ||
-        filters.type.includes('Organization');
+        (!filters.type ||
+          filters.type.length === 0 ||
+          filters.type.includes('Organization')) &&
+        (!filters.focusRegions || filters.focusRegions.length === 0) &&
+        (!filters.topics || filters.topics.length === 0);
 
       const requests = [];
       if (fetchUsers) {
@@ -314,7 +578,9 @@ export const fetchStakeholders = createAsyncThunk(
               id: user.id,
               type: 'Individual',
               name: user.full_name || user.username,
-              image: user.profile_image?.url || 'https://placehold.co/200x200',
+              image:
+                user.profile_image?.url ||
+                '/uploads/placeholder_image_1625231395.jpg',
               // topics: user.topics?.map((t) => t.name) || [],
               focusRegions: user.focus_regions?.map((r) => r.name) || [],
               organization: user.organisation ? user.organisation.name : '',
@@ -329,8 +595,9 @@ export const fetchStakeholders = createAsyncThunk(
               id: org.id,
               type: 'Organization',
               name: org.name,
-              image: org.logo?.url || 'https://placehold.co/200x200',
-              topics: org.topics?.map((t) => t.name) || [],
+              image:
+                org.org_image?.formats?.medium?.url ||
+                '/uploads/placeholder_image_1625231395.jpg',
               country: org.country?.country_name,
               data: org,
             }))
@@ -364,17 +631,46 @@ export const createOrganization = createAsyncThunk(
   'auth/createOrganization',
   async (organizationData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/organisations`, {
+      console.log(organizationData);
+      let imageResponse = null;
+      if (organizationData.org_image instanceof File) {
+        const fileFormData = new FormData();
+        fileFormData.append('files', organizationData.org_image);
+
+        const uploadResponse = await axios.post(
+          `${BACKEND_URL}/api/upload`,
+          fileFormData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        console.log(uploadResponse);
+        imageResponse = uploadResponse.data[0];
+      }
+
+      const orgData = {
         data: {
           name: organizationData.org_name,
           website: organizationData.website,
           type: organizationData.type,
           country: organizationData.country,
-          topics: organizationData.topics,
+          org_image: imageResponse ? { id: imageResponse.id } : null,
         },
-      });
+      };
+
+      const response = await axios.post(
+        `${BACKEND_URL}/api/organisations`,
+        orgData
+      );
+
       return response.data;
     } catch (error) {
+      console.error(
+        'Organization creation error:',
+        error.response?.data || error
+      );
       return rejectWithValue(
         error.response?.data?.error || 'Failed to create organization'
       );
@@ -480,8 +776,8 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: null,
-    jwt: null,
-    loading: false,
+    token: null,
+    loading: true,
     error: null,
     regions: [],
     organizations: [],
@@ -498,6 +794,15 @@ const authSlice = createSlice({
       state.error = null;
       localStorage.removeItem('token');
       deleteCookie('token');
+    },
+    logout: (state) => {
+      state.user = null;
+      state.token = null;
+      state.isAuthenticated = false;
+      state.error = null;
+
+      deleteCookie('token', { req: undefined, res: undefined });
+      deleteCookie('user', { req: undefined, res: undefined });
     },
     clearError: (state) => {
       state.error = null;
@@ -522,19 +827,6 @@ const authSlice = createSlice({
       .addCase(checkAuth.rejected, (state, action) => {
         state.loading = false;
         state.user = null;
-        state.error = action.payload;
-      })
-      // Sign In
-      .addCase(signIn.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(signIn.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-      })
-      .addCase(signIn.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload;
       })
       // Sign Up
@@ -593,17 +885,28 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(login.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
         state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.user = action.payload.user;
-        state.jwt = action.payload.jwt;
+        const { user, jwt } = action.payload;
+
+        if (!user.profile_image || !user.profile_image.url) {
+          user.profile_image = {
+            url: '/uploads/placeholder_image_1625231395.jpg',
+          };
+        }
+        state.user = user;
+        state.token = jwt;
+        state.isAuthenticated = true;
+        state.loading = false;
+        state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
+        state.loading = false;
+        state.user = null;
+        state.isAuthenticated = false;
+        state.error = action.payload || 'Login failed';
       })
       .addCase(forgotPassword.pending, (state) => {
         state.status = 'loading';
@@ -655,9 +958,49 @@ const authSlice = createSlice({
       .addCase(fetchStakeholders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Failed to fetch stakeholders';
+      })
+      .addCase(checkAuthStatus.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(checkAuthStatus.fulfilled, (state, action) => {
+        const user = action.payload.user;
+
+        if (!user.profile_image || !user.profile_image.url) {
+          user.profile_image = {
+            url: '/uploads/placeholder_image_1625231395.jpg',
+          };
+        }
+
+        state.user = user;
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
+        state.loading = false;
+      })
+      .addCase(checkAuthStatus.rejected, (state, action) => {
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(sendConnectionRequest.fulfilled, (state, action) => {
+        state.user = action.payload.updatedUser;
+      })
+      .addCase(sendConnectionRequest.rejected, (state, action) => {
+        console.error('Connection request failed', action.payload);
+      })
+      .addCase(acceptConnectionRequest.fulfilled, (state, action) => {
+        state.user = action.payload.updatedUser;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.user = {
+          ...state.user,
+          ...action.payload,
+        };
       });
   },
 });
 
-export const { signOut, clearError, clearStakeholders } = authSlice.actions;
+export const { signOut, clearError, clearStakeholders, logout } =
+  authSlice.actions;
 export default authSlice.reducer;

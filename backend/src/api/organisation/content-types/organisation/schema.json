@@ -26,15 +26,18 @@
         "Company"
       ]
     },
-    "topics": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::topic.topic"
-    },
     "country": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::country.country"
+    },
+    "org_image": {
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "type": "media",
+      "multiple": false
     }
   }
 }

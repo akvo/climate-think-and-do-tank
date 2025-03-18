@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { Eye, EyeOff, Link2, X } from 'lucide-react';
 import CustomDropdown from '@/components/CustomDropdown';
 import { VerifyEmailIcon } from '@/components/Icons';
+import ImageUploader from '@/components/ImageUploader';
 
 export default function SignUpForm() {
   const dispatch = useDispatch();
@@ -97,6 +98,8 @@ export default function SignUpForm() {
           full_name: additionalData.name,
           looking_fors: { id: additionalData.looking_fors },
           regions: additionalData.regions.map((r) => ({ id: r })),
+          topics: additionalData.topics.map((r) => ({ id: r })),
+          country: additionalData.topics.map((r) => ({ id: country })),
           organisation: { id: additionalData.organisation },
         })
       );
@@ -454,8 +457,6 @@ const AdditionalDetails = ({
     onSubmit(formData);
   };
 
-  console.log(formData);
-
   return (
     <div className="flex min-h-screen ">
       <div className="w-1/2 flex flex-col justify-center min-h-screen bg-zinc-900 p-12 text-white">
@@ -573,7 +574,7 @@ const AdditionalDetails = ({
                   htmlFor="name"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Names
+                  Name
                 </label>
                 <input
                   id="name"
@@ -665,6 +666,25 @@ const AdditionalDetails = ({
               />
 
               <CustomDropdown
+                id="country"
+                label="Country of residence"
+                options={
+                  country &&
+                  country.map((f) => {
+                    return {
+                      id: f.id,
+                      label: f.country_name,
+                    };
+                  })
+                }
+                isMulti={true}
+                value={formData.country}
+                onChange={(value) =>
+                  setFormData({ ...formData, country: value })
+                }
+                placeholder="Select country"
+              />
+              <CustomDropdown
                 id="regions"
                 label="Focus Region"
                 options={
@@ -682,6 +702,26 @@ const AdditionalDetails = ({
                   setFormData({ ...formData, regions: value })
                 }
                 placeholder="Select regions"
+              />
+
+              <CustomDropdown
+                id="topics"
+                label="Topics"
+                options={
+                  topics &&
+                  topics.map((f) => {
+                    return {
+                      id: f.id,
+                      label: f.name,
+                    };
+                  })
+                }
+                isMulti={true}
+                value={formData.topics}
+                onChange={(value) =>
+                  setFormData({ ...formData, topics: value })
+                }
+                placeholder="Select topics"
               />
 
               <CustomDropdown
@@ -841,6 +881,7 @@ const AdditionalDetails = ({
             setFormData={setFormData}
             country={country}
             topics={topics}
+            setSearchTerm={setSearchTerm}
           />
         )}
       </div>
@@ -921,22 +962,54 @@ const OrganizationModal = ({
 }) => {
   const dispatch = useDispatch();
 
+  const [error, setError] = useState(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+
+    if (!formData.org_name) {
+      setError('Organization name is required');
+      return;
+    }
+
+    if (!formData.type) {
+      setError('Organization type is required');
+      return;
+    }
+
+    if (!formData.country) {
+      setError('Country is required');
+      return;
+    }
+
+    const organizationData = {
+      org_name: formData.org_name,
+      website: formData.website,
+      type: formData.type,
+      country: formData.country,
+      org_image: formData.org_image,
+    };
 
     try {
-      const resultAction = await dispatch(createOrganization(formData));
+      const resultAction = await dispatch(createOrganization(organizationData));
+
       if (createOrganization.fulfilled.match(resultAction)) {
+        console.log(resultAction);
         const newOrganization = resultAction.payload.data;
         setFormData({
           ...formData,
           organisation: newOrganization.id,
           organisationName: newOrganization.name,
         });
+        setSearchTerm(newOrganization.name);
         onClose();
+      } else if (createOrganization.rejected.match(resultAction)) {
+        setError(resultAction.payload || 'Failed to create organization');
       }
     } catch (error) {
       console.error('Error creating organization:', error);
+      setError(error.message || 'An unexpected error occurred');
     }
   };
 
@@ -954,7 +1027,11 @@ const OrganizationModal = ({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Name */}
+          {error && (
+            <div className="bg-red-50 border border-red-300 text-red-800 px-4 py-3 rounded-lg">
+              <p className="text-sm">{error}</p>
+            </div>
+          )}
           <div className="space-y-2">
             <label className="block text-sm font-medium">Name</label>
             <input
@@ -990,7 +1067,7 @@ const OrganizationModal = ({
 
           <CustomDropdown
             id="type"
-            label="Type"
+            label="Organization type"
             options={[
               { id: 'NGO', label: 'NGO' },
               { id: 'Company', label: 'Company' },
@@ -1019,23 +1096,15 @@ const OrganizationModal = ({
             placeholder="Select country"
           />
 
-          {/* Topics */}
-          <CustomDropdown
-            id="topics"
-            label="Topics"
-            options={
-              topics &&
-              topics.map((f) => {
-                return {
-                  id: f.id,
-                  label: f.name,
-                };
-              })
-            }
-            isMulti={true}
-            value={formData.topics}
-            onChange={(value) => setFormData({ ...formData, topics: value })}
-            placeholder="Select topics"
+          <ImageUploader
+            value={formData.org_image_preview}
+            onChange={(file) => {
+              setFormData((prev) => ({
+                ...prev,
+                org_image: file,
+                org_image_preview: file ? URL.createObjectURL(file) : null,
+              }));
+            }}
           />
 
           <button

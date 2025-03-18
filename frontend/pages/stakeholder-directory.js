@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import {
   ArrowDown,
@@ -15,10 +15,18 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { useModal } from '@/hooks/useModal';
-import { clearStakeholders, fetchStakeholders } from '@/store/slices/authSlice';
+import {
+  acceptConnectionRequest,
+  clearStakeholders,
+  fetchStakeholders,
+  fetchUserDetails,
+  sendConnectionRequest,
+} from '@/store/slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import TopicsFilter from '@/components/TopicFilter';
 import LocationsFilter from '@/components/LocationFilter';
+import { toast } from 'react-toastify';
+import debounce from 'lodash/debounce';
 
 export default function StakeholderDirectory() {
   const router = useRouter();
@@ -34,9 +42,8 @@ export default function StakeholderDirectory() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStakeholder, setSelectedStakeholder] = useState(null);
   const [sortOrder, setSortOrder] = useState('asc');
-  const { stakeholders, loading, error, currentPage, hasMore } = useSelector(
-    (state) => state.auth
-  );
+  const { stakeholders, loading, error, currentPage, hasMore, user } =
+    useSelector((state) => state.auth);
 
   const {
     topics = [],
@@ -79,22 +86,40 @@ export default function StakeholderDirectory() {
         filters,
       })
     );
-  }, [router.isReady, router.query]);
+  }, [router, dispatch]);
 
-  const handleSearch = (e) => {
+  const handleSearch = useCallback(
+    debounce((query) => {
+      const queryParams = { ...router.query, query };
+
+      // Remove query if it's empty
+      if (!query) {
+        delete queryParams.query;
+      }
+
+      router.push(
+        {
+          pathname: router.pathname,
+          query: queryParams,
+        },
+        undefined,
+        { shallow: true }
+      );
+
+      dispatch(
+        fetchKnowledgeHubs({
+          page: 1,
+          query,
+          filters: activeFilters,
+        })
+      );
+    }, 500),
+    []
+  );
+
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
-
-    const query = { ...router.query, query: searchQuery };
-    if (!searchQuery) delete query.query;
-
-    router.push(
-      {
-        pathname: router.pathname,
-        query,
-      },
-      undefined,
-      { shallow: true }
-    );
+    handleSearch(searchQuery);
   };
 
   const updateFilters = (newFilters) => {
@@ -168,24 +193,25 @@ export default function StakeholderDirectory() {
   const openStakeholderModal = (stakeholder) => {
     const enhancedStakeholder = {
       ...stakeholder,
-      mutualConnections: {
-        names: ['Kevin Ochieng'],
-        count: 2,
-      },
       ...(stakeholder.type === 'Individual'
         ? {
-            location: 'Kenya',
-            focusRegions: ['Kijado', 'Marsabit', 'Turkana'],
-            organization: 'United Nations Environment Program',
-            organizationWebsite: 'https://www.unep.org/',
-            profession: 'Environmentalist',
-            valueChains: ['Crop'],
+            location: stakeholder.country,
+            focusRegions: stakeholder.focusRegions,
+            organization: stakeholder.organization,
+            organizationWebsite: stakeholder.data.organisation.website,
+            profession: stakeholder.data.stakeholder_role,
+            valueChains: stakeholder.data.topics.map((topic) => topic.name),
+            linkedin: stakeholder.data.linkedin,
+            email: stakeholder.data.email,
+            mutualConnections: {
+              names: ['Kevin Ochieng'],
+              count: 2,
+            },
           }
         : {
-            country: 'Kenya',
-            website: 'https://www.unep.org/',
-            organizationType: 'Non-Profit Environmental Organization',
-            valueChains: ['Fish', 'Crop'],
+            country: stakeholder.country,
+            website: stakeholder.data.website,
+            organizationType: stakeholder.data.type,
           }),
     };
     setSelectedStakeholder(enhancedStakeholder);
@@ -204,26 +230,44 @@ export default function StakeholderDirectory() {
   }, [openFilter]);
 
   const toggleSortOrder = () => {
-    setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
+    const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortOrder(newSortOrder);
+
+    const queryParams = {
+      ...router.query,
+      sort: newSortOrder,
+    };
+
+    router.push(
+      {
+        pathname: router.pathname,
+        query: queryParams,
+      },
+      undefined,
+      { shallow: true }
+    );
   };
 
   return (
     <div className="min-h-screen bg-white">
       {/* Search Section */}
       <div className="py-4 px-4 bg-[#f1f3f5]">
-        <div className="container mx-auto">
-          <form onSubmit={handleSearch}>
+        <div className="container mx-auto text-black">
+          <form onSubmit={handleSearchSubmit}>
             <div className="relative">
               <input
                 type="text"
                 placeholder="Try keywords like: 'tilapia' or 'horticulture'"
                 className="w-full pl-4 pr-10 py-3 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  handleSearch(e.target.value);
+                }}
               />
               <button
                 type="submit"
-                className="absolute right-3 top-3.5 text-gray-400"
+                className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <Search size={20} />
               </button>
@@ -248,7 +292,7 @@ export default function StakeholderDirectory() {
                     className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
                   >
                     {filterType === 'focusRegions'
-                      ? 'Location'
+                      ? 'Focus regions'
                       : filterType.charAt(0).toUpperCase() +
                         filterType.slice(1)}
                     <svg
@@ -314,6 +358,7 @@ export default function StakeholderDirectory() {
                             updateFilters(newFilters);
                             setOpenFilter(null);
                           }}
+                          name={'Focus Regions'}
                           onClear={() => {
                             const newFilters = {
                               ...activeFilters,
@@ -356,7 +401,7 @@ export default function StakeholderDirectory() {
                   )}
                 </div>
               ))}
-              <div className="flex justify-end mb-4">
+              <div className="flex justify-end ">
                 <button
                   onClick={toggleSortOrder}
                   className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
@@ -440,35 +485,41 @@ export default function StakeholderDirectory() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-            {stakeholders.map((stakeholder, index) => (
-              <div
-                key={`${stakeholder.type}-${stakeholder.id}-${index}`}
-                onClick={() => openStakeholderModal(stakeholder)}
-                className="bg-[#f8f9fa] rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md transition-shadow cursor-pointer"
-              >
-                <div className="relative w-24 h-24 mb-4">
-                  <Image
-                    src={stakeholder.image || '/placeholder.svg'}
-                    alt={stakeholder.name}
-                    fill
-                    className="rounded-full object-cover"
-                    unoptimized
-                  />
-                </div>
-                <div className="text-xs font-semibold text-green-600 mb-2">
-                  {stakeholder.type}
-                </div>
-                <h3 className="text-sm font-medium text-gray-900">
-                  {stakeholder.name}
-                </h3>
-                {stakeholder.topics && stakeholder.topics.length > 0 && (
-                  <div className="mt-2 text-xs text-gray-500">
-                    {stakeholder.topics.slice(0, 2).join(', ')}
-                    {stakeholder.topics.length > 2 && '...'}
+            {stakeholders
+              .filter(
+                (stakeholder) =>
+                  stakeholder.type !== 'Individual' ||
+                  stakeholder.data.documentId !== user?.documentId
+              )
+              .map((stakeholder, index) => (
+                <div
+                  key={`${stakeholder.type}-${stakeholder.id}-${index}`}
+                  onClick={() => openStakeholderModal(stakeholder)}
+                  className="bg-[#f8f9fa] rounded-lg p-4 flex flex-col  text-left hover:shadow-md transition-shadow cursor-pointer"
+                >
+                  <div className="relative w-24 h-24 m-auto">
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${stakeholder.image}`}
+                      alt={stakeholder.name}
+                      fill
+                      className="rounded-full object-cover"
+                      unoptimized
+                    />
                   </div>
-                )}
-              </div>
-            ))}
+                  <div className="text-xs font-semibold text-green-600 mb-0 mt-4 uppercase">
+                    {stakeholder.type}
+                  </div>
+                  <h3 className="text-md font-semibold text-gray-900">
+                    {stakeholder.name}
+                  </h3>
+                  {stakeholder.topics && stakeholder.topics.length > 0 && (
+                    <div className="mt-2 text-xs text-gray-500">
+                      {stakeholder.topics.slice(0, 2).join(', ')}
+                      {stakeholder.topics.length > 2 && '...'}
+                    </div>
+                  )}
+                </div>
+              ))}
           </div>
         )}{' '}
         {hasMore && (
@@ -501,9 +552,227 @@ export default function StakeholderDirectory() {
 }
 
 const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
+  const dispatch = useDispatch();
   const overlayRef = useModal(isOpen, onClose);
+  const { isAuthenticated, loading, user } = useSelector((state) => state.auth);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingConnection, setLoadingConnection] = useState(false);
+  const [error, setError] = useState(null);
+  const [connectionStatus, setConnectionStatus] = useState(null);
+
+  const fetchUserDetailsHandler = useCallback(async () => {
+    if (isOpen) {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const currentUserDetails = await fetchUserDetails(user.id);
+        setCurrentUser(currentUserDetails);
+
+        const details = await fetchUserDetails(stakeholder.id);
+        setUserDetails(details);
+        checkConnectionStatus(currentUserDetails, details);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  }, [isOpen]);
+
+  const checkConnectionStatus = (currentUser, targetStakeholderDetails) => {
+    const sentRequest = currentUser.connection_requests_sent.some((sentReq) =>
+      targetStakeholderDetails.connection_requests_received.some(
+        (receivedReq) =>
+          receivedReq.documentId === sentReq.documentId &&
+          ['Pending', 'Accepted', 'Rejected'].includes(
+            receivedReq.connection_status
+          )
+      )
+    );
+
+    const receivedRequest =
+      targetStakeholderDetails.connection_requests_sent.some((sentReq) =>
+        currentUser.connection_requests_received.some(
+          (receivedReq) =>
+            receivedReq.documentId === sentReq.documentId &&
+            ['Pending', 'Accepted', 'Rejected'].includes(
+              receivedReq.connection_status
+            )
+        )
+      );
+
+    if (sentRequest) {
+      const actualRequest =
+        targetStakeholderDetails.connection_requests_received.find((req) =>
+          currentUser.connection_requests_sent.some(
+            (sentReq) => sentReq.documentId === req.documentId
+          )
+        );
+
+      switch (actualRequest.connection_status) {
+        case 'Pending':
+          setConnectionStatus('sent_pending');
+          break;
+        case 'Accepted':
+          setConnectionStatus('connected');
+          break;
+        case 'Rejected':
+          setConnectionStatus('rejected');
+          break;
+        default:
+          setConnectionStatus('not_connected');
+      }
+    } else if (receivedRequest) {
+      const actualRequest = currentUser.connection_requests_received.find(
+        (req) =>
+          targetStakeholderDetails.connection_requests_sent.some(
+            (sentReq) => sentReq.documentId === req.documentId
+          )
+      );
+
+      switch (actualRequest.connection_status) {
+        case 'Pending':
+          setConnectionStatus('received_pending');
+          break;
+        case 'Accepted':
+          setConnectionStatus('connected');
+          break;
+        case 'Rejected':
+          setConnectionStatus('rejected');
+          break;
+        default:
+          setConnectionStatus('not_connected');
+      }
+    } else {
+      setConnectionStatus('not_connected');
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetailsHandler();
+  }, [fetchUserDetailsHandler]);
 
   if (!isOpen || !stakeholder) return null;
+
+  const handleConnectRequest = async () => {
+    try {
+      setLoadingConnection(true);
+      const result = await dispatch(
+        sendConnectionRequest({
+          requester: user.documentId,
+          receiver: userDetails.documentId,
+        })
+      );
+
+      if (sendConnectionRequest.fulfilled.match(result)) {
+        toast.success('Connection request sent');
+        onClose();
+      } else {
+        toast.error(result.payload);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Failed to send connection request');
+    } finally {
+      setLoadingConnection(false);
+    }
+  };
+
+  const handleAcceptRequest = async (id) => {
+    try {
+      setLoadingConnection(true);
+      const result = await dispatch(
+        acceptConnectionRequest({
+          connectionId: id,
+          requester: userDetails.documentId,
+          receiver: currentUser.documentId,
+        })
+      );
+
+      if (acceptConnectionRequest.fulfilled.match(result)) {
+        toast.success('Connection request accepted');
+        setConnectionStatus('connected');
+      } else {
+        toast.error(result.payload);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Failed to accept connection request');
+    } finally {
+      setLoadingConnection(false);
+    }
+  };
+
+  const renderConnectionButton = () => {
+    switch (connectionStatus) {
+      case 'sent_pending':
+        return (
+          <button
+            disabled
+            className="px-8 py-2 border-2 border-gray-300 rounded-full text-gray-500 cursor-not-allowed"
+          >
+            Request Sent
+          </button>
+        );
+      case 'received_pending':
+        const isReceiver = currentUser?.connection_requests_received?.find(
+          (req) =>
+            userDetails?.connection_requests_sent.some(
+              (sentReq) => sentReq.documentId === req.documentId
+            )
+        );
+
+        return isReceiver ? (
+          <button
+            className="px-8 py-2 border-2 border-green-600 rounded-full text-green-600 hover:bg-green-50"
+            onClick={() => handleAcceptRequest(isReceiver.documentId)}
+            disabled={loadingConnection}
+          >
+            {loadingConnection ? 'Accepting...' : 'Accept Request'}
+          </button>
+        ) : (
+          <button
+            disabled
+            className="px-8 py-2 border-2 border-gray-300 rounded-full text-gray-500 cursor-not-allowed"
+          >
+            Request Pending
+          </button>
+        );
+      case 'connected':
+        return (
+          <button
+            disabled
+            className="px-8 py-2 border-2 border-green-600 rounded-full text-green-600"
+          >
+            Connected
+          </button>
+        );
+      case 'rejected':
+        return (
+          <button className="px-8 py-2 border-2 border-red-600 rounded-full text-red-600">
+            Request Rejected
+          </button>
+        );
+      case 'not_connected':
+      default:
+        return (
+          <button
+            onClick={handleConnectRequest}
+            disabled={loadingConnection}
+            className={`px-8 py-2 border-2 border-zinc-900 rounded-full text-zinc-900 
+            ${
+              loadingConnection
+                ? 'opacity-50 cursor-not-allowed'
+                : 'hover:bg-zinc-50'
+            }`}
+          >
+            {loadingConnection ? 'Sending...' : 'Connect'}
+          </button>
+        );
+    }
+  };
 
   return (
     <div
@@ -539,20 +808,6 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
               {stakeholder.profession && (
                 <p className="text-gray-600 text-lg mb-2">
                   {stakeholder.profession}
-                </p>
-              )}
-
-              {/* Mutual Connections */}
-              {stakeholder.mutualConnections && (
-                <p>
-                  <span className="text-green-600">
-                    {stakeholder.mutualConnections.names.join(', ')}
-                  </span>
-                  <span className="text-gray-600"> and </span>
-                  <span className="text-green-600">
-                    {stakeholder.mutualConnections.count - 1} other
-                  </span>
-                  <span className="text-gray-600"> mutual connection</span>
                 </p>
               )}
             </div>
@@ -627,35 +882,56 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
                   </div>
                 )}
 
-              {/* LinkedIn Profile (for Individuals) */}
               {stakeholder.type === 'Individual' && (
                 <div className="flex items-center gap-3 text-gray-600">
                   <Linkedin size={20} />
-                  <span className="text-gray-400">
-                    LinkedIn Profile (Pending Connection)
-                  </span>
+                  {connectionStatus === 'connected' ? (
+                    <a
+                      href={stakeholder.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      {stakeholder.linkedin}
+                    </a>
+                  ) : (
+                    <span className="text-gray-400">
+                      LinkedIn Profile (Pending Connection)
+                    </span>
+                  )}
                 </div>
               )}
 
-              {/* Email Address (for Individuals) */}
               {stakeholder.type === 'Individual' && (
                 <div className="flex items-center gap-3 text-gray-600">
                   <Mail size={20} />
-                  <span className="text-gray-400">
-                    Email Address (Pending Connection)
-                  </span>
+                  {connectionStatus === 'connected' ? (
+                    <a
+                      href={`mailto:${stakeholder.email}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {stakeholder.email}
+                    </a>
+                  ) : (
+                    <span className="text-gray-400">
+                      Email Address (Pending Connection)
+                    </span>
+                  )}
                 </div>
               )}
 
               {/* Value Chains */}
-              <div className="flex items-center gap-3 text-gray-600">
-                <Sprout size={20} />
-                <span>
-                  {stakeholder.valueChains && stakeholder.valueChains.length > 0
-                    ? stakeholder.valueChains.join(', ')
-                    : 'No Value Chains Selected'}
-                </span>
-              </div>
+              {stakeholder.valueChains?.length > 0 && (
+                <div className="flex items-center gap-3 text-gray-600">
+                  <Sprout size={20} />
+                  <span>
+                    {stakeholder.valueChains &&
+                    stakeholder.valueChains.length > 0
+                      ? stakeholder.valueChains.join(', ')
+                      : 'No Value Chains Selected'}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -663,7 +939,7 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
           <div className="relative w-64 h-64 ml-8">
             <div className="w-full h-full rounded-full bg-gray-100 overflow-hidden relative">
               <Image
-                src={stakeholder.image || '/placeholder.svg'}
+                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${stakeholder.image}`}
                 alt={stakeholder.name}
                 className="object-cover relative"
                 unoptimized
@@ -675,11 +951,9 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
         </div>
 
         {/* Footer */}
-        {stakeholder.type === 'Individual' && (
+        {stakeholder.type === 'Individual' && isAuthenticated && (
           <div className="p-8 pt-6 flex justify-end border-t">
-            <button className="px-8 py-2 border-2 border-zinc-900 rounded-full text-zinc-900 hover:bg-zinc-50 transition-colors">
-              Connect
-            </button>
+            {renderConnectionButton()}
           </div>
         )}
       </div>

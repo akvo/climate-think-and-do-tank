@@ -76,6 +76,8 @@ module.exports = ({ env }) => {
             'news_consent',
             'looking_fors',
             'focus_regions',
+            'topics',
+            'profile_image',
           ],
         },
       },
