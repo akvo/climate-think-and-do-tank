@@ -1,5 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { env } from '@/helpers/env-vars';
+
+const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 
 export const fetchKnowledgeHubs = createAsyncThunk(
   'knowledgeHubs/fetchKnowledgeHubs',
@@ -56,7 +59,7 @@ export const fetchKnowledgeHubs = createAsyncThunk(
       knowledgeHubQueryParams.append('populate[2]', 'file');
 
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/knowledge-hubs?${knowledgeHubQueryParams}`
+        `${BACKEND_URL}/api/knowledge-hubs?${knowledgeHubQueryParams}`
       );
 
       const knowledgeHubs = response.data.data.map((hub) => ({
@@ -112,7 +115,7 @@ export const fetchRelatedKnowledgeHubs = createAsyncThunk(
       queryParams.append('populate[0]', 'thematic');
 
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/knowledge-hubs?${queryParams}`
+        `${BACKEND_URL}/api/knowledge-hubs?${queryParams}`
       );
 
       const relatedKnowledgeHubs = response.data.data.map((hub) => ({

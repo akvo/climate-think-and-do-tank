@@ -20,21 +20,15 @@ export const fetchUserDetails = async (userId) => {
   try {
     const token = getAuthToken();
 
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${userId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        params: {
-          populate: [
-            'connection_requests_received',
-            'connection_requests_sent',
-          ],
-        },
-      }
-    );
+    const response = await axios.get(`${BACKEND_URL}/api/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      params: {
+        populate: ['connection_requests_received', 'connection_requests_sent'],
+      },
+    });
 
     return {
       id: response.data.id,

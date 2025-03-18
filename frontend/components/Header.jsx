@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
+import { env } from '@/helpers/env-vars';
 
 export default function Header() {
   const pathname = usePathname();
@@ -162,7 +163,9 @@ export default function Header() {
                   </span>
                   <div className="w-10 h-10 rounded-full overflow-hidden">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user?.profile_image?.url}`}
+                      src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
+                        user?.profile_image?.url
+                      }`}
                       alt={user?.full_name || 'User'}
                       width={100}
                       height={100}
