@@ -77,6 +77,7 @@ module.exports = ({ env }) => {
             'looking_fors',
             'focus_regions',
             'topics',
+            'profile_image',
           ],
         },
       },

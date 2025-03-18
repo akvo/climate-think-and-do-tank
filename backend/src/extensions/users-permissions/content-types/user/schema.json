@@ -119,6 +119,16 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::country.country"
+    },
+    "profile_image": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
     }
   }
 }
