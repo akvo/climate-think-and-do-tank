@@ -28,8 +28,8 @@ const ProfileLayout = ({ children }) => {
         <div className="flex items-center p-6 border-b">
           <div className="w-24 h-24 rounded-full overflow-hidden mr-6">
             <Image
-              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user.profile_image?.url}`}
-              alt={user.full_name}
+              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user?.profile_image?.url}`}
+              alt={user?.full_name}
               width={96}
               height={96}
               className="w-full h-full object-cover"
@@ -37,8 +37,8 @@ const ProfileLayout = ({ children }) => {
             />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">{user.full_name}</h1>
-            <p className="text-gray-600">{user.email}</p>
+            <h1 className="text-2xl font-bold">{user?.full_name}</h1>
+            <p className="text-gray-600">{user?.email}</p>
           </div>
         </div>
 

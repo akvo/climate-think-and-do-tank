@@ -78,6 +78,7 @@ module.exports = ({ env }) => {
             'focus_regions',
             'topics',
             'profile_image',
+            'country',
           ],
         },
       },

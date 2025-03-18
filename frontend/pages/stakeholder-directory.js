@@ -92,7 +92,6 @@ export default function StakeholderDirectory() {
     debounce((query) => {
       const queryParams = { ...router.query, query };
 
-      // Remove query if it's empty
       if (!query) {
         delete queryParams.query;
       }
@@ -104,14 +103,6 @@ export default function StakeholderDirectory() {
         },
         undefined,
         { shallow: true }
-      );
-
-      dispatch(
-        fetchKnowledgeHubs({
-          page: 1,
-          query,
-          filters: activeFilters,
-        })
       );
     }, 500),
     []
@@ -894,9 +885,21 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
                     >
                       {stakeholder.linkedin}
                     </a>
+                  ) : connectionStatus === 'sent_pending' ? (
+                    <span className="text-gray-400">
+                      LinkedIn Profile (View after connection is accepted)
+                    </span>
+                  ) : connectionStatus === 'received_pending' ? (
+                    <span className="text-gray-400">
+                      LinkedIn Profile (Accept connection request to view)
+                    </span>
+                  ) : connectionStatus === 'rejected' ? (
+                    <span className="text-gray-400">
+                      LinkedIn Profile (Not available)
+                    </span>
                   ) : (
                     <span className="text-gray-400">
-                      LinkedIn Profile (Pending Connection)
+                      LinkedIn Profile (Connect to view)
                     </span>
                   )}
                 </div>
@@ -912,9 +915,21 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
                     >
                       {stakeholder.email}
                     </a>
+                  ) : connectionStatus === 'sent_pending' ? (
+                    <span className="text-gray-400">
+                      Email Address (View after connection is accepted)
+                    </span>
+                  ) : connectionStatus === 'received_pending' ? (
+                    <span className="text-gray-400">
+                      Email Address (Accept connection request to view)
+                    </span>
+                  ) : connectionStatus === 'rejected' ? (
+                    <span className="text-gray-400">
+                      Email Address (Not available)
+                    </span>
                   ) : (
                     <span className="text-gray-400">
-                      Email Address (Pending Connection)
+                      Email Address (Connect to view)
                     </span>
                   )}
                 </div>

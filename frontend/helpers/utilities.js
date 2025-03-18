@@ -78,3 +78,48 @@ export const validateSignUp = (data) => {
 
   return errors;
 };
+
+export const validateAdditionalDetails = (data) => {
+  const errors = {};
+
+  if (!data.name || !data.name.trim()) {
+    errors.name = 'Name is required';
+  }
+
+  if (!data.organisation && !data.org_name) {
+    errors.organisation = 'Organization is required';
+  }
+
+  if (!data.role) {
+    errors.role = 'Role is required';
+  }
+
+  if (
+    !data.country ||
+    (Array.isArray(data.country) && data.country.length === 0)
+  ) {
+    errors.country = 'Country is required';
+  }
+
+  if (
+    data.regions &&
+    Array.isArray(data.regions) &&
+    data.regions.length === 0
+  ) {
+    errors.regions = 'Please select at least one region or leave empty';
+  }
+
+  if (data.topics && Array.isArray(data.topics) && data.topics.length === 0) {
+    errors.topics = 'Please select at least one topic or leave empty';
+  }
+
+  if (!data.looking_fors) {
+    errors.looking_fors = 'Please select what you are looking for';
+  }
+
+  if (!data.acceptTerms) {
+    errors.acceptTerms = 'You must accept the terms to continue';
+  }
+
+  return errors;
+};

@@ -62,6 +62,7 @@ module.exports = (plugin) => {
           populate: {
             connection_requests_sent: true,
             connection_requests_received: true,
+            profile_image: true,
           },
         }
       );
