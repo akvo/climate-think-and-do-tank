@@ -230,7 +230,22 @@ export default function StakeholderDirectory() {
   }, [openFilter]);
 
   const toggleSortOrder = () => {
-    setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
+    const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortOrder(newSortOrder);
+
+    const queryParams = {
+      ...router.query,
+      sort: newSortOrder,
+    };
+
+    router.push(
+      {
+        pathname: router.pathname,
+        query: queryParams,
+      },
+      undefined,
+      { shallow: true }
+    );
   };
 
   return (

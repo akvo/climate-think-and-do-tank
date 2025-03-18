@@ -489,7 +489,7 @@ export const updateProfile = createAsyncThunk(
 export const fetchStakeholders = createAsyncThunk(
   'stakeholders/fetchStakeholders',
   async (
-    { page = 1, pageSize = 12, query = '', filters = {} },
+    { page = 1, pageSize = 12, query = '', filters = {}, sortOrder = 'asc' },
     { rejectWithValue }
   ) => {
     try {
@@ -497,19 +497,19 @@ export const fetchStakeholders = createAsyncThunk(
       baseQueryParams.append('pagination[page]', page);
       baseQueryParams.append('pagination[pageSize]', pageSize);
 
-      // baseQueryParams.append('sort[0]', filters.type === '' ? 'full_name:asc' : 'name:asc');
+      const sortDirection = sortOrder === 'asc' ? 'asc' : 'desc';
 
       const userQueryParams = new URLSearchParams(baseQueryParams);
       userQueryParams.append('populate[1]', 'focus_regions');
       userQueryParams.append('populate[2]', 'organisation');
-      userQueryParams.append('sort[0]', 'full_name:asc');
+      userQueryParams.append('sort[0]', `full_name:${sortDirection}`);
       userQueryParams.append('populate[3]', 'profile_image');
       userQueryParams.append('populate[0]', 'topics');
 
       const orgQueryParams = new URLSearchParams(baseQueryParams);
       // orgQueryParams.append('populate[0]', 'topics');
       orgQueryParams.append('populate[1]', 'country');
-      orgQueryParams.append('sort[0]', 'name:asc');
+      orgQueryParams.append('sort[0]', `name:${sortDirection}`);
       orgQueryParams.append('populate[3]', 'org_image');
 
       if (filters.focusRegions && filters.focusRegions.length > 0) {

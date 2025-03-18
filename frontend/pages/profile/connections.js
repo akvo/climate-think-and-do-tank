@@ -7,6 +7,7 @@ import ProfileLayout from '@/components/ProfileLayout';
 import { getCookie } from 'cookies-next';
 import axios from 'axios';
 import { env } from '@/helpers/env-vars';
+import Image from 'next/image';
 
 const MyConnections = () => {
   const { user } = useSelector((state) => state.auth);
@@ -32,7 +33,12 @@ const MyConnections = () => {
             filters: {
               receiver: user.id,
             },
-            populate: ['requester', 'receiver'],
+            populate: [
+              'requester',
+              'requester.profile_image',
+              'receiver',
+              'receiver.profile_image',
+            ],
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -125,41 +131,63 @@ const MyConnections = () => {
   const renderConnections = () => {
     const filteredConnections = connections[activeTab];
 
-    return filteredConnections.map((connection) => (
-      <div
-        key={connection.id}
-        className="flex items-center justify-between p-4 border-b hover:bg-gray-50"
-      >
-        <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 rounded-full bg-gray-200">
-            {/* Profile Image */}
+    return filteredConnections.map((connection) => {
+      const userData = connection.requester;
+      const profileImage = userData?.profile_image;
+      console.log(userData);
+      return (
+        <div
+          key={connection.id}
+          className="flex items-center justify-between p-4 border-b hover:bg-gray-50"
+        >
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
+              {profileImage?.url ? (
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${profileImage.url}`}
+                  alt={userData.full_name}
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover"
+                  unoptimized
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-blue-100 text-blue-600 font-semibold text-lg">
+                  {userData.full_name
+                    ? userData.full_name.charAt(0).toUpperCase()
+                    : '?'}
+                </div>
+              )}
+            </div>
+            <div>
+              <h3 className="font-semibold">
+                {connection.requester?.full_name}
+              </h3>
+              <p className="text-sm text-gray-500">
+                {connection.requester?.stakeholder_role ||
+                  connection.receiver?.stakeholder_role}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-semibold">{connection.requester?.full_name}</h3>
-            <p className="text-sm text-gray-500">
-              {connection.requester?.stakeholder_role ||
-                connection.receiver?.stakeholder_role}
-            </p>
-          </div>
+          {activeTab === 'pending' && (
+            <div className="space-x-2">
+              <button
+                className="px-4 py-2 text-md text-black rounded-[50px] border border-white hover:border-zinc-950"
+                onClick={() => handleIgnoreRequest(connection.documentId)}
+              >
+                Ignore
+              </button>
+              <button
+                className="px-6 py-2 text-md text-black rounded-[50px] border hover:bg-green-500 hover:text-white"
+                onClick={() => handleAcceptRequest(connection.documentId)}
+              >
+                Accept
+              </button>
+            </div>
+          )}
         </div>
-        {activeTab === 'pending' && (
-          <div className="space-x-2">
-            <button
-              className="px-4 py-2 text-md text-black rounded-[50px] border border-white hover:border-zinc-950"
-              onClick={() => handleIgnoreRequest(connection.documentId)}
-            >
-              Ignore
-            </button>
-            <button
-              className="px-6 py-2 text-md text-black rounded-[50px] border hover:bg-green-500 hover:text-white"
-              onClick={() => handleAcceptRequest(connection.documentId)}
-            >
-              Accept
-            </button>
-          </div>
-        )}
-      </div>
-    ));
+      );
+    });
   };
 
   return (
