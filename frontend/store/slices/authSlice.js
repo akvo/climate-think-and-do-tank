@@ -300,9 +300,12 @@ export const login = createAsyncThunk(
       return { user, jwt };
     } catch (error) {
       const errorMessage =
-        error.response?.data?.error?.message ||
-        error.response?.data?.message ||
-        'Login failed';
+        error.response?.data?.error?.message ===
+        'Invalid identifier or password'
+          ? 'Invalid email or password'
+          : error.response?.data?.error?.message ||
+            error.response?.data?.message ||
+            'Login failed';
 
       return rejectWithValue(errorMessage);
     }
@@ -611,10 +614,6 @@ export const fetchStakeholders = createAsyncThunk(
         },
       };
     } catch (error) {
-      console.error(
-        'Stakeholder fetch error:',
-        error.response?.data || error.message
-      );
       return rejectWithValue(
         error.response?.data?.error || 'Failed to fetch stakeholders'
       );
@@ -641,7 +640,6 @@ export const createOrganization = createAsyncThunk(
             },
           }
         );
-        console.log(uploadResponse);
         imageResponse = uploadResponse.data[0];
       }
 
@@ -662,13 +660,26 @@ export const createOrganization = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.error(
-        'Organization creation error:',
-        error.response?.data || error
-      );
-      return rejectWithValue(
-        error.response?.data?.error || 'Failed to create organization'
-      );
+      let errorMessage = 'Failed to create organization';
+      if (error.response) {
+        if (error.response.data?.error?.message) {
+          errorMessage =
+            error.response.data.error.message ===
+            'This attribute must be unique'
+              ? 'Organization name must be unique'
+              : error.response.data.error.message;
+        } else if (error.response.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data;
+        }
+      } else if (error.request) {
+        errorMessage = 'No response from server. Please check your connection.';
+      } else {
+        errorMessage = error.message || 'An unknown error occurred';
+      }
+
+      return rejectWithValue(errorMessage);
     }
   }
 );

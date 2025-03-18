@@ -106,15 +106,25 @@ export const validateAdditionalDetails = (data) => {
     Array.isArray(data.regions) &&
     data.regions.length === 0
   ) {
-    errors.regions = 'Please select at least one region or leave empty';
+    errors.regions = 'Please select at least one region';
   }
 
   if (data.topics && Array.isArray(data.topics) && data.topics.length === 0) {
-    errors.topics = 'Please select at least one topic or leave empty';
+    errors.topics = 'Please select at least one topic';
   }
 
   if (!data.looking_fors) {
     errors.looking_fors = 'Please select what you are looking for';
+  }
+
+  if (data.linkedin && data.linkedin.trim()) {
+    const linkedinRegex =
+      /^(https?:\/\/)?(www\.)?linkedin\.com\/in\/[\w-]+\/?$/i;
+
+    if (!linkedinRegex.test(data.linkedin.trim())) {
+      errors.linkedin =
+        'Please enter a valid LinkedIn profile URL (e.g., https://linkedin.com/in/username)';
+    }
   }
 
   if (!data.acceptTerms) {

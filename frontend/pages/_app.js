@@ -35,7 +35,7 @@ function AppContent({ Component, pageProps }) {
         pauseOnHover
       />
       <Component {...pageProps} />
-      <Footer />
+      {shouldShowHeader && <Footer />}
     </>
   );
 }
