@@ -761,6 +761,7 @@ const AdditionalDetails = ({
                     setFormData({ ...formData, country: value })
                   }
                   placeholder="Select country"
+                  searchable={true}
                 />
                 {formErrors.country && (
                   <p className="text-red-500 text-sm mt-1">
@@ -1214,6 +1215,7 @@ const OrganizationModal = ({
             value={formData.country}
             onChange={(value) => setFormData({ ...formData, country: value })}
             placeholder="Select country"
+            searchable={true}
           />
 
           <ImageUploader
