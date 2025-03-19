@@ -13,6 +13,8 @@ import React, { useState, useEffect, useRef } from 'react';
  * @param {string} props.placeholder - Placeholder text when no selection
  * @param {string} props.className - Additional class names for the container
  * @param {boolean} props.disabled - Whether the dropdown is disabled
+ * @param {boolean} props.searchable - Whether to show search input
+ * @param {boolean} props.alphabetical - Whether to sort options alphabetically
  */
 const CustomDropdown = ({
   id,
@@ -24,9 +26,13 @@ const CustomDropdown = ({
   placeholder = 'Select option',
   className = '',
   disabled = false,
+  searchable = false,
+  alphabetical = true,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef(null);
+  const searchInputRef = useRef(null);
 
   // Handle clicks outside to close dropdown
   useEffect(() => {
@@ -44,6 +50,18 @@ const CustomDropdown = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
+
+  // Focus search input when dropdown opens
+  useEffect(() => {
+    if (isOpen && searchable && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+
+    // Reset search term when dropdown closes
+    if (!isOpen) {
+      setSearchTerm('');
+    }
+  }, [isOpen, searchable]);
 
   // Get selected item(s) for display
   const getSelectedItems = () => {
@@ -81,8 +99,28 @@ const CustomDropdown = ({
     }
   };
 
+  // Get filtered and sorted options
+  const getFilteredOptions = () => {
+    let filteredOptions = [...options];
+
+    // Apply search filter if search term exists
+    if (searchable && searchTerm) {
+      filteredOptions = filteredOptions.filter((option) =>
+        option.label.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Sort alphabetically if needed
+    if (alphabetical) {
+      filteredOptions.sort((a, b) => a.label.localeCompare(b.label));
+    }
+
+    return filteredOptions;
+  };
+
   // Get selected items for display
   const selectedItems = getSelectedItems();
+  const filteredOptions = getFilteredOptions();
 
   return (
     <div className={`space-y-2 ${className}`}>
@@ -158,9 +196,40 @@ const CustomDropdown = ({
         {/* Dropdown menu */}
         {isOpen && !disabled && (
           <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
+            {/* Search input */}
+            {searchable && (
+              <div className="p-2 border-b border-gray-200">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg
+                      className="h-4 w-4 text-gray-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+              </div>
+            )}
+
             <div className="p-2 max-h-60 overflow-y-auto">
-              {options.length > 0 ? (
-                options.map((option) => (
+              {filteredOptions.length > 0 ? (
+                filteredOptions.map((option) => (
                   <div
                     key={option.id}
                     className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer"
@@ -183,7 +252,7 @@ const CustomDropdown = ({
                 ))
               ) : (
                 <div className="p-2 text-center text-gray-500">
-                  No options available
+                  {searchTerm ? 'No matching options' : 'No options available'}
                 </div>
               )}
             </div>
