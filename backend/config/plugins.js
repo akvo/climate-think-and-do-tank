@@ -25,12 +25,6 @@ module.exports = ({ env }) => {
           user: env('SMTP_USERNAME'),
           pass: env('SMTP_PASSWORD'),
         },
-        secure: true, // Changed to false for port 587
-        requireTLS: true, // Added this
-        tls: {
-          ciphers: 'SSLv3', // Added this
-          rejectUnauthorized: false, // Added this
-        },
       },
     },
   };
