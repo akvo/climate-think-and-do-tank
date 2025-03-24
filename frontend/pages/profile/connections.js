@@ -8,8 +8,11 @@ import { getCookie } from 'cookies-next';
 import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import Image from 'next/image';
+import { StakeholderModal } from '../stakeholder-directory';
+import { useRouter } from 'next/router';
 
 const MyConnections = () => {
+  const router = useRouter();
   const { user } = useSelector((state) => state.auth);
   const [connections, setConnections] = useState({
     all: [],
@@ -20,6 +23,8 @@ const MyConnections = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [isLoading, setIsLoading] = useState(false);
   const token = getCookie('token');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStakeholder, setSelectedStakeholder] = useState(null);
 
   const loadConnections = async () => {
     if (!user) return;
@@ -36,6 +41,7 @@ const MyConnections = () => {
             populate: [
               'requester',
               'requester.profile_image',
+              'requester.topics',
               'receiver',
               'receiver.profile_image',
             ],
@@ -263,11 +269,30 @@ const MyConnections = () => {
     return filteredConnections.map((connection) => {
       const userData = connection.requester || connection.receiver || {};
       const profileImage = userData?.profile_image;
-
       return (
         <div
           key={connection.id}
-          className="flex items-center justify-between p-4 border-b hover:bg-gray-50"
+          className="flex items-center justify-between p-4 border-b hover:bg-gray-50 cursor-pointer"
+          onClick={() => {
+            console.log('clicked', connection);
+            const enhancedStakeholder = {
+              ...userData,
+              location: userData.country,
+              focusRegions: userData.focusRegions,
+              organization: userData.organization,
+              profession: userData.stakeholder_role,
+              valueChains: connection.requester.topics.map(
+                (topic) => topic.name
+              ),
+              linkedin: userData.linkedin,
+              email: userData.email,
+              image: connection.requester.profile_image,
+              name: connection.requester.full_name,
+              type: 'Individual',
+            };
+            setSelectedStakeholder(enhancedStakeholder);
+            setIsModalOpen(true);
+          }}
         >
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
@@ -314,6 +339,13 @@ const MyConnections = () => {
               </button>
             </div>
           )}
+
+          <StakeholderModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            stakeholder={selectedStakeholder}
+            router={router}
+          />
         </div>
       );
     });

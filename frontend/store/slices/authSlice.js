@@ -503,9 +503,9 @@ export const fetchStakeholders = createAsyncThunk(
       userQueryParams.append('sort[0]', `full_name:${sortDirection}`);
       userQueryParams.append('populate[3]', 'profile_image');
       userQueryParams.append('populate[0]', 'topics');
+      userQueryParams.append('filters[confirmed][$eq]', 'true');
 
       const orgQueryParams = new URLSearchParams(baseQueryParams);
-      // orgQueryParams.append('populate[0]', 'topics');
       orgQueryParams.append('populate[1]', 'country');
       orgQueryParams.append('sort[0]', `name:${sortDirection}`);
       orgQueryParams.append('populate[3]', 'org_image');
@@ -524,11 +524,8 @@ export const fetchStakeholders = createAsyncThunk(
       }
 
       if (filters.topics && filters.topics.length > 0) {
-        filters.topics.forEach((region, index) => {
-          userQueryParams.append(
-            `filters[topics][name][$in][${index}]`,
-            region
-          );
+        filters.topics.forEach((topic, index) => {
+          userQueryParams.append(`filters[topics][name][$in][${index}]`, topic);
         });
       }
 
@@ -579,12 +576,16 @@ export const fetchStakeholders = createAsyncThunk(
               image:
                 user.profile_image?.url ||
                 '/uploads/placeholder_image_1625231395.jpg',
-              // topics: user.topics?.map((t) => t.name) || [],
               focusRegions: user.focus_regions?.map((r) => r.name) || [],
               organization: user.organisation ? user.organisation.name : '',
               data: user,
             }))
-            .sort((a, b) => a.name.localeCompare(b.name))
+            .sort((a, b) =>
+              a.name.localeCompare(b.name, undefined, {
+                numeric: true,
+                sensitivity: 'base',
+              })
+            )
         : [];
 
       const organizations = fetchOrgs
@@ -599,7 +600,12 @@ export const fetchStakeholders = createAsyncThunk(
               country: org.country?.country_name,
               data: org,
             }))
-            .sort((a, b) => a.name.localeCompare(b.name))
+            .sort((a, b) =>
+              a.name.localeCompare(b.name, undefined, {
+                numeric: true,
+                sensitivity: 'base',
+              })
+            )
         : [];
 
       return {

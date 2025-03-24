@@ -16,6 +16,7 @@ import { VerifyEmailIcon } from '@/components/Icons';
 import ImageUploader from '@/components/ImageUploader';
 import { env } from '@/helpers/env-vars';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export default function SignUpForm() {
   const dispatch = useDispatch();
@@ -440,6 +441,7 @@ export default function SignUpForm() {
           isSubmitting={isSubmitting}
           formErrors={formErrors}
           setFormErrors={setFormErrors}
+          router={router}
         />
       )}
     </div>
@@ -453,6 +455,7 @@ const AdditionalDetails = ({
   isSubmitting,
   formErrors,
   setFormErrors,
+  router,
 }) => {
   const dispatch = useDispatch();
   const { organizations, regions, lookingFors, roles, country, topics } =
@@ -519,8 +522,8 @@ const AdditionalDetails = ({
   };
 
   return (
-    <div className="flex min-h-screen ">
-      <div className="w-1/2 flex flex-col justify-center min-h-screen bg-zinc-900 p-12 text-white">
+    <div className="flex h-screen ">
+      <div className="w-1/2 flex flex-col justify-center p-12 bg-zinc-900 text-white overflow-hidden">
         <Link href="/" className="mb-4 block">
           <Image
             src="/images/logo-white.png"
@@ -602,10 +605,10 @@ const AdditionalDetails = ({
       </div>
 
       {/* Right Panel */}
-      <div className="w-1/2 p-12 bg-white flex items-center text-black">
+      <div className="w-1/2 p-12 bg-white text-black overflow-y-auto">
         {steps.find((step) => step.active)?.number === 2 && (
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold mb-12 text-black">
+            <h2 className="text-3xl font-bold mb-6 text-black">
               Basic Information
             </h2>
 
@@ -720,56 +723,62 @@ const AdditionalDetails = ({
                 )}
               </div>
 
-              <div>
-                <CustomDropdown
-                  id="role"
-                  label="Role"
-                  options={[
-                    { id: 'Investor', label: 'Investor' },
-                    { id: 'Government', label: 'Government' },
-                    { id: 'Farmer', label: 'Farmer' },
-                    { id: 'NGO', label: 'NGO' },
-                  ]}
-                  isMulti={false}
-                  value={formData.role}
-                  onChange={(value) =>
-                    setFormData({ ...formData, role: value })
-                  }
-                  placeholder="Enter your role"
-                />
-                {formErrors.role && (
-                  <p className="text-red-500 text-sm mt-1">{formErrors.role}</p>
-                )}
+              <div className="flex justify-between w-[100%] gap-4">
+                <div className="w-2/4">
+                  <CustomDropdown
+                    id="role"
+                    label="Role"
+                    options={[
+                      { id: 'Academia', label: 'Academia' },
+                      { id: 'Governmental', label: 'Governmental' },
+                      { id: 'NGO', label: 'NGO / non-profit' },
+                      { id: 'Investor', label: 'Investor / private sector' },
+                      {
+                        id: 'cooperatives',
+                        label: 'Local communities / groups / cooperatives',
+                      },
+                    ]}
+                    isMulti={false}
+                    value={formData.role}
+                    onChange={(value) =>
+                      setFormData({ ...formData, role: value })
+                    }
+                    placeholder="Enter your role"
+                  />
+                  {formErrors.role && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {formErrors.role}
+                    </p>
+                  )}
+                </div>
+                <div className="w-2/4">
+                  <CustomDropdown
+                    id="country"
+                    label="Country of residence"
+                    options={
+                      country &&
+                      country.map((f) => {
+                        return {
+                          id: f.id,
+                          label: f.country_name,
+                        };
+                      })
+                    }
+                    isMulti={false}
+                    value={formData.country}
+                    onChange={(value) =>
+                      setFormData({ ...formData, country: value })
+                    }
+                    placeholder="Select country"
+                    searchable={true}
+                  />
+                  {formErrors.country && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {formErrors.country}
+                    </p>
+                  )}
+                </div>
               </div>
-
-              <div>
-                <CustomDropdown
-                  id="country"
-                  label="Country of residence"
-                  options={
-                    country &&
-                    country.map((f) => {
-                      return {
-                        id: f.id,
-                        label: f.country_name,
-                      };
-                    })
-                  }
-                  isMulti={false}
-                  value={formData.country}
-                  onChange={(value) =>
-                    setFormData({ ...formData, country: value })
-                  }
-                  placeholder="Select country"
-                  searchable={true}
-                />
-                {formErrors.country && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {formErrors.country}
-                  </p>
-                )}
-              </div>
-
               <div>
                 <CustomDropdown
                   id="regions"
@@ -886,6 +895,11 @@ const AdditionalDetails = ({
                       ></path>
                     </svg>
                   </button>
+                  {formErrors.linkedin && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {formErrors.linkedin}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -984,7 +998,7 @@ const AdditionalDetails = ({
           </div>
         )}
         {steps.find((step) => step.active)?.number === 3 && (
-          <ConfirmEmail user={form} />
+          <ConfirmEmail user={form} router={router} />
         )}
         {isOrgModal && (
           <OrganizationModal
@@ -994,6 +1008,7 @@ const AdditionalDetails = ({
             country={country}
             topics={topics}
             setSearchTerm={setSearchTerm}
+            formErrors={formErrors}
           />
         )}
       </div>
@@ -1001,7 +1016,7 @@ const AdditionalDetails = ({
   );
 };
 
-const ConfirmEmail = ({ user }) => {
+const ConfirmEmail = ({ user, router }) => {
   const dispatch = useDispatch();
   const [resendStatus, setResendStatus] = useState('');
   const handleResendVerification = async () => {
@@ -1058,7 +1073,10 @@ const ConfirmEmail = ({ user }) => {
       <p className="text-gray-600 mb-4">
         We’ll send you a link to the email address you signed up with
       </p>
-      <button className="px-4 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors min-w-72">
+      <button
+        className="px-4 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors min-w-72"
+        onClick={() => router.push('/signin')}
+      >
         Continue
       </button>
     </div>
@@ -1072,6 +1090,7 @@ const OrganizationModal = ({
   country,
   topics,
   setSearchTerm,
+  formErrors,
 }) => {
   const dispatch = useDispatch();
 
@@ -1175,9 +1194,13 @@ const OrganizationModal = ({
                 placeholder="www.myorg.com"
                 className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 pr-10"
                 value={formData.website}
-                onChange={(e) =>
-                  setFormData({ ...formData, website: e.target.value })
-                }
+                onChange={(e) => {
+                  let value = e.target.value;
+                  if (value && !/^https?:\/\//i.test(value)) {
+                    value = `https://${value}`;
+                  }
+                  setFormData({ ...formData, website: value });
+                }}
               />
               <Link2
                 className="absolute right-4 top-3.5 text-gray-400"
