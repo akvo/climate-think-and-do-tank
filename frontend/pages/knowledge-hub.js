@@ -20,9 +20,10 @@ export default function KnowledgeHub() {
   const [searchQuery, setSearchQuery] = useState('');
   const [openFilter, setOpenFilter] = useState(null);
   const [activeFilters, setActiveFilters] = useState({
-    thematicFocus: [],
+    topic: [],
     focusRegions: [],
     type: [],
+    date: [],
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -31,12 +32,12 @@ export default function KnowledgeHub() {
     (state) => state.knowledgeHub
   );
 
-  const { thematics = [], regions = [] } = useSelector((state) => state.auth);
+  const { topic = [], regions = [] } = useSelector((state) => state.auth);
 
   const filterOptions = {
-    thematicFocus: [
+    topic: [
       'All',
-      ...thematics
+      ...topic
         .map((topic) => topic.name || topic.attributes?.name)
         .filter(Boolean),
     ],
@@ -44,20 +45,20 @@ export default function KnowledgeHub() {
       'All Locations',
       ...regions.map((region) => region.name || region.attributes?.name),
     ],
-    type: ['PDF', 'WEB_LINK'],
+    type: ['PDF', 'Web Link'],
+    date: ['All Time', 'Last Year', 'This Year', 'Last 5 Years'],
   };
 
   useEffect(() => {
     if (!router.isReady) return;
 
     const filters = {
-      thematicFocus: router.query.thematicFocus
-        ? router.query.thematicFocus.split(',')
-        : [],
+      topic: router.query.topic ? router.query.topic.split(',') : [],
       focusRegions: router.query.focusRegions
         ? router.query.focusRegions.split(',')
         : [],
       type: router.query.type ? router.query.type.split(',') : [],
+      date: router.query.date ? [router.query.date] : [],
     };
 
     setActiveFilters(filters);
@@ -69,6 +70,11 @@ export default function KnowledgeHub() {
         page: 1,
         query: router.query.query || '',
         filters,
+        dateSort: 'desc',
+        dateFilter:
+          filters.date.length > 0
+            ? filters.date[0].toLowerCase().replace(' ', '_')
+            : null,
       })
     );
   }, [router.isReady, router.query]);
@@ -76,11 +82,11 @@ export default function KnowledgeHub() {
   const updateFilters = (newFilters) => {
     const query = {};
     if (searchQuery) query.query = searchQuery;
-    if (newFilters.thematicFocus.length > 0)
-      query.thematicFocus = newFilters.thematicFocus.join(',');
+    if (newFilters.topic.length > 0) query.topic = newFilters.topic.join(',');
     if (newFilters.focusRegions.length > 0)
       query.focusRegions = newFilters.focusRegions.join(',');
     if (newFilters.type.length > 0) query.type = newFilters.type.join(',');
+    if (newFilters.date.length > 0) query.date = newFilters.date[0];
 
     router.push(
       {
@@ -94,17 +100,19 @@ export default function KnowledgeHub() {
 
   const clearFilters = () => {
     const emptyFilters = {
-      thematicFocus: [],
+      topic: [],
       focusRegions: [],
       type: [],
+      date: [],
     };
     setActiveFilters(emptyFilters);
     setSearchQuery('');
 
     const query = { ...router.query };
-    delete query.thematicFocus;
+    delete query.topic;
     delete query.focusRegions;
     delete query.type;
+    delete query.date;
     delete query.query;
 
     router.push(
@@ -123,18 +131,28 @@ export default function KnowledgeHub() {
         page: currentPage + 1,
         query: searchQuery,
         filters: activeFilters,
+        dateSort: 'desc',
+        dateFilter:
+          activeFilters.date.length > 0
+            ? activeFilters.date[0].toLowerCase().replace(' ', '_')
+            : null,
       })
     );
   };
 
   const toggleFilter = (filterType, option) => {
     const updatedFilters = { ...activeFilters };
-    if (updatedFilters[filterType].includes(option)) {
-      updatedFilters[filterType] = updatedFilters[filterType].filter(
-        (item) => item !== option
-      );
+
+    if (filterType === 'date') {
+      updatedFilters[filterType] = option === 'All Time' ? [] : [option];
     } else {
-      updatedFilters[filterType] = [...updatedFilters[filterType], option];
+      if (updatedFilters[filterType].includes(option)) {
+        updatedFilters[filterType] = updatedFilters[filterType].filter(
+          (item) => item !== option
+        );
+      } else {
+        updatedFilters[filterType] = [...updatedFilters[filterType], option];
+      }
     }
 
     setActiveFilters(updatedFilters);
@@ -175,6 +193,11 @@ export default function KnowledgeHub() {
           page: 1,
           query,
           filters: activeFilters,
+          dateSort: 'desc',
+          dateFilter:
+            activeFilters.date.length > 0
+              ? activeFilters.date[0].toLowerCase().replace(' ', '_')
+              : null,
         })
       );
     }, 500),
@@ -235,9 +258,11 @@ export default function KnowledgeHub() {
                     className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
                   >
                     {filterType === 'focusRegions'
-                      ? 'Location'
-                      : filterType === 'thematicFocus'
+                      ? 'Focus Regions'
+                      : filterType === 'topic'
                       ? 'Topics'
+                      : filterType === 'date'
+                      ? 'Date'
                       : filterType.charAt(0).toUpperCase() +
                         filterType.slice(1)}
                     <svg
@@ -256,7 +281,7 @@ export default function KnowledgeHub() {
                   </button>
                   {openFilter === filterType && (
                     <div className="absolute top-full left-0 mt-2 z-10 min-w-[600px]">
-                      {filterType === 'thematicFocus' ? (
+                      {filterType === 'topic' ? (
                         <TopicsFilter
                           topics={filterOptions[filterType]}
                           onApply={(selectedTopics) => {
@@ -284,8 +309,10 @@ export default function KnowledgeHub() {
                         />
                       ) : filterType === 'focusRegions' ? (
                         <LocationsFilter
+                          name="Focus Regions"
                           locations={[
                             'All Locations',
+                            'No Specific Focus Region',
                             ...filterOptions[filterType],
                           ]}
                           onApply={(selectedLocations) => {
@@ -293,7 +320,9 @@ export default function KnowledgeHub() {
                               'All Locations'
                             )
                               ? []
-                              : selectedLocations;
+                              : selectedLocations.filter(
+                                  (loc) => loc !== 'All Locations'
+                                );
 
                             const newFilters = {
                               ...activeFilters,
@@ -313,6 +342,37 @@ export default function KnowledgeHub() {
                             setOpenFilter(null);
                           }}
                         />
+                      ) : filterType === 'date' ? (
+                        <div className="bg-white rounded-md shadow-lg border w-48 max-h-60 overflow-y-auto">
+                          {filterOptions[filterType].map((option) => (
+                            <label
+                              key={option}
+                              className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
+                            >
+                              <input
+                                type="radio"
+                                name="date-filter"
+                                checked={
+                                  activeFilters[filterType].length > 0
+                                    ? activeFilters[filterType][0] === option
+                                    : option === 'All Time'
+                                }
+                                onChange={() => {
+                                  const newFilters = {
+                                    ...activeFilters,
+                                    [filterType]:
+                                      option === 'All Time' ? [] : [option],
+                                  };
+                                  setActiveFilters(newFilters);
+                                  updateFilters(newFilters);
+                                  setOpenFilter(null);
+                                }}
+                                className="mr-2"
+                              />
+                              {option}
+                            </label>
+                          ))}
+                        </div>
                       ) : (
                         <div className="w-48 bg-white rounded-md shadow-lg border max-h-60 overflow-y-auto">
                           {filterOptions[filterType].length > 0 ? (
@@ -346,7 +406,7 @@ export default function KnowledgeHub() {
                 </div>
               ))}
             </div>
-            {(activeFilters.thematicFocus.length > 0 ||
+            {(activeFilters.topic.length > 0 ||
               activeFilters.focusRegions.length > 0 ||
               activeFilters.type.length > 0) && (
               <button
@@ -360,7 +420,7 @@ export default function KnowledgeHub() {
         </div>
 
         {/* Active Filters Tags */}
-        {(activeFilters.thematicFocus?.length > 0 ||
+        {(activeFilters.topic?.length > 0 ||
           activeFilters.focusRegions?.length > 0 ||
           activeFilters.type?.length > 0) && (
           <div className="container mx-auto px-4 pb-3 text-black">
@@ -410,17 +470,39 @@ export default function KnowledgeHub() {
                   className="bg-white rounded-lg overflow-hidden shadow-sm border cursor-pointer hover:shadow-md transition-shadow"
                   onClick={() => openCardModal(card)}
                 >
-                  <Image
-                    src={card.image}
-                    alt={card.title}
-                    width={500}
-                    height={300}
-                    className="w-full h-48 object-cover bg-gray-100"
-                    unoptimized
-                  />
+                  <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
+                    {card.image ? (
+                      <Image
+                        src={card.image}
+                        alt={card.title}
+                        width={500}
+                        height={300}
+                        className="w-full h-full object-cover"
+                        unoptimized
+                        onError={(e) => {
+                          const parentDiv = e.target.closest('.w-full.h-48');
+                          if (parentDiv) {
+                            e.target.style.display = 'none';
+                            const initialDiv = document.createElement('div');
+                            initialDiv.className =
+                              'w-full h-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold';
+                            initialDiv.textContent = card.title
+                              .charAt(0)
+                              .toUpperCase();
+                            parentDiv.innerHTML = '';
+                            parentDiv.appendChild(initialDiv);
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold">
+                        {card.title.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
                   <div className="p-6">
                     <div className="text-green-600 text-xs font-semibold tracking-wider mb-2">
-                      {card.thematicFocus}
+                      {card.topic}
                     </div>
                     <h3 className="text-lg font-semibold mb-2 text-black line-clamp-2">
                       {card.title}
@@ -429,9 +511,14 @@ export default function KnowledgeHub() {
                       {card.description}
                     </p>
                     <div className="flex flex-wrap gap-2 mb-4">
-                      <span className="px-2 py-1 bg-gray-100 text-xs rounded-full text-black">
-                        {card.focusRegions}
-                      </span>
+                      {card.focusRegions.map((region) => (
+                        <span
+                          key={region}
+                          className="px-2 py-1 bg-gray-100 text-xs rounded-full text-black"
+                        >
+                          {region}
+                        </span>
+                      ))}
                     </div>
                     <button
                       className="px-6 py-2 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors text-black"

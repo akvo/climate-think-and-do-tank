@@ -7,7 +7,14 @@ const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 export const fetchKnowledgeHubs = createAsyncThunk(
   'knowledgeHubs/fetchKnowledgeHubs',
   async (
-    { page = 1, pageSize = 12, query = '', filters = {} },
+    {
+      page = 1,
+      pageSize = 12,
+      query = '',
+      filters = {},
+      dateSort = 'desc',
+      dateFilter = null,
+    },
     { rejectWithValue }
   ) => {
     try {
@@ -25,22 +32,64 @@ export const fetchKnowledgeHubs = createAsyncThunk(
 
       const knowledgeHubQueryParams = new URLSearchParams(baseQueryParams);
 
-      if (filters.thematicFocus && filters.thematicFocus.length > 0) {
-        filters.thematicFocus.forEach((focus, index) => {
+      if (dateFilter) {
+        const currentYear = new Date().getFullYear();
+        switch (dateFilter) {
+          case 'last_year':
+            knowledgeHubQueryParams.append(
+              'filters[date][$gte]',
+              `${currentYear - 1}-01-01`
+            );
+            knowledgeHubQueryParams.append(
+              'filters[date][$lte]',
+              `${currentYear - 1}-12-31`
+            );
+            break;
+          case 'this_year':
+            knowledgeHubQueryParams.append(
+              'filters[date][$gte]',
+              `${currentYear}-01-01`
+            );
+            knowledgeHubQueryParams.append(
+              'filters[date][$lte]',
+              `${currentYear}-12-31`
+            );
+            break;
+          case 'last_5_years':
+            knowledgeHubQueryParams.append(
+              'filters[date][$gte]',
+              `${currentYear - 5}-01-01`
+            );
+            break;
+        }
+      }
+
+      if (filters.topic && filters.topic.length > 0) {
+        filters.topic.forEach((focus, index) => {
           knowledgeHubQueryParams.append(
-            `filters[thematic][name][$in][${index}]`,
+            `filters[topic][name][$in][${index}]`,
             focus
           );
         });
       }
 
       if (filters.focusRegions && filters.focusRegions.length > 0) {
-        filters.focusRegions.forEach((region, index) => {
-          knowledgeHubQueryParams.append(
-            `filters[regions][name][$in][${index}]`,
-            region
-          );
-        });
+        const hasNoSpecificRegion = filters.focusRegions.includes(
+          'No Specific Focus Region'
+        );
+
+        const specificRegions = filters.focusRegions.filter(
+          (region) => region !== 'No Specific Focus Region'
+        );
+
+        if (specificRegions.length > 0) {
+          specificRegions.forEach((region, index) => {
+            knowledgeHubQueryParams.append(
+              `filters[regions][name][$in][${index}]`,
+              region
+            );
+          });
+        }
       }
 
       if (filters.type && filters.type.length > 0) {
@@ -52,11 +101,12 @@ export const fetchKnowledgeHubs = createAsyncThunk(
         });
       }
 
-      knowledgeHubQueryParams.append('sort[0]', 'title:asc');
+      knowledgeHubQueryParams.append('sort[0]', `date:${dateSort}`);
 
-      knowledgeHubQueryParams.append('populate[0]', 'thematic');
+      knowledgeHubQueryParams.append('populate[0]', 'topic');
       knowledgeHubQueryParams.append('populate[1]', 'regions');
       knowledgeHubQueryParams.append('populate[2]', 'file');
+      knowledgeHubQueryParams.append('populate[3]', 'image');
 
       const response = await axios.get(
         `${BACKEND_URL}/api/knowledge-hubs?${knowledgeHubQueryParams}`
@@ -67,10 +117,12 @@ export const fetchKnowledgeHubs = createAsyncThunk(
         title: hub.title,
         description: hub.description,
         type: hub.resource_type,
-        image: 'https://placehold.co/400x300',
-        thematicFocus: hub.thematic?.name || '',
+        image: hub.image?.url,
+        topic: hub.topic?.name || '',
         focusRegions: hub.regions?.map((r) => r.name) || [],
         webLink: hub.web_link,
+        publishedAt: hub.date,
+        publishedYear: new Date(hub.date).getFullYear(),
       }));
 
       return {
@@ -94,10 +146,7 @@ export const fetchKnowledgeHubs = createAsyncThunk(
 
 export const fetchRelatedKnowledgeHubs = createAsyncThunk(
   'knowledgeHubs/fetchRelatedKnowledgeHubs',
-  async (
-    { thematicFocus, currentResourceId, pageSize = 12 },
-    { rejectWithValue }
-  ) => {
+  async ({ topic, currentResourceId, pageSize = 12 }, { rejectWithValue }) => {
     try {
       const queryParams = new URLSearchParams();
       queryParams.append('pagination[pageSize]', pageSize);
@@ -106,13 +155,14 @@ export const fetchRelatedKnowledgeHubs = createAsyncThunk(
         queryParams.append('filters[id][$ne]', currentResourceId);
       }
 
-      if (thematicFocus) {
-        queryParams.append('filters[thematic][name][$eq]', thematicFocus);
+      if (topic) {
+        queryParams.append('filters[topic][name][$eq]', topic);
       }
 
       queryParams.append('sort[0]', 'createdAt:desc');
 
-      queryParams.append('populate[0]', 'thematic');
+      queryParams.append('populate[0]', 'topic');
+      queryParams.append('populate[2]', 'image');
 
       const response = await axios.get(
         `${BACKEND_URL}/api/knowledge-hubs?${queryParams}`
@@ -122,10 +172,8 @@ export const fetchRelatedKnowledgeHubs = createAsyncThunk(
         id: hub.id,
         title: hub.title,
         description: hub.description,
-        image:
-          hub.attributes.file?.data?.attributes?.url ||
-          'https://placehold.co/400x300',
-        thematicFocus: hub.thematic?.name || '',
+        image: hub.image?.url,
+        topic: hub.topic?.name || '',
       }));
 
       return {

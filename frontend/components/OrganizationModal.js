@@ -57,7 +57,7 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
               <div className="text-green-600 text-sm font-semibold mb-2">
                 {card.thematicFocus || 'RESOURCE'}
               </div>
-              <h2 className="text-2xl font-bold mb-2 text-black flex gap-8 border-b items-end pb-2">
+              <h2 className="text-2xl font-bold mb-2 text-black flex gap-8 border-b items-end pb-2 justify-between">
                 {card.title}
                 <div className="flex items-center gap-6 text-sm text-gray-600 pl-6">
                   <div className="flex items-center gap-2">
@@ -97,17 +97,40 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
           {/* Resource Details */}
           <div className="grid grid-cols-3 gap-8 mb-8">
             <div className="col-span-1">
-              <Image
-                src={card.image}
-                alt={card.title}
-                className="w-full rounded-lg object-cover"
-                width={500}
-                height={300}
-                unoptimized
-              />
+              <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
+                {card.image ? (
+                  <Image
+                    src={card.image}
+                    alt={card.title}
+                    width={500}
+                    height={300}
+                    className="w-full h-full object-cover"
+                    unoptimized
+                    onError={(e) => {
+                      const parentDiv = e.target.closest('.w-full.h-48');
+                      if (parentDiv) {
+                        e.target.style.display = 'none';
+                        const initialDiv = document.createElement('div');
+                        initialDiv.className =
+                          'w-full h-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold';
+                        initialDiv.textContent = card.title
+                          .charAt(0)
+                          .toUpperCase();
+                        parentDiv.innerHTML = '';
+                        parentDiv.appendChild(initialDiv);
+                      }
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold">
+                    {card.title.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
             </div>
             <div className="col-span-2">
               <p className="text-gray-600 mb-4">{card.description}</p>
+              <p className="text-green-600">{card.focusRegions.join(',')}</p>
             </div>
           </div>
 

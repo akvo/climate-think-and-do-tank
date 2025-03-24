@@ -14,12 +14,6 @@
   "attributes": {
     "name": {
       "type": "string"
-    },
-    "knowledge_hub": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::knowledge-hub.knowledge-hub",
-      "inversedBy": "thematic"
     }
   }
 }
