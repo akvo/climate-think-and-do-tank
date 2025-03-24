@@ -195,10 +195,6 @@ export default function StakeholderDirectory() {
             valueChains: stakeholder.data.topics.map((topic) => topic.name),
             linkedin: stakeholder.data.linkedin,
             email: stakeholder.data.email,
-            mutualConnections: {
-              names: ['Kevin Ochieng'],
-              count: 2,
-            },
           }
         : {
             country: stakeholder.country,
@@ -305,6 +301,7 @@ export default function StakeholderDirectory() {
                     <div className="absolute top-full left-0 mt-2 z-10 min-w-[600px]">
                       {filterType === 'topics' ? (
                         <TopicsFilter
+                          label={'Topics (Stakeholders Only)'}
                           topics={filterOptions[filterType]}
                           onApply={(selectedTopics) => {
                             const topicsToApply = selectedTopics.includes('All')
@@ -331,6 +328,7 @@ export default function StakeholderDirectory() {
                         />
                       ) : filterType === 'focusRegions' ? (
                         <LocationsFilter
+                          label={'Focus Region (Stakeholders Only)'}
                           locations={[
                             'All Locations',
                             ...filterOptions[filterType],
@@ -490,15 +488,29 @@ export default function StakeholderDirectory() {
                   className="bg-[#f8f9fa] rounded-lg p-4 flex flex-col  text-left hover:shadow-md transition-shadow cursor-pointer"
                 >
                   <div className="relative w-24 h-24 m-auto">
-                    <Image
-                      src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
-                        stakeholder.image
-                      }`}
-                      alt={stakeholder.name}
-                      fill
-                      className="rounded-full object-cover"
-                      unoptimized
-                    />
+                    {stakeholder.image ? (
+                      <Image
+                        src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
+                          stakeholder.image
+                        }`}
+                        alt={stakeholder.name}
+                        fill
+                        className="rounded-full object-cover"
+                        unoptimized
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.parentNode.innerHTML = `
+          <div class="w-full h-full bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+            ${stakeholder.name.charAt(0).toUpperCase()}
+          </div>
+        `;
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                        {stakeholder.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
                   </div>
                   <div className="text-xs font-semibold text-green-600 mb-0 mt-4 uppercase">
                     {stakeholder.type}
@@ -540,12 +552,13 @@ export default function StakeholderDirectory() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         stakeholder={selectedStakeholder}
+        router={router}
       />
     </div>
   );
 }
 
-const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
+export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
   const dispatch = useDispatch();
   const overlayRef = useModal(isOpen, onClose);
   const { isAuthenticated, loading, user } = useSelector((state) => state.auth);
@@ -886,7 +899,9 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline"
                     >
-                      {stakeholder.linkedin}
+                      {stakeholder.linkedin
+                        ? stakeholder.linkedin
+                        : 'Not Provided'}
                     </a>
                   ) : connectionStatus === 'sent_pending' ? (
                     <span className="text-gray-400">
@@ -954,24 +969,52 @@ const StakeholderModal = ({ isOpen, onClose, stakeholder }) => {
           </div>
 
           {/* Profile Image */}
-          <div className="relative w-64 h-64 ml-8">
-            <div className="w-full h-full rounded-full bg-gray-100 overflow-hidden relative">
-              <Image
-                src={`${env('NEXT_PUBLIC_BACKEND_URL')}${stakeholder.image}`}
-                alt={stakeholder.name}
-                className="object-cover relative"
-                unoptimized
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
+          {stakeholder.image ? (
+            <div className="relative w-64 h-64 ml-8">
+              <div className="w-full h-full rounded-full bg-gray-100 overflow-hidden relative">
+                <Image
+                  src={`${env('NEXT_PUBLIC_BACKEND_URL')}${stakeholder.image}`}
+                  alt={stakeholder.name}
+                  className="object-cover relative"
+                  unoptimized
+                  fill
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.parentNode.innerHTML = `
+            <div class="w-full h-full flex items-center justify-center bg-blue-500 text-white text-4xl font-bold rounded-full">
+              ${stakeholder.name.charAt(0).toUpperCase()}
             </div>
-          </div>
+          `;
+                  }}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="relative w-64 h-64 ml-8">
+              <div className="w-full h-full rounded-full bg-blue-500 flex items-center justify-center">
+                <span className="text-4xl font-bold text-white">
+                  {stakeholder.name.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
         {stakeholder.type === 'Individual' && isAuthenticated && (
           <div className="p-8 pt-6 flex justify-end border-t">
             {renderConnectionButton()}
+          </div>
+        )}
+        {stakeholder.type === 'Individual' && !isAuthenticated && (
+          <div className="p-8 pt-6 flex justify-end border-t">
+            <button
+              className="px-8 py-2 border-2 border-green-600 rounded-full text-green-600"
+              onClick={() => router.push(`/login`)}
+            >
+              Login to connect
+            </button>
           </div>
         )}
       </div>

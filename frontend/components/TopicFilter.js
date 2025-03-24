@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function TopicsFilter({ onApply, onClear, topics }) {
+export default function TopicsFilter({ onApply, onClear, topics, label }) {
   const [selectedTopics, setSelectedTopics] = useState(['All']);
 
   const handleTopicClick = (topic) => {
@@ -29,31 +29,28 @@ export default function TopicsFilter({ onApply, onClear, topics }) {
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 space-y-6 ">
-      <h2 className="text-xl font-bold text-zinc-800">TOPICS</h2>
+      <h2 className="text-xl font-bold text-zinc-800">
+        {label ? label : 'TOPICS'}
+      </h2>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="flex flex-wrap gap-3">
         {topics.map((topic) => (
           <button
             key={topic}
             onClick={() => handleTopicClick(topic)}
             className={`
-              px-4 py-2 
-              rounded-full 
-              border 
-              text-sm
-              font-medium
-              transition-colors
-              ${
-                topic === 'Climate/Resilience' || topic === 'Seed Systems'
-                  ? 'col-span-2'
-                  : 'col-span-1'
-              }
-              ${
-                selectedTopics.includes(topic)
-                  ? 'bg-green-600 border-green-600 text-white'
-                  : 'border-gray-300 text-gray-700 hover:border-gray-400'
-              }
-            `}
+        px-4 py-2 
+        rounded-full 
+        border 
+        text-sm
+        font-medium
+        transition-colors
+        ${
+          selectedTopics.includes(topic)
+            ? 'bg-green-600 border-green-600 text-white'
+            : 'border-gray-300 text-gray-700 hover:border-gray-400'
+        }
+      `}
           >
             {topic}
           </button>

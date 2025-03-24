@@ -160,9 +160,9 @@ export default function LoginForm() {
               </h1>
 
               <p className="text-gray-600">
-                Don't have an account?{' '}
+                Don't have an account?
                 <Link href="/signup" className="text-gray-900 underline">
-                  Create a account It takes less than a minute.
+                  Register here. It takes less than a minute.
                 </Link>
               </p>
             </div>
