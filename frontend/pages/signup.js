@@ -728,10 +728,13 @@ const AdditionalDetails = ({
                     options={[
                       { id: 'Academia', label: 'Academia' },
                       { id: 'Governmental', label: 'Governmental' },
-                      { id: 'NGO', label: 'NGO / non-profit' },
-                      { id: 'Investor', label: 'Investor / private sector' },
+                      { id: 'NGO / non-profit', label: 'NGO / non-profit' },
                       {
-                        id: 'cooperatives',
+                        id: 'Investor / private sector',
+                        label: 'Investor / private sector',
+                      },
+                      {
+                        id: 'Local communities / groups / cooperatives',
                         label: 'Local communities / groups / cooperatives',
                       },
                     ]}
@@ -762,7 +765,7 @@ const AdditionalDetails = ({
                       })
                     }
                     isMulti={false}
-                    value={formData.country}
+                    value={isOrgModal ? '' : formData.country}
                     onChange={(value) =>
                       setFormData({ ...formData, country: value })
                     }
@@ -999,7 +1002,10 @@ const AdditionalDetails = ({
         )}
         {isOrgModal && (
           <OrganizationModal
-            onClose={() => setIsOrgModal(false)}
+            onClose={() => {
+              setIsOrgModal(false);
+              setFormData({ ...formData, country: '' });
+            }}
             formData={formData}
             setFormData={setFormData}
             country={country}

@@ -50,10 +50,10 @@
         "audios"
       ]
     },
-    "thematic": {
+    "topic": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::thematic.thematic",
+      "target": "api::topic.topic",
       "inversedBy": "knowledge_hub"
     },
     "regions": {
@@ -64,6 +64,9 @@
     "slug": {
       "type": "uid",
       "targetField": "title"
+    },
+    "date": {
+      "type": "date"
     }
   }
 }

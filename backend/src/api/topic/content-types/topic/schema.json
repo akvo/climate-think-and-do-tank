@@ -15,6 +15,12 @@
     "name": {
       "type": "string",
       "unique": true
+    },
+    "knowledge_hub": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::knowledge-hub.knowledge-hub",
+      "mappedBy": "topic"
     }
   }
 }
