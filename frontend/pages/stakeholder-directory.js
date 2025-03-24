@@ -1011,7 +1011,7 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
           <div className="p-8 pt-6 flex justify-end border-t">
             <button
               className="px-8 py-2 border-2 border-green-600 rounded-full text-green-600"
-              onClick={() => router.push(`/signin`)}
+              onClick={() => router.push(`/login`)}
             >
               Login to connect
             </button>

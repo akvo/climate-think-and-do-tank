@@ -17,7 +17,7 @@ export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const handleLogout = () => {
     dispatch(logout());
-    router.push('/signin');
+    router.push('/login');
   };
 
   return (
@@ -224,7 +224,7 @@ export default function Header() {
             ) : (
               <div className="flex items-center gap-3">
                 <Link
-                  href="/signin"
+                  href="/login"
                   className="px-6 py-2 text-sm font-semibold text-zinc-900 border border-zinc-800 rounded-full hover:bg-green-600 hover:text-white transition-colors hover:border-transparent"
                 >
                   Login

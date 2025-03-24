@@ -199,8 +199,7 @@ export default function SignUpForm() {
                     Welcome to the Think and Do Tank Network
                   </h1>
                   <p className="text-gray-600">
-                    Sign Up for your user account to access the platform's
-                    features
+                    Create an Account to Unlock Exclusive Features
                   </p>
                 </div>
 
@@ -217,7 +216,7 @@ export default function SignUpForm() {
                       htmlFor="email"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Email
+                      Email Address
                     </label>
                     <input
                       id="email"
@@ -225,7 +224,7 @@ export default function SignUpForm() {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="Enter your email"
+                      placeholder="Enter your email address"
                       className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
                         formErrors.email ? 'border-red-500' : 'border-gray-200'
                       } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
@@ -243,7 +242,7 @@ export default function SignUpForm() {
                       htmlFor="password"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Password
+                      Create Password
                     </label>
                     <div className="relative">
                       <input
@@ -357,17 +356,16 @@ export default function SignUpForm() {
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
-                        Signing Up...
+                        Creating...
                       </div>
                     ) : (
-                      'Sign Up'
+                      'Create My Account'
                     )}
                   </button>
 
                   <div className="text-center text-sm text-gray-600 space-y-2">
                     <p>
-                      By submitting your files to the platform, you acknowledge
-                      that you agree to our{' '}
+                      By creating an account, you agree to our{' '}
                       <a
                         href="/terms"
                         className="text-green-600 hover:underline"
@@ -383,8 +381,7 @@ export default function SignUpForm() {
                       </a>
                     </p>
                     <p>
-                      Please be sure not to violate others' copyright or privacy
-                      rights.{' '}
+                      Ensure compliance with copyright and privacy rights.
                       <a
                         href="/learn-more"
                         className="text-green-600 hover:underline"
@@ -1075,7 +1072,7 @@ const ConfirmEmail = ({ user, router }) => {
       </p>
       <button
         className="px-4 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors min-w-72"
-        onClick={() => router.push('/signin')}
+        onClick={() => router.push('/login')}
       >
         Continue
       </button>

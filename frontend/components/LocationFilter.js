@@ -61,19 +61,6 @@ export default function LocationsFilter({ onApply, onClear, locations, name }) {
           {name || 'LOCATIONS'}
         </h2>
 
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search"
-            className="w-full py-3 px-4 pr-10 border border-gray-300 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <div className="absolute right-4 top-3.5">
-            <Search size={20} className="text-gray-400" />
-          </div>
-        </div>
-
         <div className="space-y-2 max-h-80 overflow-y-auto">
           <label className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
             <input

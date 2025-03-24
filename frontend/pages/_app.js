@@ -16,7 +16,7 @@ function AppContent({ Component, pageProps }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const pagesWithoutHeader = ['/signin', '/signup', '/admin'];
+  const pagesWithoutHeader = ['/login', '/signup', '/admin'];
   const shouldShowHeader = !pagesWithoutHeader.includes(router.pathname);
 
   useEffect(() => {

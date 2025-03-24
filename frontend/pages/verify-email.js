@@ -22,7 +22,7 @@ export default function VerifyEmail() {
       // Updated to match our response
       setVerified(true);
       setTimeout(() => {
-        router.push('/signin');
+        router.push('/login');
       }, 3000);
     }
   };
@@ -49,7 +49,7 @@ export default function VerifyEmail() {
           </h2>
           <p className="mt-2">{error}</p>
           <button
-            onClick={() => router.push('/signin')}
+            onClick={() => router.push('/login')}
             className="mt-4 text-blue-600 hover:text-blue-800 underline"
           >
             Return to login
@@ -70,7 +70,7 @@ export default function VerifyEmail() {
           <div className="mt-4">
             <p className="text-sm text-gray-600">Not redirected?</p>
             <button
-              onClick={() => router.push('/signin')}
+              onClick={() => router.push('/login')}
               className="text-blue-600 hover:text-blue-800 underline"
             >
               Click here to login
