@@ -573,9 +573,7 @@ export const fetchStakeholders = createAsyncThunk(
               id: user.id,
               type: 'Individual',
               name: user.full_name || user.username,
-              image:
-                user.profile_image?.url ||
-                '/uploads/placeholder_image_1625231395.jpg',
+              image: user.profile_image?.url,
               focusRegions: user.focus_regions?.map((r) => r.name) || [],
               organization: user.organisation ? user.organisation.name : '',
               data: user,
@@ -594,9 +592,7 @@ export const fetchStakeholders = createAsyncThunk(
               id: org.id,
               type: 'Organization',
               name: org.name,
-              image:
-                org.org_image?.formats?.medium?.url ||
-                '/uploads/placeholder_image_1625231395.jpg',
+              image: org.org_image?.formats?.medium?.url,
               country: org.country?.country_name,
               data: org,
             }))

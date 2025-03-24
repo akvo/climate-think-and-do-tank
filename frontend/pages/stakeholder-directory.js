@@ -488,15 +488,29 @@ export default function StakeholderDirectory() {
                   className="bg-[#f8f9fa] rounded-lg p-4 flex flex-col  text-left hover:shadow-md transition-shadow cursor-pointer"
                 >
                   <div className="relative w-24 h-24 m-auto">
-                    <Image
-                      src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
-                        stakeholder.image
-                      }`}
-                      alt={stakeholder.name}
-                      fill
-                      className="rounded-full object-cover"
-                      unoptimized
-                    />
+                    {stakeholder.image ? (
+                      <Image
+                        src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
+                          stakeholder.image
+                        }`}
+                        alt={stakeholder.name}
+                        fill
+                        className="rounded-full object-cover"
+                        unoptimized
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.parentNode.innerHTML = `
+          <div class="w-full h-full bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+            ${stakeholder.name.charAt(0).toUpperCase()}
+          </div>
+        `;
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                        {stakeholder.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
                   </div>
                   <div className="text-xs font-semibold text-green-600 mb-0 mt-4 uppercase">
                     {stakeholder.type}
@@ -955,7 +969,7 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
           </div>
 
           {/* Profile Image */}
-          {stakeholder.image && (
+          {stakeholder.image ? (
             <div className="relative w-64 h-64 ml-8">
               <div className="w-full h-full rounded-full bg-gray-100 overflow-hidden relative">
                 <Image
@@ -964,8 +978,24 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
                   className="object-cover relative"
                   unoptimized
                   fill
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.parentNode.innerHTML = `
+            <div class="w-full h-full flex items-center justify-center bg-blue-500 text-white text-4xl font-bold rounded-full">
+              ${stakeholder.name.charAt(0).toUpperCase()}
+            </div>
+          `;
+                  }}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
+              </div>
+            </div>
+          ) : (
+            <div className="relative w-64 h-64 ml-8">
+              <div className="w-full h-full rounded-full bg-blue-500 flex items-center justify-center">
+                <span className="text-4xl font-bold text-white">
+                  {stakeholder.name.charAt(0).toUpperCase()}
+                </span>
               </div>
             </div>
           )}

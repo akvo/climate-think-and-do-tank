@@ -162,16 +162,30 @@ export default function Header() {
                     {user?.full_name || 'User'}
                   </span>
                   <div className="w-10 h-10 rounded-full overflow-hidden">
-                    <Image
-                      src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
-                        user?.profile_image?.url
-                      }`}
-                      alt={user?.full_name || 'User'}
-                      width={100}
-                      height={100}
-                      className="object-cover w-[100%] h-[100%]"
-                      unoptimized
-                    />
+                    {user?.profile_image?.url ? (
+                      <Image
+                        src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
+                          user.profile_image.url
+                        }`}
+                        alt={user?.full_name || 'User'}
+                        width={100}
+                        height={100}
+                        className="object-cover w-[100%] h-[100%]"
+                        unoptimized
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.parentNode.innerHTML = `
+          <div class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold">
+            ${(user?.full_name || 'U').charAt(0).toUpperCase()}
+          </div>
+        `;
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                        {(user?.full_name || 'U').charAt(0).toUpperCase()}
+                      </div>
+                    )}
                   </div>
                 </button>
 
