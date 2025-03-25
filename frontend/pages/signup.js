@@ -182,7 +182,7 @@ export default function SignUpForm() {
     <div>
       {!showAdditionalDetails ? (
         <div className="flex min-h-screen bg-white">
-          <div className="w-1/2 p-12 flex flex-col justify-center min-h-screen">
+          <div className="w-1/2 p-12 px-20 flex flex-col justify-center min-h-screen">
             <Link href="/" className="mb-4 block">
               <Image
                 src="/images/logo.png"
@@ -193,7 +193,7 @@ export default function SignUpForm() {
               />
             </Link>
             <div className="flex-grow flex items-center">
-              <div className="max-w-4xl mx-auto w-full">
+              <div className="mx-auto w-full">
                 <div className="mb-12">
                   <h1 className="text-4xl font-bold text-black mb-6">
                     Welcome to the Think and Do Tank Network
@@ -520,7 +520,7 @@ const AdditionalDetails = ({
 
   return (
     <div className="flex h-screen ">
-      <div className="w-1/2 flex flex-col justify-center p-12 bg-zinc-900 text-white overflow-hidden">
+      <div className="w-1/2 flex flex-col justify-center p-12 px-20 bg-zinc-900 text-white overflow-hidden">
         <Link href="/" className="mb-4 block">
           <Image
             src="/images/logo-white.png"
@@ -532,7 +532,7 @@ const AdditionalDetails = ({
         </Link>
 
         <div className="flex-grow flex items-center justify-center">
-          <div className="max-w-4xl mx-auto w-full">
+          <div className="mx-auto w-full">
             <div className="mb-8">
               <div className="w-12 h-12 bg-zinc-700 rounded-full flex items-center justify-center">
                 <svg
@@ -604,354 +604,364 @@ const AdditionalDetails = ({
       {/* Right Panel */}
       <div className="w-1/2 p-12 bg-white text-black overflow-y-auto">
         {steps.find((step) => step.active)?.number === 2 && (
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6 text-black">
-              Basic Information
-            </h2>
+          <div className="table h-full w-full">
+            <div className="table-cell align-middle">
+              <div className="max-w-2xl mx-auto">
+                <h2 className="text-3xl font-bold mb-6 text-black">
+                  Basic Information
+                </h2>
 
-            {formErrors.general && (
-              <div
-                id="error-summary"
-                className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6"
-              >
-                <p className="font-medium">{formErrors.general}</p>
-              </div>
-            )}
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="space-y-2">
-                <label
-                  htmlFor="name"
-                  className="block text-lg font-medium text-gray-700"
-                >
-                  Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  placeholder="Enter your full name"
-                  className="w-full p-4 py-2 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  name="name"
-                  value={formData.name || ''}
-                  onChange={handleChange}
-                />{' '}
-                {formErrors.name && (
-                  <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <label
-                    htmlFor="organization"
-                    className="block text-lg font-medium text-gray-700"
+                {formErrors.general && (
+                  <div
+                    id="error-summary"
+                    className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6"
                   >
-                    Organization name
-                  </label>
-                  <div className="relative inline-block ml-2 group">
-                    <div className="flex items-center justify-center w-5 h-5 text-xs font-medium text-gray-800 bg-gray-300 rounded-full cursor-help">
-                      i
-                    </div>
-                    <div className="absolute z-10 w-64 p-3 text-sm text-left text-white bg-gray-800 rounded-md shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 transition-opacity duration-300">
-                      Take care when setting your organisation as these will be
-                      checked by an admin as part of the approval process, who
-                      may reach out with further questions
-                      <div className="absolute w-3 h-3 bg-gray-800 transform rotate-45 left-1/2 -translate-x-1/2 -bottom-1.5"></div>
-                    </div>
+                    <p className="font-medium">{formErrors.general}</p>
                   </div>
-                </div>
-                <div className="relative flex gap-2 border border-gray-200 rounded-full p-1">
-                  <div className="relative flex-1">
+                )}
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="name"
+                      className="block text-lg font-medium text-gray-700"
+                    >
+                      Name
+                    </label>
                     <input
-                      id="organisation"
+                      id="name"
                       type="text"
-                      placeholder="Search by organisation name"
-                      className="w-full p-4 py-2 bg-white rounded-full focus:outline-none"
-                      name="organisation"
-                      value={searchTerm || ''}
-                      onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        setShowSuggestions(true);
-                      }}
-                      onFocus={() => setShowSuggestions(true)}
-                    />
+                      placeholder="Enter your full name"
+                      className="w-full p-4 py-2 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      name="name"
+                      value={formData.name || ''}
+                      onChange={handleChange}
+                    />{' '}
+                    {formErrors.name && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formErrors.name}
+                      </p>
+                    )}
+                  </div>
 
-                    {showSuggestions && searchTerm && (
-                      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                        {filteredOrganizations.length > 0 ? (
-                          filteredOrganizations.map((org) => (
-                            <div
-                              key={org.id}
-                              className="p-3 hover:bg-gray-50 cursor-pointer"
-                              onClick={() => {
-                                setFormData({
-                                  ...formData,
-                                  organisation: org.id,
-                                  organisationName: org.name,
-                                });
-                                setSearchTerm(org.name);
-                                setShowSuggestions(false);
-                              }}
-                            >
-                              {org.name}
-                            </div>
-                          ))
-                        ) : (
-                          <div className="p-3 text-gray-500">
-                            No organizations found
+                  <div className="space-y-2">
+                    <div className="flex items-center">
+                      <label
+                        htmlFor="organization"
+                        className="block text-lg font-medium text-gray-700"
+                      >
+                        Organization name
+                      </label>
+                      <div className="relative inline-block ml-2 group">
+                        <div className="flex items-center justify-center w-5 h-5 text-xs font-medium text-gray-800 bg-gray-300 rounded-full cursor-help">
+                          i
+                        </div>
+                        <div className="absolute z-10 w-64 p-3 text-sm text-left text-white bg-gray-800 rounded-md shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 transition-opacity duration-300">
+                          Take care when setting your organisation as these will
+                          be checked by an admin as part of the approval
+                          process, who may reach out with further questions
+                          <div className="absolute w-3 h-3 bg-gray-800 transform rotate-45 left-1/2 -translate-x-1/2 -bottom-1.5"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="relative flex gap-2 border border-gray-200 rounded-full p-1">
+                      <div className="relative flex-1">
+                        <input
+                          id="organisation"
+                          type="text"
+                          placeholder="Search by organisation name"
+                          className="w-full p-4 py-2 bg-white rounded-full focus:outline-none"
+                          name="organisation"
+                          value={searchTerm || ''}
+                          onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setShowSuggestions(true);
+                          }}
+                          onFocus={() => setShowSuggestions(true)}
+                        />
+
+                        {showSuggestions && searchTerm && (
+                          <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                            {filteredOrganizations.length > 0 ? (
+                              filteredOrganizations.map((org) => (
+                                <div
+                                  key={org.id}
+                                  className="p-3 hover:bg-gray-50 cursor-pointer"
+                                  onClick={() => {
+                                    setFormData({
+                                      ...formData,
+                                      organisation: org.id,
+                                      organisationName: org.name,
+                                    });
+                                    setSearchTerm(org.name);
+                                    setShowSuggestions(false);
+                                  }}
+                                >
+                                  {org.name}
+                                </div>
+                              ))
+                            ) : (
+                              <div className="p-3 text-gray-500">
+                                No organizations found
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setIsOrgModal(true)}
+                        className="px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center gap-2 whitespace-nowrap"
+                      >
+                        Add Organization
+                        <span className="font-bold">+</span>
+                      </button>
+                    </div>
+                    {formErrors.organisation && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formErrors.organisation}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex justify-between w-[100%] gap-4">
+                    <div className="w-2/4">
+                      <CustomDropdown
+                        id="role"
+                        label="Role"
+                        options={[
+                          { id: 'Academia', label: 'Academia' },
+                          { id: 'Governmental', label: 'Governmental' },
+                          { id: 'NGO / non-profit', label: 'NGO / non-profit' },
+                          {
+                            id: 'Investor / private sector',
+                            label: 'Investor / private sector',
+                          },
+                          {
+                            id: 'Local communities / groups / cooperatives',
+                            label: 'Local communities / groups / cooperatives',
+                          },
+                        ]}
+                        isMulti={false}
+                        value={formData.role}
+                        onChange={(value) =>
+                          setFormData({ ...formData, role: value })
+                        }
+                        placeholder="Enter your role"
+                      />
+                      {formErrors.role && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {formErrors.role}
+                        </p>
+                      )}
+                    </div>
+                    <div className="w-2/4">
+                      <CustomDropdown
+                        id="country"
+                        label="Country of residence"
+                        options={
+                          country &&
+                          country.map((f) => {
+                            return {
+                              id: f.id,
+                              label: f.country_name,
+                            };
+                          })
+                        }
+                        isMulti={false}
+                        value={isOrgModal ? '' : formData.country}
+                        onChange={(value) =>
+                          setFormData({ ...formData, country: value })
+                        }
+                        placeholder="Select country"
+                        searchable={true}
+                      />
+                      {formErrors.country && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {formErrors.country}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <CustomDropdown
+                      id="regions"
+                      label="Focus Region"
+                      options={
+                        regions &&
+                        regions.map((f) => {
+                          return {
+                            id: f.id,
+                            label: f.name,
+                          };
+                        })
+                      }
+                      isMulti={true}
+                      value={formData.regions}
+                      onChange={(value) =>
+                        setFormData({ ...formData, regions: value })
+                      }
+                      placeholder="Select regions"
+                    />
+                    {formErrors.regions && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formErrors.regions}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <CustomDropdown
+                      id="topics"
+                      label="Topics"
+                      options={
+                        topics &&
+                        topics.map((f) => {
+                          return {
+                            id: f.id,
+                            label: f.name,
+                          };
+                        })
+                      }
+                      isMulti={true}
+                      value={formData.topics}
+                      onChange={(value) =>
+                        setFormData({ ...formData, topics: value })
+                      }
+                      placeholder="Select topics"
+                    />
+                    {formErrors.topics && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formErrors.topics}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <CustomDropdown
+                      id="looking_fors"
+                      label="Looking for"
+                      options={
+                        lookingFors &&
+                        lookingFors.map((f) => {
+                          return {
+                            id: f.id,
+                            label: f.name,
+                          };
+                        })
+                      }
+                      isMulti={true}
+                      value={formData.looking_fors}
+                      onChange={(value) =>
+                        setFormData({ ...formData, looking_fors: value })
+                      }
+                      placeholder="Select option"
+                    />
+                    {formErrors.looking_fors && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formErrors.looking_fors}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="linkedin"
+                      className="block text-lg font-medium text-gray-700"
+                    >
+                      Linkedin Profile
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="linkedin"
+                        type="text"
+                        placeholder="https://www.linkedin.com/in/user-o-bb6123b2/"
+                        className="w-full p-4 py-2 pl-6 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        name="linkedin"
+                        value={formData.linkedin || ''}
+                        onChange={handleChange}
+                      />
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-4 flex items-center text-gray-400"
+                      >
+                        <svg
+                          className="w-6 h-6"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                          ></path>
+                        </svg>
+                      </button>
+                      {formErrors.linkedin && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {formErrors.linkedin}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 mt-6">
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        id="newsletter"
+                        className="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        checked={formData.newsletter || false}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            newsletter: e.target.checked,
+                          })
+                        }
+                      />
+                      <label
+                        htmlFor="newsletter"
+                        className="text-base text-gray-700"
+                      >
+                        Send me the latest News and Updates
+                      </label>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        id="terms"
+                        className="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        checked={formData.acceptTerms || false}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            acceptTerms: e.target.checked,
+                          })
+                        }
+                      />
+                      <label
+                        htmlFor="terms"
+                        className="text-base text-gray-700"
+                      >
+                        I accept the{' '}
+                        <span className="font-bold">Terms of Service</span> and
+                        I'm authorised to accept for my organization
+                      </label>{' '}
+                    </div>
+                    {formErrors.acceptTerms && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formErrors.acceptTerms}
+                      </p>
                     )}
                   </div>
 
                   <button
-                    type="button"
-                    onClick={() => setIsOrgModal(true)}
-                    className="px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center gap-2 whitespace-nowrap"
-                  >
-                    Add Organization
-                    <span className="font-bold">+</span>
-                  </button>
-                </div>
-                {formErrors.organisation && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {formErrors.organisation}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex justify-between w-[100%] gap-4">
-                <div className="w-2/4">
-                  <CustomDropdown
-                    id="role"
-                    label="Role"
-                    options={[
-                      { id: 'Academia', label: 'Academia' },
-                      { id: 'Governmental', label: 'Governmental' },
-                      { id: 'NGO / non-profit', label: 'NGO / non-profit' },
-                      {
-                        id: 'Investor / private sector',
-                        label: 'Investor / private sector',
-                      },
-                      {
-                        id: 'Local communities / groups / cooperatives',
-                        label: 'Local communities / groups / cooperatives',
-                      },
-                    ]}
-                    isMulti={false}
-                    value={formData.role}
-                    onChange={(value) =>
-                      setFormData({ ...formData, role: value })
-                    }
-                    placeholder="Enter your role"
-                  />
-                  {formErrors.role && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {formErrors.role}
-                    </p>
-                  )}
-                </div>
-                <div className="w-2/4">
-                  <CustomDropdown
-                    id="country"
-                    label="Country of residence"
-                    options={
-                      country &&
-                      country.map((f) => {
-                        return {
-                          id: f.id,
-                          label: f.country_name,
-                        };
-                      })
-                    }
-                    isMulti={false}
-                    value={isOrgModal ? '' : formData.country}
-                    onChange={(value) =>
-                      setFormData({ ...formData, country: value })
-                    }
-                    placeholder="Select country"
-                    searchable={true}
-                  />
-                  {formErrors.country && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {formErrors.country}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div>
-                <CustomDropdown
-                  id="regions"
-                  label="Focus Region"
-                  options={
-                    regions &&
-                    regions.map((f) => {
-                      return {
-                        id: f.id,
-                        label: f.name,
-                      };
-                    })
-                  }
-                  isMulti={true}
-                  value={formData.regions}
-                  onChange={(value) =>
-                    setFormData({ ...formData, regions: value })
-                  }
-                  placeholder="Select regions"
-                />
-                {formErrors.regions && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {formErrors.regions}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <CustomDropdown
-                  id="topics"
-                  label="Topics"
-                  options={
-                    topics &&
-                    topics.map((f) => {
-                      return {
-                        id: f.id,
-                        label: f.name,
-                      };
-                    })
-                  }
-                  isMulti={true}
-                  value={formData.topics}
-                  onChange={(value) =>
-                    setFormData({ ...formData, topics: value })
-                  }
-                  placeholder="Select topics"
-                />
-                {formErrors.topics && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {formErrors.topics}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <CustomDropdown
-                  id="looking_fors"
-                  label="Looking for"
-                  options={
-                    lookingFors &&
-                    lookingFors.map((f) => {
-                      return {
-                        id: f.id,
-                        label: f.name,
-                      };
-                    })
-                  }
-                  isMulti={true}
-                  value={formData.looking_fors}
-                  onChange={(value) =>
-                    setFormData({ ...formData, looking_fors: value })
-                  }
-                  placeholder="Select option"
-                />
-                {formErrors.looking_fors && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {formErrors.looking_fors}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="linkedin"
-                  className="block text-lg font-medium text-gray-700"
-                >
-                  Linkedin Profile
-                </label>
-                <div className="relative">
-                  <input
-                    id="linkedin"
-                    type="text"
-                    placeholder="https://www.linkedin.com/in/user-o-bb6123b2/"
-                    className="w-full p-4 py-2 pl-6 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    name="linkedin"
-                    value={formData.linkedin || ''}
-                    onChange={handleChange}
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-4 flex items-center text-gray-400"
-                  >
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                      ></path>
-                    </svg>
-                  </button>
-                  {formErrors.linkedin && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {formErrors.linkedin}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-4 mt-6">
-                <div className="flex items-start gap-3">
-                  <input
-                    type="checkbox"
-                    id="newsletter"
-                    className="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    checked={formData.newsletter || false}
-                    onChange={(e) =>
-                      setFormData({ ...formData, newsletter: e.target.checked })
-                    }
-                  />
-                  <label
-                    htmlFor="newsletter"
-                    className="text-base text-gray-700"
-                  >
-                    Send me the latest News and Updates
-                  </label>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <input
-                    type="checkbox"
-                    id="terms"
-                    className="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    checked={formData.acceptTerms || false}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        acceptTerms: e.target.checked,
-                      })
-                    }
-                  />
-                  <label htmlFor="terms" className="text-base text-gray-700">
-                    I accept the{' '}
-                    <span className="font-bold">Terms of Service</span> and I'm
-                    authorised to accept for my organization
-                  </label>{' '}
-                </div>
-                {formErrors.acceptTerms && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {formErrors.acceptTerms}
-                  </p>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={`
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`
                   w-full 
                   bg-green-600 
                   text-white 
@@ -967,34 +977,36 @@ const AdditionalDetails = ({
                       : 'hover:bg-green-700'
                   }
                 `}
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center justify-center">
-                    <svg
-                      className="animate-spin h-5 w-5 mr-3"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Submitting...
-                  </div>
-                ) : (
-                  'Continue'
-                )}
-              </button>
-            </form>
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center justify-center">
+                        <svg
+                          className="animate-spin h-5 w-5 mr-3"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Submitting...
+                      </div>
+                    ) : (
+                      'Continue'
+                    )}
+                  </button>
+                </form>
+              </div>{' '}
+            </div>
           </div>
         )}
         {steps.find((step) => step.active)?.number === 3 && (
