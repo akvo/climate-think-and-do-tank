@@ -697,7 +697,7 @@ export const fetchOrganizationsAndRegions = createAsyncThunk(
         rolesResponse,
         countryResponse,
         topicsResponse,
-        thematicsResponse,
+        valueChainResponse,
       ] = await Promise.all([
         axios.get(`${BACKEND_URL}/api/organisations?status=published`),
         axios.get(`${BACKEND_URL}/api/regions?status=published`),
@@ -707,7 +707,7 @@ export const fetchOrganizationsAndRegions = createAsyncThunk(
           `${BACKEND_URL}/api/countries?status=published&pagination[pageSize]=250`
         ),
         axios.get(`${BACKEND_URL}/api/topics?status=published`),
-        axios.get(`${BACKEND_URL}/api/thematics?status=published`),
+        axios.get(`${BACKEND_URL}/api/value-chains?status=published`),
       ]);
 
       return {
@@ -717,7 +717,7 @@ export const fetchOrganizationsAndRegions = createAsyncThunk(
         roles: rolesResponse.data.roles,
         country: countryResponse.data.data,
         topics: topicsResponse.data.data,
-        thematics: thematicsResponse.data.data,
+        valueChains: valueChainResponse.data.data,
       };
     } catch (error) {
       return rejectWithValue(
@@ -795,7 +795,7 @@ const authSlice = createSlice({
     roles: [],
     country: [],
     topics: [],
-    thematics: [],
+    valueChains: [],
     stakeholders: [],
   },
   reducers: {
@@ -888,7 +888,7 @@ const authSlice = createSlice({
         state.roles = action.payload.roles;
         state.country = action.payload.country;
         state.topics = action.payload.topics;
-        state.thematics = action.payload.thematics;
+        state.valueChains = action.payload.valueChains;
       })
       .addCase(fetchOrganizationsAndRegions.rejected, (state, action) => {
         state.status = 'failed';
