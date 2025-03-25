@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { ArrowDownWideNarrow, ArrowUpWideNarrow, Search } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useSearchParams } from 'next/navigation';
@@ -16,6 +16,7 @@ export default function InvestmentOpportunityProfile() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
+  const isInitialLoad = useRef(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -82,13 +83,17 @@ export default function InvestmentOpportunityProfile() {
     };
 
     handleInitialLoad();
-    loadData();
   }, []);
 
   useEffect(() => {
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false;
+      return;
+    }
+
     if (!loading) {
-      loadData();
       updateQueryParams(activeFilters, sortConfig, searchQuery);
+      loadData();
     }
   }, [activeFilters, sortConfig, searchQuery]);
 
@@ -106,13 +111,16 @@ export default function InvestmentOpportunityProfile() {
         }
       });
 
-      router.push(`?${params.toString()}`, undefined, { shallow: true });
+      const newUrl = `?${params.toString()}`;
+      if (newUrl !== window.location.search) {
+        router.push(newUrl, undefined, { shallow: true });
+      }
     },
     [router]
   );
 
   const loadData = useCallback(
-    (isLoadMore = false) => {
+    debounce((isLoadMore = false) => {
       dispatch(
         fetchInvestmentOpportunityProfiles({
           page: isLoadMore ? currentPage + 1 : 1,
@@ -128,7 +136,7 @@ export default function InvestmentOpportunityProfile() {
               : null,
         })
       );
-    },
+    }, 300),
     [
       dispatch,
       currentPage,
