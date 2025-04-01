@@ -7,7 +7,7 @@
       "options": {
         "from": {
           "name": "Administration Panel",
-          "email": "no-reply@strapi.io"
+          "email": "tdt.noreply@akvo.org"
         },
         "response_email": "",
         "object": "Reset password",
@@ -20,7 +20,7 @@
       "options": {
         "from": {
           "name": "Administration Panel",
-          "email": "no-reply@strapi.io"
+          "email": "tdt.noreply@akvo.org"
         },
         "response_email": "",
         "object": "Account confirmation",
