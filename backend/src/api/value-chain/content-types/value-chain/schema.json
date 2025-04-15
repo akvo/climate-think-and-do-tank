@@ -1,0 +1,19 @@
+{
+  "kind": "collectionType",
+  "collectionName": "value_chains",
+  "info": {
+    "singularName": "value-chain",
+    "pluralName": "value-chains",
+    "displayName": "Value Chain",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    }
+  }
+}
