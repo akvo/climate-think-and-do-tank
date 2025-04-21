@@ -75,12 +75,7 @@
     },
     "stakeholder_role": {
       "type": "enumeration",
-      "enum": [
-        "Investor",
-        "Government",
-        "Farmer",
-        "NGO"
-      ]
+      "enum": ["Investor", "Government", "Farmer", "NGO"]
     },
     "linkedin": {
       "type": "string"
@@ -121,14 +116,17 @@
       "target": "api::country.country"
     },
     "profile_image": {
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ],
+      "allowedTypes": ["images", "files", "videos", "audios"],
       "type": "media",
       "multiple": false
+    },
+    "resetCode": {
+      "type": "string",
+      "private": true
+    },
+    "resetCodeExpiration": {
+      "type": "datetime",
+      "private": true
     }
   }
 }
