@@ -173,12 +173,19 @@ export default function Header() {
                         className="object-cover w-[100%] h-[100%]"
                         unoptimized
                         onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.parentNode.innerHTML = `
-          <div class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold">
-            ${(user?.full_name || 'U').charAt(0).toUpperCase()}
-          </div>
-        `;
+                          const fallbackEl = document.createElement('div');
+                          fallbackEl.className =
+                            'w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold';
+                          fallbackEl.textContent = (user?.full_name || 'U')
+                            .charAt(0)
+                            .toUpperCase();
+
+                          const parentNode = e.target.parentNode;
+                          if (parentNode) {
+                            e.target.style.display = 'none';
+
+                            parentNode.appendChild(fallbackEl);
+                          }
                         }}
                       />
                     ) : (

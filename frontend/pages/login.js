@@ -9,11 +9,11 @@ import { Eye, EyeOff } from 'lucide-react';
 export default function LoginForm() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { status, error, user } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     forgotPassword: false,
+    showResetCode: false,
     resetCode: '',
     newPassword: '',
     confirmNewPassword: '',
@@ -68,7 +68,7 @@ export default function LoginForm() {
       setIsSubmitting(true);
       setFormErrors({});
 
-      if (formData.forgotPassword && formData.resetCode) {
+      if (formData.forgotPassword && formData.showResetCode) {
         const resetResult = await dispatch(
           resetPassword({
             email: formData.email,
@@ -81,6 +81,7 @@ export default function LoginForm() {
           setFormData({
             ...formData,
             forgotPassword: false,
+            showResetCode: false,
             resetCode: '',
             newPassword: '',
             confirmNewPassword: '',
@@ -97,8 +98,8 @@ export default function LoginForm() {
         if (forgotPassword.fulfilled.match(forgotResult)) {
           setFormData({
             ...formData,
-            resetCode: true,
-            forgotPassword: false,
+            showResetCode: true,
+            forgotPassword: true,
           });
         } else {
           setFormErrors({
@@ -156,15 +157,23 @@ export default function LoginForm() {
           <div className="max-w-4xl mx-auto w-full">
             <div className="mb-12">
               <h1 className="text-4xl font-bold text-black mb-6">
-                Welcome to the Think and Do Tank Network
+                {formData.forgotPassword
+                  ? 'Forgot your password'
+                  : 'Welcome to the Think and Do Tank Network'}
               </h1>
 
-              <p className="text-gray-600">
-                Don't have an account?{' '}
-                <Link href="/signup" className="text-gray-900 underline">
-                  Register here. It takes less than a minute.
-                </Link>
-              </p>
+              {formData.forgotPassword ? (
+                <p className="text-gray-600">
+                  We’ll send you a code to the email address you signed up with
+                </p>
+              ) : (
+                <p className="text-gray-600">
+                  Don&apos;t have an account?{' '}
+                  <Link href="/signup" className="text-gray-900 underline">
+                    Register here. It takes less than a minute.
+                  </Link>
+                </p>
+              )}
             </div>
 
             {formErrors.general && (
@@ -251,57 +260,82 @@ export default function LoginForm() {
                 </>
               ) : (
                 <>
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium"
-                    >
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="user@address.com"
-                      className={`w-full px-3 py-2 bg-gray-50 border ${
-                        formErrors.email
-                          ? 'border-red-500 focus:ring-red-500'
-                          : 'border-gray-200 focus:ring-green-500'
-                      } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
-                    />
-                    {formErrors.email && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {formErrors.email}
-                      </p>
-                    )}
-                    <button
-                      type="button"
-                      disabled={isSubmitting}
-                      onClick={handleSubmit}
-                      className={`
-                      w-full 
-                      bg-zinc-900 
+                  {!formData.showResetCode && (
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium"
+                      >
+                        Email
+                      </label>
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="user@address.com"
+                        className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                          formErrors.email
+                            ? 'border-red-500'
+                            : 'border-gray-200'
+                        } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                      />
+                      {formErrors.email && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {formErrors.email}
+                        </p>
+                      )}
+
+                      <div className="pt-6">
+                        <button
+                          type="button"
+                          disabled={isSubmitting}
+                          onClick={handleSubmit}
+                          className={`
+                        w-full 
+                      bg-green-600 
                       text-white 
-                      py-3 
-                      rounded-md 
-                      transition-colors 
-                      duration-200
+                        py-3 
+                        rounded-full 
+                        transition-colors 
+                        duration-200
                       ${
                         isSubmitting
                           ? 'opacity-50 cursor-not-allowed'
                           : 'hover:bg-zinc-800'
                       }
                     `}
-                    >
-                      {isSubmitting ? 'Sending...' : 'Send Reset Code'}
-                    </button>
-                  </div>
+                        >
+                          {isSubmitting ? 'Sending...' : 'Send Reset Code'}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={isSubmitting}
+                          onClick={() =>
+                            setFormData({ ...formData, forgotPassword: false })
+                          }
+                          className={`
+                        w-full 
+                      bg-white 
+                        border
+                        py-3 
+                        rounded-full 
+                        transition-colors 
+                        duration-200
+                        text-zinc-800
+                        mt-2
+                    `}
+                        >
+                          {'Back to Login'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
-                  {formData.resetCode && (
+                  {formData.showResetCode && (
                     <>
-                      <div className="space-y-2">
+                      <div className="space-y-2 text-black">
                         <label
                           htmlFor="resetCode"
                           className="block text-sm font-medium"
@@ -314,11 +348,11 @@ export default function LoginForm() {
                           type="text"
                           value={formData.resetCode}
                           onChange={handleChange}
-                          className={`w-full px-3 py-2 bg-gray-50 border ${
+                          className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
                             formErrors.resetCode
-                              ? 'border-red-500 focus:ring-red-500'
-                              : 'border-gray-200 focus:ring-green-500'
-                          } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                              ? 'border-red-500'
+                              : 'border-gray-200'
+                          } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
                         />
                         {formErrors.resetCode && (
                           <p className="mt-1 text-sm text-red-600">
@@ -327,7 +361,7 @@ export default function LoginForm() {
                         )}
                       </div>
 
-                      <div className="space-y-2">
+                      <div className="space-y-2 text-black">
                         <label
                           htmlFor="newPassword"
                           className="block text-sm font-medium"
@@ -340,11 +374,11 @@ export default function LoginForm() {
                           type="password"
                           value={formData.newPassword}
                           onChange={handleChange}
-                          className={`w-full px-3 py-2 bg-gray-50 border ${
+                          className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
                             formErrors.newPassword
-                              ? 'border-red-500 focus:ring-red-500'
-                              : 'border-gray-200 focus:ring-green-500'
-                          } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                              ? 'border-red-500'
+                              : 'border-gray-200'
+                          } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
                         />
                         {formErrors.newPassword && (
                           <p className="mt-1 text-sm text-red-600">
@@ -353,7 +387,7 @@ export default function LoginForm() {
                         )}
                       </div>
 
-                      <div className="space-y-2">
+                      <div className="space-y-2 text-black">
                         <label
                           htmlFor="confirmNewPassword"
                           className="block text-sm font-medium"
@@ -366,26 +400,27 @@ export default function LoginForm() {
                           type="password"
                           value={formData.confirmNewPassword}
                           onChange={handleChange}
-                          className={`w-full px-3 py-2 bg-gray-50 border ${
+                          className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
                             formErrors.confirmNewPassword
-                              ? 'border-red-500 focus:ring-red-500'
-                              : 'border-gray-200 focus:ring-green-500'
-                          } rounded-md focus:outline-none focus:ring-2 focus:border-transparent`}
+                              ? 'border-red-500'
+                              : 'border-gray-200'
+                          } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
                         />
                         {formErrors.confirmNewPassword && (
                           <p className="mt-1 text-sm text-red-600">
                             {formErrors.confirmNewPassword}
                           </p>
                         )}
-                        <button
-                          type="submit"
-                          disabled={isSubmitting}
-                          className={`
-                          w-full 
-                          bg-zinc-900 
-                          text-white 
+                        <div className="pt-4">
+                          <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className={`
+                          w-full    
+                        bg-green-600 
+                        text-white 
                           py-3 
-                          rounded-md 
+                          rounded-full 
                           transition-colors 
                           duration-200
                           ${
@@ -394,9 +429,10 @@ export default function LoginForm() {
                               : 'hover:bg-zinc-800'
                           }
                         `}
-                        >
-                          {isSubmitting ? 'Resetting...' : 'Reset Password'}
-                        </button>
+                          >
+                            {isSubmitting ? 'Resetting...' : 'Reset Password'}
+                          </button>
+                        </div>
                       </div>
                     </>
                   )}
@@ -466,8 +502,8 @@ export default function LoginForm() {
                   </a>
                 </p>
                 <p>
-                  Please be sure not to violate others' copyright or privacy
-                  rights.{' '}
+                  Please be sure not to violate others&apos; copyright or
+                  privacy rights.{' '}
                   <a
                     href="/learn-more"
                     className="text-green-600 hover:underline"

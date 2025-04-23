@@ -474,7 +474,6 @@ const AdditionalDetails = ({
   });
 
   const [isOrgModal, setIsOrgModal] = useState(false);
-
   const filteredOrganizations = searchTerm
     ? organizations.filter((org) =>
         org.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -517,6 +516,8 @@ const AdditionalDetails = ({
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   };
+
+  console.log(showSuggestions, filteredOrganizations, searchTerm);
 
   return (
     <div className="flex h-screen ">
@@ -948,7 +949,7 @@ const AdditionalDetails = ({
                       >
                         I accept the{' '}
                         <span className="font-bold">Terms of Service</span> and
-                        I'm authorised to accept for my organization
+                        I&apos;m authorised to accept for my organization
                       </label>{' '}
                     </div>
                     {formErrors.acceptTerms && (

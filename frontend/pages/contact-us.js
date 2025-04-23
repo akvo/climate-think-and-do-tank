@@ -1,16 +1,20 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { env } from '@/helpers/env-vars';
+import { useSelector } from 'react-redux';
 
 export default function ContactPage() {
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
-    name: '',
-    organization: '',
-    email: '',
-    subject: '',
+    name: isAuthenticated ? user.full_name : '',
+    organization: isAuthenticated ? user.organisation?.name : '',
+    email: isAuthenticated ? user.email : '',
+    subject: 'Need support in finding investments/funding',
     message: '',
   });
   const [loading, setLoading] = useState(false);
+
+  console.log('User:', user);
 
   const resetForm = () => {
     setFormData({
@@ -64,8 +68,8 @@ export default function ContactPage() {
         <h1 className="text-3xl font-bold text-center mb-4">Contact Us</h1>
         <p className="text-gray-600 text-center mb-12">
           Need support? The Think and Do Tank Network supports you in increasing
-          investments and building resilience in Kenya's Drylands. Fill in the
-          form below and we contact you shortly:
+          investments and building resilience in Kenya&apos;s Drylands. Fill in
+          the form below and we contact you shortly:
         </p>
 
         <div className="bg-[#f7f7f7] p-8 rounded-lg">
@@ -94,21 +98,15 @@ export default function ContactPage() {
                 Organization
               </label>
               <div className="relative">
-                <select
+                <input
                   id="organization"
                   name="organization"
+                  type="text"
                   required
-                  className="w-full px-4 py-3 rounded-md bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
+                  placeholder="Enter your organization"
+                  className="w-full px-4 py-3 rounded-md bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
                   value={formData.organization}
                   onChange={handleChange}
-                >
-                  <option value="">Your organization</option>
-                  <option value="org1">Organization 1</option>
-                  <option value="org2">Organization 2</option>
-                </select>
-                <ChevronDown
-                  className="absolute right-4 top-3.5 text-gray-400 pointer-events-none"
-                  size={20}
                 />
               </div>
             </div>
@@ -142,11 +140,19 @@ export default function ContactPage() {
                   value={formData.subject}
                   onChange={handleChange}
                 >
-                  <option value="">
+                  <option value="Need support in finding investments/funding">
+                    Need support in finding investments/funding
+                  </option>
+                  <option value="Need support in finding investment opportunities">
                     Need support in finding investment opportunities
                   </option>
-                  <option value="subject1">Other Subject 1</option>
-                  <option value="subject2">Other Subject 2</option>
+                  <option value="Need support in finding partners">
+                    Need support in finding partners
+                  </option>
+                  <option value="Need support in data and knowledge">
+                    Need support in data and knowledge
+                  </option>
+                  <option value="Other">Other</option>
                 </select>
                 <ChevronDown
                   className="absolute right-4 top-3.5 text-gray-400 pointer-events-none"

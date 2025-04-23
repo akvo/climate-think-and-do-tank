@@ -7,17 +7,17 @@ export default function VerifyEmail() {
   const [verified, setVerified] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
-  const { token } = router.query;
+  const { confirmation } = router.query;
   const { loading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (token) {
+    if (confirmation) {
       verifyToken();
     }
-  }, [token]);
+  }, [confirmation]);
 
   const verifyToken = async () => {
-    const result = await dispatch(verifyEmail(token));
+    const result = await dispatch(verifyEmail(confirmation));
     if (result.payload?.user?.id) {
       // Updated to match our response
       setVerified(true);
