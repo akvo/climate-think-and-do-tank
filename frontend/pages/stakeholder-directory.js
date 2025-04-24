@@ -245,7 +245,7 @@ export default function StakeholderDirectory() {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Try keywords like: 'tilapia' or 'horticulture'"
+                placeholder="Search Stakeholders"
                 className="w-full pl-4 pr-10 py-3 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 value={searchQuery}
                 onChange={(e) => {
@@ -280,7 +280,7 @@ export default function StakeholderDirectory() {
                     className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
                   >
                     {filterType === 'focusRegions'
-                      ? 'Focus regions'
+                      ? 'Focus regions (Stakeholders only)'
                       : filterType.charAt(0).toUpperCase() +
                         filterType.slice(1)}
                     <svg
@@ -499,11 +499,16 @@ export default function StakeholderDirectory() {
                         unoptimized
                         onError={(e) => {
                           e.target.style.display = 'none';
-                          e.target.parentNode.innerHTML = `
-          <div class="w-full h-full bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-            ${stakeholder.name.charAt(0).toUpperCase()}
-          </div>
-        `;
+                          const parent = e.target.parentNode;
+                          if (parent) {
+                            parent.innerHTML = `
+      <div class="w-full h-full bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+        ${stakeholder.name.charAt(0).toUpperCase()}
+      </div>
+    `;
+                          } else {
+                            console.warn('Image parent element not found');
+                          }
                         }}
                       />
                     ) : (

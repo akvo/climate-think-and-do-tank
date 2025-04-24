@@ -95,10 +95,11 @@ export const validateAdditionalDetails = (data) => {
   }
 
   if (
-    !data.country ||
-    (Array.isArray(data.country) && data.country.length === 0)
+    !data.countryOfResidence ||
+    (Array.isArray(data.countryOfResidence) &&
+      data.countryOfResidence.length === 0)
   ) {
-    errors.country = 'Country is required';
+    errors.countryOfResidence = 'Country is required';
   }
 
   if (

@@ -280,22 +280,31 @@ export const login = createAsyncThunk(
       const { user, jwt } = response.data;
 
       setCookie('token', jwt, {
-        req: undefined,
-        res: undefined,
         maxAge: 30 * 24 * 60 * 60,
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
         sameSite: 'strict',
       });
 
-      setCookie('user', JSON.stringify(user), {
-        req: undefined,
-        res: undefined,
-        maxAge: 30 * 24 * 60 * 60,
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-      });
+      setCookie(
+        'user',
+        JSON.stringify({
+          email: user.email,
+          full_name: user.full_name,
+          id: user.id,
+          stakeholder_role: user.stakeholder_role,
+          connection_requests_received: user.connection_requests_received,
+          connection_requests_sent: user.connection_requests_sent,
+          organisation: { name: user.organisation?.name },
+          profile_image: { url: user.profile_image?.url },
+        }),
+        {
+          maxAge: 30 * 24 * 60 * 60,
+          path: '/',
+          secure: true,
+          sameSite: 'strict',
+        }
+      );
 
       return { user, jwt };
     } catch (error) {

@@ -135,7 +135,7 @@ export default function SignUpForm() {
           looking_fors: additionalData.looking_fors.map((r) => ({ id: r })),
           regions: additionalData.regions.map((r) => ({ id: r })),
           topics: additionalData.topics.map((r) => ({ id: r })),
-          country: additionalData.country,
+          country: additionalData.countryOfResidence,
           organisation: { id: additionalData.organisation },
         })
       );
@@ -510,15 +510,6 @@ const AdditionalDetails = ({
     onSubmit(formData);
   };
 
-  const formatFieldName = (fieldName) => {
-    return fieldName
-      .split('_')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
-
-  console.log(showSuggestions, filteredOrganizations, searchTerm);
-
   return (
     <div className="flex h-screen ">
       <div className="w-1/2 flex flex-col justify-center p-12 px-20 bg-zinc-900 text-white overflow-hidden">
@@ -770,16 +761,19 @@ const AdditionalDetails = ({
                           })
                         }
                         isMulti={false}
-                        value={isOrgModal ? '' : formData.country}
+                        value={formData.countryOfResidence}
                         onChange={(value) =>
-                          setFormData({ ...formData, country: value })
+                          setFormData({
+                            ...formData,
+                            countryOfResidence: value,
+                          })
                         }
                         placeholder="Select country"
                         searchable={true}
                       />
-                      {formErrors.country && (
+                      {formErrors.countryOfResidence && (
                         <p className="text-red-500 text-sm mt-1">
-                          {formErrors.country}
+                          {formErrors.countryOfResidence}
                         </p>
                       )}
                     </div>
@@ -1134,7 +1128,11 @@ const OrganizationModal = ({
 
       const organizationData = {
         org_name: formData.org_name,
-        website: formData.website,
+        website: formData.website
+          ? !formData.website.match(/^https?:\/\//)
+            ? `https://${formData.website}`
+            : formData.website.replace(/^http:\/\//, 'https://')
+          : formData.website,
         type: formData.type,
         country: formData.country,
         org_image: formData.org_image,
@@ -1206,15 +1204,12 @@ const OrganizationModal = ({
             <label className="block text-sm font-medium">Website</label>
             <div className="relative">
               <input
-                type="url"
+                type="text"
                 placeholder="www.myorg.com"
                 className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 pr-10"
                 value={formData.website}
                 onChange={(e) => {
                   let value = e.target.value;
-                  if (value && !/^https?:\/\//i.test(value)) {
-                    value = `https://${value}`;
-                  }
                   setFormData({ ...formData, website: value });
                 }}
               />
