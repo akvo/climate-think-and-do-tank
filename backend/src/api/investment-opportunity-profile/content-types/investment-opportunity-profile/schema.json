@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "investment_opportunity_profiles",
+  "info": {
+    "singularName": "investment-opportunity-profile",
+    "pluralName": "investment-opportunity-profiles",
+    "displayName": "Investment Opportunity Profile",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "publication_date": {
+      "type": "date"
+    },
+    "description": {
+      "type": "text"
+    },
+    "value_chain": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::value-chain.value-chain"
+    },
+    "regions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::region.region"
+    }
+  }
+}
