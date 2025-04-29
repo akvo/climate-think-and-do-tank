@@ -1,13 +1,13 @@
 {
-  "key": "plugin_content_manager_configuration_content_types::plugin::users-permissions.role",
+  "key": "plugin_content_manager_configuration_content_types::api::social-accountability.social-accountability",
   "value": {
     "settings": {
       "bulkable": true,
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "name",
-      "defaultSortBy": "name",
+      "mainField": "id",
+      "defaultSortBy": "id",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -19,74 +19,74 @@
           "sortable": true
         }
       },
-      "name": {
+      "region": {
         "edit": {
-          "label": "name",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "name",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "description": {
-        "edit": {
-          "label": "description",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "description",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "type": {
-        "edit": {
-          "label": "type",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "type",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "permissions": {
-        "edit": {
-          "label": "permissions",
+          "label": "region",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "action"
+          "mainField": "name"
         },
         "list": {
-          "label": "permissions",
+          "label": "region",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "investment_priorities": {
+        "edit": {
+          "label": "investment_priorities",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "investment_priorities",
           "searchable": false,
           "sortable": false
         }
       },
-      "users": {
+      "county_statistics": {
         "edit": {
-          "label": "users",
+          "label": "county_statistics",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "county_statistics",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "other_media_slider": {
+        "edit": {
+          "label": "other_media_slider",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "other_media_slider",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "community_voices": {
+        "edit": {
+          "label": "community_voices",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "provider"
+          "mainField": "title"
         },
         "list": {
-          "label": "users",
+          "label": "community_voices",
           "searchable": false,
           "sortable": false
         }
@@ -153,40 +153,44 @@
     "layouts": {
       "list": [
         "id",
-        "name",
-        "description",
-        "type"
+        "region",
+        "createdAt",
+        "updatedAt"
       ],
       "edit": [
         [
           {
-            "name": "name",
-            "size": 6
-          },
-          {
-            "name": "description",
+            "name": "region",
             "size": 6
           }
         ],
         [
           {
-            "name": "type",
-            "size": 6
-          },
-          {
-            "name": "permissions",
-            "size": 6
+            "name": "investment_priorities",
+            "size": 12
           }
         ],
         [
           {
-            "name": "users",
+            "name": "county_statistics",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "other_media_slider",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "community_voices",
             "size": 6
           }
         ]
       ]
     },
-    "uid": "plugin::users-permissions.role"
+    "uid": "api::social-accountability.social-accountability"
   },
   "type": "object",
   "environment": null,

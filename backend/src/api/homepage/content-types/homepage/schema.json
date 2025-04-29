@@ -1,0 +1,27 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepages",
+  "info": {
+    "singularName": "homepage",
+    "pluralName": "homepages",
+    "displayName": "Homepage",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "hero_image_slider": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.slider"
+    },
+    "homepage_blurb": {
+      "type": "string"
+    },
+    "homepage_description": {
+      "type": "richtext"
+    }
+  }
+}

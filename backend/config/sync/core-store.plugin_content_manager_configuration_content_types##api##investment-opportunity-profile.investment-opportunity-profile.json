@@ -1,13 +1,13 @@
 {
-  "key": "plugin_content_manager_configuration_content_types::plugin::users-permissions.user",
+  "key": "plugin_content_manager_configuration_content_types::api::investment-opportunity-profile.investment-opportunity-profile",
   "value": {
     "settings": {
       "bulkable": true,
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "provider",
-      "defaultSortBy": "username",
+      "mainField": "title",
+      "defaultSortBy": "title",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -19,121 +19,37 @@
           "sortable": true
         }
       },
-      "username": {
+      "title": {
         "edit": {
-          "label": "username",
+          "label": "title",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "username",
+          "label": "title",
           "searchable": true,
           "sortable": true
         }
       },
-      "email": {
+      "publication_date": {
         "edit": {
-          "label": "email",
+          "label": "publication_date",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "email",
+          "label": "publication_date",
           "searchable": true,
           "sortable": true
         }
       },
-      "provider": {
+      "value_chain": {
         "edit": {
-          "label": "provider",
-          "description": "",
-          "placeholder": "",
-          "visible": false,
-          "editable": true
-        },
-        "list": {
-          "label": "provider",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "password": {
-        "edit": {
-          "label": "password",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "password",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "resetPasswordToken": {
-        "edit": {
-          "label": "resetPasswordToken",
-          "description": "",
-          "placeholder": "",
-          "visible": false,
-          "editable": true
-        },
-        "list": {
-          "label": "resetPasswordToken",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "confirmationToken": {
-        "edit": {
-          "label": "confirmationToken",
-          "description": "",
-          "placeholder": "",
-          "visible": false,
-          "editable": true
-        },
-        "list": {
-          "label": "confirmationToken",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "confirmed": {
-        "edit": {
-          "label": "confirmed",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "confirmed",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "blocked": {
-        "edit": {
-          "label": "blocked",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "blocked",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "role": {
-        "edit": {
-          "label": "role",
+          "label": "value_chain",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -141,14 +57,14 @@
           "mainField": "name"
         },
         "list": {
-          "label": "role",
+          "label": "value_chain",
           "searchable": true,
           "sortable": true
         }
       },
-      "organisation": {
+      "regions": {
         "edit": {
-          "label": "organisation",
+          "label": "regions",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -156,167 +72,147 @@
           "mainField": "name"
         },
         "list": {
-          "label": "organisation",
-          "searchable": true,
-          "sortable": true
+          "label": "regions",
+          "searchable": false,
+          "sortable": false
         }
       },
-      "full_name": {
+      "picture_one": {
         "edit": {
-          "label": "full_name",
+          "label": "picture_one",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "full_name",
-          "searchable": true,
-          "sortable": true
+          "label": "picture_one",
+          "searchable": false,
+          "sortable": false
         }
       },
-      "stakeholder_role": {
+      "investor_snapshot_text": {
         "edit": {
-          "label": "stakeholder_role",
+          "label": "investor_snapshot_text",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "stakeholder_role",
-          "searchable": true,
-          "sortable": true
+          "label": "investor_snapshot_text",
+          "searchable": false,
+          "sortable": false
         }
       },
-      "linkedin": {
+      "the_investment_case_image": {
         "edit": {
-          "label": "linkedin",
+          "label": "the_investment_case_image",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "linkedin",
-          "searchable": true,
-          "sortable": true
+          "label": "the_investment_case_image",
+          "searchable": false,
+          "sortable": false
         }
       },
-      "news_consent": {
+      "business_blueprint_image": {
         "edit": {
-          "label": "news_consent",
+          "label": "business_blueprint_image",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "news_consent",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "looking_fors": {
-        "edit": {
-          "label": "looking_fors",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "name"
-        },
-        "list": {
-          "label": "looking_fors",
+          "label": "business_blueprint_image",
           "searchable": false,
           "sortable": false
         }
       },
-      "focus_regions": {
+      "risk_and_impact_profile_image": {
         "edit": {
-          "label": "focus_regions",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "name"
-        },
-        "list": {
-          "label": "focus_regions",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "connection_requests_sent": {
-        "edit": {
-          "label": "connection_requests_sent",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "id"
-        },
-        "list": {
-          "label": "connection_requests_sent",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "connection_requests_received": {
-        "edit": {
-          "label": "connection_requests_received",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "id"
-        },
-        "list": {
-          "label": "connection_requests_received",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "topics": {
-        "edit": {
-          "label": "topics",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "name"
-        },
-        "list": {
-          "label": "topics",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "country": {
-        "edit": {
-          "label": "country",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "country_name"
-        },
-        "list": {
-          "label": "country",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "profile_image": {
-        "edit": {
-          "label": "profile_image",
+          "label": "risk_and_impact_profile_image",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "profile_image",
+          "label": "risk_and_impact_profile_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "closing_information_image": {
+        "edit": {
+          "label": "closing_information_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "closing_information_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "the_investment_case_text": {
+        "edit": {
+          "label": "the_investment_case_text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "the_investment_case_text",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "business_blueprint_text": {
+        "edit": {
+          "label": "business_blueprint_text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "business_blueprint_text",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "risk_and_impact_profile_text": {
+        "edit": {
+          "label": "risk_and_impact_profile_text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "risk_and_impact_profile_text",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "closing_information_text": {
+        "edit": {
+          "label": "closing_information_text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "closing_information_text",
           "searchable": false,
           "sortable": false
         }
@@ -383,106 +279,89 @@
     "layouts": {
       "list": [
         "id",
-        "email",
-        "confirmed",
-        "username"
+        "title",
+        "publication_date"
       ],
       "edit": [
         [
           {
-            "name": "email",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "password",
+            "name": "title",
             "size": 6
           },
           {
-            "name": "confirmed",
+            "name": "publication_date",
             "size": 4
           }
         ],
         [
           {
-            "name": "blocked",
-            "size": 4
-          },
-          {
-            "name": "role",
+            "name": "value_chain",
             "size": 6
           }
         ],
         [
           {
-            "name": "organisation",
+            "name": "regions",
+            "size": 6
+          },
+          {
+            "name": "picture_one",
             "size": 6
           }
         ],
         [
           {
-            "name": "username",
+            "name": "investor_snapshot_text",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "the_investment_case_image",
             "size": 6
           },
           {
-            "name": "full_name",
+            "name": "business_blueprint_image",
             "size": 6
           }
         ],
         [
           {
-            "name": "stakeholder_role",
+            "name": "risk_and_impact_profile_image",
             "size": 6
           },
           {
-            "name": "linkedin",
+            "name": "closing_information_image",
             "size": 6
           }
         ],
         [
           {
-            "name": "news_consent",
-            "size": 4
-          },
-          {
-            "name": "looking_fors",
-            "size": 6
+            "name": "the_investment_case_text",
+            "size": 12
           }
         ],
         [
           {
-            "name": "focus_regions",
-            "size": 6
-          },
-          {
-            "name": "connection_requests_sent",
-            "size": 6
+            "name": "business_blueprint_text",
+            "size": 12
           }
         ],
         [
           {
-            "name": "connection_requests_received",
-            "size": 6
-          },
-          {
-            "name": "topics",
-            "size": 6
+            "name": "risk_and_impact_profile_text",
+            "size": 12
           }
         ],
         [
           {
-            "name": "country",
-            "size": 6
-          },
-          {
-            "name": "profile_image",
-            "size": 6
+            "name": "closing_information_text",
+            "size": 12
           }
         ]
       ]
     },
-    "uid": "plugin::users-permissions.user"
+    "uid": "api::investment-opportunity-profile.investment-opportunity-profile"
   },
   "type": "object",
   "environment": null,

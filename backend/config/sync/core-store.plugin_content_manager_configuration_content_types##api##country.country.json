@@ -33,6 +33,20 @@
           "sortable": true
         }
       },
+      "country_code": {
+        "edit": {
+          "label": "country_code",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "country_code",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -103,6 +117,10 @@
         [
           {
             "name": "country_name",
+            "size": 6
+          },
+          {
+            "name": "country_code",
             "size": 6
           }
         ]
