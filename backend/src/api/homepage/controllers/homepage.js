@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * thematic controller
+ * homepage controller
  */
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-module.exports = createCoreController('api::thematic.thematic');
+module.exports = createCoreController('api::homepage.homepage');

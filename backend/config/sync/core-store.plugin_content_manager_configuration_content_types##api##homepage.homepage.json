@@ -1,13 +1,13 @@
 {
-  "key": "plugin_content_manager_configuration_content_types::plugin::users-permissions.role",
+  "key": "plugin_content_manager_configuration_content_types::api::homepage.homepage",
   "value": {
     "settings": {
       "bulkable": true,
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "name",
-      "defaultSortBy": "name",
+      "mainField": "id",
+      "defaultSortBy": "id",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -19,74 +19,44 @@
           "sortable": true
         }
       },
-      "name": {
+      "hero_image_slider": {
         "edit": {
-          "label": "name",
+          "label": "hero_image_slider",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "name",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "description": {
-        "edit": {
-          "label": "description",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "description",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "type": {
-        "edit": {
-          "label": "type",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "type",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "permissions": {
-        "edit": {
-          "label": "permissions",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "action"
-        },
-        "list": {
-          "label": "permissions",
+          "label": "hero_image_slider",
           "searchable": false,
           "sortable": false
         }
       },
-      "users": {
+      "homepage_blurb": {
         "edit": {
-          "label": "users",
+          "label": "homepage_blurb",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "provider"
+          "editable": true
         },
         "list": {
-          "label": "users",
+          "label": "homepage_blurb",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "homepage_description": {
+        "edit": {
+          "label": "homepage_description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "homepage_description",
           "searchable": false,
           "sortable": false
         }
@@ -153,40 +123,32 @@
     "layouts": {
       "list": [
         "id",
-        "name",
-        "description",
-        "type"
+        "createdAt",
+        "updatedAt",
+        "hero_image_slider"
       ],
       "edit": [
         [
           {
-            "name": "name",
-            "size": 6
-          },
+            "name": "hero_image_slider",
+            "size": 12
+          }
+        ],
+        [
           {
-            "name": "description",
+            "name": "homepage_blurb",
             "size": 6
           }
         ],
         [
           {
-            "name": "type",
-            "size": 6
-          },
-          {
-            "name": "permissions",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "users",
-            "size": 6
+            "name": "homepage_description",
+            "size": 12
           }
         ]
       ]
     },
-    "uid": "plugin::users-permissions.role"
+    "uid": "api::homepage.homepage"
   },
   "type": "object",
   "environment": null,

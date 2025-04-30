@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "social_accountabilities",
+  "info": {
+    "singularName": "social-accountability",
+    "pluralName": "social-accountabilities",
+    "displayName": "Social Accountability",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "region": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::region.region"
+    },
+    "investment_priorities": {
+      "type": "richtext"
+    },
+    "county_statistics": {
+      "type": "richtext"
+    },
+    "other_media_slider": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.slider"
+    },
+    "community_voices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::community-voice.community-voice",
+      "mappedBy": "social_accountability"
+    }
+  }
+}

@@ -47,20 +47,6 @@
           "sortable": false
         }
       },
-      "description": {
-        "edit": {
-          "label": "description",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "description",
-          "searchable": true,
-          "sortable": true
-        }
-      },
       "web_link": {
         "edit": {
           "label": "web_link",
@@ -103,9 +89,9 @@
           "sortable": false
         }
       },
-      "topics": {
+      "topic": {
         "edit": {
-          "label": "topics",
+          "label": "topic",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -113,9 +99,9 @@
           "mainField": "name"
         },
         "list": {
-          "label": "topics",
-          "searchable": false,
-          "sortable": false
+          "label": "topic",
+          "searchable": true,
+          "sortable": true
         }
       },
       "regions": {
@@ -145,6 +131,34 @@
           "label": "slug",
           "searchable": true,
           "sortable": true
+        }
+      },
+      "publication_date": {
+        "edit": {
+          "label": "publication_date",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "publication_date",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "description": {
+        "edit": {
+          "label": "description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "description",
+          "searchable": false,
+          "sortable": false
         }
       },
       "createdAt": {
@@ -211,7 +225,7 @@
         "id",
         "title",
         "image",
-        "description"
+        "publication_date"
       ],
       "edit": [
         [
@@ -225,10 +239,6 @@
           }
         ],
         [
-          {
-            "name": "description",
-            "size": 6
-          },
           {
             "name": "web_link",
             "size": 6
@@ -246,10 +256,6 @@
         ],
         [
           {
-            "name": "topics",
-            "size": 6
-          },
-          {
             "name": "regions",
             "size": 6
           }
@@ -258,6 +264,22 @@
           {
             "name": "slug",
             "size": 6
+          },
+          {
+            "name": "topic",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "description",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "publication_date",
+            "size": 4
           }
         ]
       ]

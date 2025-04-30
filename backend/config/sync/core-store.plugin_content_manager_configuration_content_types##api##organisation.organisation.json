@@ -61,21 +61,6 @@
           "sortable": true
         }
       },
-      "topics": {
-        "edit": {
-          "label": "topics",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "name"
-        },
-        "list": {
-          "label": "topics",
-          "searchable": false,
-          "sortable": false
-        }
-      },
       "country": {
         "edit": {
           "label": "country",
@@ -89,6 +74,20 @@
           "label": "country",
           "searchable": true,
           "sortable": true
+        }
+      },
+      "org_image": {
+        "edit": {
+          "label": "org_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "org_image",
+          "searchable": false,
+          "sortable": false
         }
       },
       "createdAt": {
@@ -153,7 +152,7 @@
     "layouts": {
       "list": [
         "id",
-        "name",
+        "createdAt",
         "website",
         "type"
       ],
@@ -172,15 +171,15 @@
           {
             "name": "type",
             "size": 6
-          },
-          {
-            "name": "topics",
-            "size": 6
           }
         ],
         [
           {
             "name": "country",
+            "size": 6
+          },
+          {
+            "name": "org_image",
             "size": 6
           }
         ]
