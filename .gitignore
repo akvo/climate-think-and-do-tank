@@ -133,6 +133,7 @@ dist
 build
 .strapi-updater.json
 .strapi-cloud.json
+backend/public/uploads/*
 
 
 ############################
