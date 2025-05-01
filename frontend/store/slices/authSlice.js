@@ -575,7 +575,7 @@ export const fetchStakeholders = createAsyncThunk(
       [usersResponse, organizationsResponse] = await Promise.all(requests);
 
       const users = fetchUsers
-        ? usersResponse.data
+        ? usersResponse.data.data
             .map((user) => ({
               id: user.id,
               type: 'Individual',
@@ -611,18 +611,25 @@ export const fetchStakeholders = createAsyncThunk(
             )
         : [];
 
+      const userPagination = usersResponse.data.meta?.pagination;
+      const orgPagination = organizationsResponse.data.meta?.pagination;
+
       return {
         users,
         organizations,
         meta: {
           page,
           hasMore:
-            users.length + organizations.length > 0 &&
-            (users.length >= pageSize / 2 ||
-              organizations.length >= pageSize / 2),
+            (userPagination && page < userPagination.pageCount) ||
+            (orgPagination && page < orgPagination.pageCount),
+          totalUsers: userPagination?.total || 0,
+          totalOrgs: orgPagination?.total || 0,
+          userPagination,
+          orgPagination,
         },
       };
     } catch (error) {
+      console.error('Error fetching stakeholders:', error);
       return rejectWithValue(
         error.response?.data?.error || 'Failed to fetch stakeholders'
       );
@@ -706,15 +713,25 @@ export const fetchOrganizationsAndRegions = createAsyncThunk(
         topicsResponse,
         thematicsResponse,
       ] = await Promise.all([
-        axios.get(`${BACKEND_URL}/api/organisations?status=published`),
-        axios.get(`${BACKEND_URL}/api/regions?status=published`),
-        axios.get(`${BACKEND_URL}/api/looking-fors?status=published`),
+        axios.get(
+          `${BACKEND_URL}/api/organisations?status=published&pagination[pageSize]=250`
+        ),
+        axios.get(
+          `${BACKEND_URL}/api/regions?status=published&pagination[pageSize]=250`
+        ),
+        axios.get(
+          `${BACKEND_URL}/api/looking-fors?status=published&pagination[pageSize]=250`
+        ),
         axios.get(`${BACKEND_URL}/api/users-permissions/roles`),
         axios.get(
           `${BACKEND_URL}/api/countries?status=published&pagination[pageSize]=250`
         ),
-        axios.get(`${BACKEND_URL}/api/topics?status=published`),
-        axios.get(`${BACKEND_URL}/api/thematics?status=published`),
+        axios.get(
+          `${BACKEND_URL}/api/topics?status=published&pagination[pageSize]=250`
+        ),
+        axios.get(
+          `${BACKEND_URL}/api/thematics?status=published&pagination[pageSize]=250`
+        ),
       ]);
 
       return {
@@ -804,6 +821,7 @@ const authSlice = createSlice({
     topics: [],
     thematics: [],
     stakeholders: [],
+    currentPage: 0,
   },
   reducers: {
     signOut: (state) => {
@@ -956,17 +974,51 @@ const authSlice = createSlice({
       .addCase(fetchStakeholders.fulfilled, (state, action) => {
         state.loading = false;
 
+        const sortDirection = action.meta.arg.sortOrder || 'asc';
+
         if (action.payload.meta.page === 1) {
           state.stakeholders = [
             ...action.payload.users,
             ...action.payload.organizations,
-          ];
+          ].sort((a, b) => {
+            return sortDirection === 'asc'
+              ? a.name.localeCompare(b.name, undefined, {
+                  numeric: true,
+                  sensitivity: 'base',
+                })
+              : b.name.localeCompare(a.name, undefined, {
+                  numeric: true,
+                  sensitivity: 'base',
+                });
+          });
         } else {
+          const existingIds = new Set(
+            state.stakeholders.map((item) => `${item.type}-${item.id}`)
+          );
+
+          const newUsers = action.payload.users.filter(
+            (user) => !existingIds.has(`${user.type}-${user.id}`)
+          );
+
+          const newOrgs = action.payload.organizations.filter(
+            (org) => !existingIds.has(`${org.type}-${org.id}`)
+          );
+
           state.stakeholders = [
             ...state.stakeholders,
-            ...action.payload.users,
-            ...action.payload.organizations,
-          ];
+            ...newUsers,
+            ...newOrgs,
+          ].sort((a, b) => {
+            return sortDirection === 'asc'
+              ? a.name.localeCompare(b.name, undefined, {
+                  numeric: true,
+                  sensitivity: 'base',
+                })
+              : b.name.localeCompare(a.name, undefined, {
+                  numeric: true,
+                  sensitivity: 'base',
+                });
+          });
         }
 
         state.currentPage = action.payload.meta.page;

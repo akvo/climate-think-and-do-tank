@@ -85,6 +85,7 @@ export default function StakeholderDirectory() {
         page: 1,
         query: router.query.query || '',
         filters,
+        sortOrder,
       })
     );
   }, [router, dispatch]);
@@ -280,7 +281,7 @@ export default function StakeholderDirectory() {
                     className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
                   >
                     {filterType === 'focusRegions'
-                      ? 'Focus regions (Stakeholders only)'
+                      ? 'Focus regions'
                       : filterType.charAt(0).toUpperCase() +
                         filterType.slice(1)}
                     <svg
@@ -328,7 +329,6 @@ export default function StakeholderDirectory() {
                         />
                       ) : filterType === 'focusRegions' ? (
                         <LocationsFilter
-                          label={'Focus Region (Stakeholders Only)'}
                           locations={[
                             'All Locations',
                             ...filterOptions[filterType],
@@ -348,7 +348,7 @@ export default function StakeholderDirectory() {
                             updateFilters(newFilters);
                             setOpenFilter(null);
                           }}
-                          name={'Focus Regions'}
+                          name={'Focus Region (Stakeholders Only)'}
                           onClear={() => {
                             const newFilters = {
                               ...activeFilters,

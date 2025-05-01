@@ -220,6 +220,52 @@ module.exports = (plugin) => {
     return controller;
   };
 
+  plugin.controllers.user.find = async (ctx) => {
+    const { query } = ctx;
+
+    const { page = 1, pageSize = 12, start, limit } = query;
+
+    const queryOptions = {
+      ...query,
+      pagination: {
+        pageSize: parseInt(String(pageSize)),
+        page: parseInt(String(page)),
+        ...(start !== undefined && limit !== undefined ? { start, limit } : {}),
+      },
+    };
+
+    try {
+      const { results, pagination } = await strapi.entityService.findPage(
+        'plugin::users-permissions.user',
+        queryOptions
+      );
+
+      const sanitizedUsers = results.map((user) => {
+        const {
+          password,
+          resetPasswordToken,
+          confirmationToken,
+          ...sanitizedUser
+        } = user;
+        return sanitizedUser;
+      });
+
+      ctx.body = {
+        data: sanitizedUsers,
+        meta: {
+          pagination: {
+            page: pagination.page,
+            pageSize: 12,
+            pageCount: pagination.pageCount,
+            total: pagination.total,
+          },
+        },
+      };
+    } catch (error) {
+      ctx.throw(500, error);
+    }
+  };
+
   // Add the new route for reset password
   plugin.routes['content-api'].routes.push({
     method: 'POST',
