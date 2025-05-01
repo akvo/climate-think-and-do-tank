@@ -537,7 +537,7 @@
       "locale": null
     },
     {
-      "documentId": "xoqvc5gwrr964k5a9r92d99n",
+      "documentId": "skp7x7v83wq3onotvkhjf2ut",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
@@ -545,7 +545,7 @@
         "fields": [
           "title",
           "value_chain",
-          "regions",
+          "region",
           "picture_one",
           "investor_snapshot_text",
           "the_investment_case_image",
@@ -580,7 +580,7 @@
       "locale": null
     },
     {
-      "documentId": "d8swtoxtuzjivlkdfwyrm5zb",
+      "documentId": "ppbgib0onylvdaap4nwpqspr",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
@@ -588,7 +588,7 @@
         "fields": [
           "title",
           "value_chain",
-          "regions",
+          "region",
           "picture_one",
           "investor_snapshot_text",
           "the_investment_case_image",
@@ -605,7 +605,7 @@
       "locale": null
     },
     {
-      "documentId": "mbul280kr9qbgzhtzout9gdk",
+      "documentId": "olwa0hyw4mrijmh4s9ntnpos",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
@@ -613,7 +613,7 @@
         "fields": [
           "title",
           "value_chain",
-          "regions",
+          "region",
           "picture_one",
           "investor_snapshot_text",
           "the_investment_case_image",
