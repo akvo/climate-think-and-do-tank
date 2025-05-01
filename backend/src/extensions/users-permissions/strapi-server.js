@@ -70,6 +70,29 @@ module.exports = (plugin) => {
   plugin.controllers.auth = ({ strapi }) => {
     const controller = originalAuhtControllerFactory({ strapi });
 
+    const originalRegister = controller.register;
+    controller.register = async (ctx) => {
+      await originalRegister(ctx);
+
+      if (ctx.body && ctx.body.user) {
+        const { user } = ctx.body;
+
+        const updatedUser = await strapi.entityService.update(
+          'plugin::users-permissions.user',
+          user.id,
+          {
+            data: {
+              blocked: true,
+            },
+          }
+        );
+
+        ctx.body.user = updatedUser;
+        ctx.body.message =
+          "Your account has been created but requires admin approval. You'll be notified once your account is activated.";
+      }
+    };
+
     // Override email confirmation
     const originalConfirmationHandler = controller.emailConfirmation;
     controller.emailConfirmation = async (ctx, next, returnUser) => {
@@ -143,31 +166,55 @@ module.exports = (plugin) => {
     // Original callback handler with extended user info
     const originalCallback = controller.callback;
     controller.callback = async (ctx) => {
+      // Get credentials from request body
+      const { identifier, password } = ctx.request.body;
+
+      // Find the user
+      const user = await strapi
+        .query('plugin::users-permissions.user')
+        .findOne({
+          where: {
+            provider: 'local',
+            $or: [
+              { email: identifier.toLowerCase() },
+              { username: identifier },
+            ],
+          },
+        });
+
+      // Check if user exists and is blocked
+      if (user && user.blocked) {
+        return ctx.badRequest(
+          'Your account is pending approval. An administrator will review your information and activate your account shortly.'
+        );
+      }
+
+      // If user is not blocked, continue with original login flow
       await originalCallback(ctx);
 
-      if (!ctx.body || !ctx.body.user) {
-        return;
+      // If we got this far and have a user in the response, populate additional fields
+      if (ctx.body && ctx.body.user) {
+        const { user, jwt } = ctx.body;
+        const userId = user.id;
+
+        const fullUser = await strapi.entityService.findOne(
+          'plugin::users-permissions.user',
+          userId,
+          {
+            populate: {
+              connection_requests_sent: true,
+              connection_requests_received: true,
+              profile_image: true,
+              organisation: true,
+            },
+          }
+        );
+
+        ctx.body = {
+          jwt,
+          user: fullUser,
+        };
       }
-      const { user, jwt } = ctx.body;
-      const userId = user.id;
-
-      const fullUser = await strapi.entityService.findOne(
-        'plugin::users-permissions.user',
-        userId,
-        {
-          populate: {
-            connection_requests_sent: true,
-            connection_requests_received: true,
-            profile_image: true,
-            organisation: true,
-          },
-        }
-      );
-
-      ctx.body = {
-        jwt,
-        user: fullUser,
-      };
     };
 
     return controller;

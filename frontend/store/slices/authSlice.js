@@ -237,8 +237,6 @@ export const signUp = createAsyncThunk(
         message,
       };
     } catch (error) {
-      console.log(error);
-      console.log('Sign up response:', country);
       if (error.response) {
         const errorData = error.response.data;
 
