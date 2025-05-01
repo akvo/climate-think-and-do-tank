@@ -33,20 +33,6 @@
           "sortable": true
         }
       },
-      "publication_date": {
-        "edit": {
-          "label": "publication_date",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "publication_date",
-          "searchable": true,
-          "sortable": true
-        }
-      },
       "value_chain": {
         "edit": {
           "label": "value_chain",
@@ -279,18 +265,13 @@
     "layouts": {
       "list": [
         "id",
-        "title",
-        "publication_date"
+        "title"
       ],
       "edit": [
         [
           {
             "name": "title",
             "size": 6
-          },
-          {
-            "name": "publication_date",
-            "size": 4
           }
         ],
         [
