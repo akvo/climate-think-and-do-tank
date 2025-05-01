@@ -1,23 +1,27 @@
 services:
 
   nginx:
-    image: tdt-nginx:local
+    image: tdt-nginx
     build: ./nginx
     ports:
       - 80:80
+    depends_on:
+      - backend
+      - frontend
 
   frontend:
-    image: tdt-frontend:local
+    image: tdt-frontend
     build: ./frontend
     environment:
-      NEXT_PUBLIC_BACKEND_URL: http://localhost/cms
+      NEXT_PUBLIC_BACKEND_URL: ${BACKEND_URL:-http://localhost/cms}
 
   backend:
-    image: tdt-backend:local
+    image: tdt-backend
     build: ./backend
     depends_on:
       - db
     environment:
+      BACKEND_URL: ${BACKEND_URL:-http://localhost/cms}
       APP_KEYS: "mAzXoQi1qI3PzEhF1MNWPA==,dEkYXLPUuSlC26STB0ZyKA=="
       API_TOKEN_SALT: Lniabeo/mh7ynqF/GTfpOw==
       ADMIN_JWT_SECRET: Hr+r0OSOTgUzfce6q9/AvA==
@@ -30,8 +34,8 @@ services:
       DATABASE_USERNAME: akvo
       DATABASE_PASSWORD: password
       DATABASE_SSL: false
-      EMAIL_CONFIRMATION_URL: http://localhost/verify-email
-      PASSWORD_RESET_URL: http://localhost/reset-password
+      EMAIL_CONFIRMATION_URL: ${PUBLIC_URL:-http://localhost/verify-email}
+      PASSWORD_RESET_URL: ${PUBLIC_URL:-http://localhost/reset-password}
       PLUGIN_PROVIDERS: ${PLUGIN_PROVIDERS:-local}
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-}
