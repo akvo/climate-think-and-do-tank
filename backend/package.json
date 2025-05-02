@@ -20,6 +20,7 @@
     "@strapi/provider-email-nodemailer": "^5.6.0",
     "@strapi/strapi": "5.6.0",
     "better-sqlite3": "11.3.0",
+    "countries-list": "^3.1.1",
     "fs-extra": "^10.0.0",
     "mime-types": "^2.1.27",
     "pg": "^8.13.1",
