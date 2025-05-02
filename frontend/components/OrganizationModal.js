@@ -4,6 +4,7 @@ import { X, Download, Link as LinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import { fetchRelatedKnowledgeHubs } from '@/store/slices/knowledgeHubSlice';
 import { useModal } from '@/hooks/useModal';
+import { getTruncatedFilename } from '@/helpers/utilities';
 
 export default function KnowledgeHubModal({ isOpen, onClose, card }) {
   const overlayRef = useModal(isOpen, onClose);
@@ -44,6 +45,8 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
 
   if (!isOpen || !card) return null;
 
+  console.log('KnowledgeHubModal', card);
+
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
@@ -61,17 +64,17 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
                 {card.title}
                 <div className="flex items-center gap-6 text-sm text-gray-600 pl-6">
                   <div className="flex items-center gap-2">
-                    {card.type === 'PDF' && (
+                    {card.file && (
                       <a
                         href={card.file}
                         download
                         className="flex items-center gap-1 text-blue-600 hover:underline cursor-pointer"
                       >
                         <Download size={16} />
-                        CSV
+                        <span>{getTruncatedFilename(card.file)}</span>
                       </a>
                     )}
-                    {card.type === 'WEB_LINK' && (
+                    {card.webLink && (
                       <a
                         href={card.webLink}
                         target="_blank"

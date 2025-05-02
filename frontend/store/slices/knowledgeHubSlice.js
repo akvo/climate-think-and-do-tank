@@ -93,12 +93,21 @@ export const fetchKnowledgeHubs = createAsyncThunk(
       }
 
       if (filters.type && filters.type.length > 0) {
-        filters.type.forEach((type, index) => {
-          knowledgeHubQueryParams.append(
-            `filters[resource_type][$in][${index}]`,
-            type
-          );
-        });
+        const hasFile = filters.type.includes('File');
+        const hasLink = filters.type.includes('Link');
+
+        if (hasFile && hasLink) {
+          knowledgeHubQueryParams.append('filters[file][id][$notNull]', true);
+          knowledgeHubQueryParams.append('filters[web_link][$notNull]', true);
+        } else {
+          if (hasFile) {
+            knowledgeHubQueryParams.append('filters[file][id][$notNull]', true);
+          }
+
+          if (hasLink) {
+            knowledgeHubQueryParams.append('filters[web_link][$notNull]', true);
+          }
+        }
       }
 
       knowledgeHubQueryParams.append('sort[0]', `date:${dateSort}`);
@@ -116,7 +125,7 @@ export const fetchKnowledgeHubs = createAsyncThunk(
         id: hub.id,
         title: hub.title,
         description: hub.description,
-        type: hub.resource_type,
+        file: hub.file?.url,
         image: hub.image?.url,
         topic: hub.topic?.name || '',
         focusRegions: hub.regions?.map((r) => r.name) || [],

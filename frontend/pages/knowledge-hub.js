@@ -5,13 +5,13 @@ import { useSearchParams } from 'next/navigation';
 import OrganizationModal from '@/components/OrganizationModal';
 import { useDispatch, useSelector } from 'react-redux';
 import LocationsFilter from '@/components/LocationFilter';
-import TopicsFilter from '@/components/TopicFilter';
 import Image from 'next/image';
 import {
   fetchKnowledgeHubs,
   clearKnowledgeHubs,
 } from '@/store/slices/knowledgeHubSlice';
 import debounce from 'lodash/debounce';
+import CheckboxFilter from '@/components/CheckboxFilter';
 
 export default function KnowledgeHub() {
   const router = useRouter();
@@ -32,12 +32,11 @@ export default function KnowledgeHub() {
     (state) => state.knowledgeHub
   );
 
-  const { topic = [], regions = [] } = useSelector((state) => state.auth);
+  const { topics = [], regions = [] } = useSelector((state) => state.auth);
 
   const filterOptions = {
     topic: [
-      'All',
-      ...topic
+      ...topics
         .map((topic) => topic.name || topic.attributes?.name)
         .filter(Boolean),
     ],
@@ -45,7 +44,7 @@ export default function KnowledgeHub() {
       'All Locations',
       ...regions.map((region) => region.name || region.attributes?.name),
     ],
-    type: ['PDF', 'Web Link'],
+    type: ['File', 'Link'],
     date: ['All Time', 'Last Year', 'This Year', 'Last 5 Years'],
   };
 
@@ -140,25 +139,6 @@ export default function KnowledgeHub() {
     );
   };
 
-  const toggleFilter = (filterType, option) => {
-    const updatedFilters = { ...activeFilters };
-
-    if (filterType === 'date') {
-      updatedFilters[filterType] = option === 'All Time' ? [] : [option];
-    } else {
-      if (updatedFilters[filterType].includes(option)) {
-        updatedFilters[filterType] = updatedFilters[filterType].filter(
-          (item) => item !== option
-        );
-      } else {
-        updatedFilters[filterType] = [...updatedFilters[filterType], option];
-      }
-    }
-
-    setActiveFilters(updatedFilters);
-    updateFilters(updatedFilters);
-  };
-
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (openFilter && !e.target.closest('.filter-dropdown')) {
@@ -174,7 +154,6 @@ export default function KnowledgeHub() {
     debounce((query) => {
       const queryParams = { ...router.query, query };
 
-      // Remove query if it's empty
       if (!query) {
         delete queryParams.query;
       }
@@ -280,10 +259,22 @@ export default function KnowledgeHub() {
                     </svg>
                   </button>
                   {openFilter === filterType && (
-                    <div className="absolute top-full left-0 mt-2 z-10 min-w-[600px]">
+                    <div className="absolute top-full left-0 mt-2 z-10 min-w-[400px]">
                       {filterType === 'topic' ? (
-                        <TopicsFilter
-                          topics={filterOptions[filterType]}
+                        <CheckboxFilter
+                          options={filterOptions[filterType]}
+                          label={'Topics'}
+                          initialSelected={
+                            activeFilters[filterType].length === 0
+                              ? [
+                                  'All',
+                                  ...filterOptions[filterType].filter(
+                                    (option) => option !== 'All'
+                                  ),
+                                ]
+                              : activeFilters[filterType]
+                          }
+                          hasAllOption={true}
                           onApply={(selectedTopics) => {
                             const topicsToApply = selectedTopics.includes('All')
                               ? []
@@ -374,32 +365,39 @@ export default function KnowledgeHub() {
                           ))}
                         </div>
                       ) : (
-                        <div className="w-48 bg-white rounded-md shadow-lg border max-h-60 overflow-y-auto">
-                          {filterOptions[filterType].length > 0 ? (
-                            filterOptions[filterType].map((option) => (
-                              <label
-                                key={option}
-                                className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={activeFilters[filterType].includes(
-                                    option
-                                  )}
-                                  onChange={() =>
-                                    toggleFilter(filterType, option)
-                                  }
-                                  className="mr-2"
-                                />
-                                {option}
-                              </label>
-                            ))
-                          ) : (
-                            <div className="px-4 py-2 text-gray-500">
-                              No options available
-                            </div>
-                          )}
-                        </div>
+                        <CheckboxFilter
+                          options={filterOptions[filterType] || []}
+                          label={
+                            filterType.charAt(0).toUpperCase() +
+                            filterType.slice(1)
+                          }
+                          initialSelected={activeFilters[filterType] || []}
+                          hasAllOption={false}
+                          onApply={(selectedOptions) => {
+                            const optionsToApply = selectedOptions.includes(
+                              'All'
+                            )
+                              ? []
+                              : selectedOptions.filter((opt) => opt !== 'All');
+
+                            const newFilters = {
+                              ...activeFilters,
+                              [filterType]: optionsToApply,
+                            };
+                            setActiveFilters(newFilters);
+                            updateFilters(newFilters);
+                            setOpenFilter(null);
+                          }}
+                          onClear={() => {
+                            const newFilters = {
+                              ...activeFilters,
+                              [filterType]: [],
+                            };
+                            setActiveFilters(newFilters);
+                            updateFilters(newFilters);
+                            setOpenFilter(null);
+                          }}
+                        />
                       )}
                     </div>
                   )}
