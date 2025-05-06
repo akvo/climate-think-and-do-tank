@@ -537,16 +537,15 @@
       "locale": null
     },
     {
-      "documentId": "o7f0y90mcl47me55jc07en6s",
+      "documentId": "skp7x7v83wq3onotvkhjf2ut",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
       "properties": {
         "fields": [
           "title",
-          "publication_date",
           "value_chain",
-          "regions",
+          "region",
           "picture_one",
           "investor_snapshot_text",
           "the_investment_case_image",
@@ -581,16 +580,15 @@
       "locale": null
     },
     {
-      "documentId": "pvmnced4z25q5unrfuv41tce",
+      "documentId": "ppbgib0onylvdaap4nwpqspr",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
       "properties": {
         "fields": [
           "title",
-          "publication_date",
           "value_chain",
-          "regions",
+          "region",
           "picture_one",
           "investor_snapshot_text",
           "the_investment_case_image",
@@ -607,16 +605,15 @@
       "locale": null
     },
     {
-      "documentId": "d9npivcmeoaqnb1c1xxqyy51",
+      "documentId": "olwa0hyw4mrijmh4s9ntnpos",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
       "properties": {
         "fields": [
           "title",
-          "publication_date",
           "value_chain",
-          "regions",
+          "region",
           "picture_one",
           "investor_snapshot_text",
           "the_investment_case_image",
@@ -1434,7 +1431,7 @@
       "locale": null
     },
     {
-      "documentId": "rit7wv2g67e0bthd5lws1bq7",
+      "documentId": "tnfzlj1472tp9msng8hz6rgi",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "plugin::users-permissions.user",
@@ -1460,7 +1457,9 @@
           "connection_requests_received",
           "topics",
           "country",
-          "profile_image"
+          "profile_image",
+          "resetCode",
+          "resetCodeExpiration"
         ]
       },
       "conditions": [],
@@ -1485,7 +1484,7 @@
       "locale": null
     },
     {
-      "documentId": "wf8dgefp47oilj0yryhvvyje",
+      "documentId": "hq5swlw0nvpaha2yphv9k0sl",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "plugin::users-permissions.user",
@@ -1511,14 +1510,16 @@
           "connection_requests_received",
           "topics",
           "country",
-          "profile_image"
+          "profile_image",
+          "resetCode",
+          "resetCodeExpiration"
         ]
       },
       "conditions": [],
       "locale": null
     },
     {
-      "documentId": "vkez7cg6m7zj8htzie0ua63o",
+      "documentId": "kmzkmggjkqzxegxfvydpsrjl",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "plugin::users-permissions.user",
@@ -1544,7 +1545,9 @@
           "connection_requests_received",
           "topics",
           "country",
-          "profile_image"
+          "profile_image",
+          "resetCode",
+          "resetCodeExpiration"
         ]
       },
       "conditions": [],
