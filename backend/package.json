@@ -10,7 +10,11 @@
     "seed:example": "node ./scripts/seed.js",
     "start": "strapi start",
     "strapi": "strapi",
-    "config-sync": "config-sync"
+    "config-sync": "config-sync",
+    "seed-country": "node ./scripts/country-seed.js",
+    "seed-region": "node ./scripts/region-seed.js",
+    "seed-topic": "node ./scripts/topic-seed.js",
+    "seed-value-chain": "node ./scripts/value-chain-seed.js"
   },
   "dependencies": {
     "@strapi-community/strapi-provider-upload-google-cloud-storage": "^4.10.5",
