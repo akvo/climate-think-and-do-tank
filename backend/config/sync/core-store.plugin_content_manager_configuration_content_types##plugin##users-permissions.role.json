@@ -83,7 +83,7 @@
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "username"
+          "mainField": "provider"
         },
         "list": {
           "label": "users",

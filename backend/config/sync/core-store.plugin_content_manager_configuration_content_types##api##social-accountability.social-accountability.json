@@ -1,0 +1,198 @@
+{
+  "key": "plugin_content_manager_configuration_content_types::api::social-accountability.social-accountability",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "id",
+      "defaultSortBy": "id",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "region": {
+        "edit": {
+          "label": "region",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "name"
+        },
+        "list": {
+          "label": "region",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "investment_priorities": {
+        "edit": {
+          "label": "investment_priorities",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "investment_priorities",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "county_statistics": {
+        "edit": {
+          "label": "county_statistics",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "county_statistics",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "other_media_slider": {
+        "edit": {
+          "label": "other_media_slider",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "other_media_slider",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "community_voices": {
+        "edit": {
+          "label": "community_voices",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "title"
+        },
+        "list": {
+          "label": "community_voices",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "createdAt": {
+        "edit": {
+          "label": "createdAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "createdAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedAt": {
+        "edit": {
+          "label": "updatedAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "updatedAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "createdBy": {
+        "edit": {
+          "label": "createdBy",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true,
+          "mainField": "firstname"
+        },
+        "list": {
+          "label": "createdBy",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedBy": {
+        "edit": {
+          "label": "updatedBy",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true,
+          "mainField": "firstname"
+        },
+        "list": {
+          "label": "updatedBy",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "region",
+        "createdAt",
+        "updatedAt"
+      ],
+      "edit": [
+        [
+          {
+            "name": "region",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "investment_priorities",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "county_statistics",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "other_media_slider",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "community_voices",
+            "size": 6
+          }
+        ]
+      ]
+    },
+    "uid": "api::social-accountability.social-accountability"
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

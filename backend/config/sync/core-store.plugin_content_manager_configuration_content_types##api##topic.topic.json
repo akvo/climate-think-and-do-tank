@@ -33,6 +33,21 @@
           "sortable": true
         }
       },
+      "knowledge_hub": {
+        "edit": {
+          "label": "knowledge_hub",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "title"
+        },
+        "list": {
+          "label": "knowledge_hub",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -103,6 +118,10 @@
         [
           {
             "name": "name",
+            "size": 6
+          },
+          {
+            "name": "knowledge_hub",
             "size": 6
           }
         ]

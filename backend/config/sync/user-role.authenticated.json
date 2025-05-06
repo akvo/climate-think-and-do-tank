@@ -1,17 +1,17 @@
 {
-  "documentId": "d1px72c90cpzzos8ir2cr45a",
+  "documentId": "l8szyt6aqujlikwdxfl9d5c6",
   "name": "Authenticated",
   "description": "Default role given to authenticated user.",
   "type": "authenticated",
   "locale": null,
   "permissions": [
     {
-      "documentId": "v57pog926nv4739hlmm0fh31",
+      "documentId": "j9ne8cavr0d1e5ws2ssuq2vd",
       "action": "plugin::users-permissions.auth.changePassword",
       "locale": null
     },
     {
-      "documentId": "m8dbsovy581h29hqtahzw4p7",
+      "documentId": "hd4pnpehyiujlwb2wcgmypjt",
       "action": "plugin::users-permissions.user.me",
       "locale": null
     }
