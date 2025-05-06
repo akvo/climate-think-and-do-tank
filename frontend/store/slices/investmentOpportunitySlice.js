@@ -36,6 +36,15 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
         });
       }
 
+      if (filters.regions && filters.regions.length > 0) {
+        filters.regions.forEach((chain, index) => {
+          investmentOpportunityProfileQueryParams.append(
+            `filters[region][name][$in][${index}]`,
+            chain
+          );
+        });
+      }
+
       investmentOpportunityProfileQueryParams.append(
         'sort[0]',
         `publication_date:${dateSort}`
@@ -61,11 +70,11 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
           id: profile.id,
           title: profile.title,
           description: profile.description,
-          publicationDate: profile.publishedAt,
-          publicationYear: new Date(profile.publishedAt).getFullYear(),
+          publicationDate: profile.publication_date,
+          publicationYear: new Date(profile.publication_date).getFullYear(),
           valueChain: profile.value_chain?.name || '',
           region: profile.region?.name || '',
-          picture_one: profile.picture_one?.url || '',
+          imageUrl: profile.picture_one?.url || '',
         })
       );
 

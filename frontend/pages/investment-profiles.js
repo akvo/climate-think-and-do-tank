@@ -375,20 +375,29 @@ export default function InvestmentOpportunityProfile() {
                         />
                       ) : filterType === 'regions' ? (
                         <LocationsFilter
-                          name="Regions"
+                          name="Focus Regions"
                           locations={[
                             'All Locations',
                             'No Specific Region',
                             ...filterOptions[filterType],
                           ]}
+                          initialSelected={activeFilters[filterType]}
                           onApply={(selectedLocations) => {
-                            const locationsToApply = selectedLocations.includes(
-                              'All Locations'
-                            )
+                            const availableLocations = [
+                              'No Specific Region',
+                              ...filterOptions[filterType],
+                            ];
+
+                            const allSelected =
+                              availableLocations.length > 0 &&
+                              selectedLocations.length ===
+                                availableLocations.filter(
+                                  (item) => item !== 'All Locations'
+                                ).length;
+
+                            const locationsToApply = allSelected
                               ? []
-                              : selectedLocations.filter(
-                                  (loc) => loc !== 'All Locations'
-                                );
+                              : selectedLocations;
 
                             const newFilters = {
                               ...activeFilters,
