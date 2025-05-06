@@ -143,3 +143,16 @@ export const getTruncatedFilename = (filePath, maxLength = 20) => {
   }
   return filename;
 };
+
+export const formatDate = (dateString) => {
+  if (!dateString) return '';
+
+  const date = new Date(dateString);
+  if (isNaN(date)) return dateString;
+
+  return date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+};

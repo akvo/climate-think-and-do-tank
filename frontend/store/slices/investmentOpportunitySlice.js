@@ -7,14 +7,7 @@ const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
   'investmentOpportunityProfiles/fetchInvestmentOpportunityProfiles',
   async (
-    {
-      page = 1,
-      pageSize = 12,
-      query = '',
-      filters = {},
-      dateSort = 'desc',
-      dateFilter = null,
-    },
+    { page = 1, pageSize = 9, query = '', filters = {}, dateSort = 'desc' },
     { rejectWithValue }
   ) => {
     try {
@@ -33,38 +26,6 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
       const investmentOpportunityProfileQueryParams = new URLSearchParams(
         baseQueryParams
       );
-
-      if (dateFilter) {
-        const currentYear = new Date().getFullYear();
-        switch (dateFilter) {
-          case 'last_year':
-            investmentOpportunityProfileQueryParams.append(
-              'filters[publication_date][$gte]',
-              `${currentYear - 1}-01-01`
-            );
-            investmentOpportunityProfileQueryParams.append(
-              'filters[publication_date][$lte]',
-              `${currentYear - 1}-12-31`
-            );
-            break;
-          case 'this_year':
-            investmentOpportunityProfileQueryParams.append(
-              'filters[publication_date][$gte]',
-              `${currentYear}-01-01`
-            );
-            investmentOpportunityProfileQueryParams.append(
-              'filters[publication_date][$lte]',
-              `${currentYear}-12-31`
-            );
-            break;
-          case 'last_5_years':
-            investmentOpportunityProfileQueryParams.append(
-              'filters[publication_date][$gte]',
-              `${currentYear - 5}-01-01`
-            );
-            break;
-        }
-      }
 
       if (filters.valueChain && filters.valueChain.length > 0) {
         filters.valueChain.forEach((chain, index) => {
@@ -85,6 +46,12 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
         'value_chain'
       );
 
+      investmentOpportunityProfileQueryParams.append('populate[1]', 'region');
+      investmentOpportunityProfileQueryParams.append(
+        'populate[2]',
+        'picture_one'
+      );
+
       const response = await axios.get(
         `${BACKEND_URL}/api/investment-opportunity-profiles?${investmentOpportunityProfileQueryParams}`
       );
@@ -94,9 +61,11 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
           id: profile.id,
           title: profile.title,
           description: profile.description,
-          publicationDate: profile.publication_date,
-          publicationYear: new Date(profile.publication_date).getFullYear(),
+          publicationDate: profile.publishedAt,
+          publicationYear: new Date(profile.publishedAt).getFullYear(),
           valueChain: profile.value_chain?.name || '',
+          region: profile.region?.name || '',
+          picture_one: profile.picture_one?.url || '',
         })
       );
 

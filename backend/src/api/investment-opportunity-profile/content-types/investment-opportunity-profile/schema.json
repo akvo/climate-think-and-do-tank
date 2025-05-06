@@ -12,9 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "title": {
-      "type": "string"
-    },
     "publication_date": {
       "type": "date"
     },
@@ -23,9 +20,9 @@
       "relation": "oneToOne",
       "target": "api::value-chain.value-chain"
     },
-    "regions": {
+    "region": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "oneToOne",
       "target": "api::region.region"
     },
     "picture_one": {
