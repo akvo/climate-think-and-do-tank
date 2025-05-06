@@ -1,0 +1,102 @@
+{
+  "kind": "collectionType",
+  "collectionName": "investment_opportunity_profiles",
+  "info": {
+    "singularName": "investment-opportunity-profile",
+    "pluralName": "investment-opportunity-profiles",
+    "displayName": "Investment Opportunity Profile",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "publication_date": {
+      "type": "date"
+    },
+    "value_chain": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::value-chain.value-chain"
+    },
+    "regions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::region.region"
+    },
+    "picture_one": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "investor_snapshot_text": {
+      "type": "blocks"
+    },
+    "the_investment_case_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "business_blueprint_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "risk_and_impact_profile_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "closing_information_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "the_investment_case_text": {
+      "type": "richtext"
+    },
+    "business_blueprint_text": {
+      "type": "richtext"
+    },
+    "risk_and_impact_profile_text": {
+      "type": "richtext"
+    },
+    "closing_information_text": {
+      "type": "richtext"
+    }
+  }
+}

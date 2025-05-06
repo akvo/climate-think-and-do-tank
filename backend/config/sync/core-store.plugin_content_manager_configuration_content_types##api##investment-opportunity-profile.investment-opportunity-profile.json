@@ -1,0 +1,369 @@
+{
+  "key": "plugin_content_manager_configuration_content_types::api::investment-opportunity-profile.investment-opportunity-profile",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "title",
+      "defaultSortBy": "title",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "title": {
+        "edit": {
+          "label": "title",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "title",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "publication_date": {
+        "edit": {
+          "label": "publication_date",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "publication_date",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "value_chain": {
+        "edit": {
+          "label": "value_chain",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "name"
+        },
+        "list": {
+          "label": "value_chain",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "regions": {
+        "edit": {
+          "label": "regions",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "name"
+        },
+        "list": {
+          "label": "regions",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "picture_one": {
+        "edit": {
+          "label": "picture_one",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "picture_one",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "investor_snapshot_text": {
+        "edit": {
+          "label": "investor_snapshot_text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "investor_snapshot_text",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "the_investment_case_image": {
+        "edit": {
+          "label": "the_investment_case_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "the_investment_case_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "business_blueprint_image": {
+        "edit": {
+          "label": "business_blueprint_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "business_blueprint_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "risk_and_impact_profile_image": {
+        "edit": {
+          "label": "risk_and_impact_profile_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "risk_and_impact_profile_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "closing_information_image": {
+        "edit": {
+          "label": "closing_information_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "closing_information_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "the_investment_case_text": {
+        "edit": {
+          "label": "the_investment_case_text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "the_investment_case_text",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "business_blueprint_text": {
+        "edit": {
+          "label": "business_blueprint_text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "business_blueprint_text",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "risk_and_impact_profile_text": {
+        "edit": {
+          "label": "risk_and_impact_profile_text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "risk_and_impact_profile_text",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "closing_information_text": {
+        "edit": {
+          "label": "closing_information_text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "closing_information_text",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "createdAt": {
+        "edit": {
+          "label": "createdAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "createdAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedAt": {
+        "edit": {
+          "label": "updatedAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "updatedAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "createdBy": {
+        "edit": {
+          "label": "createdBy",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true,
+          "mainField": "firstname"
+        },
+        "list": {
+          "label": "createdBy",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedBy": {
+        "edit": {
+          "label": "updatedBy",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true,
+          "mainField": "firstname"
+        },
+        "list": {
+          "label": "updatedBy",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "title",
+        "publication_date"
+      ],
+      "edit": [
+        [
+          {
+            "name": "title",
+            "size": 6
+          },
+          {
+            "name": "publication_date",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "value_chain",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "regions",
+            "size": 6
+          },
+          {
+            "name": "picture_one",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "investor_snapshot_text",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "the_investment_case_image",
+            "size": 6
+          },
+          {
+            "name": "business_blueprint_image",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "risk_and_impact_profile_image",
+            "size": 6
+          },
+          {
+            "name": "closing_information_image",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "the_investment_case_text",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "business_blueprint_text",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "risk_and_impact_profile_text",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "closing_information_text",
+            "size": 12
+          }
+        ]
+      ]
+    },
+    "uid": "api::investment-opportunity-profile.investment-opportunity-profile"
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

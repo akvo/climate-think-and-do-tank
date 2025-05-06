@@ -139,7 +139,7 @@ The production setup uses Nginx as a reverse proxy, which differs slightly from 
 To test a production build locally:
 
 ```sh
-docker compose -f compose.local.yml up --build -d
+docker compose -f compose.mimic-prod.yml up --build -d
 ```
 
 * **Frontend:** http://localhost

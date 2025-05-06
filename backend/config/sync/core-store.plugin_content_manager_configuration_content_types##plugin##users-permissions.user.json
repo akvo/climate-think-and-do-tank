@@ -6,7 +6,7 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "username",
+      "mainField": "provider",
       "defaultSortBy": "username",
       "defaultSortOrder": "ASC"
     },
@@ -277,6 +277,50 @@
           "sortable": false
         }
       },
+      "topics": {
+        "edit": {
+          "label": "topics",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "name"
+        },
+        "list": {
+          "label": "topics",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "country": {
+        "edit": {
+          "label": "country",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "country_name"
+        },
+        "list": {
+          "label": "country",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "profile_image": {
+        "edit": {
+          "label": "profile_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "profile_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -339,16 +383,12 @@
     "layouts": {
       "list": [
         "id",
-        "username",
         "email",
-        "confirmed"
+        "confirmed",
+        "username"
       ],
       "edit": [
         [
-          {
-            "name": "username",
-            "size": 6
-          },
           {
             "name": "email",
             "size": 6
@@ -377,6 +417,12 @@
         [
           {
             "name": "organisation",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "username",
             "size": 6
           },
           {
@@ -417,6 +463,20 @@
         [
           {
             "name": "connection_requests_received",
+            "size": 6
+          },
+          {
+            "name": "topics",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "country",
+            "size": 6
+          },
+          {
+            "name": "profile_image",
             "size": 6
           }
         ]

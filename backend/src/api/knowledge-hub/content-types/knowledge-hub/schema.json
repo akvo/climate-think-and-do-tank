@@ -26,9 +26,6 @@
         "audios"
       ]
     },
-    "description": {
-      "type": "text"
-    },
     "web_link": {
       "type": "string"
     },
@@ -58,8 +55,11 @@
       "type": "uid",
       "targetField": "title"
     },
-    "date": {
+    "publication_date": {
       "type": "date"
+    },
+    "description": {
+      "type": "richtext"
     }
   }
 }
