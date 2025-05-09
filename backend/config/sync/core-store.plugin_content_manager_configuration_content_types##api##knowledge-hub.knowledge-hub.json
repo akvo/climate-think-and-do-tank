@@ -246,10 +246,6 @@
         ],
         [
           {
-            "name": "resource_type",
-            "size": 6
-          },
-          {
             "name": "file",
             "size": 6
           }
@@ -277,6 +273,10 @@
           }
         ],
         [
+          {
+            "name": "resource_type",
+            "size": 6
+          },
           {
             "name": "publication_date",
             "size": 4

@@ -266,6 +266,7 @@
       "list": [
         "id",
         "title",
+        "value_chain",
         "region"
       ],
       "edit": [
@@ -273,15 +274,17 @@
           {
             "name": "title",
             "size": 6
-          }
-        ],
-        [
+          },
           {
             "name": "value_chain",
             "size": 6
           }
         ],
         [
+          {
+            "name": "region",
+            "size": 6
+          },
           {
             "name": "picture_one",
             "size": 6
@@ -335,12 +338,6 @@
           {
             "name": "closing_information_text",
             "size": 12
-          }
-        ],
-        [
-          {
-            "name": "region",
-            "size": 6
           }
         ]
       ]
