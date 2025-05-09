@@ -75,7 +75,13 @@
     },
     "stakeholder_role": {
       "type": "enumeration",
-      "enum": ["Investor", "Government", "Farmer", "NGO"]
+      "enum": [
+        "Academia",
+        "Governmental",
+        "NGO / non-profit",
+        "Investor",
+        "Local communities / groups / cooperatives"
+      ]
     },
     "linkedin": {
       "type": "string"
@@ -116,9 +122,15 @@
       "target": "api::country.country"
     },
     "profile_image": {
-      "allowedTypes": ["images", "files", "videos", "audios"],
       "type": "media",
-      "multiple": false
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "resetCode": {
       "type": "string",

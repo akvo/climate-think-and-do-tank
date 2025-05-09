@@ -237,8 +237,6 @@ export const signUp = createAsyncThunk(
         message,
       };
     } catch (error) {
-      console.log(error);
-      console.log('Sign up response:', country);
       if (error.response) {
         const errorData = error.response.data;
 
@@ -280,22 +278,31 @@ export const login = createAsyncThunk(
       const { user, jwt } = response.data;
 
       setCookie('token', jwt, {
-        req: undefined,
-        res: undefined,
         maxAge: 30 * 24 * 60 * 60,
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
         sameSite: 'strict',
       });
 
-      setCookie('user', JSON.stringify(user), {
-        req: undefined,
-        res: undefined,
-        maxAge: 30 * 24 * 60 * 60,
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-      });
+      setCookie(
+        'user',
+        JSON.stringify({
+          email: user.email,
+          full_name: user.full_name,
+          id: user.id,
+          stakeholder_role: user.stakeholder_role,
+          connection_requests_received: user.connection_requests_received,
+          connection_requests_sent: user.connection_requests_sent,
+          organisation: { name: user.organisation?.name },
+          profile_image: { url: user.profile_image?.url },
+        }),
+        {
+          maxAge: 30 * 24 * 60 * 60,
+          path: '/',
+          secure: true,
+          sameSite: 'strict',
+        }
+      );
 
       return { user, jwt };
     } catch (error) {
@@ -568,7 +575,7 @@ export const fetchStakeholders = createAsyncThunk(
       [usersResponse, organizationsResponse] = await Promise.all(requests);
 
       const users = fetchUsers
-        ? usersResponse.data
+        ? usersResponse.data.data
             .map((user) => ({
               id: user.id,
               type: 'Individual',
@@ -604,18 +611,25 @@ export const fetchStakeholders = createAsyncThunk(
             )
         : [];
 
+      const userPagination = usersResponse.data.meta?.pagination;
+      const orgPagination = organizationsResponse.data.meta?.pagination;
+
       return {
         users,
         organizations,
         meta: {
           page,
           hasMore:
-            users.length + organizations.length > 0 &&
-            (users.length >= pageSize / 2 ||
-              organizations.length >= pageSize / 2),
+            (userPagination && page < userPagination.pageCount) ||
+            (orgPagination && page < orgPagination.pageCount),
+          totalUsers: userPagination?.total || 0,
+          totalOrgs: orgPagination?.total || 0,
+          userPagination,
+          orgPagination,
         },
       };
     } catch (error) {
+      console.error('Error fetching stakeholders:', error);
       return rejectWithValue(
         error.response?.data?.error || 'Failed to fetch stakeholders'
       );
@@ -699,15 +713,25 @@ export const fetchOrganizationsAndRegions = createAsyncThunk(
         topicsResponse,
         valueChainResponse,
       ] = await Promise.all([
-        axios.get(`${BACKEND_URL}/api/organisations?status=published`),
-        axios.get(`${BACKEND_URL}/api/regions?status=published`),
-        axios.get(`${BACKEND_URL}/api/looking-fors?status=published`),
+        axios.get(
+          `${BACKEND_URL}/api/organisations?status=published&pagination[pageSize]=250`
+        ),
+        axios.get(
+          `${BACKEND_URL}/api/regions?status=published&pagination[pageSize]=250`
+        ),
+        axios.get(
+          `${BACKEND_URL}/api/looking-fors?status=published&pagination[pageSize]=250`
+        ),
         axios.get(`${BACKEND_URL}/api/users-permissions/roles`),
         axios.get(
           `${BACKEND_URL}/api/countries?status=published&pagination[pageSize]=250`
         ),
-        axios.get(`${BACKEND_URL}/api/topics?status=published`),
-        axios.get(`${BACKEND_URL}/api/value-chains?status=published`),
+        axios.get(
+          `${BACKEND_URL}/api/topics?status=published&pagination[pageSize]=250`
+        ),
+        axios.get(
+          `${BACKEND_URL}/api/thematics?status=published&pagination[pageSize]=250`
+        ),
       ]);
 
       return {
@@ -797,6 +821,7 @@ const authSlice = createSlice({
     topics: [],
     valueChains: [],
     stakeholders: [],
+    currentPage: 0,
   },
   reducers: {
     signOut: (state) => {
@@ -949,17 +974,51 @@ const authSlice = createSlice({
       .addCase(fetchStakeholders.fulfilled, (state, action) => {
         state.loading = false;
 
+        const sortDirection = action.meta.arg.sortOrder || 'asc';
+
         if (action.payload.meta.page === 1) {
           state.stakeholders = [
             ...action.payload.users,
             ...action.payload.organizations,
-          ];
+          ].sort((a, b) => {
+            return sortDirection === 'asc'
+              ? a.name.localeCompare(b.name, undefined, {
+                  numeric: true,
+                  sensitivity: 'base',
+                })
+              : b.name.localeCompare(a.name, undefined, {
+                  numeric: true,
+                  sensitivity: 'base',
+                });
+          });
         } else {
+          const existingIds = new Set(
+            state.stakeholders.map((item) => `${item.type}-${item.id}`)
+          );
+
+          const newUsers = action.payload.users.filter(
+            (user) => !existingIds.has(`${user.type}-${user.id}`)
+          );
+
+          const newOrgs = action.payload.organizations.filter(
+            (org) => !existingIds.has(`${org.type}-${org.id}`)
+          );
+
           state.stakeholders = [
             ...state.stakeholders,
-            ...action.payload.users,
-            ...action.payload.organizations,
-          ];
+            ...newUsers,
+            ...newOrgs,
+          ].sort((a, b) => {
+            return sortDirection === 'asc'
+              ? a.name.localeCompare(b.name, undefined, {
+                  numeric: true,
+                  sensitivity: 'base',
+                })
+              : b.name.localeCompare(a.name, undefined, {
+                  numeric: true,
+                  sensitivity: 'base',
+                });
+          });
         }
 
         state.currentPage = action.payload.meta.page;

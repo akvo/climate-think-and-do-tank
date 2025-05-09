@@ -85,6 +85,7 @@ export default function StakeholderDirectory() {
         page: 1,
         query: router.query.query || '',
         filters,
+        sortOrder,
       })
     );
   }, [router, dispatch]);
@@ -245,7 +246,7 @@ export default function StakeholderDirectory() {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Try keywords like: 'tilapia' or 'horticulture'"
+                placeholder="Search Stakeholders"
                 className="w-full pl-4 pr-10 py-3 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 value={searchQuery}
                 onChange={(e) => {
@@ -328,7 +329,6 @@ export default function StakeholderDirectory() {
                         />
                       ) : filterType === 'focusRegions' ? (
                         <LocationsFilter
-                          label={'Focus Region (Stakeholders Only)'}
                           locations={[
                             'All Locations',
                             ...filterOptions[filterType],
@@ -348,7 +348,7 @@ export default function StakeholderDirectory() {
                             updateFilters(newFilters);
                             setOpenFilter(null);
                           }}
-                          name={'Focus Regions'}
+                          name={'Focus Region (Stakeholders Only)'}
                           onClear={() => {
                             const newFilters = {
                               ...activeFilters,
@@ -499,11 +499,16 @@ export default function StakeholderDirectory() {
                         unoptimized
                         onError={(e) => {
                           e.target.style.display = 'none';
-                          e.target.parentNode.innerHTML = `
-          <div class="w-full h-full bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-            ${stakeholder.name.charAt(0).toUpperCase()}
-          </div>
-        `;
+                          const parent = e.target.parentNode;
+                          if (parent) {
+                            parent.innerHTML = `
+      <div class="w-full h-full bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+        ${stakeholder.name.charAt(0).toUpperCase()}
+      </div>
+    `;
+                          } else {
+                            console.warn('Image parent element not found');
+                          }
                         }}
                       />
                     ) : (
