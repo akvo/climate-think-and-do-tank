@@ -730,7 +730,7 @@ export const fetchOrganizationsAndRegions = createAsyncThunk(
           `${BACKEND_URL}/api/topics?status=published&pagination[pageSize]=250`
         ),
         axios.get(
-          `${BACKEND_URL}/api/thematics?status=published&pagination[pageSize]=250`
+          `${BACKEND_URL}/api/value-chains?status=published&pagination[pageSize]=250`
         ),
       ]);
 
