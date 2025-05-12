@@ -68,6 +68,7 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
       const investmentOpportunityProfiles = response.data.data.map(
         (profile) => ({
           id: profile.id,
+          documentId: profile.documentId,
           title: profile.title,
           description: profile.description,
           publicationDate: profile.publication_date,
