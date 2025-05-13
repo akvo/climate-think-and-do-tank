@@ -134,3 +134,12 @@ export const validateAdditionalDetails = (data) => {
 
   return errors;
 };
+
+export const getTruncatedFilename = (filePath, maxLength = 20) => {
+  const filename = filePath.split('/').pop();
+  const [name, extension] = filename.split(/\.(?=[^\.]+$)/);
+  if (name.length > maxLength) {
+    return `${name.substring(0, maxLength)}...${extension}`;
+  }
+  return filename;
+};

@@ -29,13 +29,6 @@
     "web_link": {
       "type": "string"
     },
-    "resource_type": {
-      "type": "enumeration",
-      "enum": [
-        "PDF",
-        "WEB_LINK"
-      ]
-    },
     "file": {
       "type": "media",
       "multiple": false,

@@ -23,11 +23,11 @@ import {
   sendConnectionRequest,
 } from '@/store/slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import TopicsFilter from '@/components/TopicFilter';
 import LocationsFilter from '@/components/LocationFilter';
 import { toast } from 'react-toastify';
 import debounce from 'lodash/debounce';
 import { env } from '@/helpers/env-vars';
+import CheckboxFilter from '@/components/CheckboxFilter';
 
 export default function StakeholderDirectory() {
   const router = useRouter();
@@ -301,17 +301,41 @@ export default function StakeholderDirectory() {
                   {openFilter === filterType && (
                     <div className="absolute top-full left-0 mt-2 z-10 min-w-[600px]">
                       {filterType === 'topics' ? (
-                        <TopicsFilter
+                        <CheckboxFilter
                           label={'Topics (Stakeholders Only)'}
-                          topics={filterOptions[filterType]}
-                          onApply={(selectedTopics) => {
-                            const topicsToApply = selectedTopics.includes('All')
+                          options={filterOptions[filterType].filter(
+                            (opt) => opt !== 'All'
+                          )}
+                          initialSelected={
+                            activeFilters[filterType].length === 0
+                              ? [
+                                  'All',
+                                  ...filterOptions[filterType].filter(
+                                    (opt) => opt !== 'All'
+                                  ),
+                                ]
+                              : activeFilters[filterType]
+                          }
+                          hasAllOption={true}
+                          onApply={(selectedOptions) => {
+                            const allItemsSelected =
+                              selectedOptions.includes('All') ||
+                              (filterOptions[filterType].filter(
+                                (opt) => opt !== 'All'
+                              ).length > 0 &&
+                                filterOptions[filterType]
+                                  .filter((opt) => opt !== 'All')
+                                  .every((opt) =>
+                                    selectedOptions.includes(opt)
+                                  ));
+
+                            const optionsToApply = allItemsSelected
                               ? []
-                              : selectedTopics;
+                              : selectedOptions.filter((opt) => opt !== 'All');
 
                             const newFilters = {
                               ...activeFilters,
-                              [filterType]: topicsToApply,
+                              [filterType]: optionsToApply,
                             };
                             setActiveFilters(newFilters);
                             updateFilters(newFilters);
