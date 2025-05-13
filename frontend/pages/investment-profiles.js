@@ -9,8 +9,8 @@ import {
   fetchInvestmentOpportunityProfiles,
 } from '@/store/slices/investmentOpportunitySlice';
 import LocationsFilter from '@/components/LocationFilter';
-import TopicsFilter from '@/components/TopicFilter';
 import debounce from 'lodash/debounce';
+import CheckboxFilter from '@/components/CheckboxFilter';
 
 export default function InvestmentOpportunityProfile() {
   const router = useRouter();
@@ -344,18 +344,40 @@ export default function InvestmentOpportunityProfile() {
                   {openFilter === filterType && (
                     <div className="absolute top-full left-0 mt-2 z-10 min-w-[600px]">
                       {filterType === 'valueChain' ? (
-                        <TopicsFilter
+                        <CheckboxFilter
                           label="Value Chain"
-                          topics={filterOptions[filterType]}
-                          onApply={(selectedValueChains) => {
-                            const valueChainToApply =
-                              selectedValueChains.includes('All')
-                                ? []
-                                : selectedValueChains;
+                          options={filterOptions[filterType].filter(
+                            (opt) => opt !== 'All'
+                          )}
+                          initialSelected={
+                            activeFilters[filterType].length === 0
+                              ? [
+                                  'All',
+                                  ...filterOptions[filterType].filter(
+                                    (opt) => opt !== 'All'
+                                  ),
+                                ]
+                              : activeFilters[filterType]
+                          }
+                          hasAllOption={true}
+                          onApply={(selectedOptions) => {
+                            const availableOptions = filterOptions[
+                              filterType
+                            ].filter((opt) => opt !== 'All');
+                            const allItemsSelected =
+                              selectedOptions.includes('All') ||
+                              (availableOptions.length > 0 &&
+                                availableOptions.every((opt) =>
+                                  selectedOptions.includes(opt)
+                                ));
+
+                            const optionsToApply = allItemsSelected
+                              ? []
+                              : selectedOptions.filter((opt) => opt !== 'All');
 
                             const newFilters = {
                               ...activeFilters,
-                              [filterType]: valueChainToApply,
+                              [filterType]: optionsToApply,
                             };
                             setActiveFilters(newFilters);
                             updateFilters(newFilters);
