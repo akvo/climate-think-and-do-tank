@@ -6,8 +6,8 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "title",
-      "defaultSortBy": "title",
+      "mainField": "id",
+      "defaultSortBy": "id",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -15,20 +15,6 @@
         "edit": {},
         "list": {
           "label": "id",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "title": {
-        "edit": {
-          "label": "title",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "title",
           "searchable": true,
           "sortable": true
         }
@@ -62,9 +48,9 @@
           "sortable": true
         }
       },
-      "regions": {
+      "region": {
         "edit": {
-          "label": "regions",
+          "label": "region",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -72,9 +58,9 @@
           "mainField": "name"
         },
         "list": {
-          "label": "regions",
-          "searchable": false,
-          "sortable": false
+          "label": "region",
+          "searchable": true,
+          "sortable": true
         }
       },
       "picture_one": {
@@ -279,20 +265,11 @@
     "layouts": {
       "list": [
         "id",
-        "title",
+        "value_chain",
+        "region",
         "publication_date"
       ],
       "edit": [
-        [
-          {
-            "name": "title",
-            "size": 6
-          },
-          {
-            "name": "publication_date",
-            "size": 4
-          }
-        ],
         [
           {
             "name": "value_chain",
@@ -301,7 +278,7 @@
         ],
         [
           {
-            "name": "regions",
+            "name": "region",
             "size": 6
           },
           {
@@ -357,6 +334,12 @@
           {
             "name": "closing_information_text",
             "size": 12
+          }
+        ],
+        [
+          {
+            "name": "publication_date",
+            "size": 4
           }
         ]
       ]
