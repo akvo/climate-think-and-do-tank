@@ -148,8 +148,8 @@ export const generateYearOptions = () => {
   const currentYear = new Date().getFullYear();
   const years = [];
 
-  for (let i = 5; i >= 0; i--) {
-    years.push((currentYear - i).toString());
+  for (let year = 2011; year <= currentYear; year++) {
+    years.push(year.toString());
   }
 
   return years.sort((a, b) => parseInt(b) - parseInt(a));

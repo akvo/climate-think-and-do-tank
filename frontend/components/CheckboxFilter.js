@@ -99,7 +99,7 @@ export default function CheckboxFilter({
             placeholder="Search..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md pl-8"
+            className="w-full p-2 border border-gray-300 rounded-md pl-8 text-black"
           />
           <svg
             className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400"
