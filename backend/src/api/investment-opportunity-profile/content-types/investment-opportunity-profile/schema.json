@@ -8,12 +8,12 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "title": {
-      "type": "string"
+    "publication_date": {
+      "type": "date"
     },
     "value_chain": {
       "type": "relation",
@@ -37,7 +37,7 @@
       ]
     },
     "investor_snapshot_text": {
-      "type": "blocks"
+      "type": "richtext"
     },
     "the_investment_case_image": {
       "type": "media",
