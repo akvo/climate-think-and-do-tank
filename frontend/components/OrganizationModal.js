@@ -86,6 +86,9 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
                       </a>
                     )}
                   </div>
+                  <div className="text-gray-500 text-xs">
+                    Year: {new Date(card.publishedAt).getFullYear()}
+                  </div>
                 </div>
               </h2>
             </div>

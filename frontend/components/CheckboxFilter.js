@@ -7,6 +7,7 @@ export default function CheckboxFilter({
   label,
   initialSelected = [],
   hasAllOption = false,
+  allOptionLabel,
 }) {
   const [selectedOptions, setSelectedOptions] = useState(() => {
     if (initialSelected && initialSelected.length > 0) {
@@ -132,7 +133,7 @@ export default function CheckboxFilter({
                   allSelected ? 'font-medium text-green-600' : 'text-gray-700'
                 }`}
               >
-                All {'Options'}
+                {allOptionLabel ? allOptionLabel : 'All Options'}
               </span>
             </label>
             <div className="border-t border-gray-200 my-2"></div>

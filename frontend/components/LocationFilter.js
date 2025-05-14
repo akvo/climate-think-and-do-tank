@@ -1,19 +1,33 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Search } from 'lucide-react';
 
-export default function LocationsFilter({ onApply, onClear, locations, name }) {
+export default function LocationsFilter({
+  onApply,
+  onClear,
+  locations,
+  name,
+  initialSelected = [],
+}) {
   const availableLocations = useMemo(
     () => locations.filter((loc) => loc !== 'All Locations'),
     [locations]
   );
 
-  const [selectedLocations, setSelectedLocations] = useState([
-    ...availableLocations,
-  ]);
+  const [selectedLocations, setSelectedLocations] = useState(
+    initialSelected.length > 0 ? initialSelected : []
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredLocations, setFilteredLocations] = useState([
     ...availableLocations,
   ]);
+
+  useEffect(() => {
+    if (initialSelected.length === 0) {
+      setSelectedLocations([...availableLocations]);
+    } else {
+      setSelectedLocations(initialSelected);
+    }
+  }, [initialSelected, availableLocations]);
 
   useEffect(() => {
     if (searchQuery.trim() === '') {
@@ -49,7 +63,12 @@ export default function LocationsFilter({ onApply, onClear, locations, name }) {
   };
 
   const handleApply = () => {
-    onApply(selectedLocations);
+    const result =
+      selectedLocations.length === availableLocations.length
+        ? ['All Locations', ...selectedLocations]
+        : selectedLocations;
+
+    onApply(result);
   };
 
   const masterChecked = selectedLocations.length === availableLocations.length;
