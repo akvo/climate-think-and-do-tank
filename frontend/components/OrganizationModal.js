@@ -86,9 +86,6 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
                       </a>
                     )}
                   </div>
-                  <div className="text-gray-500 text-xs">
-                    Year: {new Date(card.publishedAt).getFullYear()}
-                  </div>
                 </div>
               </h2>
             </div>
@@ -135,7 +132,12 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
               </div>
             </div>
             <div className="col-span-2">
-              <p className="text-gray-600 mb-4">{card.description}</p>
+              <p className="text-gray-600 mb-4">
+                {card.description}
+                <div className="text-gray-800 text-md pt-4">
+                  Year: {new Date(card.publishedAt).getFullYear()}
+                </div>
+              </p>
               <p className="text-green-600">{card.focusRegions.join(',')}</p>
             </div>
           </div>
