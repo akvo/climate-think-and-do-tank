@@ -15,9 +15,6 @@
     "publication_date": {
       "type": "date"
     },
-    "title": {
-      "type": "string"
-    },
     "value_chain": {
       "type": "relation",
       "relation": "oneToOne",
@@ -32,7 +29,12 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "investor_snapshot_text": {
       "type": "richtext"
@@ -41,25 +43,45 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "business_blueprint_image": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "risk_and_impact_profile_image": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "closing_information_image": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "the_investment_case_text": {
       "type": "richtext"
