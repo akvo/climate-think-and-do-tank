@@ -33,20 +33,6 @@
           "sortable": true
         }
       },
-      "publication_date": {
-        "edit": {
-          "label": "publication_date",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "publication_date",
-          "searchable": true,
-          "sortable": true
-        }
-      },
       "value_chain": {
         "edit": {
           "label": "value_chain",
@@ -62,9 +48,9 @@
           "sortable": true
         }
       },
-      "regions": {
+      "region": {
         "edit": {
-          "label": "regions",
+          "label": "region",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -72,9 +58,9 @@
           "mainField": "name"
         },
         "list": {
-          "label": "regions",
-          "searchable": false,
-          "sortable": false
+          "label": "region",
+          "searchable": true,
+          "sortable": true
         }
       },
       "picture_one": {
@@ -280,7 +266,8 @@
       "list": [
         "id",
         "title",
-        "publication_date"
+        "value_chain",
+        "region"
       ],
       "edit": [
         [
@@ -289,19 +276,13 @@
             "size": 6
           },
           {
-            "name": "publication_date",
-            "size": 4
-          }
-        ],
-        [
-          {
             "name": "value_chain",
             "size": 6
           }
         ],
         [
           {
-            "name": "regions",
+            "name": "region",
             "size": 6
           },
           {
