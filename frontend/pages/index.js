@@ -9,8 +9,6 @@ import axios from 'axios';
 import InvestmentCarousel from '@/components/InvestmentCarousel';
 
 export default function HomePage() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [query, setQuery] = useState('');
   const [data, setData] = useState({
     title: '',
     description: '',
@@ -20,90 +18,6 @@ export default function HomePage() {
     knowledgeAssets: 0,
     users: 0,
   });
-
-  const [results, setResults] = useState({
-    organizations: {
-      items: [],
-      pagination: { total: 0, pageCount: 0, page: 1, pageSize: 10 },
-    },
-    sectors: {
-      items: [],
-      pagination: { total: 0, pageCount: 0, page: 1, pageSize: 10 },
-    },
-  });
-  const searchTimeoutRef = useRef();
-
-  const investments = [
-    {
-      image: 'https://placehold.co/300x400',
-      category: 'Horticulture',
-      title: 'Horticulture for Export',
-      amount: 'KES 5,705,000',
-      period: '/Annum',
-    },
-    {
-      image: 'https://placehold.co/300x400',
-      category: 'Agriculture',
-      title: 'Silage Production Plant',
-      amount: 'KES 1,205,000',
-      period: '/Annum',
-    },
-    {
-      image: 'https://placehold.co/300x400',
-      category: 'Technology',
-      title: 'Smart Irrigation Kits Startup',
-      amount: 'KES 605,000',
-      period: '/Annum',
-    },
-    {
-      image: 'https://placehold.co/300x400',
-      category: 'Agriculture',
-      title: 'Greenhouse agriculture',
-      amount: 'KES 1,490,000',
-      period: '/Annum',
-    },
-  ];
-
-  const handleSearch = async (searchQuery, currentPage = 1) => {
-    if (!searchQuery.trim()) {
-      setResults({
-        organizations: {
-          items: [],
-          pagination: { total: 0, pageCount: 0, page: 1, pageSize: 10 },
-        },
-        sectors: {
-          items: [],
-          pagination: { total: 0, pageCount: 0, page: 1, pageSize: 10 },
-        },
-      });
-      return;
-    }
-
-    try {
-      const data = await searchContentAcrossTypes({
-        query: searchQuery,
-        page: currentPage,
-        pageSize: 10,
-      });
-      setResults(data);
-    } catch (error) {
-      console.error('Search error:', error);
-    } finally {
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setQuery(value);
-
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-
-    searchTimeoutRef.current = setTimeout(() => {
-      handleSearch(value, 1);
-    }, 300);
-  };
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -143,11 +57,7 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <HeroSlider
-        query={query}
-        handleInputChange={handleInputChange}
-        setData={setData}
-      />
+      <HeroSlider setData={setData} />
 
       <section className="bg-gray-50 py-20 text-gray-800 border-t border-gray-100">
         <div className="container mx-auto px-4 max-w-6xl">

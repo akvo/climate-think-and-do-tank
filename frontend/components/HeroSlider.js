@@ -3,12 +3,16 @@ import { Search } from 'lucide-react';
 import Image from 'next/image';
 import axios from 'axios';
 import { env } from '@/helpers/env-vars';
+import { useRouter } from 'next/router';
 
-const HeroSlider = ({ query, handleInputChange, setData }) => {
+const HeroSlider = ({ setData }) => {
+  const router = useRouter();
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sliderData, setSliderData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     const fetchHomepageData = async () => {
@@ -94,6 +98,20 @@ const HeroSlider = ({ query, handleInputChange, setData }) => {
     );
   }
 
+  const handleInputChange = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push({
+        pathname: '/search-results',
+        query: { q: query },
+      });
+    }
+  };
+
   return (
     <section className="relative overflow-hidden pb-12">
       <div className="relative h-[600px]">
@@ -140,7 +158,10 @@ const HeroSlider = ({ query, handleInputChange, setData }) => {
       </div>
 
       <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto bg-white/95 backdrop-blur-sm rounded-[40px] shadow-xl p-1.5 flex items-center">
+        <form
+          onSubmit={handleSearch}
+          className="max-w-2xl mx-auto bg-white/95 backdrop-blur-sm rounded-[40px] shadow-xl p-1.5 flex items-center"
+        >
           <div className="flex-1 flex items-center pl-4">
             <Search size={20} className="text-gray-400 mr-2" />
             <input
@@ -151,10 +172,13 @@ const HeroSlider = ({ query, handleInputChange, setData }) => {
               onChange={handleInputChange}
             />
           </div>
-          <button className="px-8 py-3 bg-green-700 hover:bg-green-800 text-white rounded-[100px] font-medium transition-colors">
+          <button
+            type="submit"
+            className="px-8 py-3 bg-green-700 hover:bg-green-800 text-white rounded-[100px] font-medium transition-colors"
+          >
             Search
           </button>
-        </div>
+        </form>
       </div>
     </section>
   );
