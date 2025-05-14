@@ -35,7 +35,7 @@
       "allowedTypes": ["images", "files", "videos", "audios"]
     },
     "investor_snapshot_text": {
-      "type": "blocks"
+      "type": "richtext"
     },
     "the_investment_case_image": {
       "type": "media",
