@@ -36,9 +36,6 @@
         "audios"
       ]
     },
-    "investor_snapshot_text": {
-      "type": "blocks"
-    },
     "the_investment_case_image": {
       "type": "media",
       "multiple": false,
@@ -93,6 +90,9 @@
       "type": "richtext"
     },
     "closing_information_text": {
+      "type": "richtext"
+    },
+    "investor_snapshot_text": {
       "type": "richtext"
     }
   }

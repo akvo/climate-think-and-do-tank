@@ -2,8 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+
   images: {
-    domains: ['placehold.co'],
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '1337',
+        pathname: '/uploads/**',
+      },
+    ],
   },
 };
 
