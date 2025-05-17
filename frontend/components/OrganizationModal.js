@@ -76,7 +76,11 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
                     )}
                     {card.webLink && (
                       <a
-                        href={card.webLink}
+                        href={(() => {
+                          return card.webLink.includes('://')
+                            ? card.webLink
+                            : `https://${card.webLink}`;
+                        })()}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-1 text-blue-600 hover:underline"
