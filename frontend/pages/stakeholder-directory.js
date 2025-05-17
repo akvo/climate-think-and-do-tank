@@ -357,6 +357,7 @@ export default function StakeholderDirectory() {
                             'All Locations',
                             ...filterOptions[filterType],
                           ]}
+                          initialSelected={activeFilters[filterType]}
                           onApply={(selectedLocations) => {
                             const locationsToApply = selectedLocations.includes(
                               'All Locations'
