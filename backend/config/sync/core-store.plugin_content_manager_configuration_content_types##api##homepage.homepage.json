@@ -6,8 +6,8 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "id",
-      "defaultSortBy": "id",
+      "mainField": "homepage_blurb",
+      "defaultSortBy": "homepage_blurb",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -123,9 +123,9 @@
     "layouts": {
       "list": [
         "id",
-        "createdAt",
-        "updatedAt",
-        "hero_image_slider"
+        "hero_image_slider",
+        "homepage_blurb",
+        "createdAt"
       ],
       "edit": [
         [

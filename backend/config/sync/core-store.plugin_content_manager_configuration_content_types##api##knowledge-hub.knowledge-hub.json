@@ -61,20 +61,6 @@
           "sortable": true
         }
       },
-      "resource_type": {
-        "edit": {
-          "label": "resource_type",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "resource_type",
-          "searchable": true,
-          "sortable": true
-        }
-      },
       "file": {
         "edit": {
           "label": "file",
@@ -245,10 +231,6 @@
           }
         ],
         [
-          {
-            "name": "resource_type",
-            "size": 6
-          },
           {
             "name": "file",
             "size": 6

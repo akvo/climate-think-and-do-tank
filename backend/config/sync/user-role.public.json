@@ -6,6 +6,141 @@
   "locale": null,
   "permissions": [
     {
+      "documentId": "nzu9aj1635r7ec43sj8ky3uo",
+      "action": "api::about.about.find",
+      "locale": null
+    },
+    {
+      "documentId": "ibr0thw8jt8bw0i0irlxdl0t",
+      "action": "api::category.category.find",
+      "locale": null
+    },
+    {
+      "documentId": "w6uwqq692s22g1cg8t1boptk",
+      "action": "api::category.category.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "ttldm0dvq3z8zp6cgsmmn1t0",
+      "action": "api::contact.contact.send",
+      "locale": null
+    },
+    {
+      "documentId": "m2mkepee35gg10vvcsw1s5f5",
+      "action": "api::country.country.find",
+      "locale": null
+    },
+    {
+      "documentId": "ufq27btq7utj6xmxw9jznryg",
+      "action": "api::country.country.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "y7dxej85d4wnb7uufks4cgc4",
+      "action": "api::email-check.email-check.isEmailRegistered",
+      "locale": null
+    },
+    {
+      "documentId": "rskio6zirjnkeezn788nmlsl",
+      "action": "api::homepage.homepage.find",
+      "locale": null
+    },
+    {
+      "documentId": "iehzccvzv3w61kfjw57t5k64",
+      "action": "api::investment-opportunity-profile.investment-opportunity-profile.find",
+      "locale": null
+    },
+    {
+      "documentId": "j6jump4br53jhchq79x7w3mz",
+      "action": "api::investment-opportunity-profile.investment-opportunity-profile.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "qftlse12eu50oaqg1ri542xr",
+      "action": "api::knowledge-hub.knowledge-hub.find",
+      "locale": null
+    },
+    {
+      "documentId": "gnyjpdbge5bqbqhzwdiqnn9d",
+      "action": "api::knowledge-hub.knowledge-hub.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "abtvli851ecn80ca4t0snxsi",
+      "action": "api::looking-for.looking-for.find",
+      "locale": null
+    },
+    {
+      "documentId": "q52qmbet2qi9u6pu16z6g188",
+      "action": "api::organisation.organisation.create",
+      "locale": null
+    },
+    {
+      "documentId": "o1lo00z1vnraz8hm6oj4sbkj",
+      "action": "api::organisation.organisation.find",
+      "locale": null
+    },
+    {
+      "documentId": "sq6izy3j7z1bon9in51so4zg",
+      "action": "api::organisation.organisation.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "do8vo7e7o7cnzbjvzlgce1n4",
+      "action": "api::region.region.find",
+      "locale": null
+    },
+    {
+      "documentId": "mn11a8s7tmgt8f7274n0zk6a",
+      "action": "api::region.region.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "lkozyp76oyssse82q7fjdrrg",
+      "action": "api::stakeholder-connection.stakeholder-connection.find",
+      "locale": null
+    },
+    {
+      "documentId": "p061dfzhhy23rhg44v8ay3en",
+      "action": "api::stakeholder-connection.stakeholder-connection.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "te1vi1i9rvn1u371yfouzgcn",
+      "action": "api::topic.topic.find",
+      "locale": null
+    },
+    {
+      "documentId": "qjkkb1bp25nof23ooala1faw",
+      "action": "api::topic.topic.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "fcpg2c0z02onp5xwdvnzga76",
+      "action": "api::value-chain.value-chain.find",
+      "locale": null
+    },
+    {
+      "documentId": "zqws32h3t6c357jt8lj753wy",
+      "action": "api::value-chain.value-chain.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "jk1islmvly7vl5vxqj4of3ix",
+      "action": "plugin::email.email.send",
+      "locale": null
+    },
+    {
+      "documentId": "pdmi06v4b37u7hqa3x3a7xdb",
+      "action": "plugin::upload.content-api.find",
+      "locale": null
+    },
+    {
+      "documentId": "drjijnt27glzaj3qck9ra6al",
+      "action": "plugin::upload.content-api.findOne",
+      "locale": null
+    },
+    {
       "documentId": "pqdbrniu3frbu4aw7ow0b9ch",
       "action": "plugin::users-permissions.auth.callback",
       "locale": null
@@ -38,6 +173,21 @@
     {
       "documentId": "nb28qupum1j1dx7ba9itfxjf",
       "action": "plugin::users-permissions.auth.sendEmailConfirmation",
+      "locale": null
+    },
+    {
+      "documentId": "fegl9dfvwfirsmub9oskn8yr",
+      "action": "plugin::users-permissions.role.find",
+      "locale": null
+    },
+    {
+      "documentId": "lz6gi3v14qwymp771zqdg3bo",
+      "action": "plugin::users-permissions.user.count",
+      "locale": null
+    },
+    {
+      "documentId": "u4ev9fiazoy7dafv5ue5bbn5",
+      "action": "plugin::users-permissions.user.find",
       "locale": null
     }
   ]

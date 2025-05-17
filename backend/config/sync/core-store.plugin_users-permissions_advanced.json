@@ -3,9 +3,9 @@
   "value": {
     "unique_email": true,
     "allow_register": true,
-    "email_confirmation": false,
+    "email_confirmation": true,
     "email_reset_password": null,
-    "email_confirmation_redirection": null,
+    "email_confirmation_redirection": "https://tdt.akvotest.org/",
     "default_role": "authenticated"
   },
   "type": "object",

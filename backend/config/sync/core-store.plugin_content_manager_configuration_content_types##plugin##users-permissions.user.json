@@ -321,6 +321,34 @@
           "sortable": false
         }
       },
+      "resetCode": {
+        "edit": {
+          "label": "resetCode",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "resetCode",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "resetCodeExpiration": {
+        "edit": {
+          "label": "resetCodeExpiration",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "resetCodeExpiration",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -477,6 +505,16 @@
           },
           {
             "name": "profile_image",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "resetCode",
+            "size": 6
+          },
+          {
+            "name": "resetCodeExpiration",
             "size": 6
           }
         ]
