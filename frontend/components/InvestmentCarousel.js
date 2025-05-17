@@ -3,6 +3,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { env } from '@/helpers/env-vars';
+import Link from 'next/link';
 
 const InvestmentCarousel = () => {
   const [investments, setInvestments] = useState([]);
@@ -26,6 +27,7 @@ const InvestmentCarousel = () => {
           const formattedInvestments = response.data.data.map((item) => {
             return {
               id: item.id,
+              documentId: item.documentId,
               title: `${item.value_chain.name} In ${item.region.name}`,
               region: item.region.name,
               amount: '$0',
@@ -107,9 +109,10 @@ const InvestmentCarousel = () => {
 
           <div className="grid md:grid-cols-4 gap-6">
             {getCurrentSlideItems().map((investment, index) => (
-              <div
+              <Link
+                href={`/iop/${investment.documentId}`}
                 key={investment.id || index}
-                className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
+                className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer"
               >
                 <div className="relative h-48">
                   <Image
@@ -136,7 +139,7 @@ const InvestmentCarousel = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 
