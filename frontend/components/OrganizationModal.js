@@ -76,13 +76,26 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
                     )}
                     {card.webLink && (
                       <a
-                        href={card.webLink}
+                        href={(() => {
+                          return card.webLink.includes('://')
+                            ? card.webLink
+                            : `https://${card.webLink}`;
+                        })()}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-1 text-blue-600 hover:underline"
                       >
                         <LinkIcon size={16} />
-                        {new URL(card.webLink).hostname}
+                        {(() => {
+                          try {
+                            const fullUrl = card.webLink.includes('://')
+                              ? card.webLink
+                              : `https://${card.webLink}`;
+                            return new URL(fullUrl).hostname;
+                          } catch (error) {
+                            return card.webLink;
+                          }
+                        })()}
                       </a>
                     )}
                   </div>
@@ -132,7 +145,12 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
               </div>
             </div>
             <div className="col-span-2">
-              <p className="text-gray-600 mb-4">{card.description}</p>
+              <p className="text-gray-600 mb-4">
+                {card.description}
+                <div className="text-gray-800 text-md pt-4">
+                  Year: {new Date(card.publishedAt).getFullYear()}
+                </div>
+              </p>
               <p className="text-green-600">{card.focusRegions.join(',')}</p>
             </div>
           </div>

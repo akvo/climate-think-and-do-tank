@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ArrowDown, ArrowUp, Search } from 'lucide-react';
+import { ArrowDownWideNarrow, ArrowUpWideNarrow, Search } from 'lucide-react';
 import { useRouter } from 'next/router';
-import { useSearchParams } from 'next/navigation';
 import OrganizationModal from '@/components/OrganizationModal';
 import { useDispatch, useSelector } from 'react-redux';
 import LocationsFilter from '@/components/LocationFilter';
@@ -12,11 +11,15 @@ import {
 } from '@/store/slices/knowledgeHubSlice';
 import debounce from 'lodash/debounce';
 import CheckboxFilter from '@/components/CheckboxFilter';
+import { generateYearOptions } from '@/helpers/utilities';
 
 export default function KnowledgeHub() {
   const router = useRouter();
   const dispatch = useDispatch();
-
+  const [sortConfig, setSortConfig] = useState({
+    field: 'date',
+    order: 'desc',
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [openFilter, setOpenFilter] = useState(null);
   const [activeFilters, setActiveFilters] = useState({
@@ -45,7 +48,7 @@ export default function KnowledgeHub() {
       ...regions.map((region) => region.name || region.attributes?.name),
     ],
     type: ['File', 'Link'],
-    date: ['All Time', 'Last Year', 'This Year', 'Last 5 Years'],
+    date: [],
   };
 
   useEffect(() => {
@@ -57,8 +60,14 @@ export default function KnowledgeHub() {
         ? router.query.focusRegions.split(',')
         : [],
       type: router.query.type ? router.query.type.split(',') : [],
-      date: router.query.date ? [router.query.date] : [],
+      date: router.query.date ? router.query.date.split(',') : [],
     };
+
+    const sort = router.query.sort || 'desc';
+    setSortConfig({
+      field: 'date',
+      order: sort,
+    });
 
     setActiveFilters(filters);
     setSearchQuery(router.query.query || '');
@@ -69,11 +78,8 @@ export default function KnowledgeHub() {
         page: 1,
         query: router.query.query || '',
         filters,
-        dateSort: 'desc',
-        dateFilter:
-          filters.date.length > 0
-            ? filters.date[0].toLowerCase().replace(' ', '_')
-            : null,
+        dateSort: sort,
+        dateFilter: filters.date.length > 0 ? filters.date : null,
       })
     );
   }, [router.isReady, router.query]);
@@ -85,7 +91,7 @@ export default function KnowledgeHub() {
     if (newFilters.focusRegions.length > 0)
       query.focusRegions = newFilters.focusRegions.join(',');
     if (newFilters.type.length > 0) query.type = newFilters.type.join(',');
-    if (newFilters.date.length > 0) query.date = newFilters.date[0];
+    if (newFilters.date.length > 0) query.date = newFilters.date.join(',');
 
     router.push(
       {
@@ -130,11 +136,7 @@ export default function KnowledgeHub() {
         page: currentPage + 1,
         query: searchQuery,
         filters: activeFilters,
-        dateSort: 'desc',
-        dateFilter:
-          activeFilters.date.length > 0
-            ? activeFilters.date[0].toLowerCase().replace(' ', '_')
-            : null,
+        dateSort: sortConfig.order,
       })
     );
   };
@@ -172,15 +174,11 @@ export default function KnowledgeHub() {
           page: 1,
           query,
           filters: activeFilters,
-          dateSort: 'desc',
-          dateFilter:
-            activeFilters.date.length > 0
-              ? activeFilters.date[0].toLowerCase().replace(' ', '_')
-              : null,
+          dateSort: sortConfig.order,
         })
       );
     }, 500),
-    []
+    [sortConfig.order, activeFilters]
   );
 
   const handleSearchSubmit = (e) => {
@@ -191,6 +189,24 @@ export default function KnowledgeHub() {
   const openCardModal = (card) => {
     setSelectedCard(card);
     setIsModalOpen(true);
+  };
+
+  const handleSort = () => {
+    const newOrder = sortConfig.order === 'desc' ? 'asc' : 'desc';
+
+    setSortConfig({
+      field: 'date',
+      order: newOrder,
+    });
+
+    dispatch(
+      fetchKnowledgeHubs({
+        page: 1,
+        query: searchQuery,
+        filters: activeFilters,
+        dateSort: newOrder,
+      })
+    );
   };
 
   return (
@@ -241,7 +257,7 @@ export default function KnowledgeHub() {
                       : filterType === 'topic'
                       ? 'Topics'
                       : filterType === 'date'
-                      ? 'Date'
+                      ? 'Year'
                       : filterType.charAt(0).toUpperCase() +
                         filterType.slice(1)}
                     <svg
@@ -306,6 +322,7 @@ export default function KnowledgeHub() {
                             'No Specific Focus Region',
                             ...filterOptions[filterType],
                           ]}
+                          initialSelected={activeFilters[filterType]}
                           onApply={(selectedLocations) => {
                             const locationsToApply = selectedLocations.includes(
                               'All Locations'
@@ -334,36 +351,57 @@ export default function KnowledgeHub() {
                           }}
                         />
                       ) : filterType === 'date' ? (
-                        <div className="bg-white rounded-md shadow-lg border w-48 max-h-60 overflow-y-auto">
-                          {filterOptions[filterType].map((option) => (
-                            <label
-                              key={option}
-                              className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
-                            >
-                              <input
-                                type="radio"
-                                name="date-filter"
-                                checked={
-                                  activeFilters[filterType].length > 0
-                                    ? activeFilters[filterType][0] === option
-                                    : option === 'All Time'
-                                }
-                                onChange={() => {
-                                  const newFilters = {
-                                    ...activeFilters,
-                                    [filterType]:
-                                      option === 'All Time' ? [] : [option],
-                                  };
-                                  setActiveFilters(newFilters);
-                                  updateFilters(newFilters);
-                                  setOpenFilter(null);
-                                }}
-                                className="mr-2"
-                              />
-                              {option}
-                            </label>
-                          ))}
-                        </div>
+                        <CheckboxFilter
+                          options={generateYearOptions()}
+                          label={'Year'}
+                          initialSelected={
+                            activeFilters[filterType].length === 0
+                              ? ['All', ...generateYearOptions()]
+                              : activeFilters[filterType]
+                          }
+                          hasAllOption={true}
+                          allOptionLabel="All Years"
+                          onApply={(selectedYears) => {
+                            let finalSelection = [...selectedYears];
+
+                            const allYearsSelected =
+                              generateYearOptions().every((year) =>
+                                selectedYears.includes(year)
+                              );
+                            if (
+                              allYearsSelected &&
+                              !selectedYears.includes('All Years')
+                            ) {
+                              finalSelection = ['All Years', ...selectedYears];
+                            }
+
+                            const yearsToApply = finalSelection.includes(
+                              'All Years'
+                            )
+                              ? []
+                              : finalSelection.filter(
+                                  (year) => year !== 'All Years'
+                                );
+
+                            const newFilters = {
+                              ...activeFilters,
+                              [filterType]: yearsToApply,
+                            };
+
+                            setActiveFilters(newFilters);
+                            updateFilters(newFilters);
+                            setOpenFilter(null);
+                          }}
+                          onClear={() => {
+                            const newFilters = {
+                              ...activeFilters,
+                              [filterType]: [],
+                            };
+                            setActiveFilters(newFilters);
+                            updateFilters(newFilters);
+                            setOpenFilter(null);
+                          }}
+                        />
                       ) : (
                         <CheckboxFilter
                           options={filterOptions[filterType] || []}
@@ -402,11 +440,23 @@ export default function KnowledgeHub() {
                     </div>
                   )}
                 </div>
-              ))}
+              ))}{' '}
+              <button
+                onClick={handleSort}
+                className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
+              >
+                <span>Date</span>
+                {sortConfig.order === 'desc' ? (
+                  <ArrowDownWideNarrow className="w-4 h-4" />
+                ) : (
+                  <ArrowUpWideNarrow className="w-4 h-4" />
+                )}
+              </button>
             </div>
             {(activeFilters.topic.length > 0 ||
               activeFilters.focusRegions.length > 0 ||
-              activeFilters.type.length > 0) && (
+              activeFilters.type.length > 0 ||
+              activeFilters.date.length > 0) && (
               <button
                 onClick={clearFilters}
                 className="text-green-600 hover:text-green-700"
@@ -420,7 +470,8 @@ export default function KnowledgeHub() {
         {/* Active Filters Tags */}
         {(activeFilters.topic?.length > 0 ||
           activeFilters.focusRegions?.length > 0 ||
-          activeFilters.type?.length > 0) && (
+          activeFilters.type?.length > 0 ||
+          activeFilters.date?.length > 0) && (
           <div className="container mx-auto px-4 pb-3 text-black">
             <div className="flex items-center gap-2 flex-wrap">
               {Object.entries(activeFilters).map(([filterType, values]) =>
@@ -499,8 +550,15 @@ export default function KnowledgeHub() {
                     )}
                   </div>
                   <div className="p-6">
-                    <div className="text-green-600 text-xs font-semibold tracking-wider mb-2">
-                      {card.topic}
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="text-green-600 text-xs font-semibold tracking-wider">
+                        {card.topic}
+                      </div>
+                      {card.publishedAt && (
+                        <div className="text-gray-500 text-xs">
+                          Year: {new Date(card.publishedAt).getFullYear()}
+                        </div>
+                      )}
                     </div>
                     <h3 className="text-lg font-semibold mb-2 text-black line-clamp-2">
                       {card.title}

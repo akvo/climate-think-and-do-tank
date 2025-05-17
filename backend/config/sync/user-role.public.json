@@ -41,6 +41,21 @@
       "locale": null
     },
     {
+      "documentId": "rskio6zirjnkeezn788nmlsl",
+      "action": "api::homepage.homepage.find",
+      "locale": null
+    },
+    {
+      "documentId": "iehzccvzv3w61kfjw57t5k64",
+      "action": "api::investment-opportunity-profile.investment-opportunity-profile.find",
+      "locale": null
+    },
+    {
+      "documentId": "j6jump4br53jhchq79x7w3mz",
+      "action": "api::investment-opportunity-profile.investment-opportunity-profile.findOne",
+      "locale": null
+    },
+    {
       "documentId": "qftlse12eu50oaqg1ri542xr",
       "action": "api::knowledge-hub.knowledge-hub.find",
       "locale": null
@@ -163,6 +178,11 @@
     {
       "documentId": "fegl9dfvwfirsmub9oskn8yr",
       "action": "plugin::users-permissions.role.find",
+      "locale": null
+    },
+    {
+      "documentId": "lz6gi3v14qwymp771zqdg3bo",
+      "action": "plugin::users-permissions.user.count",
       "locale": null
     },
     {

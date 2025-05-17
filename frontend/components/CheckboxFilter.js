@@ -7,6 +7,7 @@ export default function CheckboxFilter({
   label,
   initialSelected = [],
   hasAllOption = false,
+  allOptionLabel,
 }) {
   const [selectedOptions, setSelectedOptions] = useState(() => {
     if (initialSelected && initialSelected.length > 0) {
@@ -98,7 +99,7 @@ export default function CheckboxFilter({
             placeholder="Search..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md pl-8"
+            className="w-full p-2 border border-gray-300 rounded-md pl-8 text-black"
           />
           <svg
             className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -132,7 +133,7 @@ export default function CheckboxFilter({
                   allSelected ? 'font-medium text-green-600' : 'text-gray-700'
                 }`}
               >
-                All {'Options'}
+                {allOptionLabel ? allOptionLabel : 'All Options'}
               </span>
             </label>
             <div className="border-t border-gray-200 my-2"></div>

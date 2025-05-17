@@ -6,8 +6,8 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "title",
-      "defaultSortBy": "title",
+      "mainField": "id",
+      "defaultSortBy": "id",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -265,16 +265,12 @@
     "layouts": {
       "list": [
         "id",
-        "title",
         "value_chain",
-        "region"
+        "region",
+        "title"
       ],
       "edit": [
         [
-          {
-            "name": "title",
-            "size": 6
-          },
           {
             "name": "value_chain",
             "size": 6
@@ -338,6 +334,12 @@
           {
             "name": "closing_information_text",
             "size": 12
+          }
+        ],
+        [
+          {
+            "name": "title",
+            "size": 6
           }
         ]
       ]
