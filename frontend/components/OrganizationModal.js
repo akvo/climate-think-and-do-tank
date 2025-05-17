@@ -82,7 +82,16 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
                         className="flex items-center gap-1 text-blue-600 hover:underline"
                       >
                         <LinkIcon size={16} />
-                        {new URL(card.webLink).hostname}
+                        {(() => {
+                          try {
+                            const fullUrl = card.webLink.includes('://')
+                              ? card.webLink
+                              : `https://${card.webLink}`;
+                            return new URL(fullUrl).hostname;
+                          } catch (error) {
+                            return card.webLink;
+                          }
+                        })()}
                       </a>
                     )}
                   </div>

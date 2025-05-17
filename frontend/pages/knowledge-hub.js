@@ -257,7 +257,7 @@ export default function KnowledgeHub() {
                       : filterType === 'topic'
                       ? 'Topics'
                       : filterType === 'date'
-                      ? 'Date'
+                      ? 'Year'
                       : filterType.charAt(0).toUpperCase() +
                         filterType.slice(1)}
                     <svg
