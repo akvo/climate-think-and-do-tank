@@ -402,6 +402,90 @@
       "locale": null
     },
     {
+      "documentId": "rvna93x1e15pw0lk0swyt1ie",
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::event.event",
+      "properties": {
+        "fields": [
+          "title",
+          "event_date",
+          "start_time",
+          "end_time",
+          "event_type",
+          "host_name",
+          "address",
+          "map_link",
+          "description",
+          "image"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "zzvf22jixo6lhhot0r6gdebf",
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::event.event",
+      "properties": {},
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "aj1x3syh4qv5ad9yhgpam96e",
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::event.event",
+      "properties": {},
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "q4fm5gcxzzbtuc8iaiirlw08",
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::event.event",
+      "properties": {
+        "fields": [
+          "title",
+          "event_date",
+          "start_time",
+          "end_time",
+          "event_type",
+          "host_name",
+          "address",
+          "map_link",
+          "description",
+          "image"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "wbcgepn243xzrq4scak313mi",
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::event.event",
+      "properties": {
+        "fields": [
+          "title",
+          "event_date",
+          "start_time",
+          "end_time",
+          "event_type",
+          "host_name",
+          "address",
+          "map_link",
+          "description",
+          "image"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
       "documentId": "sy6e56hb1xs9v6i2vh36e535",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
@@ -537,7 +621,7 @@
       "locale": null
     },
     {
-      "documentId": "cyegnf07fdtqa1lvrcbnlfzj",
+      "documentId": "oew5rua9b84ogmkyd8mglhwt",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
@@ -580,7 +664,7 @@
       "locale": null
     },
     {
-      "documentId": "cz072755hycy1oyyzlmsflsq",
+      "documentId": "fgd5mdhkmsvpag9kuhew4kzm",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
@@ -605,7 +689,7 @@
       "locale": null
     },
     {
-      "documentId": "oxtyp1go6h3q5zl5wpiej0b1",
+      "documentId": "mnckrd71ys3jhlcjicuj41bi",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
@@ -630,7 +714,7 @@
       "locale": null
     },
     {
-      "documentId": "efyht03zy38le1pee96jn5gi",
+      "documentId": "b048gwdsnhs5ikm8fhp3px95",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::knowledge-hub.knowledge-hub",
@@ -639,7 +723,6 @@
           "title",
           "image",
           "web_link",
-          "resource_type",
           "file",
           "topic",
           "regions",
@@ -670,7 +753,7 @@
       "locale": null
     },
     {
-      "documentId": "via5pzpj3ndt3myh4m4w1c0b",
+      "documentId": "tizij7kx3om2w8r9je9udps7",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::knowledge-hub.knowledge-hub",
@@ -679,7 +762,6 @@
           "title",
           "image",
           "web_link",
-          "resource_type",
           "file",
           "topic",
           "regions",
@@ -692,7 +774,7 @@
       "locale": null
     },
     {
-      "documentId": "brcp9p235emiy0bfpz3lg6xi",
+      "documentId": "aavblxfv23bbw6z3ixtswo5c",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::knowledge-hub.knowledge-hub",
@@ -701,7 +783,6 @@
           "title",
           "image",
           "web_link",
-          "resource_type",
           "file",
           "topic",
           "regions",
@@ -765,6 +846,75 @@
       "properties": {
         "fields": [
           "name"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "ba45ay0hsh895dqd6ure6eiw",
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::news-item.news-item",
+      "properties": {
+        "fields": [
+          "title",
+          "description",
+          "publication_date",
+          "image",
+          "regions"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "bfs9sjpvtzjj7tttfteepm7m",
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::news-item.news-item",
+      "properties": {},
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "u3l95chmrhx3fx6tzxi2nssi",
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::news-item.news-item",
+      "properties": {},
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "aap2oedo9fbquzdg0roekvpa",
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::news-item.news-item",
+      "properties": {
+        "fields": [
+          "title",
+          "description",
+          "publication_date",
+          "image",
+          "regions"
+        ]
+      },
+      "conditions": [],
+      "locale": null
+    },
+    {
+      "documentId": "aat0v74d4w8i7np6b144rqeg",
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::news-item.news-item",
+      "properties": {
+        "fields": [
+          "title",
+          "description",
+          "publication_date",
+          "image",
+          "regions"
         ]
       },
       "conditions": [],
@@ -840,7 +990,7 @@
       "locale": null
     },
     {
-      "documentId": "cpk6mxurg8ennrhgpd7twn7w",
+      "documentId": "ytgzfg1z5mtlu0i4s0b92qrf",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::region.region",
@@ -848,7 +998,8 @@
         "fields": [
           "name",
           "parent_region",
-          "country"
+          "country",
+          "news"
         ]
       },
       "conditions": [],
@@ -873,7 +1024,7 @@
       "locale": null
     },
     {
-      "documentId": "ka6756cjx1s8z2be0mfnoo6f",
+      "documentId": "z3kiec5rroth16e0un44tsv0",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::region.region",
@@ -881,14 +1032,15 @@
         "fields": [
           "name",
           "parent_region",
-          "country"
+          "country",
+          "news"
         ]
       },
       "conditions": [],
       "locale": null
     },
     {
-      "documentId": "fbl6wdw0wyzfnarf20vr1l7h",
+      "documentId": "z3hew84m7jzk4l2gkf9t280r",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::region.region",
@@ -896,14 +1048,15 @@
         "fields": [
           "name",
           "parent_region",
-          "country"
+          "country",
+          "news"
         ]
       },
       "conditions": [],
       "locale": null
     },
     {
-      "documentId": "o9izxb0at6ujjcepco7yfucb",
+      "documentId": "zqho5z6zy0x44o3yiu0uozxr",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::social-accountability.social-accountability",
@@ -938,7 +1091,7 @@
       "locale": null
     },
     {
-      "documentId": "hygqsh5x6d4qwzh5ivw6x1e9",
+      "documentId": "ev5b5i2qac4wcczt19w4n915",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::social-accountability.social-accountability",
@@ -955,7 +1108,7 @@
       "locale": null
     },
     {
-      "documentId": "um815tvvecel181l5t4k3e68",
+      "documentId": "d5ij39akix83wh11bcblavpv",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::social-accountability.social-accountability",

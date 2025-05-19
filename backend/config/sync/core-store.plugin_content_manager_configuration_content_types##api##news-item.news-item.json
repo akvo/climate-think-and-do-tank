@@ -1,13 +1,13 @@
 {
-  "key": "plugin_content_manager_configuration_content_types::api::region.region",
+  "key": "plugin_content_manager_configuration_content_types::api::news-item.news-item",
   "value": {
     "settings": {
       "bulkable": true,
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "name",
-      "defaultSortBy": "name",
+      "mainField": "title",
+      "defaultSortBy": "title",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -19,23 +19,65 @@
           "sortable": true
         }
       },
-      "name": {
+      "title": {
         "edit": {
-          "label": "name",
+          "label": "title",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "name",
+          "label": "title",
           "searchable": true,
           "sortable": true
         }
       },
-      "parent_region": {
+      "description": {
         "edit": {
-          "label": "parent_region",
+          "label": "description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "description",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "publication_date": {
+        "edit": {
+          "label": "publication_date",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "publication_date",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "image": {
+        "edit": {
+          "label": "image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "regions": {
+        "edit": {
+          "label": "regions",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -43,39 +85,9 @@
           "mainField": "name"
         },
         "list": {
-          "label": "parent_region",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "country": {
-        "edit": {
-          "label": "country",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "country_name"
-        },
-        "list": {
-          "label": "country",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "news": {
-        "edit": {
-          "label": "news",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "title"
-        },
-        "list": {
-          "label": "news",
-          "searchable": true,
-          "sortable": true
+          "label": "regions",
+          "searchable": false,
+          "sortable": false
         }
       },
       "createdAt": {
@@ -140,34 +152,42 @@
     "layouts": {
       "list": [
         "id",
-        "name",
-        "parent_region",
-        "country"
+        "title",
+        "publication_date",
+        "image"
       ],
       "edit": [
         [
           {
-            "name": "name",
-            "size": 6
-          },
-          {
-            "name": "parent_region",
+            "name": "title",
             "size": 6
           }
         ],
         [
           {
-            "name": "country",
+            "name": "description",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "publication_date",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "regions",
             "size": 6
           },
           {
-            "name": "news",
+            "name": "image",
             "size": 6
           }
         ]
       ]
     },
-    "uid": "api::region.region"
+    "uid": "api::news-item.news-item"
   },
   "type": "object",
   "environment": null,

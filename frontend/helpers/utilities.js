@@ -143,3 +143,31 @@ export const getTruncatedFilename = (filePath, maxLength = 20) => {
   }
   return filename;
 };
+
+export const formatRegionsDisplay = (itemRegions, allRegions) => {
+  if (!itemRegions || itemRegions.length === 0) {
+    return null;
+  }
+
+  const allRegionsNames = allRegions
+    .map((region) => region.name || region.attributes?.name)
+    .filter(Boolean);
+
+  if (
+    itemRegions.length === allRegionsNames.length &&
+    itemRegions.every((region) => allRegionsNames.includes(region))
+  ) {
+    return 'Country wide';
+  }
+
+  if (itemRegions.length === 1) {
+    return itemRegions[0];
+  } else {
+    const displayLimit = 2;
+    if (itemRegions.length <= displayLimit) {
+      return itemRegions.join(', ');
+    } else {
+      return `${itemRegions.slice(0, displayLimit).join(', ')}...`;
+    }
+  }
+};
