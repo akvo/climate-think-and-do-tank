@@ -19,16 +19,16 @@
           "sortable": true
         }
       },
-      "publication_date": {
+      "title": {
         "edit": {
-          "label": "publication_date",
+          "label": "title",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "publication_date",
+          "label": "title",
           "searchable": true,
           "sortable": true
         }
@@ -263,12 +263,7 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "value_chain",
-        "region",
-        "publication_date"
-      ],
+      "list": ["id", "value_chain", "region", "title"],
       "edit": [
         [
           {
@@ -338,8 +333,8 @@
         ],
         [
           {
-            "name": "publication_date",
-            "size": 4
+            "name": "title",
+            "size": 6
           }
         ]
       ]

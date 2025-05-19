@@ -47,7 +47,12 @@ export default function LocationsFilter({
   };
 
   const handleApply = () => {
-    onApply(selectedLocations);
+    const result =
+      selectedLocations.length === availableLocations.length
+        ? ['All Locations', ...selectedLocations]
+        : selectedLocations;
+
+    onApply(result);
   };
 
   const masterChecked =
