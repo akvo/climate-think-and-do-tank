@@ -38,7 +38,7 @@ const HeroSlider = ({ setData }) => {
               (slide, index) => {
                 const imageUrl =
                   slide.files && slide.files.length > 0
-                    ? `${env('NEXT_PUBLIC_BACKEND_URL')}${slide.files[0].url}`
+                    ? `${slide.files[0].url}`
                     : '';
 
                 return {
