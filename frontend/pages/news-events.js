@@ -173,6 +173,12 @@ export default function NewsEventsDirectory() {
       router.query.types !== 'News,Event') ||
     (router.query.search && router.query.search.length > 0);
 
+  const handleCardClick = (item) => {
+    if (item.type === 'News') {
+      router.push(`/news/${item.documentId}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white text-black">
       <div className="py-4 px-4 bg-[#f1f3f5] text-black">
@@ -360,7 +366,8 @@ export default function NewsEventsDirectory() {
               {newsEventsData.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300"
+                  className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                  onClick={() => handleCardClick(item)}
                 >
                   {item.imageUrl && (
                     <div className="relative h-48 w-full overflow-hidden">

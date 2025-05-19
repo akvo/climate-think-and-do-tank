@@ -59,6 +59,7 @@ export const fetchNewsEvents = createAsyncThunk(
             .then((response) => {
               return response.data.data.map((item) => ({
                 id: item.id,
+                documentId: item.documentId,
                 collectionType: 'news',
                 title: item.title || '',
                 description: item.description || '',
@@ -108,6 +109,7 @@ export const fetchNewsEvents = createAsyncThunk(
             .then((response) => {
               return response.data.data.map((item) => ({
                 id: item.id,
+                documentId: item.documentId,
                 collectionType: 'events',
                 title: item.title || '',
                 description: item.description || '',
