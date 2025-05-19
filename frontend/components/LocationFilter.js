@@ -14,12 +14,8 @@ export default function LocationsFilter({
   );
 
   const [selectedLocations, setSelectedLocations] = useState(
-    initialSelected.length > 0 ? initialSelected : []
+    initialSelected.length === 0 ? [...availableLocations] : initialSelected
   );
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredLocations, setFilteredLocations] = useState([
-    ...availableLocations,
-  ]);
 
   useEffect(() => {
     if (initialSelected.length === 0) {
@@ -28,17 +24,6 @@ export default function LocationsFilter({
       setSelectedLocations(initialSelected);
     }
   }, [initialSelected, availableLocations]);
-
-  useEffect(() => {
-    if (searchQuery.trim() === '') {
-      setFilteredLocations([...availableLocations]);
-    } else {
-      const filtered = availableLocations.filter((location) =>
-        location.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredLocations(filtered);
-    }
-  }, [searchQuery, availableLocations]);
 
   const handleMasterToggle = () => {
     if (selectedLocations.length === availableLocations.length) {
@@ -58,7 +43,6 @@ export default function LocationsFilter({
 
   const handleClear = () => {
     setSelectedLocations([]);
-    setSearchQuery('');
     onClear();
   };
 
@@ -71,7 +55,9 @@ export default function LocationsFilter({
     onApply(result);
   };
 
-  const masterChecked = selectedLocations.length === availableLocations.length;
+  const masterChecked =
+    availableLocations.length > 0 &&
+    selectedLocations.length === availableLocations.length;
 
   return (
     <div className="bg-white rounded-xl shadow-lg w-full max-w-md">
@@ -99,7 +85,7 @@ export default function LocationsFilter({
 
           <div className="border-t border-gray-200 my-2"></div>
 
-          {filteredLocations.map((location) => (
+          {availableLocations.map((location) => (
             <label
               key={location}
               className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer"
@@ -122,7 +108,7 @@ export default function LocationsFilter({
             </label>
           ))}
 
-          {filteredLocations.length === 0 && (
+          {availableLocations.length === 0 && (
             <div className="py-4 text-center text-gray-500">
               No locations found
             </div>
