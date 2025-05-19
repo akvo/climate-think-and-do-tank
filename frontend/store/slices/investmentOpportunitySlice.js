@@ -16,9 +16,29 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
       baseQueryParams.append('pagination[pageSize]', pageSize);
 
       if (query) {
-        baseQueryParams.append('filters[$or][0][title][$containsi]', query);
         baseQueryParams.append(
-          'filters[$or][1][description][$containsi]',
+          'filters[$or][0][value_chain][$containsi]',
+          query
+        );
+        baseQueryParams.append('filters[$or][2][region][$containsi]', query);
+        baseQueryParams.append(
+          'filters[$or][3][investor_snapshot_text][$containsi]',
+          query
+        );
+        baseQueryParams.append(
+          'filters[$or][4][the_investment_case_text][$containsi]',
+          query
+        );
+        baseQueryParams.append(
+          'filters[$or][5][business_blueprint_text][$containsi]',
+          query
+        );
+        baseQueryParams.append(
+          'filters[$or][6][risk_and_impact_profile_text][$containsi]',
+          query
+        );
+        baseQueryParams.append(
+          'filters[$or][7][closing_information_text][$containsi]',
           query
         );
       }
