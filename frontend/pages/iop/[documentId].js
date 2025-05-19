@@ -126,7 +126,7 @@ export default function InvestmentOpportunityProfile() {
 
   const getImageUrl = (picture) => {
     if (!picture) return null;
-    return `${env('NEXT_PUBLIC_BACKEND_URL')}${picture.url}`;
+    return `${picture.url}`;
   };
 
   const imageUrl = profile.picture_one

@@ -38,7 +38,7 @@ const InvestmentCarousel = () => {
                   })
                 : '',
               image: item?.picture_one?.url
-                ? `${env('NEXT_PUBLIC_BACKEND_URL')}${item?.picture_one?.url}`
+                ? `${item?.picture_one?.url}`
                 : '/images/placholder.jpg',
             };
           });
