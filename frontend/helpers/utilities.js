@@ -143,3 +143,14 @@ export const getTruncatedFilename = (filePath, maxLength = 20) => {
   }
   return filename;
 };
+
+export const generateYearOptions = () => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+
+  for (let year = 2011; year <= currentYear; year++) {
+    years.push(year.toString());
+  }
+
+  return years.sort((a, b) => parseInt(b) - parseInt(a));
+};

@@ -537,7 +537,7 @@
       "locale": null
     },
     {
-      "documentId": "cyegnf07fdtqa1lvrcbnlfzj",
+      "documentId": "ymi1akof4aph85fwhhhr7e9l",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
@@ -580,7 +580,7 @@
       "locale": null
     },
     {
-      "documentId": "cz072755hycy1oyyzlmsflsq",
+      "documentId": "e4ax14sqhg168wmufc5sq34r",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
@@ -605,7 +605,7 @@
       "locale": null
     },
     {
-      "documentId": "oxtyp1go6h3q5zl5wpiej0b1",
+      "documentId": "n8purfi1apuwhxkow660pjkd",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
@@ -630,7 +630,7 @@
       "locale": null
     },
     {
-      "documentId": "efyht03zy38le1pee96jn5gi",
+      "documentId": "b048gwdsnhs5ikm8fhp3px95",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::knowledge-hub.knowledge-hub",
@@ -639,7 +639,6 @@
           "title",
           "image",
           "web_link",
-          "resource_type",
           "file",
           "topic",
           "regions",
@@ -670,7 +669,7 @@
       "locale": null
     },
     {
-      "documentId": "via5pzpj3ndt3myh4m4w1c0b",
+      "documentId": "tizij7kx3om2w8r9je9udps7",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::knowledge-hub.knowledge-hub",
@@ -679,7 +678,6 @@
           "title",
           "image",
           "web_link",
-          "resource_type",
           "file",
           "topic",
           "regions",
@@ -692,7 +690,7 @@
       "locale": null
     },
     {
-      "documentId": "brcp9p235emiy0bfpz3lg6xi",
+      "documentId": "aavblxfv23bbw6z3ixtswo5c",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::knowledge-hub.knowledge-hub",
@@ -701,7 +699,6 @@
           "title",
           "image",
           "web_link",
-          "resource_type",
           "file",
           "topic",
           "regions",
