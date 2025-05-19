@@ -15,7 +15,7 @@ const Card = ({ card, onClick }) => {
         <div className="relative h-48 w-full">
           {card.imageUrl ? (
             <Image
-              src={`${env('NEXT_PUBLIC_BACKEND_URL')}${card.imageUrl}`}
+              src={`${card.imageUrl}`}
               alt={card.title}
               fill
               className="object-cover"
