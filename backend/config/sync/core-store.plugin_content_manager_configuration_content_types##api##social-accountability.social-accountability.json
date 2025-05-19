@@ -154,8 +154,8 @@
       "list": [
         "id",
         "region",
-        "createdAt",
-        "updatedAt"
+        "other_media_slider",
+        "community_voices"
       ],
       "edit": [
         [
