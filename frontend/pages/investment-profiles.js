@@ -151,7 +151,9 @@ export default function InvestmentOpportunityProfile() {
     }));
   };
 
-  const handleCardClick = (card) => {};
+  const handleCardClick = (card) => {
+    router.push('/iop/' + card.documentId);
+  };
 
   const handleSearch = useCallback(
     debounce((query) => {
