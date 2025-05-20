@@ -7,14 +7,7 @@ const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 export const fetchKnowledgeHubs = createAsyncThunk(
   'knowledgeHubs/fetchKnowledgeHubs',
   async (
-    {
-      page = 1,
-      pageSize = 12,
-      query = '',
-      filters = {},
-      dateSort = 'desc',
-      dateFilter = null,
-    },
+    { page = 1, pageSize = 12, query = '', filters = {}, dateSort = 'desc' },
     { rejectWithValue }
   ) => {
     try {
@@ -31,36 +24,21 @@ export const fetchKnowledgeHubs = createAsyncThunk(
       }
 
       const knowledgeHubQueryParams = new URLSearchParams(baseQueryParams);
+      if (filters.date && filters.date.length > 0) {
+        if (Array.isArray(filters.date) && filters.date.length > 0) {
+          const yearNumbers = filters.date.map((year) => parseInt(year));
+          const minYear = Math.min(...yearNumbers);
+          const maxYear = Math.max(...yearNumbers);
 
-      if (dateFilter) {
-        const currentYear = new Date().getFullYear();
-        switch (dateFilter) {
-          case 'last_year':
-            knowledgeHubQueryParams.append(
-              'filters[date][$gte]',
-              `${currentYear - 1}-01-01`
-            );
-            knowledgeHubQueryParams.append(
-              'filters[date][$lte]',
-              `${currentYear - 1}-12-31`
-            );
-            break;
-          case 'this_year':
-            knowledgeHubQueryParams.append(
-              'filters[date][$gte]',
-              `${currentYear}-01-01`
-            );
-            knowledgeHubQueryParams.append(
-              'filters[date][$lte]',
-              `${currentYear}-12-31`
-            );
-            break;
-          case 'last_5_years':
-            knowledgeHubQueryParams.append(
-              'filters[date][$gte]',
-              `${currentYear - 5}-01-01`
-            );
-            break;
+          knowledgeHubQueryParams.append(
+            'filters[publication_date][$gte]',
+            `${minYear}-01-01`
+          );
+
+          knowledgeHubQueryParams.append(
+            'filters[publication_date][$lte]',
+            `${maxYear}-12-31`
+          );
         }
       }
 
@@ -110,7 +88,7 @@ export const fetchKnowledgeHubs = createAsyncThunk(
         }
       }
 
-      knowledgeHubQueryParams.append('sort[0]', `date:${dateSort}`);
+      knowledgeHubQueryParams.append('sort[0]', `publication_date:${dateSort}`);
 
       knowledgeHubQueryParams.append('populate[0]', 'topic');
       knowledgeHubQueryParams.append('populate[1]', 'regions');
@@ -126,12 +104,12 @@ export const fetchKnowledgeHubs = createAsyncThunk(
         title: hub.title,
         description: hub.description,
         file: hub.file?.url,
-        image: hub.image?.url,
+        image: hub.image,
         topic: hub.topic?.name || '',
         focusRegions: hub.regions?.map((r) => r.name) || [],
         webLink: hub.web_link,
-        publishedAt: hub.date,
-        publishedYear: new Date(hub.date).getFullYear(),
+        publishedAt: hub.publication_date,
+        publishedYear: new Date(hub.publication_date).getFullYear(),
       }));
 
       return {

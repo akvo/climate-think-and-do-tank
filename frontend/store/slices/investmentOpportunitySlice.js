@@ -7,14 +7,7 @@ const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
   'investmentOpportunityProfiles/fetchInvestmentOpportunityProfiles',
   async (
-    {
-      page = 1,
-      pageSize = 12,
-      query = '',
-      filters = {},
-      dateSort = 'desc',
-      dateFilter = null,
-    },
+    { page = 1, pageSize = 9, query = '', filters = {}, dateSort = 'desc' },
     { rejectWithValue }
   ) => {
     try {
@@ -23,9 +16,29 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
       baseQueryParams.append('pagination[pageSize]', pageSize);
 
       if (query) {
-        baseQueryParams.append('filters[$or][0][title][$containsi]', query);
         baseQueryParams.append(
-          'filters[$or][1][description][$containsi]',
+          'filters[$or][0][value_chain][$containsi]',
+          query
+        );
+        baseQueryParams.append('filters[$or][2][region][$containsi]', query);
+        baseQueryParams.append(
+          'filters[$or][3][investor_snapshot_text][$containsi]',
+          query
+        );
+        baseQueryParams.append(
+          'filters[$or][4][the_investment_case_text][$containsi]',
+          query
+        );
+        baseQueryParams.append(
+          'filters[$or][5][business_blueprint_text][$containsi]',
+          query
+        );
+        baseQueryParams.append(
+          'filters[$or][6][risk_and_impact_profile_text][$containsi]',
+          query
+        );
+        baseQueryParams.append(
+          'filters[$or][7][closing_information_text][$containsi]',
           query
         );
       }
@@ -34,42 +47,19 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
         baseQueryParams
       );
 
-      if (dateFilter) {
-        const currentYear = new Date().getFullYear();
-        switch (dateFilter) {
-          case 'last_year':
-            investmentOpportunityProfileQueryParams.append(
-              'filters[publication_date][$gte]',
-              `${currentYear - 1}-01-01`
-            );
-            investmentOpportunityProfileQueryParams.append(
-              'filters[publication_date][$lte]',
-              `${currentYear - 1}-12-31`
-            );
-            break;
-          case 'this_year':
-            investmentOpportunityProfileQueryParams.append(
-              'filters[publication_date][$gte]',
-              `${currentYear}-01-01`
-            );
-            investmentOpportunityProfileQueryParams.append(
-              'filters[publication_date][$lte]',
-              `${currentYear}-12-31`
-            );
-            break;
-          case 'last_5_years':
-            investmentOpportunityProfileQueryParams.append(
-              'filters[publication_date][$gte]',
-              `${currentYear - 5}-01-01`
-            );
-            break;
-        }
-      }
-
       if (filters.valueChain && filters.valueChain.length > 0) {
         filters.valueChain.forEach((chain, index) => {
           investmentOpportunityProfileQueryParams.append(
             `filters[value_chain][name][$in][${index}]`,
+            chain
+          );
+        });
+      }
+
+      if (filters.regions && filters.regions.length > 0) {
+        filters.regions.forEach((chain, index) => {
+          investmentOpportunityProfileQueryParams.append(
+            `filters[region][name][$in][${index}]`,
             chain
           );
         });
@@ -85,6 +75,12 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
         'value_chain'
       );
 
+      investmentOpportunityProfileQueryParams.append('populate[1]', 'region');
+      investmentOpportunityProfileQueryParams.append(
+        'populate[2]',
+        'picture_one'
+      );
+
       const response = await axios.get(
         `${BACKEND_URL}/api/investment-opportunity-profiles?${investmentOpportunityProfileQueryParams}`
       );
@@ -92,11 +88,14 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
       const investmentOpportunityProfiles = response.data.data.map(
         (profile) => ({
           id: profile.id,
+          documentId: profile.documentId,
           title: profile.title,
           description: profile.description,
           publicationDate: profile.publication_date,
           publicationYear: new Date(profile.publication_date).getFullYear(),
           valueChain: profile.value_chain?.name || '',
+          region: profile.region?.name || '',
+          imageUrl: profile.picture_one || '',
         })
       );
 

@@ -8,12 +8,12 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "title": {
-      "type": "string"
+    "publication_date": {
+      "type": "date"
     },
     "value_chain": {
       "type": "relation",

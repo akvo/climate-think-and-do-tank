@@ -263,12 +263,7 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "value_chain",
-        "region",
-        "title"
-      ],
+      "list": ["id", "value_chain", "region", "title"],
       "edit": [
         [
           {
