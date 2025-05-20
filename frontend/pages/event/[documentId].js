@@ -7,7 +7,7 @@ import { ChevronLeft, Calendar, MapPin } from 'lucide-react';
 import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import { getImageUrl } from '@/helpers/utilities';
-// import MarkdownRenderer from '@/components/MarkdownRenderer'; // Uncomment if you have a renderer
+import { MarkdownRenderer } from '@/components/MarkDownRenderer';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 
@@ -121,7 +121,7 @@ export default function EventDetailPage() {
 
       {/* Breadcrumb Bar */}
       <div className="bg-[#EFFDF1] px-4 py-10">
-        <div className="container mx-auto">
+        <div className="container mx-auto  px-4">
           <div className="flex items-center gap-2 text-md font-semibold">
             <Link href="/" className="text-gray-700 hover:underline">
               Home
@@ -148,7 +148,7 @@ export default function EventDetailPage() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-12 text-black">
         <article className="prose lg:prose-xl">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-gray-600 mb-4">
             <div className="flex items-center gap-2 text-base">
@@ -209,12 +209,7 @@ export default function EventDetailPage() {
           <h2 className="text-2xl font-semibold mb-4 mt-8 text-black">
             About This Event
           </h2>
-          {/* If you want markdown support, use your renderer, otherwise fallback */}
-          {/* <MarkdownRenderer content={event.description} /> */}
-          <div
-            dangerouslySetInnerHTML={{ __html: event.description }}
-            className="text-black"
-          />
+          <MarkdownRenderer content={event.description} />
         </article>
       </div>
     </>
