@@ -4,6 +4,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import { useRouter } from 'next/router';
+import { getImageUrl } from '@/helpers/utilities';
 
 const HeroSlider = ({ setData }) => {
   const router = useRouter();
@@ -37,9 +38,7 @@ const HeroSlider = ({ setData }) => {
             const slides = homepageData.hero_image_slider.map(
               (slide, index) => {
                 const imageUrl =
-                  slide.files && slide.files.length > 0
-                    ? `${slide.files[0].url}`
-                    : '';
+                  slide.files && slide.files.length > 0 ? slide.files[0] : '';
 
                 return {
                   image: imageUrl,
@@ -124,7 +123,7 @@ const HeroSlider = ({ setData }) => {
           >
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30 z-10"></div>
             <Image
-              src={slide.image}
+              src={getImageUrl(slide.image)}
               alt={slide.title}
               fill
               unoptimized

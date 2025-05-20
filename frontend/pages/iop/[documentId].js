@@ -5,6 +5,7 @@ import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import { MarkdownRenderer } from '@/components/MarkDownRenderer';
 import Link from 'next/link';
+import { getImageUrl } from '@/helpers/utilities';
 
 export default function InvestmentOpportunityProfile() {
   const router = useRouter();
@@ -122,11 +123,6 @@ export default function InvestmentOpportunityProfile() {
       month: 'long',
       year: 'numeric',
     });
-  };
-
-  const getImageUrl = (picture) => {
-    if (!picture) return null;
-    return `${picture.url}`;
   };
 
   const imageUrl = profile.picture_one

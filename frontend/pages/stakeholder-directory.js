@@ -28,6 +28,7 @@ import { toast } from 'react-toastify';
 import debounce from 'lodash/debounce';
 import { env } from '@/helpers/env-vars';
 import CheckboxFilter from '@/components/CheckboxFilter';
+import { getImageUrl } from '@/helpers/utilities';
 
 export default function StakeholderDirectory() {
   const router = useRouter();
@@ -357,6 +358,7 @@ export default function StakeholderDirectory() {
                             'All Locations',
                             ...filterOptions[filterType],
                           ]}
+                          initialSelected={activeFilters[filterType] || []}
                           onApply={(selectedLocations) => {
                             const locationsToApply = selectedLocations.includes(
                               'All Locations'
@@ -514,9 +516,7 @@ export default function StakeholderDirectory() {
                   <div className="relative w-24 h-24 m-auto">
                     {stakeholder.image ? (
                       <Image
-                        src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
-                          stakeholder.image
-                        }`}
+                        src={getImageUrl(stakeholder.image)}
                         alt={stakeholder.name}
                         fill
                         className="rounded-full object-cover"
@@ -1002,7 +1002,7 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
             <div className="relative w-64 h-64 ml-8">
               <div className="w-full h-full rounded-full bg-gray-100 overflow-hidden relative">
                 <Image
-                  src={`${env('NEXT_PUBLIC_BACKEND_URL')}${stakeholder.image}`}
+                  src={getImageUrl(stakeholder.image)}
                   alt={stakeholder.name}
                   className="object-cover relative"
                   unoptimized

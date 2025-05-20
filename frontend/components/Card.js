@@ -1,4 +1,4 @@
-import { formatDate } from '@/helpers/utilities';
+import { formatDate, getImageUrl } from '@/helpers/utilities';
 import { env } from '@/helpers/env-vars';
 import Image from 'next/image';
 import React from 'react';
@@ -15,7 +15,7 @@ const Card = ({ card, onClick }) => {
         <div className="relative h-48 w-full">
           {card.imageUrl ? (
             <Image
-              src={`${card.imageUrl}`}
+              src={getImageUrl(card.imageUrl)}
               alt={card.title}
               fill
               className="object-cover"
