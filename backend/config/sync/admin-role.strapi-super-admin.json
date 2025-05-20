@@ -11,10 +11,7 @@
       "actionParameters": {},
       "subject": "api::about.about",
       "properties": {
-        "fields": [
-          "title",
-          "blocks"
-        ]
+        "fields": ["title", "blocks"]
       },
       "conditions": [],
       "locale": null
@@ -43,10 +40,7 @@
       "actionParameters": {},
       "subject": "api::about.about",
       "properties": {
-        "fields": [
-          "title",
-          "blocks"
-        ]
+        "fields": ["title", "blocks"]
       },
       "conditions": [],
       "locale": null
@@ -57,10 +51,7 @@
       "actionParameters": {},
       "subject": "api::about.about",
       "properties": {
-        "fields": [
-          "title",
-          "blocks"
-        ]
+        "fields": ["title", "blocks"]
       },
       "conditions": [],
       "locale": null
@@ -149,12 +140,7 @@
       "actionParameters": {},
       "subject": "api::author.author",
       "properties": {
-        "fields": [
-          "name",
-          "avatar",
-          "email",
-          "articles"
-        ]
+        "fields": ["name", "avatar", "email", "articles"]
       },
       "conditions": [],
       "locale": null
@@ -183,12 +169,7 @@
       "actionParameters": {},
       "subject": "api::author.author",
       "properties": {
-        "fields": [
-          "name",
-          "avatar",
-          "email",
-          "articles"
-        ]
+        "fields": ["name", "avatar", "email", "articles"]
       },
       "conditions": [],
       "locale": null
@@ -199,12 +180,7 @@
       "actionParameters": {},
       "subject": "api::author.author",
       "properties": {
-        "fields": [
-          "name",
-          "avatar",
-          "email",
-          "articles"
-        ]
+        "fields": ["name", "avatar", "email", "articles"]
       },
       "conditions": [],
       "locale": null
@@ -215,12 +191,7 @@
       "actionParameters": {},
       "subject": "api::category.category",
       "properties": {
-        "fields": [
-          "name",
-          "slug",
-          "articles",
-          "description"
-        ]
+        "fields": ["name", "slug", "articles", "description"]
       },
       "conditions": [],
       "locale": null
@@ -249,12 +220,7 @@
       "actionParameters": {},
       "subject": "api::category.category",
       "properties": {
-        "fields": [
-          "name",
-          "slug",
-          "articles",
-          "description"
-        ]
+        "fields": ["name", "slug", "articles", "description"]
       },
       "conditions": [],
       "locale": null
@@ -265,12 +231,7 @@
       "actionParameters": {},
       "subject": "api::category.category",
       "properties": {
-        "fields": [
-          "name",
-          "slug",
-          "articles",
-          "description"
-        ]
+        "fields": ["name", "slug", "articles", "description"]
       },
       "conditions": [],
       "locale": null
@@ -347,10 +308,7 @@
       "actionParameters": {},
       "subject": "api::country.country",
       "properties": {
-        "fields": [
-          "country_name",
-          "country_code"
-        ]
+        "fields": ["country_name", "country_code"]
       },
       "conditions": [],
       "locale": null
@@ -379,10 +337,7 @@
       "actionParameters": {},
       "subject": "api::country.country",
       "properties": {
-        "fields": [
-          "country_name",
-          "country_code"
-        ]
+        "fields": ["country_name", "country_code"]
       },
       "conditions": [],
       "locale": null
@@ -393,10 +348,7 @@
       "actionParameters": {},
       "subject": "api::country.country",
       "properties": {
-        "fields": [
-          "country_name",
-          "country_code"
-        ]
+        "fields": ["country_name", "country_code"]
       },
       "conditions": [],
       "locale": null
@@ -631,7 +583,6 @@
           "value_chain",
           "region",
           "picture_one",
-          "investor_snapshot_text",
           "the_investment_case_image",
           "business_blueprint_image",
           "risk_and_impact_profile_image",
@@ -639,7 +590,8 @@
           "the_investment_case_text",
           "business_blueprint_text",
           "risk_and_impact_profile_text",
-          "closing_information_text"
+          "closing_information_text",
+          "investor_snapshot_text"
         ]
       },
       "conditions": [],
@@ -674,7 +626,6 @@
           "value_chain",
           "region",
           "picture_one",
-          "investor_snapshot_text",
           "the_investment_case_image",
           "business_blueprint_image",
           "risk_and_impact_profile_image",
@@ -682,7 +633,8 @@
           "the_investment_case_text",
           "business_blueprint_text",
           "risk_and_impact_profile_text",
-          "closing_information_text"
+          "closing_information_text",
+          "investor_snapshot_text"
         ]
       },
       "conditions": [],
@@ -699,7 +651,6 @@
           "value_chain",
           "region",
           "picture_one",
-          "investor_snapshot_text",
           "the_investment_case_image",
           "business_blueprint_image",
           "risk_and_impact_profile_image",
@@ -707,7 +658,8 @@
           "the_investment_case_text",
           "business_blueprint_text",
           "risk_and_impact_profile_text",
-          "closing_information_text"
+          "closing_information_text",
+          "investor_snapshot_text"
         ]
       },
       "conditions": [],
@@ -800,9 +752,7 @@
       "actionParameters": {},
       "subject": "api::looking-for.looking-for",
       "properties": {
-        "fields": [
-          "name"
-        ]
+        "fields": ["name"]
       },
       "conditions": [],
       "locale": null
@@ -831,9 +781,7 @@
       "actionParameters": {},
       "subject": "api::looking-for.looking-for",
       "properties": {
-        "fields": [
-          "name"
-        ]
+        "fields": ["name"]
       },
       "conditions": [],
       "locale": null
@@ -844,9 +792,7 @@
       "actionParameters": {},
       "subject": "api::looking-for.looking-for",
       "properties": {
-        "fields": [
-          "name"
-        ]
+        "fields": ["name"]
       },
       "conditions": [],
       "locale": null
@@ -926,13 +872,7 @@
       "actionParameters": {},
       "subject": "api::organisation.organisation",
       "properties": {
-        "fields": [
-          "name",
-          "website",
-          "type",
-          "country",
-          "org_image"
-        ]
+        "fields": ["name", "website", "type", "country", "org_image"]
       },
       "conditions": [],
       "locale": null
@@ -961,13 +901,7 @@
       "actionParameters": {},
       "subject": "api::organisation.organisation",
       "properties": {
-        "fields": [
-          "name",
-          "website",
-          "type",
-          "country",
-          "org_image"
-        ]
+        "fields": ["name", "website", "type", "country", "org_image"]
       },
       "conditions": [],
       "locale": null
@@ -978,13 +912,7 @@
       "actionParameters": {},
       "subject": "api::organisation.organisation",
       "properties": {
-        "fields": [
-          "name",
-          "website",
-          "type",
-          "country",
-          "org_image"
-        ]
+        "fields": ["name", "website", "type", "country", "org_image"]
       },
       "conditions": [],
       "locale": null
@@ -995,12 +923,7 @@
       "actionParameters": {},
       "subject": "api::region.region",
       "properties": {
-        "fields": [
-          "name",
-          "parent_region",
-          "country",
-          "news"
-        ]
+        "fields": ["name", "parent_region", "country", "news"]
       },
       "conditions": [],
       "locale": null
@@ -1029,12 +952,7 @@
       "actionParameters": {},
       "subject": "api::region.region",
       "properties": {
-        "fields": [
-          "name",
-          "parent_region",
-          "country",
-          "news"
-        ]
+        "fields": ["name", "parent_region", "country", "news"]
       },
       "conditions": [],
       "locale": null
@@ -1045,12 +963,7 @@
       "actionParameters": {},
       "subject": "api::region.region",
       "properties": {
-        "fields": [
-          "name",
-          "parent_region",
-          "country",
-          "news"
-        ]
+        "fields": ["name", "parent_region", "country", "news"]
       },
       "conditions": [],
       "locale": null
@@ -1130,11 +1043,7 @@
       "actionParameters": {},
       "subject": "api::stakeholder-connection.stakeholder-connection",
       "properties": {
-        "fields": [
-          "connection_status",
-          "requester",
-          "receiver"
-        ]
+        "fields": ["connection_status", "requester", "receiver"]
       },
       "conditions": [],
       "locale": null
@@ -1163,11 +1072,7 @@
       "actionParameters": {},
       "subject": "api::stakeholder-connection.stakeholder-connection",
       "properties": {
-        "fields": [
-          "connection_status",
-          "requester",
-          "receiver"
-        ]
+        "fields": ["connection_status", "requester", "receiver"]
       },
       "conditions": [],
       "locale": null
@@ -1178,11 +1083,7 @@
       "actionParameters": {},
       "subject": "api::stakeholder-connection.stakeholder-connection",
       "properties": {
-        "fields": [
-          "connection_status",
-          "requester",
-          "receiver"
-        ]
+        "fields": ["connection_status", "requester", "receiver"]
       },
       "conditions": [],
       "locale": null
@@ -1193,10 +1094,7 @@
       "actionParameters": {},
       "subject": "api::topic.topic",
       "properties": {
-        "fields": [
-          "name",
-          "knowledge_hub"
-        ]
+        "fields": ["name", "knowledge_hub"]
       },
       "conditions": [],
       "locale": null
@@ -1225,10 +1123,7 @@
       "actionParameters": {},
       "subject": "api::topic.topic",
       "properties": {
-        "fields": [
-          "name",
-          "knowledge_hub"
-        ]
+        "fields": ["name", "knowledge_hub"]
       },
       "conditions": [],
       "locale": null
@@ -1239,10 +1134,7 @@
       "actionParameters": {},
       "subject": "api::topic.topic",
       "properties": {
-        "fields": [
-          "name",
-          "knowledge_hub"
-        ]
+        "fields": ["name", "knowledge_hub"]
       },
       "conditions": [],
       "locale": null
@@ -1253,9 +1145,7 @@
       "actionParameters": {},
       "subject": "api::value-chain.value-chain",
       "properties": {
-        "fields": [
-          "name"
-        ]
+        "fields": ["name"]
       },
       "conditions": [],
       "locale": null
@@ -1284,9 +1174,7 @@
       "actionParameters": {},
       "subject": "api::value-chain.value-chain",
       "properties": {
-        "fields": [
-          "name"
-        ]
+        "fields": ["name"]
       },
       "conditions": [],
       "locale": null
@@ -1297,9 +1185,7 @@
       "actionParameters": {},
       "subject": "api::value-chain.value-chain",
       "properties": {
-        "fields": [
-          "name"
-        ]
+        "fields": ["name"]
       },
       "conditions": [],
       "locale": null

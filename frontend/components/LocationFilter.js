@@ -1,30 +1,29 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Search } from 'lucide-react';
 
-export default function LocationsFilter({ onApply, onClear, locations, name }) {
+export default function LocationsFilter({
+  onApply,
+  onClear,
+  locations,
+  name,
+  initialSelected = [],
+}) {
   const availableLocations = useMemo(
     () => locations.filter((loc) => loc !== 'All Locations'),
     [locations]
   );
 
-  const [selectedLocations, setSelectedLocations] = useState([
-    ...availableLocations,
-  ]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredLocations, setFilteredLocations] = useState([
-    ...availableLocations,
-  ]);
+  const [selectedLocations, setSelectedLocations] = useState(
+    initialSelected.length === 0 ? [...availableLocations] : initialSelected
+  );
 
   useEffect(() => {
-    if (searchQuery.trim() === '') {
-      setFilteredLocations([...availableLocations]);
+    if (initialSelected.length === 0) {
+      setSelectedLocations([...availableLocations]);
     } else {
-      const filtered = availableLocations.filter((location) =>
-        location.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredLocations(filtered);
+      setSelectedLocations(initialSelected);
     }
-  }, [searchQuery, availableLocations]);
+  }, [initialSelected, availableLocations]);
 
   const handleMasterToggle = () => {
     if (selectedLocations.length === availableLocations.length) {
@@ -44,15 +43,21 @@ export default function LocationsFilter({ onApply, onClear, locations, name }) {
 
   const handleClear = () => {
     setSelectedLocations([]);
-    setSearchQuery('');
     onClear();
   };
 
   const handleApply = () => {
-    onApply(selectedLocations);
+    const result =
+      selectedLocations.length === availableLocations.length
+        ? ['All Locations', ...selectedLocations]
+        : selectedLocations;
+
+    onApply(result);
   };
 
-  const masterChecked = selectedLocations.length === availableLocations.length;
+  const masterChecked =
+    availableLocations.length > 0 &&
+    selectedLocations.length === availableLocations.length;
 
   return (
     <div className="bg-white rounded-xl shadow-lg w-full max-w-md">
@@ -80,7 +85,7 @@ export default function LocationsFilter({ onApply, onClear, locations, name }) {
 
           <div className="border-t border-gray-200 my-2"></div>
 
-          {filteredLocations.map((location) => (
+          {availableLocations.map((location) => (
             <label
               key={location}
               className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer"
@@ -103,7 +108,7 @@ export default function LocationsFilter({ onApply, onClear, locations, name }) {
             </label>
           ))}
 
-          {filteredLocations.length === 0 && (
+          {availableLocations.length === 0 && (
             <div className="py-4 text-center text-gray-500">
               No locations found
             </div>

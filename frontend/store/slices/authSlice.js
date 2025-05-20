@@ -580,7 +580,7 @@ export const fetchStakeholders = createAsyncThunk(
               id: user.id,
               type: 'Individual',
               name: user.full_name || user.username,
-              image: user.profile_image?.url,
+              image: user.profile_image,
               focusRegions: user.focus_regions?.map((r) => r.name) || [],
               organization: user.organisation ? user.organisation.name : '',
               data: user,
@@ -599,7 +599,7 @@ export const fetchStakeholders = createAsyncThunk(
               id: org.id,
               type: 'Organization',
               name: org.name,
-              image: org.org_image?.formats?.medium?.url,
+              image: org.org_image?.formats?.medium,
               country: org.country?.country_name,
               data: org,
             }))
@@ -763,45 +763,81 @@ const SEARCH_QUERY = gql`
   }
 `;
 
-export async function searchContentAcrossTypes({
-  query,
-  page = 1,
-  pageSize = 10,
-}) {
+export async function searchContentAcrossTypes({ query }) {
   try {
-    const data = await graphqlClient.request(SEARCH_QUERY, {
-      query,
-    });
+    const SEARCH_QUERY = gql`
+      query SearchContent($query: String!) {
+        organisations(filters: { name: { contains: $query } }) {
+          name
+        }
+
+        investmentOpportunityProfiles(
+          filters: { value_chain: { name: { containsi: $query } } }
+        ) {
+          value_chain {
+            name
+          }
+          region {
+            name
+          }
+          publication_date
+        }
+
+        knowledgeHubs(filters: { title: { containsi: $query } }) {
+          title
+          description
+          publishedAt
+          image {
+            url
+          }
+        }
+      }
+    `;
+
+    const data = await graphqlClient.request(SEARCH_QUERY, { query });
 
     return {
       organizations: {
-        items: data.organisations.map((org) => ({
-          id: org.id,
-          attributes: { name: org.name },
-        })),
-        pagination: {
-          page,
-          pageSize,
-          total: data.organisations.length,
-          pageCount: 1,
-        },
+        items:
+          data.organisations?.map((org) => ({
+            id: `org-${Math.random().toString(36).substr(2, 9)}`,
+            attributes: {
+              name: org.name,
+            },
+          })) || [],
       },
-      regions: {
-        items: data.regions.map((sector) => ({
-          id: sector.id,
-          attributes: { name: sector.name },
-        })),
-        pagination: {
-          page,
-          pageSize,
-          total: data.regions.length,
-          pageCount: 1,
-        },
+      investments: {
+        items:
+          data.investmentOpportunityProfiles?.map((inv) => ({
+            id: inv.id,
+            attributes: {
+              title: `${inv.value_chain.name} In ${inv.region.name}`,
+              category: inv.region.name || 'Investment',
+              publication_date: inv.publication_date,
+            },
+          })) || [],
+      },
+      knowledgeHub: {
+        items:
+          data.knowledgeHubs?.map((item) => ({
+            id: item.id,
+            attributes: {
+              title: item.title,
+              description: item.description,
+              published_at: item.publishedAt,
+              image: item.image ? { url: item.image } : null,
+            },
+          })) || [],
       },
     };
   } catch (error) {
-    console.error('Search error:', error.response);
-    throw error;
+    console.error('Search error:', error.response || error);
+
+    return {
+      organizations: { items: [] },
+      investments: { items: [] },
+      knowledgeHub: { items: [] },
+    };
   }
 }
 

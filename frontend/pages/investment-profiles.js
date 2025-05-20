@@ -9,8 +9,9 @@ import {
   fetchInvestmentOpportunityProfiles,
 } from '@/store/slices/investmentOpportunitySlice';
 import LocationsFilter from '@/components/LocationFilter';
-import debounce from 'lodash/debounce';
 import CheckboxFilter from '@/components/CheckboxFilter';
+import debounce from 'lodash/debounce';
+import Card from '@/components/Card';
 
 export default function InvestmentOpportunityProfile() {
   const router = useRouter();
@@ -18,12 +19,9 @@ export default function InvestmentOpportunityProfile() {
   const dispatch = useDispatch();
   const isInitialLoad = useRef(true);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState({
     valueChain: [],
-    date: [],
     regions: [],
   });
   const [openFilter, setOpenFilter] = useState(null);
@@ -53,7 +51,6 @@ export default function InvestmentOpportunityProfile() {
       'All Locations',
       ...regions.map((region) => region.name || region.attributes?.name),
     ],
-    date: ['All Time', 'Last Year', 'This Year', 'Last 5 Years'],
   };
 
   useEffect(() => {
@@ -61,10 +58,9 @@ export default function InvestmentOpportunityProfile() {
       const search = searchParams.get('search') || '';
       const valueChain =
         searchParams.get('valueChain')?.split(',').filter(Boolean) || [];
-      const date = searchParams.get('date')?.split(',').filter(Boolean) || [];
       const regions =
         searchParams.get('regions')?.split(',').filter(Boolean) || [];
-      const sortBy = searchParams.get('sortBy') || 'publication_date';
+      const sortBy = searchParams.get('sortBy');
       const sortOrder = searchParams.get('sortOrder') || 'desc';
 
       setSearchQuery(search);
@@ -72,7 +68,6 @@ export default function InvestmentOpportunityProfile() {
         valueChain: valueChain.filter((vc) =>
           filterOptions.valueChain.includes(vc)
         ),
-        date: date.filter((d) => filterOptions.date.includes(d)),
         regions: regions.filter((r) => filterOptions.regions.includes(r)),
       });
       setSortConfig({
@@ -102,7 +97,6 @@ export default function InvestmentOpportunityProfile() {
       const params = new URLSearchParams();
 
       if (search) params.set('search', search);
-      if (sort.field !== 'publication_date') params.set('sortBy', sort.field);
       if (sort.order !== 'desc') params.set('sortOrder', sort.order);
 
       Object.entries(filters).forEach(([key, values]) => {
@@ -130,10 +124,6 @@ export default function InvestmentOpportunityProfile() {
             regions: activeFilters.regions,
           },
           dateSort: sortConfig.order,
-          dateFilter:
-            activeFilters.date.length > 0
-              ? activeFilters.date[0].toLowerCase().replace(' ', '_')
-              : null,
         })
       );
     }, 300),
@@ -143,7 +133,6 @@ export default function InvestmentOpportunityProfile() {
       searchQuery,
       activeFilters.valueChain,
       activeFilters.regions,
-      activeFilters.date,
       sortConfig.order,
     ]
   );
@@ -163,8 +152,7 @@ export default function InvestmentOpportunityProfile() {
   };
 
   const handleCardClick = (card) => {
-    setSelectedCard(card);
-    setIsModalOpen(true);
+    router.push('/iop/' + card.documentId);
   };
 
   const handleSearch = useCallback(
@@ -196,10 +184,6 @@ export default function InvestmentOpportunityProfile() {
             regions: activeFilters.regions,
           },
           dateSort: sortConfig.order,
-          dateFilter:
-            activeFilters.date.length > 0
-              ? activeFilters.date[0].toLowerCase().replace(' ', '_')
-              : null,
         })
       );
     }, 500),
@@ -208,7 +192,6 @@ export default function InvestmentOpportunityProfile() {
       dispatch,
       activeFilters.valueChain,
       activeFilters.regions,
-      activeFilters.date,
       sortConfig.order,
     ]
   );
@@ -235,7 +218,6 @@ export default function InvestmentOpportunityProfile() {
       query.valueChain = newFilters.valueChain.join(',');
     if (newFilters.regions.length > 0)
       query.regions = newFilters.regions.join(',');
-    if (newFilters.date.length > 0) query.date = newFilters.date[0];
 
     router.push(
       {
@@ -251,7 +233,6 @@ export default function InvestmentOpportunityProfile() {
     const emptyFilters = {
       valueChain: [],
       regions: [],
-      date: [],
     };
 
     setActiveFilters(emptyFilters);
@@ -361,15 +342,16 @@ export default function InvestmentOpportunityProfile() {
                           }
                           hasAllOption={true}
                           onApply={(selectedOptions) => {
-                            const availableOptions = filterOptions[
-                              filterType
-                            ].filter((opt) => opt !== 'All');
                             const allItemsSelected =
                               selectedOptions.includes('All') ||
-                              (availableOptions.length > 0 &&
-                                availableOptions.every((opt) =>
-                                  selectedOptions.includes(opt)
-                                ));
+                              (filterOptions[filterType].filter(
+                                (opt) => opt !== 'All'
+                              ).length > 0 &&
+                                filterOptions[filterType]
+                                  .filter((opt) => opt !== 'All')
+                                  .every((opt) =>
+                                    selectedOptions.includes(opt)
+                                  ));
 
                             const optionsToApply = allItemsSelected
                               ? []
@@ -395,20 +377,29 @@ export default function InvestmentOpportunityProfile() {
                         />
                       ) : filterType === 'regions' ? (
                         <LocationsFilter
-                          name="Regions"
+                          name="Focus Regions"
                           locations={[
                             'All Locations',
                             'No Specific Region',
                             ...filterOptions[filterType],
                           ]}
+                          initialSelected={activeFilters[filterType]}
                           onApply={(selectedLocations) => {
-                            const locationsToApply = selectedLocations.includes(
-                              'All Locations'
-                            )
+                            const availableLocations = [
+                              'No Specific Region',
+                              ...filterOptions[filterType],
+                            ];
+
+                            const allSelected =
+                              availableLocations.length > 0 &&
+                              selectedLocations.length ===
+                                availableLocations.filter(
+                                  (item) => item !== 'All Locations'
+                                ).length;
+
+                            const locationsToApply = allSelected
                               ? []
-                              : selectedLocations.filter(
-                                  (loc) => loc !== 'All Locations'
-                                );
+                              : selectedLocations;
 
                             const newFilters = {
                               ...activeFilters,
@@ -428,37 +419,6 @@ export default function InvestmentOpportunityProfile() {
                             setOpenFilter(null);
                           }}
                         />
-                      ) : filterType === 'date' ? (
-                        <div className="bg-white rounded-md shadow-lg border w-48 max-h-60 overflow-y-auto">
-                          {filterOptions[filterType].map((option) => (
-                            <label
-                              key={option}
-                              className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
-                            >
-                              <input
-                                type="radio"
-                                name="date-filter"
-                                checked={
-                                  activeFilters[filterType].length > 0
-                                    ? activeFilters[filterType][0] === option
-                                    : option === 'All Time'
-                                }
-                                onChange={() => {
-                                  const newFilters = {
-                                    ...activeFilters,
-                                    [filterType]:
-                                      option === 'All Time' ? [] : [option],
-                                  };
-                                  setActiveFilters(newFilters);
-                                  updateFilters(newFilters);
-                                  setOpenFilter(null);
-                                }}
-                                className="mr-2"
-                              />
-                              {option}
-                            </label>
-                          ))}
-                        </div>
                       ) : (
                         <div className="w-48 bg-white rounded-md shadow-lg border max-h-60 overflow-y-auto">
                           {filterOptions[filterType].length > 0 ? (
@@ -514,6 +474,39 @@ export default function InvestmentOpportunityProfile() {
             )}
           </div>
         </div>
+
+        {(activeFilters.valueChain?.length > 0 ||
+          activeFilters.regions?.length > 0) && (
+          <div className="container mx-auto px-4 pb-3 text-black">
+            <div className="flex items-center gap-2 flex-wrap">
+              {Object.entries(activeFilters).map(([filterType, values]) =>
+                values.map((value) => (
+                  <span
+                    key={`${filterType}-${value}`}
+                    className="bg-gray-100 px-3 py-1 rounded-full text-sm flex items-center gap-1"
+                  >
+                    {value}
+                    <button
+                      onClick={() => {
+                        const newFilters = {
+                          ...activeFilters,
+                          [filterType]: activeFilters[filterType].filter(
+                            (v) => v !== value
+                          ),
+                        };
+                        setActiveFilters(newFilters);
+                        updateFilters(newFilters);
+                      }}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="container mx-auto px-4 py-8">
@@ -525,37 +518,14 @@ export default function InvestmentOpportunityProfile() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {investmentOpportunityProfiles.map((card) => (
-                <div
+                <Card
                   key={card.id}
-                  className="bg-white rounded-lg overflow-hidden shadow-sm border cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => handleCardClick(card)}
-                >
-                  <div className="p-6">
-                    <div className="text-green-600 text-xs font-semibold tracking-wider mb-2">
-                      {card.publicationYear}
-                    </div>
-                    <h3 className="text-lg font-semibold mb-2 text-black line-clamp-2">
-                      {card.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                      {card.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <span className="px-2 py-1 bg-gray-100 text-xs rounded-full text-black">
-                        {card.valueChain}
-                      </span>
-                    </div>
-                    <button
-                      className="px-6 py-2 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors text-black"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCardClick(card);
-                      }}
-                    >
-                      Learn More
-                    </button>
-                  </div>
-                </div>
+                  card={{
+                    ...card,
+                    title: `${card.valueChain} in ${card.region}`,
+                  }}
+                  onClick={handleCardClick}
+                />
               ))}
             </div>
 
