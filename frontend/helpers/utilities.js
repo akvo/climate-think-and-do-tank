@@ -1,3 +1,5 @@
+import { env } from './env-vars';
+
 export const validateEmail = (email) => {
   if (!email.trim()) {
     return 'Email is required';
@@ -170,4 +172,36 @@ export const formatRegionsDisplay = (itemRegions, allRegions) => {
       return `${itemRegions.slice(0, displayLimit).join(', ')}...`;
     }
   }
+};
+
+export const formatDate = (dateString) => {
+  if (!dateString) return '';
+
+  const date = new Date(dateString);
+  if (isNaN(date)) return dateString;
+
+  return date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+};
+
+export const generateYearOptions = () => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+
+  for (let year = 2011; year <= currentYear; year++) {
+    years.push(year.toString());
+  }
+
+  return years.sort((a, b) => parseInt(b) - parseInt(a));
+};
+
+export const getImageUrl = (image) => {
+  if (!image) return '';
+  if (image.url.startsWith('http')) {
+    return image.url;
+  }
+  return `${env('NEXT_PUBLIC_BACKEND_URL')}${image.url}`;
 };
