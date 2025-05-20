@@ -126,7 +126,7 @@ export default function NewsDetailPage() {
       </Head>
 
       <div className="bg-[#EFFDF1] px-4 py-10">
-        <div className="container mx-auto">
+        <div className="container mx-auto px-4">
           <div className="flex items-center gap-2 text-md font-semibold">
             <Link href="/" className="text-gray-700 hover:underline">
               Home
