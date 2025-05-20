@@ -11,7 +11,7 @@ import {
 } from '@/store/slices/knowledgeHubSlice';
 import debounce from 'lodash/debounce';
 import CheckboxFilter from '@/components/CheckboxFilter';
-import { generateYearOptions } from '@/helpers/utilities';
+import { generateYearOptions, getImageUrl } from '@/helpers/utilities';
 
 export default function KnowledgeHub() {
   const router = useRouter();
@@ -522,7 +522,7 @@ export default function KnowledgeHub() {
                   <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
                     {card.image ? (
                       <Image
-                        src={card.image}
+                        src={getImageUrl(card.image)}
                         alt={card.title}
                         width={500}
                         height={300}

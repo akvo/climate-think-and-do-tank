@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { env } from '@/helpers/env-vars';
 import Link from 'next/link';
+import { getImageUrl } from '@/helpers/utilities';
 
 const InvestmentCarousel = () => {
   const [investments, setInvestments] = useState([]);
@@ -38,7 +39,7 @@ const InvestmentCarousel = () => {
                   })
                 : '',
               image: item?.picture_one?.url
-                ? `${item?.picture_one?.url}`
+                ? item?.picture_one
                 : '/images/placholder.jpg',
             };
           });
@@ -116,7 +117,7 @@ const InvestmentCarousel = () => {
               >
                 <div className="relative h-48">
                   <Image
-                    src={investment.image}
+                    src={getImageUrl(investment.image)}
                     alt={investment.title}
                     fill
                     className="object-cover"

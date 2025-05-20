@@ -104,7 +104,7 @@ export const fetchKnowledgeHubs = createAsyncThunk(
         title: hub.title,
         description: hub.description,
         file: hub.file?.url,
-        image: hub.image?.url,
+        image: hub.image,
         topic: hub.topic?.name || '',
         focusRegions: hub.regions?.map((r) => r.name) || [],
         webLink: hub.web_link,

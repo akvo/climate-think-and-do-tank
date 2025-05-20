@@ -95,7 +95,7 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
           publicationYear: new Date(profile.publication_date).getFullYear(),
           valueChain: profile.value_chain?.name || '',
           region: profile.region?.name || '',
-          imageUrl: profile.picture_one?.url || '',
+          imageUrl: profile.picture_one || '',
         })
       );
 
