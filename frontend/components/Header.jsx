@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { env } from '@/helpers/env-vars';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function Header() {
   const pathname = usePathname();
@@ -15,9 +16,18 @@ export default function Header() {
   const isActive = (path) => pathname === path;
   const { isAuthenticated, loading, user } = useSelector((state) => state.auth);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
   const handleLogout = () => {
     dispatch(logout());
     router.push('/login');
+  };
+
+  const toggleMoreDropdown = () => {
+    setMoreDropdownOpen(!moreDropdownOpen);
+  };
+
+  const isMoreActive = () => {
+    return isActive('/news-events') || isActive('/about');
   };
 
   return (
@@ -40,60 +50,6 @@ export default function Header() {
           {/* Navigation */}
           <div className="flex items-center gap-6">
             <nav className="flex space-x-6">
-              <Link
-                href="/stakeholder-directory"
-                className={`relative text-black px-3 py-8 text-md font-bold group
-                  ${
-                    isActive('/stakeholder-directory')
-                      ? 'text-black bg-green-50'
-                      : 'hover:text-zinc-600'
-                  }`}
-              >
-                Stakeholder Directory
-                <div
-                  className={`absolute inset-0 bg-green-50 transition-opacity -z-10
-                  ${
-                    isActive('/stakeholder-directory')
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-50'
-                  }`}
-                />
-                <div
-                  className={`absolute bottom-0 left-0 right-0 h-1 bg-green-700 transition-opacity
-                  ${
-                    isActive('/stakeholder-directory')
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-50'
-                  }`}
-                />
-              </Link>
-              <Link
-                href="/knowledge-hub"
-                className={`relative text-black px-3 py-8 text-md font-bold group
-                  ${
-                    isActive('/knowledge-hub')
-                      ? 'text-black bg-green-50'
-                      : 'hover:text-zinc-600'
-                  }`}
-              >
-                Knowledge Hub
-                <div
-                  className={`absolute inset-0 bg-green-50 transition-opacity -z-10
-                  ${
-                    isActive('/knowledge-hub')
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-50'
-                  }`}
-                />
-                <div
-                  className={`absolute bottom-0 left-0 right-0 h-1 bg-green-700 transition-opacity
-                  ${
-                    isActive('/knowledge-hub')
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-50'
-                  }`}
-                />
-              </Link>
               <Link
                 href="/investment-profiles"
                 className={`relative text-black px-3 py-8 text-md font-bold group
@@ -148,6 +104,120 @@ export default function Header() {
                   }`}
                 />
               </Link>
+              <Link
+                href="/knowledge-hub"
+                className={`relative text-black px-3 py-8 text-md font-bold group
+                  ${
+                    isActive('/knowledge-hub')
+                      ? 'text-black bg-green-50'
+                      : 'hover:text-zinc-600'
+                  }`}
+              >
+                Knowledge Hub
+                <div
+                  className={`absolute inset-0 bg-green-50 transition-opacity -z-10
+                  ${
+                    isActive('/knowledge-hub')
+                      ? 'opacity-100'
+                      : 'opacity-0 group-hover:opacity-50'
+                  }`}
+                />
+                <div
+                  className={`absolute bottom-0 left-0 right-0 h-1 bg-green-700 transition-opacity
+                  ${
+                    isActive('/knowledge-hub')
+                      ? 'opacity-100'
+                      : 'opacity-0 group-hover:opacity-50'
+                  }`}
+                />
+              </Link>
+              <Link
+                href="/stakeholder-directory"
+                className={`relative text-black px-3 py-8 text-md font-bold group
+                  ${
+                    isActive('/stakeholder-directory')
+                      ? 'text-black bg-green-50'
+                      : 'hover:text-zinc-600'
+                  }`}
+              >
+                Stakeholder Directory
+                <div
+                  className={`absolute inset-0 bg-green-50 transition-opacity -z-10
+                  ${
+                    isActive('/stakeholder-directory')
+                      ? 'opacity-100'
+                      : 'opacity-0 group-hover:opacity-50'
+                  }`}
+                />
+                <div
+                  className={`absolute bottom-0 left-0 right-0 h-1 bg-green-700 transition-opacity
+                  ${
+                    isActive('/stakeholder-directory')
+                      ? 'opacity-100'
+                      : 'opacity-0 group-hover:opacity-50'
+                  }`}
+                />
+              </Link>
+              <div className="relative">
+                <button
+                  onClick={toggleMoreDropdown}
+                  className={`flex items-center text-black px-3 py-8 text-md font-bold group
+            ${
+              isMoreActive() ? 'text-black bg-green-50' : 'hover:text-zinc-600'
+            }`}
+                >
+                  More
+                  {moreDropdownOpen ? (
+                    <ChevronUp className="ml-1 h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="ml-1 h-4 w-4" />
+                  )}
+                  <div
+                    className={`absolute inset-0 bg-green-50 transition-opacity -z-10
+            ${
+              isMoreActive()
+                ? 'opacity-100'
+                : 'opacity-0 group-hover:opacity-50'
+            }`}
+                  />
+                  <div
+                    className={`absolute bottom-0 left-0 right-0 h-1 bg-green-700 transition-opacity
+            ${
+              isMoreActive()
+                ? 'opacity-100'
+                : 'opacity-0 group-hover:opacity-50'
+            }`}
+                  />
+                </button>
+
+                {/* Dropdown content */}
+                {moreDropdownOpen && (
+                  <div className="absolute left-0 mt-1 w-48 bg-white shadow-lg rounded-md z-50">
+                    <div className="py-1">
+                      <Link
+                        href="/news-events"
+                        className={`block px-4 py-2 text-sm font-medium ${
+                          isActive('/news-events')
+                            ? 'bg-green-50 text-black'
+                            : 'text-gray-700 hover:bg-green-50'
+                        }`}
+                      >
+                        News & Events
+                      </Link>
+                      <Link
+                        href="/about"
+                        className={`block px-4 py-2 text-sm font-medium ${
+                          isActive('/about')
+                            ? 'bg-green-50 text-black'
+                            : 'text-gray-700 hover:bg-green-50'
+                        }`}
+                      >
+                        About
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
             </nav>
 
             {/* Auth Buttons */}

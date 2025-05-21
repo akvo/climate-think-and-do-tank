@@ -1,3 +1,5 @@
+import { env } from './env-vars';
+
 export const validateEmail = (email) => {
   if (!email.trim()) {
     return 'Email is required';
@@ -166,4 +168,12 @@ export const generateYearOptions = () => {
   }
 
   return years.sort((a, b) => parseInt(b) - parseInt(a));
+};
+
+export const getImageUrl = (image) => {
+  if (!image) return '';
+  if (image.url.startsWith('http')) {
+    return image.url;
+  }
+  return `${env('NEXT_PUBLIC_BACKEND_URL')}${image.url}`;
 };

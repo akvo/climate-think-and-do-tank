@@ -16,9 +16,29 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
       baseQueryParams.append('pagination[pageSize]', pageSize);
 
       if (query) {
-        baseQueryParams.append('filters[$or][0][title][$containsi]', query);
         baseQueryParams.append(
-          'filters[$or][1][description][$containsi]',
+          'filters[$or][0][value_chain][$containsi]',
+          query
+        );
+        baseQueryParams.append('filters[$or][2][region][$containsi]', query);
+        baseQueryParams.append(
+          'filters[$or][3][investor_snapshot_text][$containsi]',
+          query
+        );
+        baseQueryParams.append(
+          'filters[$or][4][the_investment_case_text][$containsi]',
+          query
+        );
+        baseQueryParams.append(
+          'filters[$or][5][business_blueprint_text][$containsi]',
+          query
+        );
+        baseQueryParams.append(
+          'filters[$or][6][risk_and_impact_profile_text][$containsi]',
+          query
+        );
+        baseQueryParams.append(
+          'filters[$or][7][closing_information_text][$containsi]',
           query
         );
       }
@@ -68,13 +88,14 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
       const investmentOpportunityProfiles = response.data.data.map(
         (profile) => ({
           id: profile.id,
+          documentId: profile.documentId,
           title: profile.title,
           description: profile.description,
           publicationDate: profile.publication_date,
           publicationYear: new Date(profile.publication_date).getFullYear(),
           valueChain: profile.value_chain?.name || '',
           region: profile.region?.name || '',
-          imageUrl: profile.picture_one?.url || '',
+          imageUrl: profile.picture_one || '',
         })
       );
 
