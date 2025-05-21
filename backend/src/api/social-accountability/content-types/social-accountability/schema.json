@@ -8,7 +8,7 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
@@ -33,6 +33,23 @@
       "relation": "oneToMany",
       "target": "api::community-voice.community-voice",
       "mappedBy": "social_accountability"
+    },
+    "publication_date": {
+      "type": "date"
+    },
+    "value_chain": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::value-chain.value-chain"
+    },
+    "profile_picture": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     }
   }
 }
