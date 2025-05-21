@@ -176,6 +176,8 @@ export default function NewsEventsDirectory() {
   const handleCardClick = (item) => {
     if (item.type === 'News') {
       router.push(`/news/${item.documentId}`);
+    } else if (item.type === 'Event') {
+      router.push(`/event/${item.documentId}`);
     }
   };
 

@@ -31,23 +31,13 @@ export const fetchNewsEvents = createAsyncThunk(
           );
         }
         let thirtyDaysAgo = new Date();
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0];
+
         if (upcoming) {
-          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-          const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
-
-          newsQueryParams.append(
-            'filters[publication_date][$gte]',
-            thirtyDaysAgoStr
-          );
+          newsQueryParams.append('filters[publication_date][$gte]', todayStr);
         } else {
-          const thirtyDaysAgo = new Date();
-          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-          const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
-
-          newsQueryParams.append(
-            'filters[publication_date][$lt]',
-            thirtyDaysAgoStr
-          );
+          newsQueryParams.append('filters[publication_date][$lt]', todayStr);
         }
 
         newsQueryParams.append('populate[0]', 'regions');
