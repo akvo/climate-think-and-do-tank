@@ -41,6 +41,16 @@
       "locale": null
     },
     {
+      "documentId": "kf0mpn9x9hw1g9mhrw4j30mn",
+      "action": "api::event.event.find",
+      "locale": null
+    },
+    {
+      "documentId": "fbyadbdcywghpr7f6i6lu2yb",
+      "action": "api::event.event.findOne",
+      "locale": null
+    },
+    {
       "documentId": "rskio6zirjnkeezn788nmlsl",
       "action": "api::homepage.homepage.find",
       "locale": null
@@ -71,6 +81,16 @@
       "locale": null
     },
     {
+      "documentId": "eyc9tn7hrcjv2k3v1gguv2xm",
+      "action": "api::news-item.news-item.find",
+      "locale": null
+    },
+    {
+      "documentId": "bk2i29zvdo09nh24tb6d5e0s",
+      "action": "api::news-item.news-item.findOne",
+      "locale": null
+    },
+    {
       "documentId": "q52qmbet2qi9u6pu16z6g188",
       "action": "api::organisation.organisation.create",
       "locale": null
@@ -93,6 +113,16 @@
     {
       "documentId": "mn11a8s7tmgt8f7274n0zk6a",
       "action": "api::region.region.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "ijruj8amf5b64ao8icid8sm4",
+      "action": "api::social-accountability.social-accountability.find",
+      "locale": null
+    },
+    {
+      "documentId": "q2em1ehxk86q9uber707qzzf",
+      "action": "api::social-accountability.social-accountability.findOne",
       "locale": null
     },
     {
