@@ -1,16 +1,25 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-export default function KenyaMap() {
-  const [hoveredCounty, setHoveredCounty] = useState(null);
-  const [selectedCounty, setSelectedCounty] = useState(null);
+export default function KenyaMap({ initialSelected, onSelect }) {
+  const [hoveredCounty, setHoveredCounty] = useState(
+    initialSelected ? initialSelected : null
+  );
+  const [selectedCounty, setSelectedCounty] = useState(
+    initialSelected ? initialSelected : null
+  );
+
   const { regions = [] } = useSelector((state) => state.auth);
 
   const projectCounties = regions.map((region) => region.name);
 
   const handleCountyClick = (county) => {
     if (projectCounties.includes(county)) {
-      setSelectedCounty(county === selectedCounty ? null : county);
+      const newSelection = county === selectedCounty ? null : county;
+      setSelectedCounty(newSelection);
+      if (typeof onSelect === 'function') {
+        onSelect(newSelection);
+      }
     }
   };
 
@@ -58,6 +67,7 @@ export default function KenyaMap() {
       tooltip.setAttribute('y', y + height / 2);
     }
   };
+
   return (
     <div className="relative">
       <svg
@@ -654,7 +664,7 @@ export default function KenyaMap() {
           textAnchor="middle"
           style={{ pointerEvents: 'none', fontSize: 12, fill: '#000' }}
         >
-          {hoveredCounty || ''}
+          {selectedCounty || hoveredCounty}
         </text>
       </svg>
     </div>

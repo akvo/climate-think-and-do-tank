@@ -26,6 +26,9 @@
       "relation": "manyToOne",
       "target": "api::social-accountability.social-accountability",
       "inversedBy": "community_voices"
+    },
+    "ward": {
+      "type": "string"
     }
   }
 }
