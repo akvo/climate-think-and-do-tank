@@ -48,18 +48,15 @@ export const fetchNewsEvents = createAsyncThunk(
           nDaysAgo.setDate(today.getDate() - N);
           const nDaysAgoStr = nDaysAgo.toISOString().split('T')[0];
 
-          const yesterday = new Date();
-          yesterday.setDate(today.getDate() - 1);
-          const yesterdayStr = yesterday.toISOString().split('T')[0];
+          const date = new Date();
+          date.setDate(today.getDate());
+          const dateStr = date.toISOString().split('T')[0];
 
           newsQueryParams.append(
             'filters[publication_date][$gte]',
             nDaysAgoStr
           );
-          newsQueryParams.append(
-            'filters[publication_date][$lt]',
-            yesterdayStr
-          );
+          newsQueryParams.append('filters[publication_date][$lt]', dateStr);
         }
 
         newsQueryParams.append('populate[0]', 'regions');
