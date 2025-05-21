@@ -78,6 +78,7 @@ export const fetchSocialAccountabilityData = createAsyncThunk(
 
       const socialAccountabilityData = response.data.data.map((item) => ({
         id: item.id,
+        documentId: item.documentId,
         title: item.title,
         description: item.description,
         publicationDate: item.publication_date,
@@ -87,7 +88,7 @@ export const fetchSocialAccountabilityData = createAsyncThunk(
         priorities: item.priorities || [],
         investments: item.investments || [],
         impacts: item.impacts || [],
-        imageUrl: item.profile_picture?.url || '',
+        imageUrl: item.profile_picture || '',
       }));
 
       return {

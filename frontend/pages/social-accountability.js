@@ -146,7 +146,7 @@ export default function SocialAccountability() {
   };
 
   const handleCardClick = (card) => {
-    router.push(`/social-accountability/${card.id}`);
+    router.push(`/social-accountability/${card.documentId}`);
   };
 
   const loadMoreData = () => {

@@ -50,6 +50,12 @@
         "images",
         "files"
       ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
     }
   }
 }
