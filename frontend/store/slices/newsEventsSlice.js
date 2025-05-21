@@ -31,22 +31,34 @@ export const fetchNewsEvents = createAsyncThunk(
           );
         }
         let thirtyDaysAgo = new Date();
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0];
+
+        const N = 90;
+
         if (upcoming) {
-          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-          const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
+          const inNDays = new Date();
+          inNDays.setDate(today.getDate() + N);
+          const inNDaysStr = inNDays.toISOString().split('T')[0];
+
+          newsQueryParams.append('filters[publication_date][$gte]', todayStr);
+          newsQueryParams.append('filters[publication_date][$lte]', inNDaysStr);
+        } else {
+          const nDaysAgo = new Date();
+          nDaysAgo.setDate(today.getDate() - N);
+          const nDaysAgoStr = nDaysAgo.toISOString().split('T')[0];
+
+          const yesterday = new Date();
+          yesterday.setDate(today.getDate() - 1);
+          const yesterdayStr = yesterday.toISOString().split('T')[0];
 
           newsQueryParams.append(
             'filters[publication_date][$gte]',
-            thirtyDaysAgoStr
+            nDaysAgoStr
           );
-        } else {
-          const thirtyDaysAgo = new Date();
-          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-          const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
-
           newsQueryParams.append(
             'filters[publication_date][$lt]',
-            thirtyDaysAgoStr
+            yesterdayStr
           );
         }
 
