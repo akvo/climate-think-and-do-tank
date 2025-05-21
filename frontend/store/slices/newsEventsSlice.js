@@ -34,29 +34,10 @@ export const fetchNewsEvents = createAsyncThunk(
         const today = new Date();
         const todayStr = today.toISOString().split('T')[0];
 
-        const N = 90;
-
         if (upcoming) {
-          const inNDays = new Date();
-          inNDays.setDate(today.getDate() + N);
-          const inNDaysStr = inNDays.toISOString().split('T')[0];
-
           newsQueryParams.append('filters[publication_date][$gte]', todayStr);
-          newsQueryParams.append('filters[publication_date][$lte]', inNDaysStr);
         } else {
-          const nDaysAgo = new Date();
-          nDaysAgo.setDate(today.getDate() - N);
-          const nDaysAgoStr = nDaysAgo.toISOString().split('T')[0];
-
-          const date = new Date();
-          date.setDate(today.getDate());
-          const dateStr = date.toISOString().split('T')[0];
-
-          newsQueryParams.append(
-            'filters[publication_date][$gte]',
-            nDaysAgoStr
-          );
-          newsQueryParams.append('filters[publication_date][$lt]', dateStr);
+          newsQueryParams.append('filters[publication_date][$lt]', todayStr);
         }
 
         newsQueryParams.append('populate[0]', 'regions');
