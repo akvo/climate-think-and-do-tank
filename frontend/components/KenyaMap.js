@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 export default function KenyaMap({ initialSelected, onSelect }) {
-  const [hoveredCounty, setHoveredCounty] = useState(null);
+  const [hoveredCounty, setHoveredCounty] = useState(
+    initialSelected ? initialSelected : null
+  );
   const [selectedCounty, setSelectedCounty] = useState(
     initialSelected ? initialSelected : null
   );
+
   const { regions = [] } = useSelector((state) => state.auth);
 
   const projectCounties = regions.map((region) => region.name);
@@ -64,8 +67,6 @@ export default function KenyaMap({ initialSelected, onSelect }) {
       tooltip.setAttribute('y', y + height / 2);
     }
   };
-
-  console.log(selectedCounty);
 
   return (
     <div className="relative">
@@ -663,7 +664,7 @@ export default function KenyaMap({ initialSelected, onSelect }) {
           textAnchor="middle"
           style={{ pointerEvents: 'none', fontSize: 12, fill: '#000' }}
         >
-          {hoveredCounty || selectedCounty}
+          {selectedCounty || hoveredCounty}
         </text>
       </svg>
     </div>

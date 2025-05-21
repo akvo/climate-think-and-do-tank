@@ -5,8 +5,8 @@ import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import { MarkdownRenderer } from '@/components/MarkDownRenderer';
 import Link from 'next/link';
-import Image from 'next/image';
-import { getImageUrl } from '@/helpers/utilities';
+import CommunityVoicesSection from '@/components/CommunityVoicesSection';
+import OtherMediaCarousel from '@/components/MediaCarousel';
 
 export default function SocialAccountabilityPage() {
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function SocialAccountabilityPage() {
         const response = await axios.get(
           `${env(
             'NEXT_PUBLIC_BACKEND_URL'
-          )}/api/social-accountabilities/${documentId}?populate[0]=other_media_slider.files&populate[1]=community_voices`
+          )}/api/social-accountabilities/${documentId}?populate[0]=other_media_slider.files&populate[1]=community_voices&populate[2]=region&populate[3]=value_chain`
         );
         setData(response.data.data);
         setLoading(false);
@@ -192,7 +192,10 @@ export default function SocialAccountabilityPage() {
             </div>
           </div>
           {activeTab === 'voices' && (
-            <CommunityVoicesSection voices={data.community_voices} />
+            <CommunityVoicesSection
+              voices={data.community_voices}
+              county={data.region?.name}
+            />
           )}
           {activeTab === 'media' && (
             <OtherMediaCarousel media={data.other_media_slider} />
@@ -202,119 +205,3 @@ export default function SocialAccountabilityPage() {
     </div>
   );
 }
-
-const CommunityVoicesSection = ({ voices }) => {
-  const [page, setPage] = useState(1);
-  const perPage = 6;
-  const pageCount = Math.ceil(voices.length / perPage);
-  const voicesToShow = voices.slice((page - 1) * perPage, page * perPage);
-
-  return (
-    <div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {voicesToShow.map((voice, idx) => (
-          <div key={idx} className="bg-[#FAFAFA] rounded-xl p-6 shadow-sm">
-            <div className="font-bold mb-2">{voice.title}</div>
-            <div className="text-gray-700 mb-4">{voice.description}</div>
-            <div className="text-gray-500 text-right">
-              {voice.voice_description}
-            </div>
-          </div>
-        ))}
-      </div>
-      {pageCount > 1 && (
-        <div className="flex justify-center mt-4 gap-2">
-          {[...Array(pageCount)].map((_, i) => (
-            <button
-              key={i}
-              className={`px-3 py-1 rounded-full ${
-                page === i + 1
-                  ? 'bg-[#0DA2D7] text-white'
-                  : 'bg-gray-200 text-gray-600'
-              }`}
-              onClick={() => setPage(i + 1)}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
-const OtherMediaCarousel = ({ media }) => {
-  const [start, setStart] = useState(0);
-
-  const flattenFiles = (media || [])
-    .map((mediaItem) =>
-      (mediaItem.files || []).map((file) => ({
-        ...file,
-        parentId: mediaItem.id,
-      }))
-    )
-    .flat();
-
-  const getFileUrl = (file) =>
-    file.url.startsWith('http')
-      ? file.url
-      : `${env('NEXT_PUBLIC_BACKEND_URL')}${file.url}`;
-
-  const visibleFiles = flattenFiles.slice(start, start + 3);
-
-  const canPrev = start > 0;
-  const canNext = start + 3 < flattenFiles.length;
-
-  useEffect(() => {
-    if (start + 3 > flattenFiles.length && flattenFiles.length > 0) {
-      setStart(Math.max(flattenFiles.length - 3, 0));
-    }
-  }, [flattenFiles.length]);
-
-  console.log(visibleFiles);
-
-  return (
-    <div className="relative w-full">
-      <div className="flex justify-end mb-2 gap-2">
-        <button
-          onClick={() => setStart((s) => Math.max(s - 3, 0))}
-          disabled={!canPrev}
-          className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-40"
-        >
-          &#8592;
-        </button>
-        <button
-          onClick={() =>
-            setStart((s) => Math.min(s + 3, flattenFiles.length - 3))
-          }
-          disabled={!canNext}
-          className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-40"
-        >
-          &#8594;
-        </button>
-      </div>
-      <div className="flex gap-6">
-        {visibleFiles.length === 0 && (
-          <div className="w-full text-center text-gray-500">
-            No media available
-          </div>
-        )}
-        {visibleFiles.map((file) => (
-          <div
-            key={file.parentId}
-            className="w-1/3 bg-gray-100 rounded-lg p-4 shadow flex flex-col items-center"
-          >
-            <video
-              controls
-              className="w-full h-48 rounded mb-2 bg-black"
-              src={getFileUrl(file)}
-            />
-            <div className="text-sm text-gray-800 truncate w-full text-center">
-              {file.name}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
