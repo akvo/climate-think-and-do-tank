@@ -139,8 +139,7 @@ export default function InvestmentOpportunityProfile() {
             Investment Opportunity Profile
           </h2>
           <h3 className="text-xl text-gray-700 mt-2">
-            {profile.value_chain?.name || 'Value Chain'} in{' '}
-            {profile.region?.name || 'Region'}
+            {`${profile.value_chain?.name} Value Chain in ${profile.region?.name} County`}
           </h3>
           <p className="text-lg text-gray-600 mt-1">{formattedDate}</p>
         </div>

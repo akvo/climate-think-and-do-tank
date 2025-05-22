@@ -522,7 +522,7 @@ export default function InvestmentOpportunityProfile() {
                   key={card.id}
                   card={{
                     ...card,
-                    title: `${card.valueChain} in ${card.region}`,
+                    title: `${card.valueChain} Value Chain in ${card.region} County`,
                   }}
                   onClick={handleCardClick}
                 />
