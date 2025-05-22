@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ChevronLeft } from 'lucide-react';
 import { env } from '@/helpers/env-vars';
 import Image from 'next/image';
+import { MarkdownRenderer } from '@/components/MarkDownRenderer';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 
@@ -72,7 +73,7 @@ export default function About() {
   }
 
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="min-h-screen bg-white text-black mt-8">
       <div className="container mx-auto px-4 py-6">
         {/* Banner */}
         {about.banner && (
@@ -89,12 +90,16 @@ export default function About() {
 
         <div className="container mx-auto px-4 pb-12">
           <h1 className="text-4xl font-bold mb-2">{about.title}</h1>
-          <div className="flex flex-col md:flex-row gap-4 items-center mb-8">
-            <p className="text-lg text-green-700">{about.tagline}</p>
+          <div className="flex flex-col md:flex-row gap-4 items-center my-8">
+            <div className="md:basis-1/3 w-full md:w-auto">
+              <p className="text-lg text-green-700">{about.tagline}</p>
+            </div>
             <span className="hidden md:inline-block h-5 w-px bg-gray-300 mx-2"></span>
-            <p className="text-base text-gray-700">
-              {about.tagline_description}
-            </p>
+            <div className="md:basis-2/3 w-full md:w-auto">
+              <p className="text-base text-gray-700">
+                <MarkdownRenderer content={about.tagline_description} />
+              </p>
+            </div>
           </div>
 
           <Section title="Our Mission" body={about.our_mission} />
@@ -112,10 +117,9 @@ function Section({ title, body }) {
   return (
     <div className="mb-8">
       <h2 className="text-2xl font-semibold mb-2">{title}</h2>
-      <div
-        className="prose prose-lg text-gray-800 max-w-none"
-        dangerouslySetInnerHTML={{ __html: body }}
-      />
+      <div className="prose prose-lg text-gray-800 max-w-none">
+        <MarkdownRenderer content={body} />
+      </div>
     </div>
   );
 }
