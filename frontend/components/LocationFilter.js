@@ -61,13 +61,13 @@ export default function LocationsFilter({
 
   return (
     <div className="bg-white rounded-xl shadow-lg w-full max-w-md">
-      <div className="p-6 space-y-6">
+      <div className="p-4 space-y-2">
         <h2 className="text-xl font-bold text-zinc-800">
           {name || 'LOCATIONS'}
         </h2>
 
-        <div className="space-y-2 max-h-80 overflow-y-auto">
-          <label className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
+        <div className="max-h-80 overflow-y-auto">
+          <label className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer text-sm">
             <input
               type="checkbox"
               checked={masterChecked}
@@ -88,7 +88,7 @@ export default function LocationsFilter({
           {availableLocations.map((location) => (
             <label
               key={location}
-              className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer"
+              className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer text-sm"
             >
               <input
                 type="checkbox"

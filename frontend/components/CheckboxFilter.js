@@ -89,7 +89,7 @@ export default function CheckboxFilter({
   );
 
   return (
-    <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 space-y-6">
+    <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-4 space-y-2">
       <h2 className="text-xl font-bold text-zinc-800">{label || 'Filter'}</h2>
 
       {(options?.length || 0) > 10 && (
@@ -118,10 +118,10 @@ export default function CheckboxFilter({
         </div>
       )}
 
-      <div className="space-y-2 max-h-80 overflow-y-auto">
+      <div className="max-h-80 overflow-y-auto">
         {hasAllOption && (
           <>
-            <label className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
+            <label className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer text-sm">
               <input
                 type="checkbox"
                 checked={allSelected}
@@ -143,7 +143,7 @@ export default function CheckboxFilter({
         {filteredOptions.map((option) => (
           <label
             key={option}
-            className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer"
+            className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer  text-sm"
           >
             <input
               type="checkbox"

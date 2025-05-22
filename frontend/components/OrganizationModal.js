@@ -57,8 +57,12 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
           {/* Header */}
           <div className="flex justify-between items-start mb-8">
             <div className="flex-grow">
-              <div className="text-green-600 text-sm font-semibold mb-2">
-                {card.thematicFocus || 'RESOURCE'}
+              <div className="text-green-600 text-xs font-semibold mb-2">
+                {card.file
+                  ? 'File'
+                  : card.webLink
+                  ? 'Link'
+                  : card.type || 'Resource'}
               </div>
               <h2 className="text-2xl font-bold mb-2 text-black flex gap-8 border-b items-end pb-2 justify-between">
                 {card.title}
