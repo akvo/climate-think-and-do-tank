@@ -9,7 +9,7 @@ import {
 import CheckboxFilter from '@/components/CheckboxFilter';
 import debounce from 'lodash/debounce';
 import Image from 'next/image';
-import { formatRegionsDisplay } from '@/helpers/utilities';
+import { formatRegionsDisplay, getImageUrl } from '@/helpers/utilities';
 
 export default function NewsEventsDirectory() {
   const router = useRouter();
@@ -374,7 +374,7 @@ export default function NewsEventsDirectory() {
                   {item.imageUrl && (
                     <div className="relative h-48 w-full overflow-hidden">
                       <Image
-                        src={item.imageUrl}
+                        src={getImageUrl(item.imageUrl)}
                         alt={item.title}
                         className="w-full h-full object-cover"
                         unoptimized

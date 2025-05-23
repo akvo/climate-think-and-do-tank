@@ -63,14 +63,27 @@ export default function EventDetailPage() {
 
   const handleBack = () => router.push('/news-events');
 
+  function formatTimeWithAmPm(timeStr) {
+    if (!timeStr) return '';
+    const [hourStr, minStr] = timeStr.split(':');
+    let hour = parseInt(hourStr, 10);
+    const min = minStr || '00';
+    const ampm = hour >= 12 ? 'pm' : 'am';
+    hour = hour % 12;
+    if (hour === 0) hour = 12;
+    return `${hour}:${min.padStart(2, '0')} ${ampm}`;
+  }
+
   const formatEventTime = () => {
     if (!event) return '';
     if (event.startTime && event.endTime) {
-      return `${event.startTime} - ${event.endTime}`;
+      return `${formatTimeWithAmPm(event.startTime)} - ${formatTimeWithAmPm(
+        event.endTime
+      )}`;
     } else if (event.startTime) {
-      return `Starting at ${event.startTime}`;
+      return `Starting at ${formatTimeWithAmPm(event.startTime)}`;
     } else if (event.endTime) {
-      return `Ending at ${event.endTime}`;
+      return `Ending at ${formatTimeWithAmPm(event.endTime)}`;
     }
     return '';
   };
@@ -200,7 +213,7 @@ export default function EventDetailPage() {
           {event.mapLink && (
             <div className="my-6">
               <div
-                className="w-full h-[300px] md:h-[400px] rounded-md overflow-hidden"
+                className="map-embed-container w-full h-[300px] md:h-[400px] rounded-md overflow-hidden"
                 dangerouslySetInnerHTML={{ __html: event.mapLink }}
               />
             </div>

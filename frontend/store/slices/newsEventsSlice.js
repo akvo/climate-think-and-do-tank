@@ -57,9 +57,7 @@ export const fetchNewsEvents = createAsyncThunk(
                 publicationDate: item.publication_date || null,
                 displayDate: item.publication_date,
                 regions: item.regions ? item.regions.map((r) => r.name) : [],
-                imageUrl: item.image?.url
-                  ? `${BACKEND_URL}${item.image.url}`
-                  : '',
+                imageUrl: item.image ? item.image : '',
                 isUpcoming: false,
                 isRecent:
                   new Date(item.publication_date) >= new Date(thirtyDaysAgo),
@@ -107,9 +105,7 @@ export const fetchNewsEvents = createAsyncThunk(
                 eventDate: item.event_date || null,
                 displayDate: item.event_date,
                 regions: [],
-                imageUrl: item.image?.url
-                  ? `${BACKEND_URL}${item.image.url}`
-                  : '',
+                imageUrl: item.image ? item.image : '',
                 isUpcoming: new Date(item.event_date) >= new Date(today),
                 location: item.map_link || '',
                 startTime: item.start_time || '',
