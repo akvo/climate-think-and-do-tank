@@ -4,6 +4,7 @@ import { ChevronLeft } from 'lucide-react';
 import { env } from '@/helpers/env-vars';
 import Image from 'next/image';
 import { MarkdownRenderer } from '@/components/MarkDownRenderer';
+import { getImageUrl } from '@/helpers/utilities';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 
@@ -32,9 +33,7 @@ export default function About() {
             what_we_do: item.what_we_do || '',
             where_we_work: item.where_we_work || '',
             join_us: item.join_us || '',
-            banner: item.banner?.url
-              ? `${BACKEND_URL}${item.banner.url}`
-              : null,
+            banner: item.banner ? item.banner : null,
           });
         } else {
           setError('About page not found');
@@ -73,13 +72,13 @@ export default function About() {
   }
 
   return (
-    <div className="min-h-screen bg-white text-black mt-8">
+    <div className="min-h-screen bg-white text-black">
       <div className="container mx-auto px-4 py-6">
         {/* Banner */}
         {about.banner && (
           <div className="w-full h-[350px] relative mb-8">
             <Image
-              src={about.banner}
+              src={getImageUrl(about.banner)}
               alt="About Banner"
               className="object-cover w-full h-full rounded-lg shadow-md"
               fill
@@ -88,7 +87,7 @@ export default function About() {
           </div>
         )}
 
-        <div className="container mx-auto px-4 pb-12">
+        <div className="container mx-auto px-4 pb-12 pt-12">
           <h1 className="text-4xl font-bold mb-2">{about.title}</h1>
           <div className="flex flex-col md:flex-row gap-4 items-center my-8">
             <div className="md:basis-1/3 w-full md:w-auto">
