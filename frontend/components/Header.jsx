@@ -49,10 +49,10 @@ export default function Header() {
 
           {/* Navigation */}
           <div className="flex items-center gap-6">
-            <nav className="flex space-x-6">
+            <nav className="flex space-x-2">
               <Link
                 href="/investment-profiles"
-                className={`relative text-black px-3 py-8 text-md font-bold group
+                className={`relative text-black px-2 py-8 text-md font-bold group
                   ${
                     isActive('/investment-profiles')
                       ? 'text-black bg-green-50'
@@ -79,7 +79,7 @@ export default function Header() {
               </Link>
               <Link
                 href="/social-accountability"
-                className={`relative text-black px-3 py-8 text-md font-bold group
+                className={`relative text-black px-2 py-8 text-md font-bold group
                   ${
                     isActive('/social-accountability')
                       ? 'text-black bg-green-50'
@@ -106,7 +106,7 @@ export default function Header() {
               </Link>
               <Link
                 href="/knowledge-hub"
-                className={`relative text-black px-3 py-8 text-md font-bold group
+                className={`relative text-black px-2 py-8 text-md font-bold group
                   ${
                     isActive('/knowledge-hub')
                       ? 'text-black bg-green-50'
@@ -133,7 +133,7 @@ export default function Header() {
               </Link>
               <Link
                 href="/stakeholder-directory"
-                className={`relative text-black px-3 py-8 text-md font-bold group
+                className={`relative text-black px-2 py-8 text-md font-bold group
                   ${
                     isActive('/stakeholder-directory')
                       ? 'text-black bg-green-50'
@@ -161,7 +161,7 @@ export default function Header() {
               <div className="relative">
                 <button
                   onClick={toggleMoreDropdown}
-                  className={`flex items-center text-black px-3 py-8 text-md font-bold group
+                  className={`flex items-center text-black px-2 py-8 text-md font-bold group
             ${
               isMoreActive() ? 'text-black bg-green-50' : 'hover:text-zinc-600'
             }`}

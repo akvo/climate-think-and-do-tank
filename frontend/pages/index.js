@@ -7,8 +7,11 @@ import { MarkdownRenderer } from '@/components/MarkDownRenderer';
 import { env } from '@/helpers/env-vars';
 import axios from 'axios';
 import InvestmentCarousel from '@/components/InvestmentCarousel';
+import { useRouter } from 'next/router';
 
 export default function HomePage() {
+  const router = useRouter();
+
   const [data, setData] = useState({
     title: '',
     description: '',
@@ -75,10 +78,10 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 pt-12 border-t border-gray-100">
             <div className="text-center">
-              <p className="text-5xl font-bold text-amber-500 mb-3">
+              <p className="text-5xl font-bold text-black mb-3">
                 {formatNumber(stats.investmentOpportunities)}
               </p>
-              <p className="text-lg text-amber-500 font-medium">
+              <p className="text-lg text-black font-medium">
                 Investment
                 <br />
                 Opportunities
@@ -88,10 +91,10 @@ export default function HomePage() {
             </div>
 
             <div className="text-center">
-              <p className="text-5xl font-bold text-amber-500 mb-3">
+              <p className="text-5xl font-bold text-black mb-3">
                 {formatNumber(stats.knowledgeAssets)}
               </p>
-              <p className="text-lg text-amber-500 font-medium">
+              <p className="text-lg text-black font-medium">
                 Uploaded
                 <br />
                 Knowledge
@@ -101,10 +104,10 @@ export default function HomePage() {
             </div>
 
             <div className="text-center">
-              <p className="text-5xl font-bold text-amber-500 mb-3">
+              <p className="text-5xl font-bold text-black mb-3">
                 {formatNumber(stats.users)}
               </p>
-              <p className="text-lg text-amber-500 font-medium">
+              <p className="text-lg text-black font-medium">
                 Users
                 <br />
                 Signed
@@ -118,7 +121,11 @@ export default function HomePage() {
 
       <section className="py-16 text-black">
         <div className="container mx-auto px-4 flex justify-center">
-          <KenyaMap />
+          <KenyaMap
+            onSelect={(selected) =>
+              router.push(`/social-accountability?regions=${selected}`)
+            }
+          />
         </div>
       </section>
 

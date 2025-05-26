@@ -113,7 +113,7 @@ const HeroSlider = ({ setData }) => {
 
   return (
     <section className="relative overflow-hidden pb-12">
-      <div className="relative h-[600px]">
+      <div className="relative h-[500px]">
         {sliderData.map((slide, index) => (
           <div
             key={index}
@@ -146,7 +146,7 @@ const HeroSlider = ({ setData }) => {
         </div>
       </div>
 
-      <div className="bg-white pt-12 pb-4">
+      <div className="bg-white pt-10 pb-4">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold text-gray-900">
