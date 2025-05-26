@@ -12,7 +12,7 @@
       "multiple": true,
       "required": false,
       "allowedTypes": [
-        "videos"
+        "images"
       ]
     }
   }

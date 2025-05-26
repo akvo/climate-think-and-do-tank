@@ -68,7 +68,7 @@ export default function HomePage() {
               </h2>
             </div>
 
-            <div className="col-span-1 md:col-span-7 space-y-8">
+            <div className="col-span-1 md:col-span-7 space-y-8 text-[14px]">
               <MarkdownRenderer content={data.description} />
             </div>
           </div>

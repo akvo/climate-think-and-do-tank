@@ -150,7 +150,7 @@ const HeroSlider = ({ setData }) => {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold text-gray-900">
-              The Hub for Sustainable Development
+              Welcome to the Kenya Drylands Investment Hub
             </h2>
           </div>
         </div>
