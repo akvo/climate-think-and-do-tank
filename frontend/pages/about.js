@@ -77,7 +77,7 @@ export default function About() {
       <div className="container mx-auto px-4 py-6">
         {/* Banner */}
         {about.banner && (
-          <div className="w-full h-[350px] relative mb-8">
+          <div className="w-full h-[450px] relative mb-8">
             <Image
               src={getImageUrl(about.banner)}
               alt="About Banner"
