@@ -4,14 +4,17 @@ import remarkGfm from 'remark-gfm';
 
 export const MarkdownRenderer = ({ content, components = {} }) => {
   const defaultComponents = {
-    a: ({ node, ...props }) => (
-      <a
-        {...props}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-600 hover:underline"
-      />
-    ),
+    a: ({ node, ...props }) => {
+      const isSignup = props.href === '/signup';
+      return (
+        <a
+          {...props}
+          target={isSignup ? undefined : '_blank'}
+          rel={isSignup ? undefined : 'noopener noreferrer'}
+          className="text-blue-600 hover:underline"
+        />
+      );
+    },
     h1: ({ node, ...props }) => (
       <h1 {...props} className="text-2xl font-bold mt-4 mb-2" />
     ),

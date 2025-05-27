@@ -342,6 +342,39 @@ export default function SocialAccountability() {
             </div>
           </div>
         </div>
+        {(activeFilters.valueChain?.length > 0 ||
+          activeFilters.regions?.length > 0 ||
+          activeFilters.date?.length > 0) && (
+          <div className="container mx-auto px-4 pb-3 text-black">
+            <div className="flex items-center gap-2 flex-wrap">
+              {Object.entries(activeFilters).map(([filterType, values]) =>
+                values.map((value) => (
+                  <span
+                    key={`${filterType}-${value}`}
+                    className="bg-gray-100 px-3 py-1 rounded-full text-sm flex items-center gap-1"
+                  >
+                    {value}
+                    <button
+                      onClick={() => {
+                        const newFilters = {
+                          ...activeFilters,
+                          [filterType]: activeFilters[filterType].filter(
+                            (v) => v !== value
+                          ),
+                        };
+                        setActiveFilters(newFilters);
+                        updateQueryParams(newFilters, sortConfig, searchQuery);
+                      }}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {(activeFilters.valueChain?.length > 0 ||

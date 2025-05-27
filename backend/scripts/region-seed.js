@@ -16,6 +16,7 @@ async function seedRegions() {
     'Narok',
     'Kajiado',
     'Taita Taveta',
+    'Other',
   ];
 
   try {

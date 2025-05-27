@@ -585,15 +585,6 @@ export default function KnowledgeHub() {
                         </span>
                       ))}
                     </div>
-                    <button
-                      className="px-6 py-2 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors text-black"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openCardModal(card);
-                      }}
-                    >
-                      Learn More
-                    </button>
                   </div>
                 </div>
               ))}

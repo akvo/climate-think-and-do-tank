@@ -15,9 +15,30 @@
     "title": {
       "type": "string"
     },
-    "blocks": {
-      "type": "dynamiczone",
-      "components": ["shared.media", "shared.quote", "shared.rich-text", "shared.slider"]
+    "our_mission": {
+      "type": "richtext"
+    },
+    "what_we_do": {
+      "type": "richtext"
+    },
+    "where_we_work": {
+      "type": "richtext"
+    },
+    "join_us": {
+      "type": "richtext"
+    },
+    "tagline": {
+      "type": "string"
+    },
+    "tagline_description": {
+      "type": "text"
+    },
+    "banner": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
     }
   }
 }

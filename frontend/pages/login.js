@@ -159,7 +159,7 @@ export default function LoginForm() {
               <h1 className="text-4xl font-bold text-black mb-6">
                 {formData.forgotPassword
                   ? 'Forgot your password'
-                  : 'Welcome to the Think and Do Tank Network'}
+                  : 'Welcome to the Kenya Drylands Investment Hub'}
               </h1>
 
               {formData.forgotPassword ? (
