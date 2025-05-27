@@ -5,6 +5,7 @@ import { env } from '@/helpers/env-vars';
 import Image from 'next/image';
 import { MarkdownRenderer } from '@/components/MarkDownRenderer';
 import { getImageUrl } from '@/helpers/utilities';
+import StatsGrid from '@/components/StatsGrid';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 
@@ -91,14 +92,18 @@ export default function About() {
           <h1 className="text-4xl font-bold mb-2">{about.title}</h1>
           <div className="flex flex-col md:flex-row gap-4 items-center my-8">
             <div className="md:basis-1/3 w-full md:w-auto">
-              <p className="text-lg text-green-700">{about.tagline}</p>
+              <p className="text-green-700 text-3xl">{about.tagline}</p>
             </div>
             <span className="hidden md:inline-block h-5 w-px bg-gray-300 mx-2"></span>
             <div className="md:basis-2/3 w-full md:w-auto">
-              <p className="text-base text-gray-700">
+              <p className="text-base text-gray-700 text-[14px]">
                 <MarkdownRenderer content={about.tagline_description} />
               </p>
             </div>
+          </div>
+
+          <div className="mb-12 border-b border-gray-100 pb-12">
+            <StatsGrid />
           </div>
 
           <Section title="Our Mission" body={about.our_mission} />
