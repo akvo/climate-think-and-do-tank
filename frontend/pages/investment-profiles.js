@@ -261,223 +261,218 @@ export default function InvestmentOpportunityProfile() {
   return (
     <div className="min-h-screen bg-white">
       <div className="py-4 px-4 bg-[#f1f3f5] text-black">
-        <div className="container mx-auto">
-          <form onSubmit={handleSearchSubmit}>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Try keywords like: 'tilapia' or 'horticulture'"
-                className="w-full pl-4 pr-10 py-3 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  handleSearch(e.target.value);
-                }}
-              />
-              <button
-                type="submit"
-                className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <Search size={20} />
-              </button>
+        <div className="flex container mx-auto items-center">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center gap-6 justify-between">
+              <div className="flex gap-6 flex-wrap">
+                {Object.keys(filterOptions).map((filterType) => (
+                  <div key={filterType} className="relative filter-dropdown">
+                    <button
+                      onClick={() =>
+                        setOpenFilter(
+                          openFilter === filterType ? null : filterType
+                        )
+                      }
+                      className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
+                    >
+                      {filterType === 'valueChain'
+                        ? 'Value Chain'
+                        : filterType === 'regions'
+                        ? 'Focus Regions'
+                        : filterType === 'date'
+                        ? 'Publication Date'
+                        : filterType.charAt(0).toUpperCase() +
+                          filterType.slice(1)}
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                    {openFilter === filterType && (
+                      <div className="absolute top-full left-0 mt-2 z-10 min-w-[600px]">
+                        {filterType === 'valueChain' ? (
+                          <CheckboxFilter
+                            label="Value Chain"
+                            options={filterOptions[filterType].filter(
+                              (opt) => opt !== 'All'
+                            )}
+                            initialSelected={
+                              activeFilters[filterType].length === 0
+                                ? [
+                                    'All',
+                                    ...filterOptions[filterType].filter(
+                                      (opt) => opt !== 'All'
+                                    ),
+                                  ]
+                                : activeFilters[filterType]
+                            }
+                            hasAllOption={true}
+                            onApply={(selectedOptions) => {
+                              const allItemsSelected =
+                                selectedOptions.includes('All') ||
+                                (filterOptions[filterType].filter(
+                                  (opt) => opt !== 'All'
+                                ).length > 0 &&
+                                  filterOptions[filterType]
+                                    .filter((opt) => opt !== 'All')
+                                    .every((opt) =>
+                                      selectedOptions.includes(opt)
+                                    ));
+
+                              const optionsToApply = allItemsSelected
+                                ? []
+                                : selectedOptions.filter(
+                                    (opt) => opt !== 'All'
+                                  );
+
+                              const newFilters = {
+                                ...activeFilters,
+                                [filterType]: optionsToApply,
+                              };
+                              setActiveFilters(newFilters);
+                              updateFilters(newFilters);
+                              setOpenFilter(null);
+                            }}
+                            onClear={() => {
+                              const newFilters = {
+                                ...activeFilters,
+                                [filterType]: [],
+                              };
+                              setActiveFilters(newFilters);
+                              updateFilters(newFilters);
+                              setOpenFilter(null);
+                            }}
+                          />
+                        ) : filterType === 'regions' ? (
+                          <LocationsFilter
+                            name="Focus Regions"
+                            locations={[
+                              'All Locations',
+                              'No Specific Region',
+                              ...filterOptions[filterType],
+                            ]}
+                            initialSelected={activeFilters[filterType]}
+                            onApply={(selectedLocations) => {
+                              const availableLocations = [
+                                'No Specific Region',
+                                ...filterOptions[filterType],
+                              ];
+
+                              const allSelected =
+                                availableLocations.length > 0 &&
+                                selectedLocations.length ===
+                                  availableLocations.filter(
+                                    (item) => item !== 'All Locations'
+                                  ).length;
+
+                              const locationsToApply = allSelected
+                                ? []
+                                : selectedLocations;
+
+                              const newFilters = {
+                                ...activeFilters,
+                                [filterType]: locationsToApply,
+                              };
+                              setActiveFilters(newFilters);
+                              updateFilters(newFilters);
+                              setOpenFilter(null);
+                            }}
+                            onClear={() => {
+                              const newFilters = {
+                                ...activeFilters,
+                                [filterType]: [],
+                              };
+                              setActiveFilters(newFilters);
+                              updateFilters(newFilters);
+                              setOpenFilter(null);
+                            }}
+                          />
+                        ) : (
+                          <div className="w-48 bg-white rounded-md shadow-lg border max-h-60 overflow-y-auto">
+                            {filterOptions[filterType].length > 0 ? (
+                              filterOptions[filterType].map((option) => (
+                                <label
+                                  key={option}
+                                  className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={activeFilters[filterType].includes(
+                                      option
+                                    )}
+                                    onChange={() =>
+                                      toggleFilter(filterType, option)
+                                    }
+                                    className="mr-2"
+                                  />
+                                  {option}
+                                </label>
+                              ))
+                            ) : (
+                              <div className="px-4 py-2 text-gray-500">
+                                No options available
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                <button
+                  onClick={handleSort}
+                  className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
+                >
+                  <span>Date</span>
+                  {sortConfig.order === 'desc' ? (
+                    <ArrowDownWideNarrow className="w-4 h-4" />
+                  ) : (
+                    <ArrowUpWideNarrow className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
-          </form>
+          </div>
+          <div className="container mx-auto">
+            <div className="flex justify-end">
+              <form onSubmit={handleSearchSubmit} className="w-96">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Try keywords like: 'tilapia' or 'horticulture'"
+                    className="w-full pl-4 pr-10 py-2 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      handleSearch(e.target.value);
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <Search size={20} />
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="border-b relative">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-6 justify-between">
-            <div className="flex gap-6 flex-wrap">
-              {Object.keys(filterOptions).map((filterType) => (
-                <div key={filterType} className="relative filter-dropdown">
-                  <button
-                    onClick={() =>
-                      setOpenFilter(
-                        openFilter === filterType ? null : filterType
-                      )
-                    }
-                    className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
-                  >
-                    {filterType === 'valueChain'
-                      ? 'Value Chain'
-                      : filterType === 'regions'
-                      ? 'Focus Regions'
-                      : filterType === 'date'
-                      ? 'Publication Date'
-                      : filterType.charAt(0).toUpperCase() +
-                        filterType.slice(1)}
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-                  {openFilter === filterType && (
-                    <div className="absolute top-full left-0 mt-2 z-10 min-w-[600px]">
-                      {filterType === 'valueChain' ? (
-                        <CheckboxFilter
-                          label="Value Chain"
-                          options={filterOptions[filterType].filter(
-                            (opt) => opt !== 'All'
-                          )}
-                          initialSelected={
-                            activeFilters[filterType].length === 0
-                              ? [
-                                  'All',
-                                  ...filterOptions[filterType].filter(
-                                    (opt) => opt !== 'All'
-                                  ),
-                                ]
-                              : activeFilters[filterType]
-                          }
-                          hasAllOption={true}
-                          onApply={(selectedOptions) => {
-                            const allItemsSelected =
-                              selectedOptions.includes('All') ||
-                              (filterOptions[filterType].filter(
-                                (opt) => opt !== 'All'
-                              ).length > 0 &&
-                                filterOptions[filterType]
-                                  .filter((opt) => opt !== 'All')
-                                  .every((opt) =>
-                                    selectedOptions.includes(opt)
-                                  ));
-
-                            const optionsToApply = allItemsSelected
-                              ? []
-                              : selectedOptions.filter((opt) => opt !== 'All');
-
-                            const newFilters = {
-                              ...activeFilters,
-                              [filterType]: optionsToApply,
-                            };
-                            setActiveFilters(newFilters);
-                            updateFilters(newFilters);
-                            setOpenFilter(null);
-                          }}
-                          onClear={() => {
-                            const newFilters = {
-                              ...activeFilters,
-                              [filterType]: [],
-                            };
-                            setActiveFilters(newFilters);
-                            updateFilters(newFilters);
-                            setOpenFilter(null);
-                          }}
-                        />
-                      ) : filterType === 'regions' ? (
-                        <LocationsFilter
-                          name="Focus Regions"
-                          locations={[
-                            'All Locations',
-                            'No Specific Region',
-                            ...filterOptions[filterType],
-                          ]}
-                          initialSelected={activeFilters[filterType]}
-                          onApply={(selectedLocations) => {
-                            const availableLocations = [
-                              'No Specific Region',
-                              ...filterOptions[filterType],
-                            ];
-
-                            const allSelected =
-                              availableLocations.length > 0 &&
-                              selectedLocations.length ===
-                                availableLocations.filter(
-                                  (item) => item !== 'All Locations'
-                                ).length;
-
-                            const locationsToApply = allSelected
-                              ? []
-                              : selectedLocations;
-
-                            const newFilters = {
-                              ...activeFilters,
-                              [filterType]: locationsToApply,
-                            };
-                            setActiveFilters(newFilters);
-                            updateFilters(newFilters);
-                            setOpenFilter(null);
-                          }}
-                          onClear={() => {
-                            const newFilters = {
-                              ...activeFilters,
-                              [filterType]: [],
-                            };
-                            setActiveFilters(newFilters);
-                            updateFilters(newFilters);
-                            setOpenFilter(null);
-                          }}
-                        />
-                      ) : (
-                        <div className="w-48 bg-white rounded-md shadow-lg border max-h-60 overflow-y-auto">
-                          {filterOptions[filterType].length > 0 ? (
-                            filterOptions[filterType].map((option) => (
-                              <label
-                                key={option}
-                                className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={activeFilters[filterType].includes(
-                                    option
-                                  )}
-                                  onChange={() =>
-                                    toggleFilter(filterType, option)
-                                  }
-                                  className="mr-2"
-                                />
-                                {option}
-                              </label>
-                            ))
-                          ) : (
-                            <div className="px-4 py-2 text-gray-500">
-                              No options available
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-              <button
-                onClick={handleSort}
-                className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
-              >
-                <span>Date</span>
-                {sortConfig.order === 'desc' ? (
-                  <ArrowDownWideNarrow className="w-4 h-4" />
-                ) : (
-                  <ArrowUpWideNarrow className="w-4 h-4" />
-                )}
-              </button>
-            </div>
-
-            {hasActiveFilters && (
-              <button
-                className="text-green-600 hover:text-green-700"
-                onClick={clearFilters}
-              >
-                Clear filters
-              </button>
-            )}
-          </div>
-        </div>
-
-        {(activeFilters.valueChain?.length > 0 ||
-          activeFilters.regions?.length > 0) && (
-          <div className="container mx-auto px-4 pb-3 text-black">
+      {(activeFilters.valueChain?.length > 0 ||
+        activeFilters.regions?.length > 0) && (
+        <div className="border-b relative container mx-auto flex items-center justify-between py-2">
+          <div className="px-4  text-black">
             <div className="flex items-center gap-2 flex-wrap">
               {Object.entries(activeFilters).map(([filterType, values]) =>
                 values.map((value) => (
@@ -506,8 +501,19 @@ export default function InvestmentOpportunityProfile() {
               )}
             </div>
           </div>
-        )}
-      </div>
+
+          <div className="flex items-center gap-4">
+            {hasActiveFilters && (
+              <button
+                className="text-green-600 hover:text-green-700"
+                onClick={clearFilters}
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="container mx-auto px-4 py-8">
         {loading && investmentOpportunityProfiles.length === 0 ? (
