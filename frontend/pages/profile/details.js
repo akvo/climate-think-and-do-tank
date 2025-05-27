@@ -5,16 +5,22 @@ import withAuth from '@/components/withAuth';
 import ProfileLayout from '@/components/ProfileLayout';
 import ImageUploader from '@/components/ImageUploader';
 import Image from 'next/image';
-import { fetchUserProfile, updateProfile } from '@/store/slices/authSlice';
+import {
+  fetchUserProfile,
+  logout,
+  updateProfile,
+} from '@/store/slices/authSlice';
 import { toast } from 'react-toastify';
 import { env } from '@/helpers/env-vars';
 import { getImageUrl } from '@/helpers/utilities';
 import CustomDropdown from '@/components/CustomDropdown';
 import Link from 'next/link';
-import { getCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/router';
 
 const ProfileDetails = () => {
+  const router = useRouter();
   const { organizations, regions, lookingFors, roles, country, topics } =
     useSelector((state) => state.auth);
 
@@ -109,10 +115,40 @@ const ProfileDetails = () => {
       setIsSubmitting(false);
     }
   };
+  const handleDeleteAccount = async () => {
+    try {
+      setLoading(true);
+      const token = getCookie('token');
 
-  const handleDeleteAccount = () => {
-    console.log('Account deleted');
-    setShowDeleteDialog(false);
+      const response = await fetch(
+        `${env('NEXT_PUBLIC_BACKEND_URL')}/api/users/${userProfile.id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.ok) {
+        toast.success('Account deleted successfully');
+        setShowDeleteDialog(false);
+
+        dispatch(logout());
+        deleteCookie('token');
+
+        router.push('/login');
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.message || 'Failed to delete account');
+      }
+    } catch (error) {
+      toast.error('An error occurred while deleting your account');
+    } finally {
+      setLoading(false);
+      setShowDeleteDialog(false);
+    }
   };
 
   if (!userProfile && !loading) {
