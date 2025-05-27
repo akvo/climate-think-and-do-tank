@@ -492,8 +492,8 @@ export default function StakeholderDirectory() {
           </div>
         )}
         {loading && currentPage === 1 ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin h-8 w-8 border-4 border-green-500 rounded-full border-t-transparent"></div>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
           </div>
         ) : stakeholders.length === 0 ? (
           <div className="text-center py-12">
