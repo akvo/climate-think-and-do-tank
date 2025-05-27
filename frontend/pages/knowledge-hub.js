@@ -211,268 +211,264 @@ export default function KnowledgeHub() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Search Header */}
       <div className="py-4 px-4 bg-[#f1f3f5] text-black">
-        <div className="container mx-auto">
-          <form onSubmit={handleSearchSubmit}>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Try keywords like: 'tilapia' or 'horticulture'"
-                className="w-full pl-4 pr-10 py-3 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  handleSearch(e.target.value);
-                }}
-              />
-              <button
-                type="submit"
-                className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <Search size={20} />
-              </button>
+        <div className="flex container mx-auto items-center">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center gap-6 justify-between">
+              <div className="flex gap-6 flex-wrap">
+                {Object.keys(filterOptions).map((filterType) => (
+                  <div key={filterType} className="relative filter-dropdown">
+                    <button
+                      onClick={() =>
+                        setOpenFilter(
+                          openFilter === filterType ? null : filterType
+                        )
+                      }
+                      className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
+                    >
+                      {filterType === 'focusRegions'
+                        ? 'Focus Regions'
+                        : filterType === 'topic'
+                        ? 'Topics'
+                        : filterType === 'date'
+                        ? 'Year'
+                        : filterType.charAt(0).toUpperCase() +
+                          filterType.slice(1)}
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                    {openFilter === filterType && (
+                      <div className="absolute top-full left-0 mt-2 z-10 min-w-[400px]">
+                        {filterType === 'topic' ? (
+                          <CheckboxFilter
+                            options={filterOptions[filterType]}
+                            label={'Topics'}
+                            initialSelected={
+                              activeFilters[filterType].length === 0
+                                ? [
+                                    'All',
+                                    ...filterOptions[filterType].filter(
+                                      (option) => option !== 'All'
+                                    ),
+                                  ]
+                                : activeFilters[filterType]
+                            }
+                            hasAllOption={true}
+                            onApply={(selectedTopics) => {
+                              const topicsToApply = selectedTopics.includes(
+                                'All'
+                              )
+                                ? []
+                                : selectedTopics;
+
+                              const newFilters = {
+                                ...activeFilters,
+                                [filterType]: topicsToApply,
+                              };
+                              setActiveFilters(newFilters);
+                              updateFilters(newFilters);
+                              setOpenFilter(null);
+                            }}
+                            onClear={() => {
+                              const newFilters = {
+                                ...activeFilters,
+                                [filterType]: [],
+                              };
+                              setActiveFilters(newFilters);
+                              updateFilters(newFilters);
+                              setOpenFilter(null);
+                            }}
+                          />
+                        ) : filterType === 'focusRegions' ? (
+                          <LocationsFilter
+                            name="Focus Regions"
+                            locations={[
+                              'All Locations',
+                              'No Specific Focus Region',
+                              ...filterOptions[filterType],
+                            ]}
+                            initialSelected={activeFilters[filterType]}
+                            onApply={(selectedLocations) => {
+                              const locationsToApply =
+                                selectedLocations.includes('All Locations')
+                                  ? []
+                                  : selectedLocations.filter(
+                                      (loc) => loc !== 'All Locations'
+                                    );
+
+                              const newFilters = {
+                                ...activeFilters,
+                                [filterType]: locationsToApply,
+                              };
+                              setActiveFilters(newFilters);
+                              updateFilters(newFilters);
+                              setOpenFilter(null);
+                            }}
+                            onClear={() => {
+                              const newFilters = {
+                                ...activeFilters,
+                                [filterType]: [],
+                              };
+                              setActiveFilters(newFilters);
+                              updateFilters(newFilters);
+                              setOpenFilter(null);
+                            }}
+                          />
+                        ) : filterType === 'date' ? (
+                          <CheckboxFilter
+                            options={generateYearOptions()}
+                            label={'Year'}
+                            initialSelected={
+                              activeFilters[filterType].length === 0
+                                ? ['All', ...generateYearOptions()]
+                                : activeFilters[filterType]
+                            }
+                            hasAllOption={true}
+                            allOptionLabel="All Years"
+                            onApply={(selectedYears) => {
+                              let finalSelection = [...selectedYears];
+
+                              const allYearsSelected =
+                                generateYearOptions().every((year) =>
+                                  selectedYears.includes(year)
+                                );
+                              if (
+                                allYearsSelected &&
+                                !selectedYears.includes('All Years')
+                              ) {
+                                finalSelection = [
+                                  'All Years',
+                                  ...selectedYears,
+                                ];
+                              }
+
+                              const yearsToApply = finalSelection.includes(
+                                'All Years'
+                              )
+                                ? []
+                                : finalSelection.filter(
+                                    (year) => year !== 'All Years'
+                                  );
+
+                              const newFilters = {
+                                ...activeFilters,
+                                [filterType]: yearsToApply,
+                              };
+
+                              setActiveFilters(newFilters);
+                              updateFilters(newFilters);
+                              setOpenFilter(null);
+                            }}
+                            onClear={() => {
+                              const newFilters = {
+                                ...activeFilters,
+                                [filterType]: [],
+                              };
+                              setActiveFilters(newFilters);
+                              updateFilters(newFilters);
+                              setOpenFilter(null);
+                            }}
+                          />
+                        ) : (
+                          <CheckboxFilter
+                            options={filterOptions[filterType] || []}
+                            label={
+                              filterType.charAt(0).toUpperCase() +
+                              filterType.slice(1)
+                            }
+                            initialSelected={activeFilters[filterType] || []}
+                            hasAllOption={false}
+                            onApply={(selectedOptions) => {
+                              const optionsToApply = selectedOptions.includes(
+                                'All'
+                              )
+                                ? []
+                                : selectedOptions.filter(
+                                    (opt) => opt !== 'All'
+                                  );
+
+                              const newFilters = {
+                                ...activeFilters,
+                                [filterType]: optionsToApply,
+                              };
+                              setActiveFilters(newFilters);
+                              updateFilters(newFilters);
+                              setOpenFilter(null);
+                            }}
+                            onClear={() => {
+                              const newFilters = {
+                                ...activeFilters,
+                                [filterType]: [],
+                              };
+                              setActiveFilters(newFilters);
+                              updateFilters(newFilters);
+                              setOpenFilter(null);
+                            }}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}{' '}
+                <button
+                  onClick={handleSort}
+                  className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
+                >
+                  <span>Date</span>
+                  {sortConfig.order === 'desc' ? (
+                    <ArrowDownWideNarrow className="w-4 h-4" />
+                  ) : (
+                    <ArrowUpWideNarrow className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
-          </form>
+          </div>
+
+          <div className="container mx-auto">
+            <div className="flex justify-end">
+              <form onSubmit={handleSearchSubmit} className="w-96">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Try keywords like: 'tilapia' or 'horticulture'"
+                    className="w-full pl-4 pr-10 py-2 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      handleSearch(e.target.value);
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <Search size={20} />
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Filters Section */}
-      <div className="border-t border-b border-gray-200 bg-white">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex gap-6 flex-wrap">
-              {Object.keys(filterOptions).map((filterType) => (
-                <div key={filterType} className="relative filter-dropdown">
-                  <button
-                    onClick={() =>
-                      setOpenFilter(
-                        openFilter === filterType ? null : filterType
-                      )
-                    }
-                    className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
-                  >
-                    {filterType === 'focusRegions'
-                      ? 'Focus Regions'
-                      : filterType === 'topic'
-                      ? 'Topics'
-                      : filterType === 'date'
-                      ? 'Year'
-                      : filterType.charAt(0).toUpperCase() +
-                        filterType.slice(1)}
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-                  {openFilter === filterType && (
-                    <div className="absolute top-full left-0 mt-2 z-10 min-w-[400px]">
-                      {filterType === 'topic' ? (
-                        <CheckboxFilter
-                          options={filterOptions[filterType]}
-                          label={'Topics'}
-                          initialSelected={
-                            activeFilters[filterType].length === 0
-                              ? [
-                                  'All',
-                                  ...filterOptions[filterType].filter(
-                                    (option) => option !== 'All'
-                                  ),
-                                ]
-                              : activeFilters[filterType]
-                          }
-                          hasAllOption={true}
-                          onApply={(selectedTopics) => {
-                            const topicsToApply = selectedTopics.includes('All')
-                              ? []
-                              : selectedTopics;
-
-                            const newFilters = {
-                              ...activeFilters,
-                              [filterType]: topicsToApply,
-                            };
-                            setActiveFilters(newFilters);
-                            updateFilters(newFilters);
-                            setOpenFilter(null);
-                          }}
-                          onClear={() => {
-                            const newFilters = {
-                              ...activeFilters,
-                              [filterType]: [],
-                            };
-                            setActiveFilters(newFilters);
-                            updateFilters(newFilters);
-                            setOpenFilter(null);
-                          }}
-                        />
-                      ) : filterType === 'focusRegions' ? (
-                        <LocationsFilter
-                          name="Focus Regions"
-                          locations={[
-                            'All Locations',
-                            'No Specific Focus Region',
-                            ...filterOptions[filterType],
-                          ]}
-                          initialSelected={activeFilters[filterType]}
-                          onApply={(selectedLocations) => {
-                            const locationsToApply = selectedLocations.includes(
-                              'All Locations'
-                            )
-                              ? []
-                              : selectedLocations.filter(
-                                  (loc) => loc !== 'All Locations'
-                                );
-
-                            const newFilters = {
-                              ...activeFilters,
-                              [filterType]: locationsToApply,
-                            };
-                            setActiveFilters(newFilters);
-                            updateFilters(newFilters);
-                            setOpenFilter(null);
-                          }}
-                          onClear={() => {
-                            const newFilters = {
-                              ...activeFilters,
-                              [filterType]: [],
-                            };
-                            setActiveFilters(newFilters);
-                            updateFilters(newFilters);
-                            setOpenFilter(null);
-                          }}
-                        />
-                      ) : filterType === 'date' ? (
-                        <CheckboxFilter
-                          options={generateYearOptions()}
-                          label={'Year'}
-                          initialSelected={
-                            activeFilters[filterType].length === 0
-                              ? ['All', ...generateYearOptions()]
-                              : activeFilters[filterType]
-                          }
-                          hasAllOption={true}
-                          allOptionLabel="All Years"
-                          onApply={(selectedYears) => {
-                            let finalSelection = [...selectedYears];
-
-                            const allYearsSelected =
-                              generateYearOptions().every((year) =>
-                                selectedYears.includes(year)
-                              );
-                            if (
-                              allYearsSelected &&
-                              !selectedYears.includes('All Years')
-                            ) {
-                              finalSelection = ['All Years', ...selectedYears];
-                            }
-
-                            const yearsToApply = finalSelection.includes(
-                              'All Years'
-                            )
-                              ? []
-                              : finalSelection.filter(
-                                  (year) => year !== 'All Years'
-                                );
-
-                            const newFilters = {
-                              ...activeFilters,
-                              [filterType]: yearsToApply,
-                            };
-
-                            setActiveFilters(newFilters);
-                            updateFilters(newFilters);
-                            setOpenFilter(null);
-                          }}
-                          onClear={() => {
-                            const newFilters = {
-                              ...activeFilters,
-                              [filterType]: [],
-                            };
-                            setActiveFilters(newFilters);
-                            updateFilters(newFilters);
-                            setOpenFilter(null);
-                          }}
-                        />
-                      ) : (
-                        <CheckboxFilter
-                          options={filterOptions[filterType] || []}
-                          label={
-                            filterType.charAt(0).toUpperCase() +
-                            filterType.slice(1)
-                          }
-                          initialSelected={activeFilters[filterType] || []}
-                          hasAllOption={false}
-                          onApply={(selectedOptions) => {
-                            const optionsToApply = selectedOptions.includes(
-                              'All'
-                            )
-                              ? []
-                              : selectedOptions.filter((opt) => opt !== 'All');
-
-                            const newFilters = {
-                              ...activeFilters,
-                              [filterType]: optionsToApply,
-                            };
-                            setActiveFilters(newFilters);
-                            updateFilters(newFilters);
-                            setOpenFilter(null);
-                          }}
-                          onClear={() => {
-                            const newFilters = {
-                              ...activeFilters,
-                              [filterType]: [],
-                            };
-                            setActiveFilters(newFilters);
-                            updateFilters(newFilters);
-                            setOpenFilter(null);
-                          }}
-                        />
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}{' '}
-              <button
-                onClick={handleSort}
-                className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
-              >
-                <span>Date</span>
-                {sortConfig.order === 'desc' ? (
-                  <ArrowDownWideNarrow className="w-4 h-4" />
-                ) : (
-                  <ArrowUpWideNarrow className="w-4 h-4" />
-                )}
-              </button>
-            </div>
-            {(activeFilters.topic.length > 0 ||
-              activeFilters.focusRegions.length > 0 ||
-              activeFilters.type.length > 0 ||
-              activeFilters.date.length > 0) && (
-              <button
-                onClick={clearFilters}
-                className="text-green-600 hover:text-green-700"
-              >
-                Clear filters
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Active Filters Tags */}
-        {(activeFilters.topic?.length > 0 ||
-          activeFilters.focusRegions?.length > 0 ||
-          activeFilters.type?.length > 0 ||
-          activeFilters.date?.length > 0) && (
-          <div className="container mx-auto px-4 pb-3 text-black">
+      {(activeFilters.topic?.length > 0 ||
+        activeFilters.focusRegions?.length > 0 ||
+        activeFilters.type?.length > 0 ||
+        activeFilters.date?.length > 0) && (
+        <div className="border-b relative container mx-auto flex items-center justify-between py-2">
+          <div className="px-4  text-black">
             <div className="flex items-center gap-2 flex-wrap">
               {Object.entries(activeFilters).map(([filterType, values]) =>
                 values.map((value) => (
@@ -501,14 +497,27 @@ export default function KnowledgeHub() {
               )}
             </div>
           </div>
-        )}
-      </div>
+          <div className="flex items-center gap-4">
+            {(activeFilters.topic.length > 0 ||
+              activeFilters.focusRegions.length > 0 ||
+              activeFilters.type.length > 0 ||
+              activeFilters.date.length > 0) && (
+              <button
+                onClick={clearFilters}
+                className="text-green-600 hover:text-green-700"
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Card Grid */}
       <div className="container mx-auto px-4 py-8">
         {loading ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin h-8 w-8 border-4 border-green-500 rounded-full border-t-transparent"></div>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
           </div>
         ) : (
           <>

@@ -120,8 +120,9 @@ export default function InvestmentOpportunityProfile() {
 
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
-      month: 'long',
       year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
   };
 
@@ -135,13 +136,27 @@ export default function InvestmentOpportunityProfile() {
     <div className="min-h-screen bg-white">
       <div className="container mx-auto">
         <div className="bg-white border-b border-gray-200 py-8 my-12 mt-2">
-          <h2 className="text-3xl font-semibold text-gray-800">
-            Investment Opportunity Profile
-          </h2>
-          <h3 className="text-xl text-gray-700 mt-2">
-            {`${profile.value_chain?.name} Value Chain in ${profile.region?.name} County`}
-          </h3>
-          <p className="text-lg text-gray-600 mt-1">{formattedDate}</p>
+          <div className="flex items-center flex-wrap gap-2 mb-4">
+            <span className="text-sm text-gray-600">
+              Investment Opportunity
+            </span>
+            {profile.region?.name && (
+              <span className="text-sm text-green-600 font-medium bg-green-50 px-3 py-1 rounded-full">
+                {profile.region.name} County
+              </span>
+            )}
+            {formattedDate && (
+              <span className="text-sm text-gray-500">
+                <time>{formattedDate}</time>
+              </span>
+            )}
+          </div>
+
+          {profile.value_chain?.name && (
+            <h1 className="text-3xl md:text-4xl font-bold text-[#008A16] mb-2">
+              {`${profile.value_chain?.name} Value Chain in ${profile.region?.name} County`}
+            </h1>
+          )}
         </div>
 
         {imageUrl && (
@@ -196,7 +211,7 @@ export default function InvestmentOpportunityProfile() {
                     {tab.title}
                   </h3>
                   <div className="flex flex-col md:flex-row gap-6">
-                    <div className="w-full md:w-2/5 flex items-center justify-center">
+                    <div className="w-full md:w-2/5 flex items-start justify-center">
                       {profile[tab.imageField] ? (
                         <Image
                           src={getImageUrl(profile[tab.imageField])}
@@ -214,7 +229,7 @@ export default function InvestmentOpportunityProfile() {
                     </div>
 
                     <div className="w-full md:w-3/5">
-                      <div className="text-gray-700 mb-6">
+                      <div className="text-gray-700 mb-6 text-sm">
                         {profile[tab.contentField] ? (
                           <MarkdownRenderer
                             content={profile[tab.contentField]}
@@ -237,10 +252,10 @@ export default function InvestmentOpportunityProfile() {
             <h4 className="text-xl font-semibold text-gray-800 mb-2">
               Interested?
             </h4>
-            <p className="text-gray-700">
+            <p className="text-gray-700 text-sm">
               To express interest, access additional data, or be connected to
               local stakeholders, contact the Kenya Drylands Investment Hub
-              (DKIII):
+              (DKIH) :
             </p>
             <div className="flex flex-wrap items-center gap-2 mt-2 text-black">
               <span className="flex items-center">

@@ -184,131 +184,123 @@ export default function NewsEventsDirectory() {
   return (
     <div className="min-h-screen bg-white text-black">
       <div className="py-4 px-4 bg-[#f1f3f5] text-black">
-        <div className="container mx-auto">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSearch(searchQuery);
-            }}
-          >
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search news & events..."
-                className="w-full pl-4 pr-10 py-3 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  handleSearch(e.target.value);
-                }}
-              />
-              <button
-                type="submit"
-                className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <Search size={20} />
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <div className="border-b relative">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-6 justify-between">
-            <div className="flex gap-6 flex-wrap items-center">
-              <div className="flex rounded-md overflow-hidden border border-gray-200 mr-4">
-                <button
-                  onClick={() => toggleUpcoming(true)}
-                  className={`px-4 py-1.5 text-sm ${
-                    upcoming
-                      ? 'bg-green-600 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  Upcoming
-                </button>
-                <button
-                  onClick={() => toggleUpcoming(false)}
-                  className={`px-4 py-1.5 text-sm ${
-                    !upcoming
-                      ? 'bg-green-600 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  Past
-                </button>
-              </div>
-
-              {Object.keys(filterOptions).map((filterType) => (
-                <div key={filterType} className="relative filter-dropdown">
+        <div className="flex container mx-auto">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center gap-6 justify-between">
+              <div className="flex gap-6 flex-wrap items-center">
+                <div className="flex rounded-md overflow-hidden border border-gray-200 mr-4">
                   <button
-                    onClick={() =>
-                      setOpenFilter(
-                        openFilter === filterType ? null : filterType
-                      )
-                    }
-                    className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
+                    onClick={() => toggleUpcoming(true)}
+                    className={`px-4 py-1.5 text-sm ${
+                      upcoming
+                        ? 'bg-green-600 text-white'
+                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                    }`}
                   >
-                    {filterType === 'types'
-                      ? 'Type'
-                      : filterType.charAt(0).toUpperCase() +
-                        filterType.slice(1)}
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
+                    Upcoming
                   </button>
-                  {openFilter === filterType && (
-                    <div className="absolute top-full left-0 mt-2 z-10 min-w-[400px]">
-                      {filterType === 'types' ? (
-                        <CheckboxFilter
-                          label="Type"
-                          options={filterOptions.types}
-                          initialSelected={
-                            activeFilters.types.length === 0
-                              ? ['News', 'Event']
-                              : activeFilters.types
-                          }
-                          hasAllOption={false}
-                          onApply={(selectedTypes) => {
-                            handleFilterApply('types', selectedTypes);
-                          }}
-                          onClear={() =>
-                            handleFilterApply('types', ['News', 'Event'])
-                          }
-                        />
-                      ) : null}
-                    </div>
-                  )}
+                  <button
+                    onClick={() => toggleUpcoming(false)}
+                    className={`px-4 py-1.5 text-sm ${
+                      !upcoming
+                        ? 'bg-green-600 text-white'
+                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    Past
+                  </button>
                 </div>
-              ))}
-            </div>
 
-            <div className="flex items-center gap-4">
-              {hasActiveFilters && (
-                <button
-                  className="text-green-600 hover:text-green-700"
-                  onClick={handleClearFilters}
-                >
-                  Clear filters
-                </button>
-              )}
+                {Object.keys(filterOptions).map((filterType) => (
+                  <div key={filterType} className="relative filter-dropdown">
+                    <button
+                      onClick={() =>
+                        setOpenFilter(
+                          openFilter === filterType ? null : filterType
+                        )
+                      }
+                      className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
+                    >
+                      {filterType === 'types'
+                        ? 'Type'
+                        : filterType.charAt(0).toUpperCase() +
+                          filterType.slice(1)}
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                    {openFilter === filterType && (
+                      <div className="absolute top-full left-0 mt-2 z-10 min-w-[400px]">
+                        {filterType === 'types' ? (
+                          <CheckboxFilter
+                            label="Type"
+                            options={filterOptions.types}
+                            initialSelected={
+                              activeFilters.types.length === 0
+                                ? ['News', 'Event']
+                                : activeFilters.types
+                            }
+                            hasAllOption={false}
+                            onApply={(selectedTypes) => {
+                              handleFilterApply('types', selectedTypes);
+                            }}
+                            onClear={() =>
+                              handleFilterApply('types', ['News', 'Event'])
+                            }
+                          />
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="container mx-auto">
+            <div className="flex justify-end">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSearch(searchQuery);
+                }}
+                className="w-80"
+              >
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search news & events..."
+                    className="w-full pl-4 pr-10 py-2 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      handleSearch(e.target.value);
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <Search size={20} />
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
-
-        {activeFilters.types?.length < 2 && activeFilters.types.length > 0 && (
-          <div className="container mx-auto px-4 pb-3 text-black">
+      </div>
+      {activeFilters.types?.length < 2 && activeFilters.types.length > 0 && (
+        <div className="border-b relative container mx-auto flex items-center justify-between py-2">
+          <div className="px-4  text-black">
             <div className="flex items-center gap-2 flex-wrap">
               {Object.entries(activeFilters).map(([filterType, values]) => {
                 if (filterType === 'types' && values.length === 2) {
@@ -354,8 +346,18 @@ export default function NewsEventsDirectory() {
               })}
             </div>
           </div>
-        )}
-      </div>
+          <div className="flex items-center gap-4">
+            {hasActiveFilters && (
+              <button
+                className="text-green-600 hover:text-green-700"
+                onClick={handleClearFilters}
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="container mx-auto px-4 py-8">
         {loading && newsEventsData.length === 0 ? (
@@ -368,7 +370,7 @@ export default function NewsEventsDirectory() {
               {newsEventsData.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                  className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300 cursor-pointer flex flex-col h-full"
                   onClick={() => handleCardClick(item)}
                 >
                   {item.imageUrl && (
@@ -382,8 +384,7 @@ export default function NewsEventsDirectory() {
                       />
                     </div>
                   )}
-
-                  <div className="p-5">
+                  <div className="p-5 flex flex-col flex-1">
                     {item.regions && item.regions.length > 0 && (
                       <div className="flex justify-between items-start mb-4">
                         <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">
@@ -391,16 +392,14 @@ export default function NewsEventsDirectory() {
                         </span>
                       </div>
                     )}
-
                     <h3 className="text-lg font-semibold mb-3 line-clamp-2">
                       {item.title}
                     </h3>
-
-                    <p className="text-gray-600 mb-4 line-clamp-3">
+                    <p className="text-gray-600 mb-4 line-clamp-3 flex-1">
                       {item.description}
                     </p>
 
-                    <div className="flex justify-between items-center mt-4">
+                    <div className="flex justify-between items-center mt-auto pt-4">
                       <div className="flex items-center text-sm text-gray-500">
                         {item.type === 'Event' ? (
                           <>
@@ -414,7 +413,6 @@ export default function NewsEventsDirectory() {
                           </>
                         )}
                       </div>
-
                       <time className="text-sm text-gray-500">
                         {item.displayDate ? item.displayDate : ''}
                       </time>
