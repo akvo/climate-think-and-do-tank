@@ -91,6 +91,77 @@
           "sortable": false
         }
       },
+      "publication_date": {
+        "edit": {
+          "label": "publication_date",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "publication_date",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "value_chain": {
+        "edit": {
+          "label": "value_chain",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "name"
+        },
+        "list": {
+          "label": "value_chain",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "profile_picture": {
+        "edit": {
+          "label": "profile_picture",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "profile_picture",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "title": {
+        "edit": {
+          "label": "title",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "title",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "description": {
+        "edit": {
+          "label": "description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "description",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -186,6 +257,32 @@
           {
             "name": "community_voices",
             "size": 6
+          },
+          {
+            "name": "publication_date",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "value_chain",
+            "size": 6
+          },
+          {
+            "name": "profile_picture",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "title",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "description",
+            "size": 12
           }
         ]
       ]

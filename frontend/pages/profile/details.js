@@ -97,8 +97,6 @@ const ProfileDetails = () => {
         id: userProfile.id,
       };
 
-      console.log('Submitting profile update:', updateData);
-
       const result = await dispatch(updateProfile(updateData));
 
       if (updateProfile.fulfilled.match(result)) {
@@ -238,7 +236,7 @@ const ProfileDetails = () => {
 
               <div>
                 <label className="block text-lg font-medium text-gray-700 mb-2">
-                  Full Name
+                  Name
                 </label>
                 {editMode ? (
                   <input
@@ -286,7 +284,7 @@ const ProfileDetails = () => {
 
               <div>
                 <label className="block text-lg font-medium text-gray-700 mb-2">
-                  Organization
+                  Organization name
                 </label>
                 <div className="relative">
                   <input
@@ -317,7 +315,7 @@ const ProfileDetails = () => {
                 {editMode ? (
                   <CustomDropdown
                     id="country"
-                    label="Country"
+                    label="Country of residence"
                     options={country.map((c) => ({
                       id: c.id,
                       label: c.country_name,
@@ -335,7 +333,7 @@ const ProfileDetails = () => {
                 ) : (
                   <>
                     <label className="block text-lg font-medium text-gray-700 mb-2">
-                      Country
+                      Country of residence
                     </label>
                     <p className="text-gray-900 py-2 px-1">
                       {userProfile?.country?.country_name || 'Not provided'}
@@ -348,7 +346,7 @@ const ProfileDetails = () => {
                 {editMode ? (
                   <CustomDropdown
                     id="focus_regions"
-                    label="Focus Regions"
+                    label="Focus Region"
                     options={regions.map((region) => ({
                       id: region.id,
                       label: region.name,
@@ -367,7 +365,7 @@ const ProfileDetails = () => {
                 ) : (
                   <>
                     <label className="block text-lg font-medium text-gray-700 mb-2">
-                      Focus Regions
+                      Focus Region
                     </label>
                     <div className="py-2 px-1">
                       {userProfile?.focus_regions &&
@@ -511,7 +509,7 @@ const ProfileDetails = () => {
                 ) : (
                   <>
                     <label className="block text-lg font-medium text-gray-700 mb-2">
-                      Stakeholder Role
+                      Role
                     </label>
                     <p className="text-gray-900 py-2 px-1">
                       {userProfile?.stakeholder_role || 'Not provided'}

@@ -6,13 +6,103 @@
   "locale": null,
   "permissions": [
     {
+      "documentId": "nrcyasy22czucmoymfdf7cbq",
+      "action": "api::country.country.find",
+      "locale": null
+    },
+    {
+      "documentId": "qt3sk32ui8owt1ohzc11axp6",
+      "action": "api::country.country.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "bt09sowfhmg1e9nyq31pdknu",
+      "action": "api::looking-for.looking-for.find",
+      "locale": null
+    },
+    {
+      "documentId": "x8ki6gbaquze2ecra49mh3mr",
+      "action": "api::looking-for.looking-for.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "fwlbobgw9wdwl2fsi0u492h9",
+      "action": "api::organisation.organisation.find",
+      "locale": null
+    },
+    {
+      "documentId": "hpw76ystucpub7gfxla0o4a9",
+      "action": "api::organisation.organisation.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "q69wy34glx84grezobfacw9u",
+      "action": "api::region.region.find",
+      "locale": null
+    },
+    {
+      "documentId": "hl9efmbq5lek4bnrdbp4u7xs",
+      "action": "api::region.region.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "sj3azchf666z9016glb0i3me",
+      "action": "api::topic.topic.find",
+      "locale": null
+    },
+    {
+      "documentId": "yq67k51f4ogp3rpmleh4rqso",
+      "action": "api::topic.topic.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "nqpgwmk1qmxjw2zqusx4epn0",
+      "action": "plugin::upload.content-api.find",
+      "locale": null
+    },
+    {
+      "documentId": "f39rfuqmmhtajpwptplck9rn",
+      "action": "plugin::upload.content-api.findOne",
+      "locale": null
+    },
+    {
+      "documentId": "cv44g0typn4uvmlu74ll1q7j",
+      "action": "plugin::upload.content-api.upload",
+      "locale": null
+    },
+    {
       "documentId": "j9ne8cavr0d1e5ws2ssuq2vd",
       "action": "plugin::users-permissions.auth.changePassword",
       "locale": null
     },
     {
+      "documentId": "w8wzhpb0hljk13gg42cx0aih",
+      "action": "plugin::users-permissions.user.count",
+      "locale": null
+    },
+    {
+      "documentId": "fs330knoeavzzczp6wrgi0dy",
+      "action": "plugin::users-permissions.user.create",
+      "locale": null
+    },
+    {
+      "documentId": "gmo8w8qv2psh21g1lllqxgcy",
+      "action": "plugin::users-permissions.user.find",
+      "locale": null
+    },
+    {
+      "documentId": "bohtzbup9er7bkgaorln0ett",
+      "action": "plugin::users-permissions.user.findOne",
+      "locale": null
+    },
+    {
       "documentId": "hd4pnpehyiujlwb2wcgmypjt",
       "action": "plugin::users-permissions.user.me",
+      "locale": null
+    },
+    {
+      "documentId": "v0sgv1od79t9u40wbsngeo2j",
+      "action": "plugin::users-permissions.user.update",
       "locale": null
     }
   ]

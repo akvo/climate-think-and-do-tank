@@ -438,6 +438,7 @@ export const updateProfile = createAsyncThunk(
         full_name: updateData.full_name,
         stakeholder_role: updateData.stakeholder_role,
         linkedin: updateData.linkedin,
+        country: updateData.country,
         regions: updateData.focus_regions.map((r) => ({ id: r })),
         topics: updateData.topics.map((r) => ({ id: r })),
         profile_image: profileImageId ? { id: profileImageId.id } : null,

@@ -222,14 +222,18 @@
       "list": [
         "id",
         "title",
-        "start_time",
-        "event_date"
+        "event_date",
+        "start_time"
       ],
       "edit": [
         [
           {
             "name": "title",
             "size": 6
+          },
+          {
+            "name": "event_date",
+            "size": 4
           }
         ],
         [
@@ -272,10 +276,6 @@
           {
             "name": "image",
             "size": 6
-          },
-          {
-            "name": "event_date",
-            "size": 4
           }
         ]
       ]

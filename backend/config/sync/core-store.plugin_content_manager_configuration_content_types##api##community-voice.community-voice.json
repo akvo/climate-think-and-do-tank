@@ -76,6 +76,20 @@
           "sortable": true
         }
       },
+      "ward": {
+        "edit": {
+          "label": "ward",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "ward",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -160,6 +174,12 @@
           },
           {
             "name": "social_accountability",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "ward",
             "size": 6
           }
         ]

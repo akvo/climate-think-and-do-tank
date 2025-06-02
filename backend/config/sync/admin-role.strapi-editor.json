@@ -12,8 +12,7 @@
       "subject": "api::about.about",
       "properties": {
         "fields": [
-          "title",
-          "blocks"
+          "title"
         ]
       },
       "conditions": [],
@@ -44,8 +43,7 @@
       "subject": "api::about.about",
       "properties": {
         "fields": [
-          "title",
-          "blocks"
+          "title"
         ]
       },
       "conditions": [],
@@ -58,8 +56,7 @@
       "subject": "api::about.about",
       "properties": {
         "fields": [
-          "title",
-          "blocks"
+          "title"
         ]
       },
       "conditions": [],
