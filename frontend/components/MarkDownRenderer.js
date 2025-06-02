@@ -26,7 +26,7 @@ export const MarkdownRenderer = ({ content, components = {} }) => {
     ),
     p: ({ node, ...props }) => <p {...props} className="mb-4" />,
     ul: ({ node, ...props }) => (
-      <ul {...props} className="list-disc pl-5 mb-4" />
+      <ul {...props} className="list-disc pl-3 mb-4" />
     ),
     ol: ({ node, ...props }) => (
       <ol {...props} className="list-decimal pl-5 mb-4" />

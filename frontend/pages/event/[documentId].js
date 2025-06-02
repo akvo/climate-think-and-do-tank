@@ -30,7 +30,7 @@ export default function EventDetailPage() {
       setLoading(true);
       try {
         const response = await axios.get(
-          `${BACKEND_URL}/api/events/${documentId}?populate=image`
+          `${BACKEND_URL}/api/events/${documentId}?populate[0]=image&populate[1]=regions`
         );
         if (response.data && response.data.data) {
           const item = response.data.data;
@@ -47,6 +47,7 @@ export default function EventDetailPage() {
             address: item.address || '',
             mapLink: item.map_link || '',
             imageUrl: item.image?.url ? item.image : null,
+            regions: item.regions ? item.regions.map((r) => r.name) : [],
           };
           setEvent(processedEvent);
         } else {
@@ -161,7 +162,7 @@ export default function EventDetailPage() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-12 text-black">
+      <div className="max-w-6xl mx-auto py-12 text-black">
         <article className="prose lg:prose-xl">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-gray-600 mb-4">
             <div className="flex items-center gap-2 text-base">
@@ -176,7 +177,12 @@ export default function EventDetailPage() {
                 </time>
               )}
               {formatEventTime() && <span> | {formatEventTime()}</span>}
-              {event.eventType && <span> | {event.eventType}</span>}
+              {event.eventType && <span> | {event.eventType} | </span>}
+              {event.regions && event.regions.length > 0 && (
+                <span className="text-sm text-green-600 font-medium bg-green-50 px-3 py-1 rounded-full">
+                  {event.regions.join(', ')}
+                </span>
+              )}
             </div>
           </div>
 

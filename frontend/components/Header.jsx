@@ -196,6 +196,7 @@ export default function Header() {
                     <div className="py-1">
                       <Link
                         href="/news-events"
+                        onClick={() => setMoreDropdownOpen(false)}
                         className={`block px-4 py-2 text-sm font-medium ${
                           isActive('/news-events')
                             ? 'bg-green-50 text-black'
@@ -206,6 +207,7 @@ export default function Header() {
                       </Link>
                       <Link
                         href="/about"
+                        onClick={() => setMoreDropdownOpen(false)}
                         className={`block px-4 py-2 text-sm font-medium ${
                           isActive('/about')
                             ? 'bg-green-50 text-black'

@@ -240,7 +240,7 @@ export default function NewsEventsDirectory() {
                       </svg>
                     </button>
                     {openFilter === filterType && (
-                      <div className="absolute top-full left-0 mt-2 z-10 min-w-[400px]">
+                      <div className="absolute top-full left-0 mt-2 z-10 min-w-[280px]">
                         {filterType === 'types' ? (
                           <CheckboxFilter
                             label="Type"

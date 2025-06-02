@@ -298,7 +298,7 @@ export default function InvestmentOpportunityProfile() {
                       </svg>
                     </button>
                     {openFilter === filterType && (
-                      <div className="absolute top-full left-0 mt-2 z-10 min-w-[600px]">
+                      <div className="absolute top-full left-0 mt-2 z-10 min-w-[300px]">
                         {filterType === 'valueChain' ? (
                           <CheckboxFilter
                             label="Value Chain"

@@ -30,6 +30,12 @@
       "relation": "manyToOne",
       "target": "api::news-item.news-item",
       "inversedBy": "regions"
+    },
+    "event": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::event.event",
+      "inversedBy": "regions"
     }
   }
 }

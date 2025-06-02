@@ -27,7 +27,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/approach"
+                  href="/about"
                   className=" text-black hover:text-gray-300 transition-colors"
                 >
                   Our Approach
@@ -35,7 +35,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/vision"
+                  href="/about"
                   className="text-black hover:text-gray-300 transition-colors"
                 >
                   Our vision and mission
@@ -58,7 +58,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/news"
+                  href="/news-events"
                   className="text-black hover:text-gray-300 transition-colors"
                 >
                   News & Events

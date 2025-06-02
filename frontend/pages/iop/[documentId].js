@@ -255,7 +255,7 @@ export default function InvestmentOpportunityProfile() {
             <p className="text-gray-700 text-sm">
               To express interest, access additional data, or be connected to
               local stakeholders, contact the Kenya Drylands Investment Hub
-              (DKIH) :
+              (DKIH):
             </p>
             <div className="flex flex-wrap items-center gap-2 mt-2 text-black">
               <span className="flex items-center">

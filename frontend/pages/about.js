@@ -74,7 +74,7 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <div className="container mx-auto px-4 py-6">
+      <div className="max-w-6xl mx-auto py-6">
         {/* Banner */}
         {about.banner && (
           <div className="w-full h-[450px] relative mb-8">

@@ -152,7 +152,7 @@ export default function NewsDetailPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12 text-black">
+      <div className="max-w-6xl mx-auto py-12 text-black">
         <article className="prose lg:prose-xl">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-gray-600 mb-4">
             <div className="flex items-center gap-2 text-base">

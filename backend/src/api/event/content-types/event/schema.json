@@ -50,6 +50,12 @@
       "allowedTypes": [
         "images"
       ]
+    },
+    "regions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::region.region",
+      "mappedBy": "event"
     }
   }
 }

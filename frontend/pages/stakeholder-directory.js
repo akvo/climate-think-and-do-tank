@@ -274,7 +274,7 @@ export default function StakeholderDirectory() {
                       </svg>
                     </button>
                     {openFilter === filterType && (
-                      <div className="absolute top-full left-0 mt-2 z-10 min-w-[600px]">
+                      <div className="absolute top-full left-0 mt-2 z-10 min-w-[380px]">
                         {filterType === 'topics' ? (
                           <CheckboxFilter
                             label={'Topics (Stakeholders Only)'}
