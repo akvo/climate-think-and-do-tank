@@ -51,6 +51,16 @@
       "locale": null
     },
     {
+      "documentId": "p852pcwf6epwrannb9b7rryp",
+      "action": "api::event.event.find",
+      "locale": null
+    },
+    {
+      "documentId": "u1cy09q7693wfqmjmnm1e48h",
+      "action": "api::event.event.findOne",
+      "locale": null
+    },
+    {
       "documentId": "rskio6zirjnkeezn788nmlsl",
       "action": "api::homepage.homepage.find",
       "locale": null
@@ -78,6 +88,16 @@
     {
       "documentId": "abtvli851ecn80ca4t0snxsi",
       "action": "api::looking-for.looking-for.find",
+      "locale": null
+    },
+    {
+      "documentId": "v3gqk5zxzwt343is8ly3cqf4",
+      "action": "api::news-item.news-item.find",
+      "locale": null
+    },
+    {
+      "documentId": "yukqn7glxb4n96crpvu6oh84",
+      "action": "api::news-item.news-item.findOne",
       "locale": null
     },
     {
