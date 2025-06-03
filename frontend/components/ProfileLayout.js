@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
 import { env } from '@/helpers/env-vars';
+import { getImageUrl } from '@/helpers/utilities';
 
 const ProfileLayout = ({ children }) => {
   const { user } = useSelector((state) => state.auth);
@@ -29,14 +30,30 @@ const ProfileLayout = ({ children }) => {
         <div className="flex items-center p-6 border-b">
           <div className="w-24 h-24 rounded-full overflow-hidden mr-6">
             <Image
-              src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
-                user?.profile_image?.url
-              }`}
+              src={
+                user?.profile_image && user?.profile_image.url
+                  ? getImageUrl(user?.profile_image)
+                  : ''
+              }
               alt={user?.full_name}
+              className="object-cover relative w-[100%] h-[100%]"
+              unoptimized
               width={96}
               height={96}
-              className="w-full h-full object-cover"
-              unoptimized
+              onError={(e) => {
+                const fallbackEl = document.createElement('div');
+                fallbackEl.className =
+                  'w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold text-6xl rounded-full';
+                fallbackEl.textContent = (user?.full_name || 'U')
+                  .charAt(0)
+                  .toUpperCase();
+
+                const parentNode = e.target.parentNode;
+                if (parentNode) {
+                  e.target.style.display = 'none';
+                  parentNode.appendChild(fallbackEl);
+                }
+              }}
             />
           </div>
           <div>

@@ -173,15 +173,15 @@
           {
             "name": "publication_date",
             "size": 4
+          },
+          {
+            "name": "image",
+            "size": 6
           }
         ],
         [
           {
             "name": "regions",
-            "size": 6
-          },
-          {
-            "name": "image",
             "size": 6
           }
         ]

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { env } from '@/helpers/env-vars';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { getImageUrl } from '@/helpers/utilities';
 
 export default function Header() {
   const pathname = usePathname();
@@ -236,9 +237,11 @@ export default function Header() {
                   <div className="w-10 h-10 rounded-full overflow-hidden">
                     {user?.profile_image?.url ? (
                       <Image
-                        src={`${env('NEXT_PUBLIC_BACKEND_URL')}${
-                          user.profile_image.url
-                        }`}
+                        src={
+                          user?.profile_image && user?.profile_image.url
+                            ? getImageUrl(user?.profile_image)
+                            : ''
+                        }
                         alt={user?.full_name || 'User'}
                         width={100}
                         height={100}

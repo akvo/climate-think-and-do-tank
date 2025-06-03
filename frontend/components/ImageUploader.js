@@ -1,11 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { ImagePlus, X, Upload } from 'lucide-react';
+import Image from 'next/image';
 
 const ImageUploader = ({
   value,
   onChange,
   className = '',
   placeholder = 'Upload Organization Logo',
+  user,
 }) => {
   const [previewUrl, setPreviewUrl] = useState(value || null);
   const fileInputRef = useRef(null);
@@ -64,10 +66,26 @@ const ImageUploader = ({
       >
         {previewUrl ? (
           <div className="relative w-full h-full">
-            <img
+            <Image
               src={previewUrl}
-              alt="Preview"
+              alt={'profile image'}
               className="w-full h-full object-contain rounded-xl"
+              unoptimized
+              fill
+              onError={(e) => {
+                const fallbackEl = document.createElement('div');
+                fallbackEl.className =
+                  'w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold text-6xl rounded-full';
+                fallbackEl.textContent = (user?.full_name || 'U')
+                  .charAt(0)
+                  .toUpperCase();
+
+                const parentNode = e.target.parentNode;
+                if (parentNode) {
+                  e.target.style.display = 'none';
+                  parentNode.appendChild(fallbackEl);
+                }
+              }}
             />
             <button
               type="button"

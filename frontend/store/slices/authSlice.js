@@ -291,6 +291,8 @@ export const login = createAsyncThunk(
           full_name: user.full_name,
           id: user.id,
           stakeholder_role: user.stakeholder_role,
+          linkedin: user.linkedin,
+          documentId: user.documentId,
           connection_requests_received: user.connection_requests_received,
           connection_requests_sent: user.connection_requests_sent,
           organisation: { name: user.organisation?.name },
@@ -436,6 +438,9 @@ export const updateProfile = createAsyncThunk(
         full_name: updateData.full_name,
         stakeholder_role: updateData.stakeholder_role,
         linkedin: updateData.linkedin,
+        country: updateData.country,
+        regions: updateData.focus_regions.map((r) => ({ id: r })),
+        topics: updateData.topics.map((r) => ({ id: r })),
         profile_image: profileImageId ? { id: profileImageId.id } : null,
       };
 
@@ -841,6 +846,45 @@ export async function searchContentAcrossTypes({ query }) {
   }
 }
 
+const fetchWithAuth = async (endpoint, options = {}) => {
+  const token = getCookie('token');
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...options.headers,
+    },
+    ...options,
+  };
+
+  const response = await fetch(`${BACKEND_URL}${endpoint}`, config);
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status}`);
+  }
+
+  return response.json();
+};
+
+const getUserProfile = async () => {
+  return fetchWithAuth(
+    '/api/users/me?populate[0]=organisation&populate[1]=profile_image&populate[2]=role&populate[3]=looking_fors&populate[4]=focus_regions&populate[5]=country&populate[6]=topics'
+  );
+};
+
+export const fetchUserProfile = createAsyncThunk(
+  'auth/fetchUserProfile',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getUserProfile();
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Slice
 const authSlice = createSlice({
   name: 'auth',
@@ -962,11 +1006,6 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         const { user, jwt } = action.payload;
 
-        if (!user.profile_image || !user.profile_image.url) {
-          user.profile_image = {
-            url: '/uploads/placeholder_image_1625231395.jpg',
-          };
-        }
         state.user = user;
         state.token = jwt;
         state.isAuthenticated = true;
@@ -1069,12 +1108,6 @@ const authSlice = createSlice({
       })
       .addCase(checkAuthStatus.fulfilled, (state, action) => {
         const user = action.payload.user;
-
-        if (!user.profile_image || !user.profile_image.url) {
-          user.profile_image = {
-            url: '/uploads/placeholder_image_1625231395.jpg',
-          };
-        }
 
         state.user = user;
         state.token = action.payload.token;

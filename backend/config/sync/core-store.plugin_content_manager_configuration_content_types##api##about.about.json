@@ -33,16 +33,100 @@
           "sortable": true
         }
       },
-      "blocks": {
+      "our_mission": {
         "edit": {
-          "label": "blocks",
+          "label": "our_mission",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "blocks",
+          "label": "our_mission",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "what_we_do": {
+        "edit": {
+          "label": "what_we_do",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "what_we_do",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "where_we_work": {
+        "edit": {
+          "label": "where_we_work",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "where_we_work",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "join_us": {
+        "edit": {
+          "label": "join_us",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "join_us",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "tagline": {
+        "edit": {
+          "label": "tagline",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "tagline",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "tagline_description": {
+        "edit": {
+          "label": "tagline_description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "tagline_description",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "banner": {
+        "edit": {
+          "label": "banner",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "banner",
           "searchable": false,
           "sortable": false
         }
@@ -122,8 +206,42 @@
         ],
         [
           {
-            "name": "blocks",
+            "name": "our_mission",
             "size": 12
+          }
+        ],
+        [
+          {
+            "name": "what_we_do",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "where_we_work",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "join_us",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "tagline",
+            "size": 6
+          },
+          {
+            "name": "tagline_description",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "banner",
+            "size": 6
           }
         ]
       ]
