@@ -38,14 +38,14 @@ export default function KnowledgeHub() {
   const { topics = [], regions = [] } = useSelector((state) => state.auth);
 
   const filterOptions = {
+    focusRegions: [
+      'All Locations',
+      ...regions.map((region) => region.name || region.attributes?.name),
+    ],
     topic: [
       ...topics
         .map((topic) => topic.name || topic.attributes?.name)
         .filter(Boolean),
-    ],
-    focusRegions: [
-      'All Locations',
-      ...regions.map((region) => region.name || region.attributes?.name),
     ],
     type: ['File', 'Link'],
     date: [],

@@ -54,15 +54,15 @@ export default function StakeholderDirectory() {
   } = useSelector((state) => state.auth);
 
   const filterOptions = {
+    focusRegions: regions.map(
+      (region) => region.name || region.attributes?.name
+    ),
     topics: [
       'All',
       ...topics
         .map((topic) => topic.name || topic.attributes?.name)
         .filter(Boolean),
     ],
-    focusRegions: regions.map(
-      (region) => region.name || region.attributes?.name
-    ),
     type: ['Individual', 'Organization'],
   };
 

@@ -3,8 +3,8 @@ import { useState } from 'react';
 const CommunityVoicesSection = ({ voices, county }) => {
   const [page, setPage] = useState(1);
   const perPage = 6;
-  const pageCount = Math.ceil(voices.length / perPage);
-  const voicesToShow = voices.slice((page - 1) * perPage, page * perPage);
+  const pageCount = Math.ceil(voices?.length / perPage);
+  const voicesToShow = voices?.slice((page - 1) * perPage, page * perPage);
 
   return (
     <div>

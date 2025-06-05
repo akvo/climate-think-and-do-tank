@@ -191,11 +191,16 @@ export default function SocialAccountabilityPage() {
               </button>
             </div>
           </div>
-          {activeTab === 'voices' && (
+          {activeTab === 'voices' && data.community_voices?.length > 0 ? (
             <CommunityVoicesSection
               voices={data.community_voices}
               county={data.region?.name}
             />
+          ) : (
+            <div className="text-center text-gray-600">
+              {activeTab === 'voices' &&
+                'No community voices available for this region.'}
+            </div>
           )}
           {activeTab === 'media' && (
             <OtherMediaCarousel media={data.other_media_slider} />

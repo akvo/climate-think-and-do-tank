@@ -7,7 +7,6 @@ async function seedCountries() {
 
   app.log.level = 'error';
 
-  console.log('Starting country seeding process...');
   try {
     const entries = Object.entries(countries);
 

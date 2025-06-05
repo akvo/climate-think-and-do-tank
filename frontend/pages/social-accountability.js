@@ -38,15 +38,15 @@ export default function SocialAccountability() {
   const { regions = [], valueChains = [] } = useSelector((state) => state.auth);
 
   const filterOptions = {
+    regions: [
+      'All Locations',
+      ...regions.map((region) => region.name || region.attributes?.name),
+    ],
     valueChain: [
       'All',
       ...valueChains
         .map((topic) => topic.name || topic.attributes?.name)
         .filter(Boolean),
-    ],
-    regions: [
-      'All Locations',
-      ...regions.map((region) => region.name || region.attributes?.name),
     ],
     date: generateYearOptions(),
   };
