@@ -11,16 +11,6 @@
       "locale": null
     },
     {
-      "documentId": "ibr0thw8jt8bw0i0irlxdl0t",
-      "action": "api::category.category.find",
-      "locale": null
-    },
-    {
-      "documentId": "w6uwqq692s22g1cg8t1boptk",
-      "action": "api::category.category.findOne",
-      "locale": null
-    },
-    {
       "documentId": "th6wgbs1h1svgdlpp8fe652s",
       "action": "api::community-voice.community-voice.find",
       "locale": null

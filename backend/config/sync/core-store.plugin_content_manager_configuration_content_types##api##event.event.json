@@ -159,6 +159,21 @@
           "sortable": false
         }
       },
+      "regions": {
+        "edit": {
+          "label": "regions",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "name"
+        },
+        "list": {
+          "label": "regions",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -275,6 +290,10 @@
         [
           {
             "name": "image",
+            "size": 6
+          },
+          {
+            "name": "regions",
             "size": 6
           }
         ]

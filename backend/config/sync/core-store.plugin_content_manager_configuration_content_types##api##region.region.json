@@ -78,6 +78,21 @@
           "sortable": true
         }
       },
+      "event": {
+        "edit": {
+          "label": "event",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "title"
+        },
+        "list": {
+          "label": "event",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -162,6 +177,12 @@
           },
           {
             "name": "news",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "event",
             "size": 6
           }
         ]

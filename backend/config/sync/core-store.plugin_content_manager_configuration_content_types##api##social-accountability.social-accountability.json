@@ -162,6 +162,20 @@
           "sortable": false
         }
       },
+      "author": {
+        "edit": {
+          "label": "author",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "author",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -283,6 +297,12 @@
           {
             "name": "description",
             "size": 12
+          }
+        ],
+        [
+          {
+            "name": "author",
+            "size": 6
           }
         ]
       ]
