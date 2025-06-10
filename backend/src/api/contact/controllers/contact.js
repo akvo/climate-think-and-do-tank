@@ -30,9 +30,6 @@ module.exports = ({ strapi }) => ({
 
       const editorEmails = editors.map((editor) => editor.email);
 
-      const recipientEmails =
-        editorEmails.length > 0 ? editorEmails : ['nikshingote@gmail.com'];
-
       if (editorEmails.length === 0) {
         console.warn(
           'No editors found to receive the contact form submission, using fallback email'
@@ -40,7 +37,7 @@ module.exports = ({ strapi }) => ({
       }
 
       await Promise.all(
-        recipientEmails.map(async (recipient) => {
+        editorEmails.map(async (recipient) => {
           await strapi.plugins.email.service('email').send({
             to: recipient,
             subject: `New Contact Form Submission: ${subject}`,
