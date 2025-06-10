@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { env } from '@/helpers/env-vars';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 export default function ContactPage() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -13,8 +14,6 @@ export default function ContactPage() {
     message: '',
   });
   const [loading, setLoading] = useState(false);
-
-  console.log('User:', user);
 
   const resetForm = () => {
     setFormData({
@@ -40,6 +39,10 @@ export default function ContactPage() {
           },
           body: JSON.stringify(formData),
         }
+      );
+
+      toast.success(
+        'Your message has been sent successfully. We will get back to you soon!'
       );
 
       if (!response.ok) {
