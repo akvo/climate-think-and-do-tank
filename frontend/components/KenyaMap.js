@@ -78,7 +78,7 @@ export default function KenyaMap({ initialSelected, onSelect }) {
       if (path) {
         const bbox = path.getBBox();
         newCenters[county] = {
-          x: bbox.x + bbox.width / 2,
+          x: bbox.x + bbox.width / 2 + 10,
           y: bbox.y + bbox.height / 2,
         };
       }
