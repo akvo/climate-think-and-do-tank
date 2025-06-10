@@ -140,28 +140,32 @@ export default function CheckboxFilter({
           </>
         )}
 
-        {filteredOptions.map((option) => (
-          <label
-            key={option}
-            className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer  text-sm"
-          >
-            <input
-              type="checkbox"
-              checked={selectedOptions.includes(option)}
-              onChange={() => handleOptionToggle(option)}
-              className="h-5 w-5 text-green-600 border-gray-300 rounded"
-            />
-            <span
-              className={`ml-3 ${
-                selectedOptions.includes(option)
-                  ? 'font-medium text-green-600'
-                  : 'text-gray-700'
-              }`}
+        {filteredOptions
+          .sort((a, b) =>
+            a.localeCompare(b, undefined, { sensitivity: 'base' })
+          )
+          .map((option) => (
+            <label
+              key={option}
+              className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer text-sm"
             >
-              {option}
-            </span>
-          </label>
-        ))}
+              <input
+                type="checkbox"
+                checked={selectedOptions.includes(option)}
+                onChange={() => handleOptionToggle(option)}
+                className="h-5 w-5 text-green-600 border-gray-300 rounded"
+              />
+              <span
+                className={`ml-3 ${
+                  selectedOptions.includes(option)
+                    ? 'font-medium text-green-600'
+                    : 'text-gray-700'
+                }`}
+              >
+                {option}
+              </span>
+            </label>
+          ))}
 
         {filteredOptions.length === 0 && (
           <p className="text-gray-500 text-center py-2">

@@ -85,28 +85,32 @@ export default function LocationsFilter({
 
           <div className="border-t border-gray-200 my-2"></div>
 
-          {availableLocations.map((location) => (
-            <label
-              key={location}
-              className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer text-sm"
-            >
-              <input
-                type="checkbox"
-                checked={selectedLocations.includes(location)}
-                onChange={() => handleLocationToggle(location)}
-                className="h-5 w-5 text-green-600 border-gray-300 rounded"
-              />
-              <span
-                className={`ml-3 ${
-                  selectedLocations.includes(location)
-                    ? 'font-medium text-green-600'
-                    : 'text-gray-700'
-                }`}
+          {availableLocations
+            .sort((a, b) =>
+              a.localeCompare(b, undefined, { sensitivity: 'base' })
+            )
+            .map((location) => (
+              <label
+                key={location}
+                className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer text-sm"
               >
-                {location}
-              </span>
-            </label>
-          ))}
+                <input
+                  type="checkbox"
+                  checked={selectedLocations.includes(location)}
+                  onChange={() => handleLocationToggle(location)}
+                  className="h-5 w-5 text-green-600 border-gray-300 rounded"
+                />
+                <span
+                  className={`ml-3 ${
+                    selectedLocations.includes(location)
+                      ? 'font-medium text-green-600'
+                      : 'text-gray-700'
+                  }`}
+                >
+                  {location}
+                </span>
+              </label>
+            ))}
 
           {availableLocations.length === 0 && (
             <div className="py-4 text-center text-gray-500">
