@@ -10,6 +10,7 @@ import CheckboxFilter from '@/components/CheckboxFilter';
 import debounce from 'lodash/debounce';
 import Image from 'next/image';
 import { formatRegionsDisplay, getImageUrl } from '@/helpers/utilities';
+import LocationsFilter from '@/components/LocationFilter';
 
 export default function NewsEventsDirectory() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function NewsEventsDirectory() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState({
     types: ['News', 'Event'],
+    focusRegions: [],
   });
   const [sortConfig, setSortConfig] = useState({
     field: 'event_date',
@@ -36,6 +38,9 @@ export default function NewsEventsDirectory() {
   const [upcoming, setUpcoming] = useState(true);
 
   const filterOptions = {
+    focusRegions: regions.map(
+      (region) => region.name || region.attributes?.name
+    ),
     types: ['News', 'Event'],
   };
 
@@ -47,12 +52,16 @@ export default function NewsEventsDirectory() {
     const types = query.types
       ? query.types.split(',').filter(Boolean)
       : ['News', 'Event'];
+    const regions = query.regions
+      ? query.regions.split(',').filter(Boolean)
+      : [];
     const sortOrder = query.sortOrder || 'desc';
     const isUpcoming = query.upcoming !== 'false';
 
     setSearchQuery(search);
     setActiveFilters({
       types: types.filter((t) => filterOptions.types.includes(t)),
+      focusRegions: regions,
     });
     setSortConfig({
       field: 'event_date',
@@ -67,6 +76,7 @@ export default function NewsEventsDirectory() {
         query: search,
         filters: {
           types: types.filter((t) => filterOptions.types.includes(t)),
+          focusRegions: regions,
         },
         upcoming: isUpcoming,
         dateSort: sortOrder,
@@ -81,6 +91,8 @@ export default function NewsEventsDirectory() {
       if (sort.order !== 'desc') params.sortOrder = sort.order;
       if (filters.types.length > 0 && filters.types.length < 2)
         params.types = filters.types.join(',');
+      if (filters.focusRegions && filters.focusRegions.length > 0)
+        params.regions = filters.focusRegions.join(',');
       if (!isUpcoming) params.upcoming = 'false';
 
       router.push(
@@ -102,16 +114,6 @@ export default function NewsEventsDirectory() {
     [updateQueryParams, activeFilters, sortConfig, upcoming]
   );
 
-  const handleSort = () => {
-    const newOrder = sortConfig.order === 'desc' ? 'asc' : 'desc';
-    updateQueryParams(
-      activeFilters,
-      { ...sortConfig, order: newOrder },
-      searchQuery,
-      upcoming
-    );
-  };
-
   const handleFilterApply = (filterType, selectedOptions) => {
     const newFilters = {
       ...activeFilters,
@@ -130,6 +132,7 @@ export default function NewsEventsDirectory() {
     setSearchQuery('');
     setActiveFilters({
       types: ['News', 'Event'],
+      focusRegions: [],
     });
 
     router.push(
@@ -148,6 +151,7 @@ export default function NewsEventsDirectory() {
         query: '',
         filters: {
           types: ['News', 'Event'],
+          focusRegions: [],
         },
         upcoming,
         dateSort: sortConfig.order,
@@ -171,7 +175,8 @@ export default function NewsEventsDirectory() {
     (router.query.types &&
       router.query.types.length > 0 &&
       router.query.types !== 'News,Event') ||
-    (router.query.search && router.query.search.length > 0);
+    (router.query.search && router.query.search.length > 0) ||
+    (router.query.regions && router.query.regions.length > 0);
 
   const handleCardClick = (item) => {
     if (item.type === 'News') {
@@ -258,6 +263,29 @@ export default function NewsEventsDirectory() {
                               handleFilterApply('types', ['News', 'Event'])
                             }
                           />
+                        ) : filterType === 'focusRegions' ? (
+                          <LocationsFilter
+                            locations={[
+                              'All Locations',
+                              ...filterOptions[filterType],
+                            ]}
+                            initialSelected={activeFilters[filterType] || []}
+                            onApply={(selectedLocations) => {
+                              const locationsToApply =
+                                selectedLocations.includes('All Locations')
+                                  ? []
+                                  : selectedLocations;
+
+                              handleFilterApply(
+                                'focusRegions',
+                                locationsToApply
+                              );
+                            }}
+                            name={'Focus Regions'}
+                            onClear={() => {
+                              handleFilterApply('focusRegions', []);
+                            }}
+                          />
                         ) : null}
                       </div>
                     )}
@@ -298,7 +326,7 @@ export default function NewsEventsDirectory() {
           </div>
         </div>
       </div>
-      {activeFilters.types?.length < 2 && activeFilters.types.length > 0 && (
+      {hasActiveFilters && (
         <div className="border-b relative container mx-auto flex items-center justify-between py-2">
           <div className="px-4  text-black">
             <div className="flex items-center gap-2 flex-wrap">
@@ -373,17 +401,32 @@ export default function NewsEventsDirectory() {
                   className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300 cursor-pointer flex flex-col h-full"
                   onClick={() => handleCardClick(item)}
                 >
-                  {item.imageUrl && (
-                    <div className="relative h-48 w-full overflow-hidden">
+                  <div className="relative h-48 w-full overflow-hidden">
+                    {item.imageUrl ? (
                       <Image
                         src={getImageUrl(item.imageUrl)}
                         alt={item.title}
                         className="w-full h-full object-cover"
                         unoptimized
                         fill
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          const parent = e.target.parentNode;
+                          if (parent) {
+                            parent.innerHTML = `
+                              <div class="w-full h-full bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
+                                ${item.title.charAt(0).toUpperCase()}
+                              </div>
+                            `;
+                          }
+                        }}
                       />
-                    </div>
-                  )}
+                    ) : (
+                      <div className="w-full h-full bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
+                        {item.title.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
                   <div className="p-5 flex flex-col flex-1">
                     {item.regions && item.regions.length > 0 && (
                       <div className="flex justify-between items-start mb-4">

@@ -30,6 +30,16 @@ export const fetchNewsEvents = createAsyncThunk(
             query
           );
         }
+
+        if (filters.focusRegions && filters.focusRegions.length > 0) {
+          filters.focusRegions.forEach((region, index) => {
+            newsQueryParams.append(
+              `filters[regions][name][$in][${index}]`,
+              region
+            );
+          });
+        }
+
         let thirtyDaysAgo = new Date();
         const today = new Date();
         const todayStr = today.toISOString().split('T')[0];
@@ -83,13 +93,23 @@ export const fetchNewsEvents = createAsyncThunk(
           );
         }
 
+        if (filters.focusRegions && filters.focusRegions.length > 0) {
+          filters.focusRegions.forEach((region, index) => {
+            eventsQueryParams.append(
+              `filters[regions][name][$in][${index}]`,
+              region
+            );
+          });
+        }
+
         if (upcoming) {
           eventsQueryParams.append('filters[event_date][$gte]', today);
         } else {
           eventsQueryParams.append('filters[event_date][$lt]', today);
         }
 
-        eventsQueryParams.append('populate', 'image');
+        eventsQueryParams.append('populate[0]', 'regions');
+        eventsQueryParams.append('populate[1]', 'image');
 
         promises.push(
           axios
@@ -104,12 +124,12 @@ export const fetchNewsEvents = createAsyncThunk(
                 type: 'Event',
                 eventDate: item.event_date || null,
                 displayDate: item.event_date,
-                regions: [],
                 imageUrl: item.image ? item.image : '',
                 isUpcoming: new Date(item.event_date) >= new Date(today),
                 location: item.map_link || '',
                 startTime: item.start_time || '',
                 endTime: item.end_time || '',
+                regions: item.regions ? item.regions.map((r) => r.name) : [],
               }));
             })
             .catch((error) => {
