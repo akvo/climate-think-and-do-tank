@@ -333,7 +333,10 @@ const MyConnections = () => {
               </button>
               <button
                 className="px-6 py-2 text-md text-black rounded-[50px] border hover:bg-green-500 hover:text-white"
-                onClick={() => handleAcceptRequest(connection.documentId)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAcceptRequest(connection.documentId);
+                }}
               >
                 Accept
               </button>
