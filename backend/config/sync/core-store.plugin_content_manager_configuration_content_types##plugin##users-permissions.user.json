@@ -117,16 +117,16 @@
           "sortable": true
         }
       },
-      "blocked": {
+      "approved": {
         "edit": {
-          "label": "blocked",
+          "label": "approved",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "blocked",
+          "label": "approved",
           "searchable": true,
           "sortable": true
         }
@@ -409,12 +409,7 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "email",
-        "confirmed",
-        "username"
-      ],
+      "list": ["id", "email", "confirmed", "username"],
       "edit": [
         [
           {
@@ -434,7 +429,7 @@
         ],
         [
           {
-            "name": "blocked",
+            "name": "approved",
             "size": 4
           },
           {

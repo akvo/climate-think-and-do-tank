@@ -82,7 +82,7 @@ module.exports = (plugin) => {
           user.id,
           {
             data: {
-              blocked: true,
+              approved: false,
             },
           }
         );
@@ -107,7 +107,7 @@ module.exports = (plugin) => {
         .query('plugin::users-permissions.user')
         .findOne({ where: { email: email.toLowerCase() } });
 
-      if (!user || user.blocked) {
+      if (!user || !user.approved) {
         return ctx.send({ ok: true });
       }
 
@@ -183,7 +183,7 @@ module.exports = (plugin) => {
         });
 
       // Check if user exists and is blocked
-      if (user && user.blocked) {
+      if (user && !user.approved) {
         return ctx.badRequest(
           'Your account is pending approval. An administrator will review your information and activate your account shortly.'
         );

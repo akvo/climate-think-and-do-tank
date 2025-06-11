@@ -53,7 +53,7 @@
       "default": false,
       "configurable": false
     },
-    "blocked": {
+    "approved": {
       "type": "boolean",
       "default": false,
       "configurable": false
@@ -125,12 +125,7 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+      "allowedTypes": ["images", "files", "videos", "audios"]
     },
     "resetCode": {
       "type": "string",
