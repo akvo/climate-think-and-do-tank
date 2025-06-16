@@ -30,8 +30,8 @@ body {
 /* akvo-rag-js custom styles */
 #akvo-rag {
   font-family: "Nunito", sans-serif !important;
-  bottom: 5px;
-  right: 5px;
+  bottom: 10px;
+  right: 10px;
 }
 
 #akvo-rag #akvo-rag-header,
