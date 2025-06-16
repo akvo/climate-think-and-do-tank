@@ -8,8 +8,7 @@ import StatsGrid from "@/components/StatsGrid";
 import Head from "next/head";
 import Script from "next/script";
 
-export default function HomePage() {
-  const router = useRouter();
+function LoadAkvoRag() {
   const [shouldLoadChat, setShouldLoadChat] = useState(false);
 
   useEffect(() => {
@@ -21,11 +20,6 @@ export default function HomePage() {
       }
     }
   }, []);
-
-  const [data, setData] = useState({
-    title: "",
-    description: "",
-  });
 
   return (
     <>
@@ -55,6 +49,21 @@ export default function HomePage() {
           }}
         />
       )}
+    </>
+  );
+}
+
+export default function HomePage() {
+  const router = useRouter();
+
+  const [data, setData] = useState({
+    title: "",
+    description: "",
+  });
+
+  return (
+    <>
+      <LoadAkvoRag />
 
       <main className="min-h-screen bg-white">
         <HeroSlider setData={setData} />
