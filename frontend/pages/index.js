@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HeroSlider from "@/components/HeroSlider";
 import KenyaMap from "@/components/KenyaMap";
 import { MarkdownRenderer } from "@/components/MarkDownRenderer";
@@ -10,6 +10,17 @@ import Script from "next/script";
 
 export default function HomePage() {
   const router = useRouter();
+  const [shouldLoadChat, setShouldLoadChat] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const accessKey = params.get("rag_access");
+      if (accessKey === "RAG_v72gx31o9j4") {
+        setShouldLoadChat(true);
+      }
+    }
+  }, []);
 
   const [data, setData] = useState({
     title: "",
@@ -27,21 +38,23 @@ export default function HomePage() {
       </Head>
 
       {/* Load AkvoRAG JS */}
-      <Script
-        src="https://cdn.jsdelivr.net/npm/akvo-rag-js@1.1.5/dist/akvo-rag.js"
-        strategy="afterInteractive"
-        onLoad={() => {
-          if (typeof window !== "undefined" && window.AkvoRAG) {
-            window.AkvoRAG.initChat({
-              title: "Support Bot",
-              kb_id: 39,
-              wsURL: "ws://localhost:81/ws/chat", // replace with real production URL if needed
-            });
-          } else {
-            console.error("AkvoRAG is not available on window");
-          }
-        }}
-      />
+      {shouldLoadChat && (
+        <Script
+          src="https://cdn.jsdelivr.net/npm/akvo-rag-js@1.1.5/dist/akvo-rag.js"
+          strategy="afterInteractive"
+          onLoad={() => {
+            if (typeof window !== "undefined" && window.AkvoRAG) {
+              window.AkvoRAG.initChat({
+                title: "Support Bot",
+                kb_id: 39,
+                wsURL: "ws://localhost:81/ws/chat", // replace with real production URL if needed
+              });
+            } else {
+              console.error("AkvoRAG is not available on window");
+            }
+          }}
+        />
+      )}
 
       <main className="min-h-screen bg-white">
         <HeroSlider setData={setData} />
