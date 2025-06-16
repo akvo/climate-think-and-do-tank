@@ -17,7 +17,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
 }
 
 .map-embed-container iframe {
@@ -26,3 +26,16 @@ body {
   height: 100%;
   border: 0;
 }
+
+/* akvo-rag-js custom styles */
+#akvo-rag {
+  font-family: "Nunito", sans-serif !important;
+  bottom: 5px;
+  right: 5px;
+}
+
+#akvo-rag #akvo-rag-header,
+#akvo-rag-send-btn {
+  background-color: #6bb963 !important;
+}
+/* EOL akvo-rag-js */
