@@ -35,7 +35,17 @@ body {
 }
 
 #akvo-rag #akvo-rag-header,
-#akvo-rag-send-btn {
+#akvo-rag-send-btn,
+#akvo-start-chat-btn,
+.akvo-msg-user {
   background-color: #6bb963 !important;
+}
+
+.akvo-msg-user {
+  opacity: 0.85;
+}
+
+#akvo-rag-input {
+  color: #000;
 }
 /* EOL akvo-rag-js */
