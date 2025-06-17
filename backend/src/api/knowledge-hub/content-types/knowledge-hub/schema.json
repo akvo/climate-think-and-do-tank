@@ -51,10 +51,6 @@
       "relation": "oneToMany",
       "target": "api::region.region"
     },
-    "slug": {
-      "type": "uid",
-      "targetField": "title"
-    },
     "publication_date": {
       "type": "date"
     },
