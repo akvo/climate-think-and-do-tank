@@ -15,7 +15,7 @@ function LoadAkvoRag() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const accessKey = params.get("rag_access");
-      if (accessKey === "RAG_v72gx31o9j4") {
+      if (accessKey === "RAG_qnaWr4g") {
         setShouldLoadChat(true);
       }
     }
@@ -39,9 +39,18 @@ function LoadAkvoRag() {
           onLoad={() => {
             if (typeof window !== "undefined" && window.AkvoRAG) {
               window.AkvoRAG.initChat({
-                title: "Support Bot",
-                kb_id: 39,
-                wsURL: "ws://localhost:81/ws/chat", // replace with real production URL if needed
+                title: "Akvo RAG",
+                kb_options: [
+                  {
+                    kb_id: 34,
+                    label: "UNEP Knowledge Base",
+                  },
+                  {
+                    kb_id: 28,
+                    label: "Living Income Benchmark Knowledge Base",
+                  },
+                ],
+                wsURL: "ws://akvo-rag.akvotest.org/ws/chat",
               });
             } else {
               console.error("AkvoRAG is not available on window");
