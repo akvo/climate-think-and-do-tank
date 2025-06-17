@@ -11,6 +11,7 @@ import {
 } from '@/store/slices/authSlice';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AuthProvider from '@/components/AuthProvider';
 
 function AppContent({ Component, pageProps }) {
   const dispatch = useDispatch();
@@ -43,7 +44,9 @@ function AppContent({ Component, pageProps }) {
 function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
-      <AppContent Component={Component} pageProps={pageProps} />
+      <AuthProvider>
+        <AppContent Component={Component} pageProps={pageProps} />
+      </AuthProvider>
     </Provider>
   );
 }

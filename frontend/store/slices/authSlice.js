@@ -919,6 +919,11 @@ const authSlice = createSlice({
 
       deleteCookie('token', { req: undefined, res: undefined });
       deleteCookie('user', { req: undefined, res: undefined });
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('auth-logout', 'true');
+        setTimeout(() => localStorage.removeItem('auth-logout'), 100);
+      }
     },
     clearError: (state) => {
       state.error = null;
