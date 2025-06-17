@@ -516,6 +516,7 @@ export const fetchStakeholders = createAsyncThunk(
       userQueryParams.append('populate[3]', 'profile_image');
       userQueryParams.append('populate[0]', 'topics');
       userQueryParams.append('filters[confirmed][$eq]', 'true');
+      userQueryParams.append('filters[approved][$eq]', 'true');
 
       const orgQueryParams = new URLSearchParams(baseQueryParams);
       orgQueryParams.append('populate[1]', 'country');
