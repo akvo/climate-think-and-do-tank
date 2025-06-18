@@ -39,8 +39,8 @@ function LoadAkvoRag() {
           onLoad={() => {
             if (typeof window !== "undefined" && window.AkvoRAG) {
               window.AkvoRAG.initChat({
-                title: "Assistant",
-                kb_id: 35,
+                title: "Kenya Drylands Assistant",
+                kb_id: 36,
                 wsURL: "ws://akvo-rag.akvotest.org/ws/chat",
               });
             } else {
