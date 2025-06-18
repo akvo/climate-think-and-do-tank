@@ -39,17 +39,8 @@ function LoadAkvoRag() {
           onLoad={() => {
             if (typeof window !== "undefined" && window.AkvoRAG) {
               window.AkvoRAG.initChat({
-                title: "Akvo RAG",
-                kb_options: [
-                  {
-                    kb_id: 34,
-                    label: "UNEP Knowledge Base",
-                  },
-                  {
-                    kb_id: 28,
-                    label: "Living Income Benchmark Knowledge Base",
-                  },
-                ],
+                title: "Assistant",
+                kb_id: 35,
                 wsURL: "ws://akvo-rag.akvotest.org/ws/chat",
               });
             } else {
