@@ -192,7 +192,7 @@ export default function SocialAccountability() {
                       {filterType === 'valueChain'
                         ? 'Value Chain'
                         : filterType === 'regions'
-                        ? 'Region'
+                        ? 'Focus Regions'
                         : filterType === 'date'
                         ? 'Year'
                         : filterType.charAt(0).toUpperCase() +
@@ -233,7 +233,7 @@ export default function SocialAccountability() {
                           />
                         ) : filterType === 'regions' ? (
                           <LocationsFilter
-                            name="Region"
+                            name="Focus Regions"
                             locations={[
                               'All Locations',
                               'No Specific Region',
@@ -404,6 +404,7 @@ export default function SocialAccountability() {
                   card={{
                     ...card,
                     title: `${card.valueChain} Value Chain in ${card.region} County`,
+                    publicationDate: card.publicationYear,
                   }}
                   onClick={() => handleCardClick(card)}
                 />

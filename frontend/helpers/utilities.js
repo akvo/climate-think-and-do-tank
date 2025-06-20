@@ -177,6 +177,10 @@ export const formatRegionsDisplay = (itemRegions, allRegions) => {
 export const formatDate = (dateString) => {
   if (!dateString) return '';
 
+  if (/^\d{4}$/.test(dateString)) {
+    return dateString;
+  }
+
   const date = new Date(dateString);
   if (isNaN(date)) return dateString;
 

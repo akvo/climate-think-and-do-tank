@@ -3,6 +3,7 @@ import Image from 'next/image';
 import React from 'react';
 
 const Card = ({ card, onClick }) => {
+  console.log('Card component rendered with card:', card);
   const formattedDate = formatDate(card.publicationDate);
 
   return (
@@ -53,7 +54,14 @@ const Card = ({ card, onClick }) => {
         <h3 className="text-lg font-semibold text-black line-clamp-2 border-b pb-4 mb-4">
           {card.title}
         </h3>
-        <div className="text-gray-500 text-xs text-right">{formattedDate}</div>
+        <div className="flex gap-2 items-center justify-between">
+          {card.author && (
+            <p className="text-gray-600 text-sm line-clamp-3">{card.author}</p>
+          )}
+          <div className="text-gray-500 text-xs text-right justify-end ml-auto">
+            {formattedDate}
+          </div>
+        </div>
       </div>
     </div>
   );

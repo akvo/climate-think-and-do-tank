@@ -151,7 +151,7 @@ export default function SocialAccountabilityPage() {
             For more information on investment opportunities in{' '}
             <span className="font-bold">{data.region?.name},</span>{' '}
             <Link
-              href={`http://localhost:3000/investment-profiles?regions=${data.region?.name}`}
+              href={`/investment-profiles?regions=${data.region?.name}`}
               className="text-[#008A16] font-bold hover:underline"
             >
               Read More
@@ -166,6 +166,7 @@ export default function SocialAccountabilityPage() {
 
         <div className="mx-auto py-8 px-4 text-black">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <h2 className="text-2xl font-bold">Community Voices</h2>
             <div className="flex gap-2 sm:gap-6">
               <button
                 onClick={() => setActiveTab('voices')}
@@ -185,7 +186,7 @@ export default function SocialAccountabilityPage() {
                       : '4px solid transparent',
                 }}
               >
-                Community Voices
+                Highlighted Community Voices
               </button>
               <button
                 onClick={() => setActiveTab('media')}

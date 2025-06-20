@@ -80,6 +80,7 @@ export const fetchSocialAccountabilityData = createAsyncThunk(
         id: item.id,
         documentId: item.documentId,
         title: item.title,
+        author: item.author,
         description: item.description,
         publicationDate: item.publication_date,
         publicationYear: new Date(item.publication_date).getFullYear(),
