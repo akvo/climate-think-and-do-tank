@@ -192,7 +192,7 @@ export default function SocialAccountability() {
                       {filterType === 'valueChain'
                         ? 'Value Chain'
                         : filterType === 'regions'
-                        ? 'Focus Regions'
+                        ? 'Region'
                         : filterType === 'date'
                         ? 'Year'
                         : filterType.charAt(0).toUpperCase() +
@@ -233,7 +233,7 @@ export default function SocialAccountability() {
                           />
                         ) : filterType === 'regions' ? (
                           <LocationsFilter
-                            name="Focus Regions"
+                            name="Region"
                             locations={[
                               'All Locations',
                               'No Specific Region',

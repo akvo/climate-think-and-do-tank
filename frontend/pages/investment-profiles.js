@@ -278,7 +278,7 @@ export default function InvestmentOpportunityProfile() {
                       {filterType === 'valueChain'
                         ? 'Value Chain'
                         : filterType === 'regions'
-                        ? 'Focus Regions'
+                        ? 'Region'
                         : filterType === 'date'
                         ? 'Publication Date'
                         : filterType.charAt(0).toUpperCase() +
@@ -354,7 +354,7 @@ export default function InvestmentOpportunityProfile() {
                           />
                         ) : filterType === 'regions' ? (
                           <LocationsFilter
-                            name="Focus Regions"
+                            name="Region"
                             locations={[
                               'All Locations',
                               'No Specific Region',
