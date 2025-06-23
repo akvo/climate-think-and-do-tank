@@ -67,7 +67,7 @@ function LoadAkvoRag() {
               window.AkvoRAG.initChat({
                 title: "Kenya Drylands Assistant",
                 kb_id: 36,
-                wsURL: "ws://akvo-rag.akvotest.org/ws/chat",
+                wsURL: "wss://akvo-rag.akvotest.org/ws/chat",
               });
             } else {
               console.error("AkvoRAG is not available on window");
