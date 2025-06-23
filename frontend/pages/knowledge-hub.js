@@ -227,7 +227,7 @@ export default function KnowledgeHub() {
                       className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
                     >
                       {filterType === 'focusRegions'
-                        ? 'Focus Regions'
+                        ? 'Region'
                         : filterType === 'topic'
                         ? 'Topics'
                         : filterType === 'date'
@@ -292,10 +292,10 @@ export default function KnowledgeHub() {
                           />
                         ) : filterType === 'focusRegions' ? (
                           <LocationsFilter
-                            name="Focus Regions"
+                            name="Region"
                             locations={[
                               'All Locations',
-                              'No Specific Focus Region',
+                              'No Specific Region',
                               ...filterOptions[filterType],
                             ]}
                             initialSelected={activeFilters[filterType]}

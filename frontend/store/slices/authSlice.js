@@ -516,6 +516,7 @@ export const fetchStakeholders = createAsyncThunk(
       userQueryParams.append('populate[3]', 'profile_image');
       userQueryParams.append('populate[0]', 'topics');
       userQueryParams.append('filters[confirmed][$eq]', 'true');
+      userQueryParams.append('filters[approved][$eq]', 'true');
 
       const orgQueryParams = new URLSearchParams(baseQueryParams);
       orgQueryParams.append('populate[1]', 'country');
@@ -918,6 +919,11 @@ const authSlice = createSlice({
 
       deleteCookie('token', { req: undefined, res: undefined });
       deleteCookie('user', { req: undefined, res: undefined });
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('auth-logout', 'true');
+        setTimeout(() => localStorage.removeItem('auth-logout'), 100);
+      }
     },
     clearError: (state) => {
       state.error = null;

@@ -70,9 +70,9 @@ export default function ContactPage() {
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-4">Contact Us</h1>
         <p className="text-gray-600 text-center mb-12">
-          Need support? The Think and Do Tank Network supports you in increasing
-          investments and building resilience in Kenya&apos;s Drylands. Fill in
-          the form below and we contact you shortly:
+          Need support? The The Kenya Drylands Investment Hub supports you in
+          increasing investments and building resilience in Kenya&apos;s
+          Drylands. Fill in the form below and we contact you shortly:
         </p>
 
         <div className="bg-[#f7f7f7] p-8 rounded-lg">

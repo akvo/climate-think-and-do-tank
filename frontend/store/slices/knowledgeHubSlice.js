@@ -60,7 +60,21 @@ export const fetchKnowledgeHubs = createAsyncThunk(
           (region) => region !== 'No Specific Focus Region'
         );
 
-        if (specificRegions.length > 0) {
+        if (hasNoSpecificRegion && specificRegions.length > 0) {
+          knowledgeHubQueryParams.append(
+            'filters[$or][0][regions][$null]',
+            true
+          );
+
+          specificRegions.forEach((region, index) => {
+            knowledgeHubQueryParams.append(
+              `filters[$or][1][regions][name][$in][${index}]`,
+              region
+            );
+          });
+        } else if (hasNoSpecificRegion) {
+          knowledgeHubQueryParams.append('filters[regions][$null]', true);
+        } else if (specificRegions.length > 0) {
           specificRegions.forEach((region, index) => {
             knowledgeHubQueryParams.append(
               `filters[regions][name][$in][${index}]`,

@@ -256,7 +256,7 @@ export default function StakeholderDirectory() {
                       className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
                     >
                       {filterType === 'focusRegions'
-                        ? 'Focus Regions'
+                        ? 'Region'
                         : filterType.charAt(0).toUpperCase() +
                           filterType.slice(1)}
                       <svg
@@ -349,7 +349,7 @@ export default function StakeholderDirectory() {
                               updateFilters(newFilters);
                               setOpenFilter(null);
                             }}
-                            name={'Focus Regions (Stakeholders Only)'}
+                            name={'Region (Stakeholders Only)'}
                             onClear={() => {
                               const newFilters = {
                                 ...activeFilters,

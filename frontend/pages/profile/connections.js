@@ -31,7 +31,8 @@ const MyConnections = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.get(
+
+      const receiverResponse = await axios.get(
         `${env('NEXT_PUBLIC_BACKEND_URL')}/api/stakeholder-connections`,
         {
           params: {
@@ -53,24 +54,62 @@ const MyConnections = () => {
         }
       );
 
-      const receivedConnections = response.data.data.map((connection) => ({
+      const requesterResponse = await axios.get(
+        `${env('NEXT_PUBLIC_BACKEND_URL')}/api/stakeholder-connections`,
+        {
+          params: {
+            filters: {
+              requester: user.id,
+            },
+            populate: [
+              'requester',
+              'requester.profile_image',
+              'requester.topics',
+              'receiver',
+              'receiver.profile_image',
+              'receiver.topics',
+            ],
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const receivedConnections = receiverResponse.data.data.map(
+        (connection) => ({
+          id: connection.id,
+          connection_status: connection.connection_status,
+          documentId: connection.documentId,
+          requester: connection.requester,
+          receiver: connection.receiver,
+          requesterDetails: connection.requester,
+          isReceived: true,
+        })
+      );
+
+      const sentConnections = requesterResponse.data.data.map((connection) => ({
         id: connection.id,
         connection_status: connection.connection_status,
         documentId: connection.documentId,
         requester: connection.requester,
         receiver: connection.receiver,
-        requesterDetails: connection.requester,
+        requesterDetails: connection.receiver,
+        isReceived: false,
       }));
 
+      const allConnections = [...receivedConnections, ...sentConnections];
+
       setConnections({
-        all: receivedConnections,
-        accepted: receivedConnections.filter(
+        all: allConnections,
+        accepted: allConnections.filter(
           (connection) => connection.connection_status === 'Accepted'
         ),
-        pending: receivedConnections.filter(
+        pending: allConnections.filter(
           (connection) => connection.connection_status === 'Pending'
         ),
-        rejected: receivedConnections.filter(
+        rejected: allConnections.filter(
           (connection) => connection.connection_status === 'Rejected'
         ),
       });
@@ -267,8 +306,11 @@ const MyConnections = () => {
     }
 
     return filteredConnections.map((connection) => {
-      const userData = connection.requester || connection.receiver || {};
+      const userData = connection.isReceived
+        ? connection.requester
+        : connection.receiver;
       const profileImage = userData?.profile_image;
+
       return (
         <div
           key={connection.id}
@@ -281,13 +323,11 @@ const MyConnections = () => {
               focusRegions: userData.focusRegions,
               organization: userData.organization,
               profession: userData.stakeholder_role,
-              valueChains: connection.requester.topics.map(
-                (topic) => topic.name
-              ),
+              valueChains: userData.topics?.map((topic) => topic.name) || [],
               linkedin: userData.linkedin,
               email: userData.email,
-              image: connection.requester.profile_image,
-              name: connection.requester.full_name,
+              image: userData.profile_image,
+              name: userData.full_name,
               type: 'Individual',
             };
             setSelectedStakeholder(enhancedStakeholder);
@@ -314,20 +354,24 @@ const MyConnections = () => {
               )}
             </div>
             <div>
-              <h3 className="font-semibold">
-                {connection.requester?.full_name}
-              </h3>
+              <h3 className="font-semibold">{userData?.full_name}</h3>
               <p className="text-sm text-gray-500">
-                {connection.requester?.stakeholder_role ||
-                  connection.receiver?.stakeholder_role}
+                {userData?.stakeholder_role}
+              </p>
+              <p className="text-xs text-gray-400">
+                {connection.isReceived ? 'Received' : 'Sent'}
               </p>
             </div>
           </div>
-          {activeTab === 'pending' && (
+
+          {activeTab === 'pending' && connection.isReceived && (
             <div className="space-x-2">
               <button
                 className="px-4 py-2 text-md text-black rounded-[50px] border border-white hover:border-zinc-950"
-                onClick={() => handleIgnoreRequest(connection.documentId)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleIgnoreRequest(connection.documentId);
+                }}
               >
                 Ignore
               </button>
@@ -341,6 +385,10 @@ const MyConnections = () => {
                 Accept
               </button>
             </div>
+          )}
+
+          {activeTab === 'pending' && !connection.isReceived && (
+            <div className="text-sm text-gray-500">Waiting for response</div>
           )}
 
           <StakeholderModal

@@ -12,6 +12,7 @@ import {
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Script from 'next/script';
+import AuthProvider from '@/components/AuthProvider';
 
 function AppContent({ Component, pageProps }) {
   const dispatch = useDispatch();
@@ -82,7 +83,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
       <LoadAkvoRag />
-      <AppContent Component={Component} pageProps={pageProps} />
+      <AuthProvider>
+        <AppContent Component={Component} pageProps={pageProps} />
+      </AuthProvider>
     </Provider>
   );
 }

@@ -228,6 +228,8 @@ export default function NewsEventsDirectory() {
                     >
                       {filterType === 'types'
                         ? 'Type'
+                        : filterType === 'focusRegions'
+                        ? 'Region'
                         : filterType.charAt(0).toUpperCase() +
                           filterType.slice(1)}
                       <svg
@@ -281,7 +283,7 @@ export default function NewsEventsDirectory() {
                                 locationsToApply
                               );
                             }}
-                            name={'Focus Regions'}
+                            name={'Region'}
                             onClear={() => {
                               handleFilterApply('focusRegions', []);
                             }}

@@ -151,7 +151,7 @@ export default function SocialAccountabilityPage() {
             For more information on investment opportunities in{' '}
             <span className="font-bold">{data.region?.name},</span>{' '}
             <Link
-              href={`http://localhost:3000/investment-profiles?regions=${data.region?.name}`}
+              href={`/investment-profiles?regions=${data.region?.name}`}
               className="text-[#008A16] font-bold hover:underline"
             >
               Read More
