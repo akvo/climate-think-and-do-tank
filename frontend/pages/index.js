@@ -1,70 +1,21 @@
-import { useEffect, useState } from "react";
-import HeroSlider from "@/components/HeroSlider";
-import KenyaMap from "@/components/KenyaMap";
-import { MarkdownRenderer } from "@/components/MarkDownRenderer";
-import InvestmentCarousel from "@/components/InvestmentCarousel";
-import { useRouter } from "next/router";
-import StatsGrid from "@/components/StatsGrid";
-import Head from "next/head";
-import Script from "next/script";
-
-function LoadAkvoRag() {
-  const [shouldLoadChat, setShouldLoadChat] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const accessKey = params.get("rag_access");
-      if (accessKey === "RAG_qnaWr4g") {
-        setShouldLoadChat(true);
-      }
-    }
-  }, []);
-
-  return (
-    <>
-      <Head>
-        {/* Load AkvoRAG CSS (if it has one) */}
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/akvo-rag-js@1.1.5/dist/akvo-rag.css"
-        />
-      </Head>
-
-      {/* Load AkvoRAG JS */}
-      {shouldLoadChat && (
-        <Script
-          src="https://cdn.jsdelivr.net/npm/akvo-rag-js@1.1.5/dist/akvo-rag.js"
-          strategy="afterInteractive"
-          onLoad={() => {
-            if (typeof window !== "undefined" && window.AkvoRAG) {
-              window.AkvoRAG.initChat({
-                title: "Kenya Drylands Assistant",
-                kb_id: 36,
-                wsURL: "ws://akvo-rag.akvotest.org/ws/chat",
-              });
-            } else {
-              console.error("AkvoRAG is not available on window");
-            }
-          }}
-        />
-      )}
-    </>
-  );
-}
+import { useState } from 'react';
+import HeroSlider from '@/components/HeroSlider';
+import KenyaMap from '@/components/KenyaMap';
+import { MarkdownRenderer } from '@/components/MarkDownRenderer';
+import InvestmentCarousel from '@/components/InvestmentCarousel';
+import { useRouter } from 'next/router';
+import StatsGrid from '@/components/StatsGrid';
 
 export default function HomePage() {
   const router = useRouter();
 
   const [data, setData] = useState({
-    title: "",
-    description: "",
+    title: '',
+    description: '',
   });
 
   return (
     <>
-      <LoadAkvoRag />
-
       <main className="min-h-screen bg-white">
         <HeroSlider setData={setData} />
 
