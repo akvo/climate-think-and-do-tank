@@ -192,7 +192,7 @@ export default function StakeholderDirectory() {
             location: stakeholder.country,
             focusRegions: stakeholder.focusRegions,
             organization: stakeholder.organization,
-            organizationWebsite: stakeholder.data.organisation.website,
+            organizationWebsite: stakeholder.data.organisation?.website,
             profession: stakeholder.data.stakeholder_role,
             valueChains: stakeholder.data.topics.map((topic) => topic.name),
             linkedin: stakeholder.data.linkedin,
