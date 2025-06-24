@@ -524,7 +524,7 @@ export default function StakeholderDirectory() {
                         src={getImageUrl(stakeholder.image)}
                         alt={stakeholder.name}
                         fill
-                        className="rounded-full object-cover"
+                        className="rounded-full object-contain"
                         unoptimized
                         onError={(e) => {
                           e.target.style.display = 'none';

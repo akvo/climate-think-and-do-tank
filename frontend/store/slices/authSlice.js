@@ -605,7 +605,9 @@ export const fetchStakeholders = createAsyncThunk(
               id: org.id,
               type: 'Organization',
               name: org.name,
-              image: org.org_image?.formats?.medium,
+              image: org.org_image?.formats?.medium
+                ? org.org_image?.formats?.medium
+                : org.org_image?.formats?.small,
               country: org.country?.country_name,
               data: org,
             }))
