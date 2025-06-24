@@ -339,7 +339,7 @@ const MyConnections = () => {
               {profileImage?.url ? (
                 <Image
                   src={`${env('NEXT_PUBLIC_BACKEND_URL')}${profileImage.url}`}
-                  alt={userData.full_name}
+                  alt={userData?.full_name}
                   width={48}
                   height={48}
                   className="rounded-full object-cover"
@@ -347,8 +347,8 @@ const MyConnections = () => {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-blue-100 text-blue-600 font-semibold text-lg">
-                  {userData.full_name
-                    ? userData.full_name.charAt(0).toUpperCase()
+                  {userData?.full_name
+                    ? userData?.full_name?.charAt(0).toUpperCase()
                     : '?'}
                 </div>
               )}
