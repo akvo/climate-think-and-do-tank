@@ -87,7 +87,10 @@ module.exports = ({ env }) => {
       },
     },
     upload: {
-      config: uploads[profile],
+      config: {
+        ...uploads[profile],
+        sizeLimit: 100 * 1024 * 1024, // 100MB in bytes
+      },
     },
   };
 };
