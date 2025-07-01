@@ -50,7 +50,7 @@ services:
       GCS_UNIFORM: ${GCS_UNIFORM:-}
 
   db:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     restart: always
     volumes:
       - ./db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
