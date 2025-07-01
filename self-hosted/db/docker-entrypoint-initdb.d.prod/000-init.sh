@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+
+
+psql -v ON_ERROR_STOP=1 --username "postgres" <<-EOSQL
+
+CREATE USER "${DATABASE_USERNAME}" WITH CREATEDB PASSWORD '${DATABASE_PASSWORD}';
+
+CREATE DATABASE "${DATABASE_NAME}"
+WITH OWNER = "${DATABASE_USERNAME}"
+     TEMPLATE = template0
+     ENCODING = 'UTF8'
+     LC_COLLATE = 'en_US.UTF-8'
+     LC_CTYPE = 'en_US.UTF-8';
+
+\c "${DATABASE_NAME}"
+
+EOSQL

@@ -1,0 +1,71 @@
+---
+services:
+
+  db:
+    image: postgres:17-alpine
+    container_name: db
+    env_file: ./.env
+    restart: unless-stopped
+    volumes:
+      - ./db/docker-entrypoint-initdb.d.prod:/docker-entrypoint-initdb.d
+      - ./db:/data
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ../backend
+    container_name: backend
+    env_file: ./.env
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - "strapi-data:/opt/app/public/uploads"
+
+  frontend:
+    build: ../frontend
+    container_name: frontend
+    env_file: ./.env
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  traefik:
+    image: traefik:v3.3
+    container_name: traefik
+    env_file: "./.env"
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - TRAEFIK_PROVIDERS_FILE_FILENAME=/traefik-config/dynamic.yml
+      - TRAEFIK_PROVIDERS_FILE_WATCH=true
+      - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80
+      - TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS=:443
+      - TRAEFIK_CERTIFICATESRESOLVERS_MYRESOLVER_ACME_STORAGE=/letsencrypt/acme.json
+      - TRAEFIK_CERTIFICATESRESOLVERS_MYRESOLVER_ACME_TLSCHALLENGE=true
+      - TRAEFIK_LOG_LEVEL=DEBUG
+      - TRAEFIK_LOG=true
+      - TRAEFIK_LOG_FORMAT=common
+      - TRAEFIK_ACCESSLOG=false
+      - TRAEFIK_ACCESSLOG_FILEPATH=/var/log/traefik/access.log
+      - TRAEFIK_ACCESSLOG_FORMAT=common
+    entrypoint: ["sh", "-c", "/generate_dynamic_config.sh && traefik"]
+    volumes:
+      - "traefik-certificates:/letsencrypt"
+      - "./helper/generate_dynamic_config.sh:/generate_dynamic_config.sh:ro"
+      - "/traefik-config"
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  pg-data:
+  traefik-certificates:
+  strapi-data:
