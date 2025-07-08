@@ -1,0 +1,36 @@
+name: Deploy Water Footprint to test environment
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: test
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: Test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: src
+
+      - name: Checkout Akvo composite actions
+        uses: actions/checkout@v4
+        with:
+          repository: akvo/composite-actions
+          path: composite-actions
+          ref: 0.0.9
+
+      - name: Update App
+        uses: ./composite-actions/.github/actions/ssh-command
+        with:
+          server-ip:  ${{ secrets.SERVER_IP }}
+          server-ssh-port:  ${{ secrets.SERVER_SSH_PORT }}
+          server-ssh-secret-key:  ${{ secrets.SERVER_SSH_SECRET_KEY }}
+          server-ssh-user:  ${{ secrets.SERVER_SSH_USER }}
+          command: ${{ vars.COMMAND }}
