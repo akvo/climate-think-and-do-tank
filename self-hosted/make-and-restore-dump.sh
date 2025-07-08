@@ -51,7 +51,7 @@ echo "Database is ready."
 
 echo "Restore dumped database"
 restore_args=("${DATABASE_NAME}" "${DATABASE_USERNAME}" "/data/dump/db_dump.gz")
-docker-compose exec db /data/scripts/restore-from-dump.sh "${restore_args[@]}"
+docker compose exec db /data/scripts/restore-from-dump.sh "${restore_args[@]}"
 
 echo "Start all containers"
-docker-compose up -d
+docker compose up -d
