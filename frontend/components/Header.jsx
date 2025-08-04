@@ -33,7 +33,7 @@ export default function Header() {
 
   return (
     <header className="border-b border-gray-200 bg-white">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex-shrink-0">
