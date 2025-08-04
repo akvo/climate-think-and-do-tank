@@ -5,226 +5,198 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { env } from '@/helpers/env-vars';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Menu, X } from 'lucide-react';
 import { getImageUrl } from '@/helpers/utilities';
+
+const menuItems = [
+  { label: 'Home', path: '/' },
+  { label: 'About', path: '/about' },
+  {
+    label: 'Invest',
+    dropdown: [
+      { label: 'Social Accountability', path: '/social-accountability' },
+      { label: 'Investment Opportunities', path: '/investment-opportunities' },
+    ],
+  },
+  { label: 'Connect', path: '/stakeholder-directory' },
+  { label: 'Knowledge Hub', path: '/knowledge-hub' },
+  {
+    label: 'More',
+    dropdown: [{ label: 'News and Events', path: '/news-events' }],
+  },
+];
 
 export default function Header() {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const router = useRouter();
-
-  const isActive = (path) => pathname === path;
-  const { isAuthenticated, loading, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const isActive = (path) => pathname === path;
+
   const handleLogout = () => {
     dispatch(logout());
     router.push('/login');
   };
 
-  const toggleMoreDropdown = () => {
-    setMoreDropdownOpen(!moreDropdownOpen);
-  };
-
-  const isMoreActive = () => {
-    return isActive('/news-events') || isActive('/about');
-  };
-
   return (
-    <header className="border-b border-gray-200 bg-white">
-      <div className="container mx-auto">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center gap-2">
+    <header className="border-b border-gray-200 bg-white text-black py-4 px-2 md:px-0">
+      <div className="container mx-auto flex items-center justify-between">
+        <Link href="/" className="relative min-w-[216px] h-[40px]">
+          <Image
+            src="/images/logo.png"
+            alt="Logo"
+            fill
+            className="object-contain"
+            priority
+          />
+        </Link>
+
+        <div className="md:hidden">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+
+        <div
+          className={`fixed top-0 right-0 h-full w-full bg-white z-50 p-6 shadow-lg transform transition-transform duration-300 ease-in-out md:hidden ${
+            mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-2">
               <Image
                 src="/images/logo.png"
-                alt="Kenya Drylands Investment Hub Logo"
-                width={230}
+                alt="Logo"
+                width={216}
                 height={40}
-                priority
               />
-            </Link>
+            </div>
+            <button onClick={() => setMobileMenuOpen(false)}>
+              <X size={24} />
+            </button>
           </div>
-
-          {/* Navigation */}
-          <div className="flex items-center gap-6">
-            <nav className="flex space-x-2">
-              <Link
-                href="/investment-profiles"
-                className={`relative text-black px-2 py-8 text-md font-bold group
-                  ${
-                    isActive('/investment-profiles')
-                      ? 'text-black bg-green-50'
-                      : 'hover:text-zinc-600'
-                  }`}
-              >
-                Investment Profiles
-                <div
-                  className={`absolute inset-0 bg-green-50 transition-opacity -z-10
-                  ${
-                    isActive('/investment-profiles')
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-50'
-                  }`}
-                />
-                <div
-                  className={`absolute bottom-0 left-0 right-0 h-1 bg-green-700 transition-opacity
-                  ${
-                    isActive('/investment-profiles')
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-50'
-                  }`}
-                />
-              </Link>
-              <Link
-                href="/social-accountability"
-                className={`relative text-black px-2 py-8 text-md font-bold group
-                  ${
-                    isActive('/social-accountability')
-                      ? 'text-black bg-green-50'
-                      : 'hover:text-zinc-600'
-                  }`}
-              >
-                Social Accountability
-                <div
-                  className={`absolute inset-0 bg-green-50 transition-opacity -z-10
-                  ${
-                    isActive('/social-accountability')
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-50'
-                  }`}
-                />
-                <div
-                  className={`absolute bottom-0 left-0 right-0 h-1 bg-green-700 transition-opacity
-                  ${
-                    isActive('/social-accountability')
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-50'
-                  }`}
-                />
-              </Link>
-              <Link
-                href="/knowledge-hub"
-                className={`relative text-black px-2 py-8 text-md font-bold group
-                  ${
-                    isActive('/knowledge-hub')
-                      ? 'text-black bg-green-50'
-                      : 'hover:text-zinc-600'
-                  }`}
-              >
-                Knowledge Hub
-                <div
-                  className={`absolute inset-0 bg-green-50 transition-opacity -z-10
-                  ${
-                    isActive('/knowledge-hub')
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-50'
-                  }`}
-                />
-                <div
-                  className={`absolute bottom-0 left-0 right-0 h-1 bg-green-700 transition-opacity
-                  ${
-                    isActive('/knowledge-hub')
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-50'
-                  }`}
-                />
-              </Link>
-              <Link
-                href="/stakeholder-directory"
-                className={`relative text-black px-2 py-8 text-md font-bold group
-                  ${
-                    isActive('/stakeholder-directory')
-                      ? 'text-black bg-green-50'
-                      : 'hover:text-zinc-600'
-                  }`}
-              >
-                Stakeholder Directory
-                <div
-                  className={`absolute inset-0 bg-green-50 transition-opacity -z-10
-                  ${
-                    isActive('/stakeholder-directory')
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-50'
-                  }`}
-                />
-                <div
-                  className={`absolute bottom-0 left-0 right-0 h-1 bg-green-700 transition-opacity
-                  ${
-                    isActive('/stakeholder-directory')
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-50'
-                  }`}
-                />
-              </Link>
-              <div className="relative">
-                <button
-                  onClick={toggleMoreDropdown}
-                  className={`flex items-center text-black px-2 py-8 text-md font-bold group
-            ${
-              isMoreActive() ? 'text-black bg-green-50' : 'hover:text-zinc-600'
-            }`}
-                >
-                  More
-                  {moreDropdownOpen ? (
-                    <ChevronUp className="ml-1 h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="ml-1 h-4 w-4" />
-                  )}
-                  <div
-                    className={`absolute inset-0 bg-green-50 transition-opacity -z-10
-            ${
-              isMoreActive()
-                ? 'opacity-100'
-                : 'opacity-0 group-hover:opacity-50'
-            }`}
-                  />
-                  <div
-                    className={`absolute bottom-0 left-0 right-0 h-1 bg-green-700 transition-opacity
-            ${
-              isMoreActive()
-                ? 'opacity-100'
-                : 'opacity-0 group-hover:opacity-50'
-            }`}
-                  />
-                </button>
-
-                {/* Dropdown content */}
-                {moreDropdownOpen && (
-                  <div className="absolute left-0 mt-1 w-48 bg-white shadow-lg rounded-md z-50">
-                    <div className="py-1">
-                      <Link
-                        href="/news-events"
-                        onClick={() => setMoreDropdownOpen(false)}
-                        className={`block px-4 py-2 text-sm font-medium ${
-                          isActive('/news-events')
-                            ? 'bg-green-50 text-black'
-                            : 'text-gray-700 hover:bg-green-50'
-                        }`}
-                      >
-                        News & Events
-                      </Link>
-                      <Link
-                        href="/about"
-                        onClick={() => setMoreDropdownOpen(false)}
-                        className={`block px-4 py-2 text-sm font-medium ${
-                          isActive('/about')
-                            ? 'bg-green-50 text-black'
-                            : 'text-gray-700 hover:bg-green-50'
-                        }`}
-                      >
-                        About
-                      </Link>
+          <nav className="flex flex-col gap-2">
+            {menuItems.map((item, idx) => (
+              <div key={idx} className="relative">
+                {!item.dropdown ? (
+                  <Link
+                    href={item.path}
+                    className="block text-center border-b border-gray-100 py-2 font-semibold text-gray-700"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <div className="rounded-lg border px-4 py-3">
+                    <p className="text-center font-semibold text-gray-700 mb-2">
+                      {item.label}
+                    </p>
+                    <div className="flex flex-col gap-2">
+                      {item.dropdown.map((sub) => (
+                        <Link
+                          key={sub.path}
+                          href={sub.path}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="text-center text-gray-700 font-medium"
+                        >
+                          {sub.label}
+                        </Link>
+                      ))}
                     </div>
                   </div>
                 )}
               </div>
-            </nav>
+            ))}
 
-            {/* Auth Buttons */}
+            <div className="mt-6 flex flex-col gap-2">
+              <Link
+                href="/contact-us"
+                className="bg-primary-500 text-white text-center py-3 rounded-full font-bold"
+              >
+                Get in Touch
+              </Link>
+              <Link
+                href="/signup"
+                className="border-2 border-black text-black text-center py-3 rounded-full font-bold"
+              >
+                Sign up
+              </Link>
+              <Link
+                href="/login"
+                className="text-center py-2 font-semibold text-black"
+              >
+                Log in
+              </Link>
+            </div>
+          </nav>
+        </div>
 
+        <nav className="hidden md:flex items-center gap-2">
+          {menuItems.map((item, idx) => (
+            <div key={idx} className="relative">
+              {!item.dropdown ? (
+                <Link
+                  href={item.path}
+                  className={`px-4 py-6 text-md font-bold relative group ${
+                    isActive(item.path)
+                      ? 'text-black bg-primary-50'
+                      : 'hover:text-zinc-600'
+                  }`}
+                >
+                  {item.label}
+                  <div
+                    className={`absolute bottom-0 left-0 right-0 h-1 bg-primary-500 transition-opacity ${
+                      isActive(item.path)
+                        ? 'opacity-100'
+                        : 'opacity-0 group-hover:opacity-50'
+                    }`}
+                  />
+                </Link>
+              ) : (
+                <>
+                  <button
+                    onClick={() =>
+                      setMoreDropdownOpen((prev) =>
+                        prev === item.label ? null : item.label
+                      )
+                    }
+                    className="flex items-center px-4 py-2 text-md font-bold text-black hover:text-zinc-600"
+                  >
+                    {item.label}
+                    {moreDropdownOpen === item.label ? (
+                      <ChevronUp className="ml-1 w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="ml-1 w-4 h-4" />
+                    )}
+                  </button>
+                  {moreDropdownOpen === item.label && (
+                    <div className="absolute left-0 mt-1 w-48 bg-white shadow-lg rounded-md z-50 overflow-hidden">
+                      {item.dropdown.map((sub) => (
+                        <Link
+                          key={sub.path}
+                          href={sub.path}
+                          onClick={() => setMoreDropdownOpen(null)}
+                          className={`block px-4 py-2 text-sm font-medium ${
+                            isActive(sub.path)
+                              ? 'bg-primary-50 text-black'
+                              : 'text-black hover:bg-primary-50'
+                          }`}
+                        >
+                          {sub.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          ))}
+
+          <div className="ml-6 flex items-center gap-3">
             {isAuthenticated ? (
               <div className="relative">
                 <button
@@ -237,40 +209,20 @@ export default function Header() {
                   <div className="w-10 h-10 rounded-full overflow-hidden">
                     {user?.profile_image?.url ? (
                       <Image
-                        src={
-                          user?.profile_image && user?.profile_image.url
-                            ? getImageUrl(user?.profile_image)
-                            : ''
-                        }
+                        src={getImageUrl(user.profile_image)}
                         alt={user?.full_name || 'User'}
-                        width={100}
-                        height={100}
-                        className="object-cover w-[100%] h-[100%]"
+                        width={40}
+                        height={40}
+                        className="object-cover w-full h-full"
                         unoptimized
-                        onError={(e) => {
-                          const fallbackEl = document.createElement('div');
-                          fallbackEl.className =
-                            'w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold';
-                          fallbackEl.textContent = (user?.full_name || 'U')
-                            .charAt(0)
-                            .toUpperCase();
-
-                          const parentNode = e.target.parentNode;
-                          if (parentNode) {
-                            e.target.style.display = 'none';
-
-                            parentNode.appendChild(fallbackEl);
-                          }
-                        }}
                       />
                     ) : (
                       <div className="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold">
-                        {(user?.full_name || 'U').charAt(0).toUpperCase()}
+                        {(user?.full_name || 'U')[0].toUpperCase()}
                       </div>
                     )}
                   </div>
                 </button>
-
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg z-50 text-black">
                     <div className="px-4 py-3 border-b">
@@ -304,23 +256,29 @@ export default function Header() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex gap-2 items-center">
                 <Link
                   href="/login"
-                  className="px-6 py-2 text-sm font-semibold text-zinc-900 border border-zinc-800 rounded-full hover:bg-green-600 hover:text-white transition-colors hover:border-transparent"
+                  className="text-sm font-semibold text-zinc-900 hover:text-primary-500"
                 >
                   Login
                 </Link>
                 <Link
                   href="/signup"
-                  className="px-6 py-2 text-sm font-semibold text-white border bg-green-600 rounded-full hover:bg-white hover:text-zinc-800 transition-colors hover:border-green-600 hover:border"
+                  className="text-sm font-semibold text-primary-500 border border-primary-500 px-4 py-1.5 rounded-full hover:bg-primary-500 hover:text-white"
                 >
                   Sign Up
+                </Link>
+                <Link
+                  href="/contact-us"
+                  className="text-sm font-semibold text-white bg-primary-500 px-4 py-1.5 rounded-full hover:bg-white hover:text-primary-500 border hover:border-primary-500"
+                >
+                  Get In Touch
                 </Link>
               </div>
             )}
           </div>
-        </div>
+        </nav>
       </div>
     </header>
   );
