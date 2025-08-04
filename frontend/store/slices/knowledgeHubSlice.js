@@ -129,6 +129,8 @@ export const fetchKnowledgeHubs = createAsyncThunk(
       return {
         data: knowledgeHubs,
         meta: {
+          total: response.data.meta.pagination.total,
+          pageSize: response.data.meta.pagination.pageSize,
           page,
           hasMore: knowledgeHubs.length > 0 && knowledgeHubs.length >= pageSize,
         },
@@ -175,6 +177,8 @@ export const fetchRelatedKnowledgeHubs = createAsyncThunk(
         description: hub.description,
         image: hub.image?.url,
         topic: hub.topic?.name || '',
+        publishedAt: hub.publication_date,
+        publishedYear: new Date(hub.publication_date).getFullYear(),
       }));
 
       return {
@@ -199,6 +203,7 @@ const knowledgeHubSlice = createSlice({
   name: 'knowledgeHub',
   initialState: {
     knowledgeHubs: [],
+    total: 0,
     loading: false,
     error: null,
     currentPage: 1,
@@ -234,6 +239,7 @@ const knowledgeHubSlice = createSlice({
 
         state.loading = false;
         state.currentPage = meta.page;
+        state.total = meta.total;
         state.hasMore = meta.hasMore;
       })
       .addCase(fetchKnowledgeHubs.rejected, (state, action) => {

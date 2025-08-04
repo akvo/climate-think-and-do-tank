@@ -24,3 +24,79 @@ export const VerifyEmailIcon = () => (
     />
   </svg>
 );
+
+export const RegionIcon = ({ size = 20, ...props }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 22"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M8 17L1 21V5L8 1M8 17L16 21M8 17V1M16 21L23 17V1L16 5M16 21V5M16 5L8 1"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const TopicIcon = ({ size = 20, ...props }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 23 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M11.5 5C11.5 3.93913 11.0786 2.92172 10.3284 2.17157C9.57828 1.42143 8.56087 1 7.5 1H1.5V16H8.5C9.29565 16 10.0587 16.3161 10.6213 16.8787C11.1839 17.4413 11.5 18.2044 11.5 19M11.5 5V19M11.5 5C11.5 3.93913 11.9214 2.92172 12.6716 2.17157C13.4217 1.42143 14.4391 1 15.5 1H21.5V16H14.5C13.7044 16 12.9413 16.3161 12.3787 16.8787C11.8161 17.4413 11.5 18.2044 11.5 19"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const TypeIcon = ({ size = 20, ...props }) => (
+  <svg
+    width="18"
+    height="22"
+    viewBox="0 0 18 22"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M10 1H3C2.46957 1 1.96086 1.21071 1.58579 1.58579C1.21071 1.96086 1 2.46957 1 3V19C1 19.5304 1.21071 20.0391 1.58579 20.4142C1.96086 20.7893 2.46957 21 3 21H15C15.5304 21 16.0391 20.7893 16.4142 20.4142C16.7893 20.0391 17 19.5304 17 19V8M10 1L17 8M10 1V8H17"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const CalenderIcon = ({ size = 20, ...props }) => (
+  <svg
+    width="21"
+    height="22"
+    viewBox="0 0 21 22"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M14.5 1V5M6.5 1V5M1.5 9H19.5M3.5 3H17.5C18.6046 3 19.5 3.89543 19.5 5V19C19.5 20.1046 18.6046 21 17.5 21H3.5C2.39543 21 1.5 20.1046 1.5 19V5C1.5 3.89543 2.39543 3 3.5 3Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
