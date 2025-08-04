@@ -43,7 +43,11 @@ export default function Header() {
   };
 
   return (
-    <header className="border-b border-gray-200 bg-white text-black py-4 px-2 md:px-0">
+    <header
+      className={`border-b border-gray-200 bg-white text-black px-2 md:px-0 ${
+        isAuthenticated ? 'py-2' : 'py-4'
+      }`}
+    >
       <div className="container mx-auto flex items-center justify-between">
         <Link href="/" className="relative min-w-[216px] h-[40px]">
           <Image
@@ -198,62 +202,70 @@ export default function Header() {
 
           <div className="ml-6 flex items-center gap-3">
             {isAuthenticated ? (
-              <div className="relative">
-                <button
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-2 hover:bg-gray-100 px-3 py-2 rounded-full text-black"
-                >
-                  <span className="font-semibold">
-                    {user?.full_name || 'User'}
-                  </span>
-                  <div className="w-10 h-10 rounded-full overflow-hidden">
-                    {user?.profile_image?.url ? (
-                      <Image
-                        src={getImageUrl(user.profile_image)}
-                        alt={user?.full_name || 'User'}
-                        width={40}
-                        height={40}
-                        className="object-cover w-full h-full"
-                        unoptimized
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold">
-                        {(user?.full_name || 'U')[0].toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                </button>
-                {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg z-50 text-black">
-                    <div className="px-4 py-3 border-b">
-                      <p className="text-sm font-medium text-gray-900">
-                        {user?.full_name}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate">
-                        {user?.email}
-                      </p>
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <button
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="flex items-center gap-2 hover:bg-gray-100 px-3 py-2 rounded-full text-black"
+                  >
+                    <span className="font-semibold">
+                      {user?.full_name || 'User'}
+                    </span>
+                    <div className="w-10 h-10 rounded-full overflow-hidden">
+                      {user?.profile_image?.url ? (
+                        <Image
+                          src={getImageUrl(user.profile_image)}
+                          alt={user?.full_name || 'User'}
+                          width={40}
+                          height={40}
+                          className="object-cover w-full h-full"
+                          unoptimized
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                          {(user?.full_name || 'U')[0].toUpperCase()}
+                        </div>
+                      )}
                     </div>
-                    <ul className="py-1 px-1">
-                      <li>
-                        <Link
-                          href="/profile"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          onClick={() => setDropdownOpen(false)}
-                        >
-                          Profile
-                        </Link>
-                      </li>
-                      <li>
-                        <button
-                          onClick={handleLogout}
-                          className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        >
-                          Logout
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                )}
+                  </button>
+                  {dropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg z-50 text-black">
+                      <div className="px-4 py-3 border-b">
+                        <p className="text-sm font-medium text-gray-900">
+                          {user?.full_name}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                          {user?.email}
+                        </p>
+                      </div>
+                      <ul className="py-1 px-1">
+                        <li>
+                          <Link
+                            href="/profile"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setDropdownOpen(false)}
+                          >
+                            Profile
+                          </Link>
+                        </li>
+                        <li>
+                          <button
+                            onClick={handleLogout}
+                            className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            Logout
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+                <Link
+                  href="/contact-us"
+                  className="text-sm font-semibold text-white bg-primary-500 px-4 py-1.5 rounded-full hover:bg-white hover:text-primary-500 border hover:border-primary-500"
+                >
+                  Get In Touch
+                </Link>
               </div>
             ) : (
               <div className="flex gap-2 items-center">
