@@ -14,10 +14,23 @@
   }
 }
 
+/* globals.css */
+body {
+  @apply font-sans;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-serif;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: "Nunito", sans-serif;
 }
 
 .map-embed-container iframe {
@@ -29,7 +42,7 @@ body {
 
 /* akvo-rag-js custom styles */
 #akvo-rag {
-  font-family: "Nunito", sans-serif !important;
+  font-family: "Roboto Slab", sans-serif !important;
   bottom: 10px;
   right: 10px;
 }
@@ -48,4 +61,5 @@ body {
 #akvo-rag-input {
   color: #000;
 }
+
 /* EOL akvo-rag-js */

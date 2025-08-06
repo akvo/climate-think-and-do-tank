@@ -6,7 +6,16 @@ const config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    fontFamily: {
+      sans: ['Assistant', 'ui-sans-serif', 'system-ui'],
+      serif: ['"Roboto Slab"', 'ui-serif', 'Georgia'],
+      mono: ['ui-monospace', 'SFMono-Regular'],
+    },
     extend: {
+      fontFamily: {
+        'roboto-slab': ['"Roboto Slab"', 'serif'],
+        assistant: ['Assistant', 'sans-serif'],
+      },
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
