@@ -14,6 +14,10 @@ const HeroSlider = ({ setData }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState('');
+  const [heroData, setHeroData] = useState({
+    title: '',
+    description: '',
+  });
 
   useEffect(() => {
     const fetchHomepageData = async () => {
@@ -27,10 +31,19 @@ const HeroSlider = ({ setData }) => {
 
         if (response.data && response.data.data) {
           const homepageData = response.data.data;
+
+          const heroInfo = {
+            title: 'Welcome to the Kenya Drylands Investment Hub',
+            description:
+              "Driving sustainable investment in agrifood, water, and energy across Kenya's drylands",
+          };
+
+          setHeroData(heroInfo);
           setData({
-            title: homepageData.homepage_blurb || '',
-            description: homepageData.homepage_description || '',
+            title: homepageData.homepage_blurb,
+            description: homepageData.homepage_description,
           });
+
           if (
             homepageData.hero_image_slider &&
             Array.isArray(homepageData.hero_image_slider)
@@ -72,31 +85,6 @@ const HeroSlider = ({ setData }) => {
     return () => clearInterval(timer);
   }, [sliderData.length]);
 
-  if (loading) {
-    return (
-      <section className="relative overflow-hidden pb-12 h-[600px] bg-gray-100">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-green-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading slider content...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error && sliderData.length === 0) {
-    return (
-      <section className="relative overflow-hidden pb-12 h-[600px] bg-gray-100">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-red-600">
-            <p>{error}</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   const handleInputChange = (e) => {
     setQuery(e.target.value);
   };
@@ -112,72 +100,106 @@ const HeroSlider = ({ setData }) => {
   };
 
   return (
-    <section className="relative overflow-hidden pb-12">
-      <div className="relative h-[500px]">
-        {sliderData.map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
-            }`}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30 z-10"></div>
-            <Image
-              src={getImageUrl(slide.image)}
-              alt={slide.title}
-              fill
-              unoptimized
-              className="w-full h-full object-cover"
-              priority={index === currentSlide}
-            />
-          </div>
-        ))}
+    <section
+      className="relative overflow-hidden bg-gray-10"
+      style={{
+        backgroundImage: "url('/images/cubes.svg')",
+        backgroundPosition: ' left center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: ' cover',
+      }}
+    >
+      <div className="">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[500px]">
+          <div className="max-w-2xl mx-auto px-6 pl-32">
+            <div className="mb-12">
+              <h1 className="text-[48px] font-extrabold text-primary-500 mb-4 leading-tight">
+                Welcome to the Kenya Drylands Investment Hub
+              </h1>
+              <p className="text-xl text-gray-800">
+                Driving sustainable investment in agrifood, water, and energy
+                across Kenya&apos;s drylands
+              </p>
+            </div>
 
-        <div className="absolute bottom-8 left-0 right-0 z-30 flex justify-center space-x-3">
-          {sliderData.map((_, index) => (
-            <div
-              key={index}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === currentSlide ? 'bg-white' : 'bg-white/40'
-              }`}
-              aria-hidden="true"
-            />
-          ))}
+            <div className="mb-8">
+              <p className="text-gray-500 mb-[10px]">
+                Search all platform content
+              </p>
+              <form onSubmit={handleSearch} className="flex gap-3">
+                <div className="relative flex-1 flex items-center bg-white border border-gray-200 rounded-full shadow-sm">
+                  <Search className="absolute left-4 text-gray-400 w-5 h-5" />
+                  <input
+                    type="text"
+                    placeholder="Kenya's arid land"
+                    value={query}
+                    onChange={handleInputChange}
+                    className="flex-1 pl-12 pr-4 h-12 text-lg bg-transparent border-none focus:outline-none text-black focus:ring-2 focus:ring-primary-500 rounded-full"
+                  />
+                  <button
+                    type="submit"
+                    className="px-8 py-2 mx-1 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-medium transition-colors"
+                  >
+                    Search
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div className="relative">
+            {sliderData.length > 0 ? (
+              <div className="relative min-h-[600px] max-h-[900px] overflow-hidden">
+                {sliderData.map((slide, index) => (
+                  <div
+                    key={index}
+                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                      index === currentSlide
+                        ? 'opacity-100 z-10'
+                        : 'opacity-0 z-0'
+                    }`}
+                  >
+                    <Image
+                      src={getImageUrl(slide.image)}
+                      alt={`Slide ${index + 1}`}
+                      fill
+                      unoptimized
+                      className="w-full h-full object-cover"
+                      priority={index === currentSlide}
+                    />
+                  </div>
+                ))}
+
+                {sliderData.length > 1 && (
+                  <div className="absolute bottom-6 left-0 right-0 z-30 flex justify-center space-x-3">
+                    {sliderData.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentSlide(index)}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                          index === currentSlide
+                            ? 'bg-white shadow-lg scale-110'
+                            : 'bg-white/60 hover:bg-white/80'
+                        }`}
+                        aria-label={`Go to slide ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="h-[500px] bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl flex items-center justify-center shadow-2xl">
+                <div className="text-center text-primary-600">
+                  <div className="w-24 h-24 mx-auto mb-4 bg-primary-500 rounded-full flex items-center justify-center">
+                    <Search className="w-12 h-12 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold">Kenya Drylands</h3>
+                  <p className="text-primary-500">Investment Hub</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-
-      <div className="bg-white pt-10 pb-4">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Welcome to the Kenya Drylands Investment Hub
-            </h2>
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4">
-        <form
-          onSubmit={handleSearch}
-          className="max-w-2xl mx-auto bg-white/95 backdrop-blur-sm rounded-[40px] shadow-xl p-1.5 flex items-center"
-        >
-          <div className="flex-1 flex items-center pl-4">
-            <Search size={20} className="text-gray-400 mr-2" />
-            <input
-              type="text"
-              placeholder="Search all platform content"
-              className="w-full py-3 bg-transparent outline-none text-black"
-              value={query}
-              onChange={handleInputChange}
-            />
-          </div>
-          <button
-            type="submit"
-            className="px-8 py-3 bg-green-700 hover:bg-green-800 text-white rounded-[100px] font-medium transition-colors"
-          >
-            Search
-          </button>
-        </form>
       </div>
     </section>
   );

@@ -1,10 +1,82 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { env } from '@/helpers/env-vars';
+import {
+  ChevronLeft,
+  ChevronRight,
+  MapPin,
+  Calendar,
+  ArrowRight,
+} from 'lucide-react';
 import Link from 'next/link';
-import { getImageUrl } from '@/helpers/utilities';
+import { env } from '@/helpers/env-vars';
+
+const getImageUrl = (image) => {
+  if (typeof image === 'string') return image;
+  return image?.url || '/images/placeholder.jpg';
+};
+
+const IOPCard = ({ investment, onClick }) => {
+  return (
+    <Link
+      href={`/iop/${investment.documentId}`}
+      className="block bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 group cursor-pointer border border-primary-50"
+    >
+      <div className="relative h-56">
+        <Image
+          src={getImageUrl(investment.image)}
+          alt={investment.title}
+          fill
+          className="object-cover"
+          unoptimized
+        />
+      </div>
+
+      <div className="p-5">
+        <div className="flex items-center justify-between mb-3 text-sm">
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-4 h-4 text-orange-500" />
+            <span className="text-orange-500 font-medium">
+              {investment.region}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Calendar className="w-4 h-4 text-gray-500" />
+            <span className="text-gray-600">{investment.period}</span>
+          </div>
+        </div>
+
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-bold text-lg text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 flex-1">
+            {investment.title}
+          </h3>
+          <div className="flex-shrink-0 mt-1">
+            <div className="w-8 h-8 rounded-full bg-gray-100 group-hover:bg-orange-100 flex items-center justify-center transition-all group-hover:translate-x-1">
+              <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-orange-600" />
+            </div>
+          </div>
+        </div>
+
+        <p className="text-gray-600 text-sm mt-3 line-clamp-2">
+          {investment.description}
+        </p>
+
+        {investment.tags && investment.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-4">
+            {investment.tags.map((tag, index) => (
+              <span
+                key={index}
+                className="px-3 py-1 bg-orange-50 text-orange-600 text-xs font-medium rounded-full"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+};
 
 const InvestmentCarousel = () => {
   const [investments, setInvestments] = useState([]);
@@ -12,7 +84,7 @@ const InvestmentCarousel = () => {
   const [error, setError] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const itemsPerSlide = 4;
+  const itemsPerSlide = 3;
 
   useEffect(() => {
     const fetchInvestments = async () => {
@@ -75,7 +147,7 @@ const InvestmentCarousel = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -93,78 +165,75 @@ const InvestmentCarousel = () => {
   }
 
   return (
-    <section className="bg-gray-50 py-16 text-black">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-6 text-center">
-          Latest Investment Opportunity Profiles
-        </h2>
+    <section className="py-16">
+      <div className="container mx-auto border-t border-gray-200 pt-16">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10">
+          <div className="mb-6 md:mb-0">
+            <h2 className="text-4xl font-bold mb-3">
+              <span className="text-primary-500">Investment Opportunity</span>{' '}
+              <span className="text-gray-900">Profiles (IOPs)</span>
+            </h2>
+            <p className="text-gray-600 max-w-2xl">
+              Think and Do Tank Network: the next step towards catalysing
+              climate action in Kenya&apos;s Arid and Semi-Arid lands
+            </p>
+          </div>
+          <Link
+            href="/investment-opportunities"
+            className="inline-flex items-center px-6 py-3 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-100 transition-colors font-medium"
+          >
+            Explore investment opportunities
+          </Link>
+        </div>
 
         <div className="relative">
-          <button
-            onClick={goToPrevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 bg-white rounded-full p-2 shadow-lg z-10 hover:bg-gray-100"
-            aria-label="Previous slide"
-          >
-            <ChevronLeft size={24} />
-          </button>
+          {totalSlides > 1 && (
+            <button
+              onClick={goToPrevSlide}
+              className="absolute left-0 top-1/2 -translate-y-1/2 -ml-12 bg-white rounded-full p-3 shadow-lg z-10 hover:bg-gray-50 transition-colors"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft size={24} className="text-gray-700" />
+            </button>
+          )}
 
-          <div className="grid md:grid-cols-4 gap-6">
-            {getCurrentSlideItems().map((investment, index) => (
-              <Link
-                href={`/iop/${investment.documentId}`}
-                key={investment.id || index}
-                className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer"
-              >
-                <div className="relative h-48">
-                  <Image
-                    src={getImageUrl(investment.image)}
-                    alt={investment.title}
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
-                </div>
-                <div className="p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full" />
-                    <span className="text-sm text-gray-600">
-                      {investment.region}
-                    </span>
-                  </div>
-                  <h3 className="font-medium mb-2 line-clamp-2">
-                    {investment.title}
-                  </h3>
-                  <div className="text-sm text-gray-600">
-                    <div className="font-medium text-black">
-                      <span className="text-gray-600">{investment.period}</span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {getCurrentSlideItems().map((investment) => (
+              <IOPCard
+                key={investment.id}
+                investment={investment}
+                onClick={() => {}}
+              />
             ))}
           </div>
 
-          <button
-            onClick={goToNextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 bg-white rounded-full p-2 shadow-lg z-10 hover:bg-gray-100"
-            aria-label="Next slide"
-          >
-            <ChevronRight size={24} />
-          </button>
+          {totalSlides > 1 && (
+            <button
+              onClick={goToNextSlide}
+              className="absolute right-0 top-1/2 -translate-y-1/2 -mr-12 bg-white rounded-full p-3 shadow-lg z-10 hover:bg-gray-50 transition-colors"
+              aria-label="Next slide"
+            >
+              <ChevronRight size={24} className="text-gray-700" />
+            </button>
+          )}
         </div>
 
-        <div className="flex justify-center mt-8 gap-2">
-          {Array.from({ length: totalSlides }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                currentSlide === index ? 'bg-zinc-900' : 'bg-gray-300'
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
+        {totalSlides > 1 && (
+          <div className="flex justify-center mt-8 gap-2">
+            {Array.from({ length: totalSlides }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  currentSlide === index
+                    ? 'bg-orange-500 w-8'
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

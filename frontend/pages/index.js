@@ -5,6 +5,8 @@ import { MarkdownRenderer } from '@/components/MarkDownRenderer';
 import InvestmentCarousel from '@/components/InvestmentCarousel';
 import { useRouter } from 'next/router';
 import StatsGrid from '@/components/StatsGrid';
+import PartnersSection from '@/components/Partners';
+import InterestedSection from '@/components/ContactSection';
 
 export default function HomePage() {
   const router = useRouter();
@@ -19,15 +21,15 @@ export default function HomePage() {
       <main className="min-h-screen bg-white">
         <HeroSlider setData={setData} />
 
-        <section className="bg-gray-50 py-20 text-gray-800 border-t border-gray-100">
-          <div className="container mx-auto px-4 max-w-6xl">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-16 items-center">
+        <section className="bg-white py-20 text-gray-800 border-t border-gray-100">
+          <div className="container mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-16 ">
               <div className="col-span-1 md:col-span-5">
                 <h2 className="text-4xl font-bold text-gray-800 leading-tight mb-6">
                   {data.title}
                 </h2>
               </div>
-              <div className="col-span-1 md:col-span-7 space-y-8 text-[14px]">
+              <div className="col-span-1 md:col-span-7 space-y-8 text-[20px]">
                 <MarkdownRenderer content={data.description} />
               </div>
             </div>
@@ -36,7 +38,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="py-16 text-black">
+        <section className="py-16 text-black bg-gray-10 hidden md:block">
           <div className="container mx-auto px-4 flex justify-center">
             <KenyaMap
               onSelect={(selected) =>
@@ -46,7 +48,11 @@ export default function HomePage() {
           </div>
         </section>
 
+        <PartnersSection />
+
         <InvestmentCarousel />
+
+        <InterestedSection />
       </main>
     </>
   );
