@@ -11,8 +11,10 @@ function isBrowser() {
  * variable from the server (process.env).
  */
 export function env(key) {
-  if (isBrowser()) {
-    return window.__ENV[key];
-  }
-  return process.env[key];
+  // if (isBrowser()) {
+  //   // eslint-disable-next-line no-underscore-dangle
+  //   return window.__ENV[key];
+  // }
+
+  return 'https://tdt.akvotest.org/cms';
 }
