@@ -12,6 +12,11 @@ import {
   Search,
   Sprout,
   X,
+  ChevronRight,
+  Filter,
+  User,
+  ListFilter,
+  Share2,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useModal } from '@/hooks/useModal';
@@ -23,28 +28,28 @@ import {
   sendConnectionRequest,
 } from '@/store/slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import LocationsFilter from '@/components/LocationFilter';
 import { toast } from 'react-toastify';
 import debounce from 'lodash/debounce';
 import { env } from '@/helpers/env-vars';
-import CheckboxFilter from '@/components/CheckboxFilter';
 import { getImageUrl } from '@/helpers/utilities';
+import HeroSection from '@/components/Hero';
+import FilterSection from '@/components/FilterSection';
 
 export default function StakeholderDirectory() {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [openFilter, setOpenFilter] = useState(null);
-  const [activeFilters, setActiveFilters] = useState({
-    topics: [],
-    focusRegions: [],
+  const [filters, setFilters] = useState({
+    region: [],
+    topic: [],
     type: [],
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStakeholder, setSelectedStakeholder] = useState(null);
   const [sortOrder, setSortOrder] = useState('asc');
-  const { stakeholders, loading, error, currentPage, hasMore, user } =
+
+  const { stakeholders, loading, error, currentPage, hasMore, user, total } =
     useSelector((state) => state.auth);
 
   const {
@@ -53,51 +58,49 @@ export default function StakeholderDirectory() {
     organizations = [],
   } = useSelector((state) => state.auth);
 
-  const filterOptions = {
-    focusRegions: regions.map(
-      (region) => region.name || region.attributes?.name
-    ),
-    topics: [
-      'All',
-      ...topics
-        .map((topic) => topic.name || topic.attributes?.name)
-        .filter(Boolean),
-    ],
-    type: ['Individual', 'Organization'],
-  };
-
   useEffect(() => {
     if (!router.isReady) return;
 
-    const filters = {
-      topics: router.query.topics ? router.query.topics.split(',') : [],
-      focusRegions: router.query.focusRegions
-        ? router.query.focusRegions.split(',')
-        : [],
+    const urlFilters = {
+      topic: router.query.topic ? router.query.topic.split(',') : [],
+      region: router.query.region ? router.query.region.split(',') : [],
       type: router.query.type ? router.query.type.split(',') : [],
     };
 
-    setActiveFilters(filters);
+    setFilters(urlFilters);
     setSearchQuery(router.query.query || '');
+    setSortOrder(router.query.sort || 'asc');
 
     dispatch(clearStakeholders());
     dispatch(
       fetchStakeholders({
         page: 1,
         query: router.query.query || '',
-        filters,
-        sortOrder,
+        filters: urlFilters,
+        sortOrder: router.query.sort || 'asc',
       })
     );
-  }, [router, dispatch]);
+  }, [router.isReady, router.query, dispatch]);
 
   const handleSearch = useCallback(
     debounce((query) => {
-      const queryParams = { ...router.query, query };
+      setSearchQuery(query);
+      updateUrlAndFetch(filters, query, sortOrder);
+    }, 500),
+    [filters, sortOrder]
+  );
 
-      if (!query) {
-        delete queryParams.query;
-      }
+  const updateUrlAndFetch = useCallback(
+    (newFilters, query, sort) => {
+      const queryParams = {};
+      if (query) queryParams.query = query;
+      if (sort !== 'asc') queryParams.sort = sort;
+      if (newFilters.region?.length > 0)
+        queryParams.region = newFilters.region.join(',');
+      if (newFilters.topic?.length > 0)
+        queryParams.topic = newFilters.topic.join(',');
+      if (newFilters.type?.length > 0)
+        queryParams.type = newFilters.type.join(',');
 
       router.push(
         {
@@ -107,71 +110,34 @@ export default function StakeholderDirectory() {
         undefined,
         { shallow: true }
       );
-    }, 500),
-    []
+    },
+    [router]
   );
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    handleSearch(searchQuery);
-  };
-
-  const updateFilters = (newFilters) => {
-    const query = {};
-    if (searchQuery) query.query = searchQuery;
-    if (newFilters.topics.length > 0)
-      query.topics = newFilters.topics.join(',');
-    if (newFilters.focusRegions.length > 0)
-      query.focusRegions = newFilters.focusRegions.join(',');
-    if (newFilters.type.length > 0) query.type = newFilters.type.join(',');
-
-    router.push(
-      {
-        pathname: router.pathname,
-        query: { ...query },
-      },
-      undefined,
-      { shallow: true }
-    );
-  };
-
-  const toggleFilter = (filterType, option) => {
-    const updatedFilters = { ...activeFilters };
-    if (updatedFilters[filterType].includes(option)) {
-      updatedFilters[filterType] = updatedFilters[filterType].filter(
-        (item) => item !== option
-      );
-    } else {
-      updatedFilters[filterType] = [...updatedFilters[filterType], option];
-    }
-
-    setActiveFilters(updatedFilters);
-    updateFilters(updatedFilters);
-  };
-
-  const clearFilters = () => {
-    const emptyFilters = {
-      type: [],
-      focusRegions: [],
-      organizations: [],
+  const handleFilterChange = (filterKey, values) => {
+    const newFilters = {
+      ...filters,
+      [filterKey]: values,
     };
-    setActiveFilters(emptyFilters);
+    setFilters(newFilters);
+    updateUrlAndFetch(newFilters, searchQuery, sortOrder);
+  };
+
+  const handleClearFilters = () => {
+    const emptyFilters = {
+      region: [],
+      topic: [],
+      type: [],
+    };
+    setFilters(emptyFilters);
     setSearchQuery('');
+    updateUrlAndFetch(emptyFilters, '', sortOrder);
+  };
 
-    const query = { ...router.query };
-    delete query.topics;
-    delete query.focusRegions;
-    delete query.type;
-    delete query.query;
-
-    router.push(
-      {
-        pathname: router.pathname,
-        query,
-      },
-      undefined,
-      { shallow: true }
-    );
+  const handleSortChange = () => {
+    const newSort = sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortOrder(newSort);
+    updateUrlAndFetch(filters, searchQuery, newSort);
   };
 
   const loadMoreStakeholders = () => {
@@ -179,7 +145,8 @@ export default function StakeholderDirectory() {
       fetchStakeholders({
         page: currentPage + 1,
         query: searchQuery,
-        filters: activeFilters,
+        filters: filters,
+        sortOrder: sortOrder,
       })
     );
   };
@@ -194,7 +161,8 @@ export default function StakeholderDirectory() {
             organization: stakeholder.organization,
             organizationWebsite: stakeholder.data.organisation?.website,
             profession: stakeholder.data.stakeholder_role,
-            valueChains: stakeholder.data.topics.map((topic) => topic.name),
+            valueChains:
+              stakeholder.data.topics?.map((topic) => topic.name) || [],
             linkedin: stakeholder.data.linkedin,
             email: stakeholder.data.email,
           }
@@ -208,378 +176,120 @@ export default function StakeholderDirectory() {
     setIsModalOpen(true);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (openFilter && !e.target.closest('.filter-dropdown')) {
-        setOpenFilter(null);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [openFilter]);
-
-  const toggleSortOrder = () => {
-    const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-    setSortOrder(newSortOrder);
-
-    const queryParams = {
-      ...router.query,
-      sort: newSortOrder,
-    };
-
-    router.push(
-      {
-        pathname: router.pathname,
-        query: queryParams,
-      },
-      undefined,
-      { shallow: true }
-    );
-  };
+  const totalResults = total || stakeholders.length;
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="py-4 px-4 bg-[#f1f3f5] text-black">
-        <div className="flex container mx-auto items-center">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center gap-6 justify-between">
-              <div className="flex gap-6 flex-wrap">
-                {Object.keys(filterOptions).map((filterType) => (
-                  <div key={filterType} className="relative filter-dropdown">
-                    <button
-                      onClick={() =>
-                        setOpenFilter(
-                          openFilter === filterType ? null : filterType
-                        )
-                      }
-                      className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
-                    >
-                      {filterType === 'focusRegions'
-                        ? 'Region'
-                        : filterType.charAt(0).toUpperCase() +
-                          filterType.slice(1)}
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </button>
-                    {openFilter === filterType && (
-                      <div className="absolute top-full left-0 mt-2 z-10 min-w-[380px]">
-                        {filterType === 'topics' ? (
-                          <CheckboxFilter
-                            label={'Topics (Stakeholders Only)'}
-                            options={filterOptions[filterType].filter(
-                              (opt) => opt !== 'All'
-                            )}
-                            initialSelected={
-                              activeFilters[filterType].length === 0
-                                ? [
-                                    'All',
-                                    ...filterOptions[filterType].filter(
-                                      (opt) => opt !== 'All'
-                                    ),
-                                  ]
-                                : activeFilters[filterType]
-                            }
-                            hasAllOption={true}
-                            onApply={(selectedOptions) => {
-                              const allItemsSelected =
-                                selectedOptions.includes('All') ||
-                                (filterOptions[filterType].filter(
-                                  (opt) => opt !== 'All'
-                                ).length > 0 &&
-                                  filterOptions[filterType]
-                                    .filter((opt) => opt !== 'All')
-                                    .every((opt) =>
-                                      selectedOptions.includes(opt)
-                                    ));
+      <HeroSection
+        searchTerm={searchQuery}
+        setSearchTerm={handleSearch}
+        pageTitle="Connect with stakeholders"
+        pageDescription="Lorem ipsum dolor sit amet consectetur. Tempus vitae viverra duis ultricies cursus cras arcu."
+        showSearch={true}
+        searchText={'Search stakeholders by name, region, or topic'}
+        searchPlaceholder="Kenya's arid land"
+      />
 
-                              const optionsToApply = allItemsSelected
-                                ? []
-                                : selectedOptions.filter(
-                                    (opt) => opt !== 'All'
-                                  );
+      <div className="container mx-auto mt-[-31px] relative z-10">
+        <FilterSection
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onClearFilters={handleClearFilters}
+          visibleFilters={['region', 'topic', 'type']}
+          customLabels={{
+            type: 'Type',
+          }}
+        />
+      </div>
 
-                              const newFilters = {
-                                ...activeFilters,
-                                [filterType]: optionsToApply,
-                              };
-                              setActiveFilters(newFilters);
-                              updateFilters(newFilters);
-                              setOpenFilter(null);
-                            }}
-                            onClear={() => {
-                              const newFilters = {
-                                ...activeFilters,
-                                [filterType]: [],
-                              };
-                              setActiveFilters(newFilters);
-                              updateFilters(newFilters);
-                              setOpenFilter(null);
-                            }}
-                          />
-                        ) : filterType === 'focusRegions' ? (
-                          <LocationsFilter
-                            locations={[
-                              'All Locations',
-                              ...filterOptions[filterType],
-                            ]}
-                            initialSelected={activeFilters[filterType] || []}
-                            onApply={(selectedLocations) => {
-                              const locationsToApply =
-                                selectedLocations.includes('All Locations')
-                                  ? []
-                                  : selectedLocations;
+      <div className="py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-8">
+            <div className="text-gray-600">
+              <span className="font-bold text-primary-600">{totalResults}</span>
+              <span className="text-gray-400"> Results</span>
+            </div>
 
-                              const newFilters = {
-                                ...activeFilters,
-                                [filterType]: locationsToApply,
-                              };
-                              setActiveFilters(newFilters);
-                              updateFilters(newFilters);
-                              setOpenFilter(null);
-                            }}
-                            name={'Region (Stakeholders Only)'}
-                            onClear={() => {
-                              const newFilters = {
-                                ...activeFilters,
-                                [filterType]: [],
-                              };
-                              setActiveFilters(newFilters);
-                              updateFilters(newFilters);
-                              setOpenFilter(null);
-                            }}
-                          />
-                        ) : (
-                          <div className="w-48 bg-white rounded-md shadow-lg border max-h-60 overflow-y-auto">
-                            {filterOptions[filterType].length > 0 ? (
-                              filterOptions[filterType].map((option) => (
-                                <label
-                                  key={option}
-                                  className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
-                                >
-                                  <input
-                                    type="checkbox"
-                                    checked={activeFilters[filterType].includes(
-                                      option
-                                    )}
-                                    onChange={() =>
-                                      toggleFilter(filterType, option)
-                                    }
-                                    className="mr-2"
-                                  />
-                                  {option}
-                                </label>
-                              ))
-                            ) : (
-                              <div className="px-4 py-2 text-gray-500">
-                                No options available
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
-                <div className="flex justify-end ">
-                  <button
-                    onClick={toggleSortOrder}
-                    className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
-                  >
-                    {sortOrder === 'asc' ? (
-                      <>
-                        <ArrowUp size={16} />
-                        Sort A-Z
-                      </>
-                    ) : (
-                      <>
-                        <ArrowDown size={16} />
-                        Sort Z-A
-                      </>
-                    )}
-                  </button>
-                </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Sort by</span>
+              <button
+                onClick={handleSortChange}
+                className="bg-white border border-primary-400 rounded-full px-4 py-2 text-sm font-medium text-primary-700 hover:bg-primary-50 flex items-center gap-2"
+              >
+                {sortOrder === 'asc' ? 'A-Z' : 'Z-A'}
+                {sortOrder === 'asc' ? (
+                  <ListFilter className="w-4 h-4" />
+                ) : (
+                  <ListFilter className="w-4 h-4 rotate-180" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {loading && currentPage === 1 ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            </div>
+          ) : stakeholders.length === 0 ? (
+            <div className="text-center py-12">
+              <h3 className="text-lg font-semibold text-gray-900">
+                No stakeholders found
+              </h3>
+              <p className="text-gray-600 mt-2">
+                Try adjusting your filters or search terms
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Stakeholder Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {stakeholders
+                  .filter(
+                    (stakeholder) =>
+                      stakeholder.type !== 'Individual' ||
+                      stakeholder.data.documentId !== user?.documentId
+                  )
+                  .map((stakeholder, index) => (
+                    <StakeholderCard
+                      key={`${stakeholder.type}-${stakeholder.id}-${index}`}
+                      stakeholder={stakeholder}
+                      onClick={() => openStakeholderModal(stakeholder)}
+                    />
+                  ))}
               </div>
-            </div>
-          </div>
 
-          <div className="container mx-auto">
-            <div className="flex justify-end">
-              <form onSubmit={handleSearchSubmit} className="w-96">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search Stakeholders"
-                    className="w-full pl-4 pr-10 py-2 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      handleSearch(e.target.value);
-                    }}
-                  />
+              {totalResults > 0 && (
+                <div className="flex items-center justify-between mt-12">
                   <button
-                    type="submit"
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 transition-colors"
+                    onClick={() => {
+                      if (currentPage > 1) {
+                        // Handle previous page
+                      }
+                    }}
+                    disabled={currentPage === 1}
+                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Search size={20} />
+                    ← Previous
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-1 bg-primary-100 text-primary-600 rounded">
+                      {currentPage}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={loadMoreStakeholders}
+                    disabled={!hasMore || loading}
+                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Next →
                   </button>
                 </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {(activeFilters.topics?.length > 0 ||
-        activeFilters.focusRegions?.length > 0 ||
-        activeFilters.type?.length > 0) && (
-        <div className="border-b relative container mx-auto flex items-center justify-between py-2">
-          <div className="px-4  text-black">
-            <div className="flex items-center gap-2 flex-wrap">
-              {Object.entries(activeFilters).map(([filterType, values]) =>
-                values.map((value) => (
-                  <span
-                    key={`${filterType}-${value}`}
-                    className="bg-gray-100 px-3 py-1 rounded-full text-sm flex items-center gap-1"
-                  >
-                    {value}
-                    <button
-                      onClick={() => {
-                        const newFilters = {
-                          ...activeFilters,
-                          [filterType]: activeFilters[filterType].filter(
-                            (v) => v !== value
-                          ),
-                        };
-                        setActiveFilters(newFilters);
-                        updateFilters(newFilters);
-                      }}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))
               )}
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={clearFilters}
-              className="text-green-600 hover:text-green-700"
-            >
-              Clear filters
-            </button>
-          </div>
+            </>
+          )}
         </div>
-      )}
-
-      <div className="container mx-auto px-4 py-8">
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
-            {error}
-          </div>
-        )}
-        {loading && currentPage === 1 ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-          </div>
-        ) : stakeholders.length === 0 ? (
-          <div className="text-center py-12">
-            <h3 className="text-lg font-medium text-gray-500">
-              No stakeholders found
-            </h3>
-            <p className="mt-2 text-gray-400">
-              Try adjusting your filters or search terms
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-            {stakeholders
-              .filter(
-                (stakeholder) =>
-                  stakeholder.type !== 'Individual' ||
-                  stakeholder.data.documentId !== user?.documentId
-              )
-              .map((stakeholder, index) => (
-                <div
-                  key={`${stakeholder.type}-${stakeholder.id}-${index}`}
-                  onClick={() => openStakeholderModal(stakeholder)}
-                  className="bg-[#f8f9fa] rounded-lg p-4 flex flex-col  text-left hover:shadow-md transition-shadow cursor-pointer"
-                >
-                  <div className="relative w-24 h-24 m-auto">
-                    {stakeholder.image ? (
-                      <Image
-                        src={getImageUrl(stakeholder.image)}
-                        alt={stakeholder.name}
-                        fill
-                        className="rounded-full object-contain"
-                        unoptimized
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          const parent = e.target.parentNode;
-                          if (parent) {
-                            parent.innerHTML = `
-      <div class="w-full h-full bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-        ${stakeholder.name.charAt(0).toUpperCase()}
-      </div>
-    `;
-                          } else {
-                            console.warn('Image parent element not found');
-                          }
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-                        {stakeholder.name.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-xs font-semibold text-green-600 mb-0 mt-4 uppercase">
-                    {stakeholder.type}
-                  </div>
-                  <h3 className="text-md font-semibold text-gray-900">
-                    {stakeholder.name}
-                  </h3>
-                  {stakeholder.topics && stakeholder.topics.length > 0 && (
-                    <div className="mt-2 text-xs text-gray-500">
-                      {stakeholder.topics.slice(0, 2).join(', ')}
-                      {stakeholder.topics.length > 2 && '...'}
-                    </div>
-                  )}
-                </div>
-              ))}
-          </div>
-        )}{' '}
-        {hasMore && (
-          <div className="flex justify-center mt-12">
-            <button
-              onClick={loadMoreStakeholders}
-              disabled={loading && currentPage > 1}
-              className="px-8 py-3  text-white rounded-[100px] hover:bg-green-700 transition-colors disabled:bg-zinc-400 bg-green-600 font-semibold"
-            >
-              {loading && currentPage > 1 ? (
-                <div className="flex items-center">
-                  <div className="animate-spin h-4 w-4 border-2 border-white rounded-full border-t-transparent mr-2"></div>
-                  Loading...
-                </div>
-              ) : (
-                'Load More'
-              )}
-            </button>
-          </div>
-        )}
       </div>
 
       <StakeholderModal
@@ -588,6 +298,121 @@ export default function StakeholderDirectory() {
         stakeholder={selectedStakeholder}
         router={router}
       />
+    </div>
+  );
+}
+
+function StakeholderCard({ stakeholder, onClick }) {
+  const isOrganization = stakeholder.type === 'Organization';
+
+  return (
+    <div
+      onClick={onClick}
+      className="bg-white border border-gray-100 rounded-lg p-6 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+    >
+      <div className="flex items-start gap-4">
+        <div className="relative">
+          <div className="relative w-16 h-16 flex-shrink-0">
+            {stakeholder.image ? (
+              <Image
+                src={getImageUrl(stakeholder.image)}
+                alt={stakeholder.name}
+                fill
+                className="rounded-full object-cover"
+                unoptimized
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  const parent = e.target.parentNode;
+                  if (parent) {
+                    parent.innerHTML = `
+                      <div class="w-full h-full bg-gradient-to-br ${
+                        isOrganization
+                          ? 'from-primary-50 to-primary-600'
+                          : 'from-primary-50 to-primary-600'
+                      } rounded-full flex items-center justify-center text-white font-bold text-xl">
+                        ${stakeholder.name.charAt(0).toUpperCase()}
+                      </div>
+                    `;
+                  }
+                }}
+              />
+            ) : (
+              <div
+                className={`w-full h-full rounded-full flex items-center justify-center text-white font-bold text-xl bg-gradient-to-br ${
+                  isOrganization
+                    ? 'from-primary-50 to-primary-600'
+                    : 'from-primary-50 to-primary-600'
+                }`}
+              >
+                {stakeholder.name.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
+
+          <div
+            className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center border-2 border-white bg-primary-600`}
+          >
+            {isOrganization ? (
+              <Building className="w-3.5 h-3.5 text-white" />
+            ) : (
+              <User className="w-3.5 h-3.5 text-white" />
+            )}
+          </div>
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            {stakeholder.topics?.slice(0, 2).map((topic) => (
+              <span
+                key={topic}
+                className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-primary-50 text-primary-500"
+              >
+                {topic}
+              </span>
+            ))}
+            {stakeholder.topics?.length > 2 && (
+              <span className="text-xs text-primary-400">
+                +{stakeholder.topics.length - 2}
+              </span>
+            )}
+          </div>
+
+          <h3 className="font-semibold text-gray-900 text-lg mb-1 group-hover:text-primary-600 transition-colors">
+            {stakeholder.name}
+          </h3>
+
+          {isOrganization ? (
+            stakeholder.organizationType && (
+              <p className="text-sm text-primary-500 mb-2 flex items-center gap-1">
+                <span className="text-primary-400">Type:</span>{' '}
+                {stakeholder.organizationType}
+              </p>
+            )
+          ) : (
+            <>
+              {stakeholder.organization && (
+                <p className="text-sm text-primary-600 mb-1 font-medium">
+                  {stakeholder.organization}
+                </p>
+              )}
+              {stakeholder.profession && (
+                <p className="text-sm text-primary-500 italic">
+                  {stakeholder.profession}
+                </p>
+              )}
+            </>
+          )}
+
+          {(stakeholder.location || stakeholder.country) && (
+            <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
+              <MapPin className="w-3 h-3" />
+              <span>{stakeholder.location || stakeholder.country}</span>
+            </div>
+          )}
+        </div>
+
+        <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-primary-600 transition-colors flex-shrink-0 mt-6" />
+      </div>
     </div>
   );
 }
@@ -746,13 +571,26 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
     }
   };
 
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: stakeholder.name,
+        text: `Check out ${stakeholder.name}'s profile`,
+        url: window.location.href,
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success('Link copied to clipboard');
+    }
+  };
+
   const renderConnectionButton = () => {
     switch (connectionStatus) {
       case 'sent_pending':
         return (
           <button
             disabled
-            className="px-8 py-2 border-2 border-gray-300 rounded-full text-gray-500 cursor-not-allowed"
+            className="px-8 py-3 bg-gray-200 rounded-full text-gray-500 cursor-not-allowed font-medium"
           >
             Request Sent
           </button>
@@ -767,7 +605,7 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
 
         return isReceiver ? (
           <button
-            className="px-8 py-2 border-2 border-green-600 rounded-full text-green-600 hover:bg-green-50"
+            className="px-8 py-3 bg-green-600 rounded-full text-white hover:bg-green-700 font-medium transition-colors"
             onClick={() => handleAcceptRequest(isReceiver.documentId)}
             disabled={loadingConnection}
           >
@@ -776,7 +614,7 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
         ) : (
           <button
             disabled
-            className="px-8 py-2 border-2 border-gray-300 rounded-full text-gray-500 cursor-not-allowed"
+            className="px-8 py-3 bg-gray-200 rounded-full text-gray-500 cursor-not-allowed font-medium"
           >
             Request Pending
           </button>
@@ -785,14 +623,14 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
         return (
           <button
             disabled
-            className="px-8 py-2 border-2 border-green-600 rounded-full text-green-600"
+            className="px-8 py-3 bg-green-100 rounded-full text-green-700 font-medium"
           >
             Connected
           </button>
         );
       case 'rejected':
         return (
-          <button className="px-8 py-2 border-2 border-red-600 rounded-full text-red-600">
+          <button className="px-8 py-3 bg-red-100 rounded-full text-red-600 font-medium">
             Request Rejected
           </button>
         );
@@ -802,11 +640,11 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
           <button
             onClick={handleConnectRequest}
             disabled={loadingConnection}
-            className={`px-8 py-2 border-2 border-zinc-900 rounded-full text-zinc-900 
+            className={`px-8 py-3 bg-[#B87B5C] rounded-full text-white font-medium
             ${
               loadingConnection
                 ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-zinc-50'
+                : 'hover:bg-[#A06B4C] transition-colors'
             }`}
           >
             {loadingConnection ? 'Sending...' : 'Connect'}
@@ -815,151 +653,155 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
     }
   };
 
+  const getThemes = () => {
+    return stakeholder.themes || ['Agriculture'];
+  };
+
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
       ref={overlayRef}
     >
       <div
-        className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative"
+        className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto relative shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="p-8 pb-6 flex justify-between items-start border-b">
-          <div className="text-green-600 text-sm font-semibold uppercase">
+        <div className="relative bg-white px-8 pt-8">
+          <div className="inline-block px-4 py-1.5 bg-[#F5E6D8] text-[#B87B5C] rounded-full text-sm font-medium">
             {stakeholder.type}
           </div>
+
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute top-6 right-6 w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
           >
-            <X size={24} />
+            <X size={20} className="text-gray-500" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-8 flex justify-between">
-          <div className="space-y-6 flex-grow">
-            <div>
-              <h2 className="text-3xl font-bold mb-2 text-black">
-                {stakeholder.name}
-              </h2>
+        <div className=" flex items-center justify-between px-8 py-6 border-b">
+          <div className="flex items-center gap-8 text-gray-600">
+            {stakeholder.type === 'Individual' && (
+              <>
+                {stakeholder.type === 'Individual' && stakeholder.location && (
+                  <div className="flex items-center gap-2">
+                    <MapPin size={18} className="text-[#B87B5C]" />
+                    <span>{stakeholder.location}</span>
+                  </div>
+                )}
+                {stakeholder.focusRegions && (
+                  <div className="flex items-center gap-2">
+                    <Globe size={18} className="text-gray-500" />
+                    <span>{stakeholder.focusRegions[0]}</span>
+                  </div>
+                )}
+              </>
+            )}
+            {stakeholder.type === 'Organization' && stakeholder.country && (
+              <div className="flex items-center gap-2">
+                <MapPin size={18} className="text-[#B87B5C]" />
+                <span>{stakeholder.country}</span>
+              </div>
+            )}
+          </div>
 
-              {/* Profession/Title */}
-              {stakeholder.profession && (
-                <p className="text-gray-600 text-lg mb-2">
-                  {stakeholder.profession}
-                </p>
-              )}
-            </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleShare}
+              className="px-6 py-2.5 border border-primary-400 rounded-full flex items-center gap-2 text-primary-400 hover:bg-primary-500 hover:text-white transition-colors"
+            >
+              <span className="font-medium">Share</span>
+              <Share2 size={18} />
+            </button>
+            {stakeholder.type === 'Individual' &&
+              isAuthenticated &&
+              renderConnectionButton()}
+            {stakeholder.type === 'Individual' && !isAuthenticated && (
+              <button
+                className="px-8 py-3 bg-[#B87B5C] rounded-full text-white font-medium hover:bg-[#A06B4C] transition-colors"
+                onClick={() => router.push('/login')}
+              >
+                Connect
+              </button>
+            )}
+          </div>
+        </div>
 
-            <div className="space-y-4">
-              {/* Location */}
-
-              {stakeholder.type === 'Individual' && (
-                <div className="flex items-center gap-3 text-gray-600">
-                  <MapPin size={20} />
-                  <span>{stakeholder.location || 'Kenya'}</span>
+        <div className="px-8 py-6">
+          <div className="flex items-start gap-6 mb-8">
+            <div className="relative w-20 h-20 flex-shrink-0">
+              {stakeholder.image ? (
+                <div className="w-full h-full rounded-full overflow-hidden bg-gray-100">
+                  <Image
+                    src={getImageUrl(stakeholder.image)}
+                    alt={stakeholder.name}
+                    className="object-cover"
+                    fill
+                    unoptimized
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.parentNode.innerHTML = `
+                        <div class="w-full h-full flex items-center justify-center bg-[#B87B5C] text-white text-2xl font-bold rounded-full">
+                          ${stakeholder.name.charAt(0).toUpperCase()}
+                        </div>
+                      `;
+                    }}
+                  />
                 </div>
-              )}
-
-              {/* Focus Regions */}
-              {stakeholder.type === 'Individual' && (
-                <div className="flex items-center gap-3 text-gray-600">
-                  <Globe size={20} />
-                  <span>
-                    {stakeholder.focusRegions?.length
-                      ? stakeholder.focusRegions.join(', ')
-                      : 'Kijado, Marsabit, Turkana'}
+              ) : (
+                <div className="w-full h-full rounded-full bg-[#B87B5C] flex items-center justify-center">
+                  <span className="text-2xl font-bold text-white">
+                    {stakeholder.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
               )}
+            </div>
 
-              {/* Organization (for Individuals) */}
+            <div className="flex-grow">
+              <h2 className="text-3xl font-bold text-gray-900 mb-1">
+                {stakeholder.name}
+              </h2>
               {stakeholder.type === 'Individual' &&
                 stakeholder.organization && (
-                  <div className="flex items-center gap-3 text-gray-600">
-                    <Building size={20} />
-                    <a
-                      href={stakeholder.organizationWebsite || '#'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
-                    >
-                      {stakeholder.organization}
-                    </a>
-                  </div>
+                  <p className="text-xl text-[#B87B5C] font-medium">
+                    {stakeholder.organization}
+                  </p>
                 )}
-
-              {/* Country (for Organizations) */}
-              {stakeholder.type === 'Organization' && (
-                <div className="flex items-center gap-3 text-gray-600">
-                  <MapPin size={20} />
-                  <span>{stakeholder.country || 'Not specified'}</span>
-                </div>
+              {stakeholder.profession && (
+                <p className="text-gray-600 mt-1">{stakeholder.profession}</p>
               )}
+            </div>
+          </div>
 
-              {/* Website */}
-              {stakeholder.website && (
-                <div className="flex items-center gap-3 text-gray-600">
-                  <Link2 size={20} />
-                  <a
-                    href={stakeholder.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
+          {stakeholder.bio && (
+            <p className="text-gray-600 leading-relaxed mb-8">
+              {stakeholder.bio}
+            </p>
+          )}
+
+          {stakeholder.valueChains?.length > 0 && (
+            <div className="border-t pt-6">
+              <p className="text-gray-500 mb-3">
+                Theme/Sector in this document:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {stakeholder.valueChains.map((theme, index) => (
+                  <span
+                    key={index}
+                    className="px-4 py-1.5 bg-[#FFF4ED] text-[#B87B5C] rounded-full text-sm"
                   >
-                    {stakeholder.website}
-                  </a>
-                </div>
-              )}
+                    {theme}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
-              {/* Organization Type (for Organizations) */}
-              {stakeholder.type === 'Organization' &&
-                stakeholder.organizationType && (
-                  <div className="flex items-center gap-3 text-gray-600">
-                    <Building size={20} />
-                    <span>{stakeholder.organizationType}</span>
-                  </div>
-                )}
-
-              {stakeholder.type === 'Individual' && (
+          <div className="mt-8 space-y-3">
+            {stakeholder.type === 'Individual' && (
+              <>
                 <div className="flex items-center gap-3 text-gray-600">
-                  <Linkedin size={20} />
-                  {connectionStatus === 'connected' ? (
-                    <a
-                      href={stakeholder.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
-                    >
-                      {stakeholder.linkedin
-                        ? stakeholder.linkedin
-                        : 'Not Provided'}
-                    </a>
-                  ) : connectionStatus === 'sent_pending' ? (
-                    <span className="text-gray-400">
-                      LinkedIn Profile (View after connection is accepted)
-                    </span>
-                  ) : connectionStatus === 'received_pending' ? (
-                    <span className="text-gray-400">
-                      LinkedIn Profile (Accept connection request to view)
-                    </span>
-                  ) : connectionStatus === 'rejected' ? (
-                    <span className="text-gray-400">
-                      LinkedIn Profile (Not available)
-                    </span>
-                  ) : (
-                    <span className="text-gray-400">
-                      LinkedIn Profile (Connect to view)
-                    </span>
-                  )}
-                </div>
-              )}
-
-              {stakeholder.type === 'Individual' && (
-                <div className="flex items-center gap-3 text-gray-600">
-                  <Mail size={20} />
+                  <Mail size={18} />
                   {connectionStatus === 'connected' ? (
                     <a
                       href={`mailto:${stakeholder.email}`}
@@ -967,90 +809,48 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
                     >
                       {stakeholder.email}
                     </a>
-                  ) : connectionStatus === 'sent_pending' ? (
-                    <span className="text-gray-400">
-                      Email Address (View after connection is accepted)
-                    </span>
-                  ) : connectionStatus === 'received_pending' ? (
-                    <span className="text-gray-400">
-                      Email Address (Accept connection request to view)
-                    </span>
-                  ) : connectionStatus === 'rejected' ? (
-                    <span className="text-gray-400">
-                      Email Address (Not available)
-                    </span>
                   ) : (
                     <span className="text-gray-400">
-                      Email Address (Connect to view)
+                      Email (Connect to view)
                     </span>
                   )}
                 </div>
-              )}
 
-              {/* Value Chains */}
-              {stakeholder.valueChains?.length > 0 && (
                 <div className="flex items-center gap-3 text-gray-600">
-                  <Sprout size={20} />
-                  <span>
-                    {stakeholder.valueChains &&
-                    stakeholder.valueChains.length > 0
-                      ? stakeholder.valueChains.join(', ')
-                      : 'No Value Chains Selected'}
-                  </span>
+                  <Linkedin size={18} />
+                  {connectionStatus === 'connected' ? (
+                    <a
+                      href={stakeholder.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      LinkedIn Profile
+                    </a>
+                  ) : (
+                    <span className="text-gray-400">
+                      LinkedIn (Connect to view)
+                    </span>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
+              </>
+            )}
 
-          {/* Profile Image */}
-          {stakeholder.image ? (
-            <div className="relative w-64 h-64 ml-8">
-              <div className="w-full h-full rounded-full bg-gray-100 overflow-hidden relative">
-                <Image
-                  src={getImageUrl(stakeholder.image)}
-                  alt={stakeholder.name}
-                  className="object-cover relative"
-                  unoptimized
-                  fill
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.parentNode.innerHTML = `
-            <div class="w-full h-full flex items-center justify-center bg-blue-500 text-white text-4xl font-bold rounded-full">
-              ${stakeholder.name.charAt(0).toUpperCase()}
-            </div>
-          `;
-                  }}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
+            {stakeholder.website && (
+              <div className="flex items-center gap-3 text-gray-600">
+                <Link2 size={18} />
+                <a
+                  href={stakeholder.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  {stakeholder.website}
+                </a>
               </div>
-            </div>
-          ) : (
-            <div className="relative w-64 h-64 ml-8">
-              <div className="w-full h-full rounded-full bg-blue-500 flex items-center justify-center">
-                <span className="text-4xl font-bold text-white">
-                  {stakeholder.name.charAt(0).toUpperCase()}
-                </span>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-
-        {/* Footer */}
-        {stakeholder.type === 'Individual' && isAuthenticated && (
-          <div className="p-8 pt-6 flex justify-end border-t">
-            {renderConnectionButton()}
-          </div>
-        )}
-        {stakeholder.type === 'Individual' && !isAuthenticated && (
-          <div className="p-8 pt-6 flex justify-end border-t">
-            <button
-              className="px-8 py-2 border-2 border-green-600 rounded-full text-green-600"
-              onClick={() => router.push(`/login`)}
-            >
-              Login to connect
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
