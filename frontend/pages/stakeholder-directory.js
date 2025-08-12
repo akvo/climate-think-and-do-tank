@@ -679,7 +679,7 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
           </button>
         </div>
 
-        <div className=" flex items-center justify-between px-8 py-6 border-b">
+        <div className=" flex items-center justify-between px-8 py-6 border-b flex-wrap">
           <div className="flex items-center gap-8 text-gray-600">
             {stakeholder.type === 'Individual' && (
               <>

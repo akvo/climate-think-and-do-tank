@@ -1,16 +1,30 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Calendar, Newspaper } from 'lucide-react';
+import {
+  Search,
+  Calendar,
+  Newspaper,
+  LayoutGrid,
+  List,
+  ChevronUp,
+  ChevronDown,
+  ChevronRight,
+  ChevronLeft,
+} from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchNewsEvents,
   clearNewsEvents,
 } from '@/store/slices/newsEventsSlice';
-import CheckboxFilter from '@/components/CheckboxFilter';
 import debounce from 'lodash/debounce';
 import Image from 'next/image';
-import { formatRegionsDisplay, getImageUrl } from '@/helpers/utilities';
-import LocationsFilter from '@/components/LocationFilter';
+import {
+  formatRegionsDisplay,
+  getImageUrl,
+  generatePageNumbers,
+} from '@/helpers/utilities';
+import HeroSection from '@/components/Hero';
+import FilterSection from '@/components/FilterSection';
 
 export default function NewsEventsDirectory() {
   const router = useRouter();
@@ -19,55 +33,43 @@ export default function NewsEventsDirectory() {
   const {
     data: newsEventsData,
     loading,
-    currentPage,
+    currentPage: dataCurrentPage,
     hasMore,
+    total,
   } = useSelector((state) => state.newsEvents);
 
   const { regions = [] } = useSelector((state) => state.auth);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilters, setActiveFilters] = useState({
-    types: ['News', 'Event'],
+  const [viewMode, setViewMode] = useState('grid');
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [resultsPerPage] = useState(12);
+  const [filters, setFilters] = useState({
+    types: [],
     focusRegions: [],
+    upcoming: 'Upcoming',
   });
-  const [sortConfig, setSortConfig] = useState({
-    field: 'event_date',
-    order: 'desc',
-  });
-  const [openFilter, setOpenFilter] = useState(null);
-  const [upcoming, setUpcoming] = useState(true);
-
-  const filterOptions = {
-    focusRegions: regions.map(
-      (region) => region.name || region.attributes?.name
-    ),
-    types: ['News', 'Event'],
-  };
 
   useEffect(() => {
     if (!router.isReady) return;
 
     const query = router.query;
     const search = query.search || '';
-    const types = query.types
-      ? query.types.split(',').filter(Boolean)
-      : ['News', 'Event'];
-    const regions = query.regions
-      ? query.regions.split(',').filter(Boolean)
+    const types = query.types ? query.types.split(',').filter(Boolean) : [];
+    const regions = query.focusRegions
+      ? query.focusRegions.split(',').filter(Boolean)
       : [];
-    const sortOrder = query.sortOrder || 'desc';
+    const sortOrder = query.sort || 'desc';
     const isUpcoming = query.upcoming !== 'false';
 
     setSearchQuery(search);
-    setActiveFilters({
-      types: types.filter((t) => filterOptions.types.includes(t)),
+    setFilters({
+      types: types,
       focusRegions: regions,
+      upcoming: isUpcoming ? 'Upcoming' : 'Past',
     });
-    setSortConfig({
-      field: 'event_date',
-      order: sortOrder,
-    });
-    setUpcoming(isUpcoming);
+    setSortOrder(sortOrder);
 
     dispatch(clearNewsEvents());
     dispatch(
@@ -75,70 +77,29 @@ export default function NewsEventsDirectory() {
         page: 1,
         query: search,
         filters: {
-          types: types.filter((t) => filterOptions.types.includes(t)),
+          types: types,
           focusRegions: regions,
         },
         upcoming: isUpcoming,
         dateSort: sortOrder,
       })
     );
-  }, [router.isReady, router.query]);
+  }, [router.isReady, router.query, dispatch]);
 
-  const updateQueryParams = useCallback(
-    (filters, sort, search, isUpcoming) => {
-      const params = {};
-      if (search) params.search = search;
-      if (sort.order !== 'desc') params.sortOrder = sort.order;
-      if (filters.types.length > 0 && filters.types.length < 2)
-        params.types = filters.types.join(',');
-      if (filters.focusRegions && filters.focusRegions.length > 0)
-        params.regions = filters.focusRegions.join(',');
-      if (!isUpcoming) params.upcoming = 'false';
-
-      router.push(
-        {
-          pathname: router.pathname,
-          query: params,
-        },
-        undefined,
-        { shallow: true }
-      );
-    },
-    [router]
-  );
-
-  const handleSearch = useCallback(
-    debounce((value) => {
-      updateQueryParams(activeFilters, sortConfig, value, upcoming);
-    }, 500),
-    [updateQueryParams, activeFilters, sortConfig, upcoming]
-  );
-
-  const handleFilterApply = (filterType, selectedOptions) => {
-    const newFilters = {
-      ...activeFilters,
-      [filterType]: selectedOptions,
-    };
-    updateQueryParams(newFilters, sortConfig, searchQuery, upcoming);
-    setOpenFilter(null);
-  };
-
-  const toggleUpcoming = (isUpcoming) => {
-    setUpcoming(isUpcoming);
-    updateQueryParams(activeFilters, sortConfig, searchQuery, isUpcoming);
-  };
-
-  const handleClearFilters = () => {
-    setSearchQuery('');
-    setActiveFilters({
-      types: ['News', 'Event'],
-      focusRegions: [],
-    });
+  const updateUrlAndFetch = (newFilters, newQuery, newSort) => {
+    const query = {};
+    if (newQuery) query.search = newQuery;
+    if (newSort !== 'desc') query.sort = newSort;
+    if (newFilters.types.length > 0 && newFilters.types.length < 2)
+      query.types = newFilters.types.join(',');
+    if (newFilters.focusRegions && newFilters.focusRegions.length > 0)
+      query.focusRegions = newFilters.focusRegions.join(',');
+    if (newFilters.upcoming === 'Past') query.upcoming = 'false';
 
     router.push(
       {
         pathname: router.pathname,
-        query: { upcoming: upcoming ? undefined : 'false' },
+        query,
       },
       undefined,
       { shallow: true }
@@ -148,35 +109,66 @@ export default function NewsEventsDirectory() {
     dispatch(
       fetchNewsEvents({
         page: 1,
-        query: '',
+        query: newQuery,
         filters: {
-          types: ['News', 'Event'],
-          focusRegions: [],
+          types: newFilters.types,
+          focusRegions: newFilters.focusRegions,
         },
-        upcoming,
-        dateSort: sortConfig.order,
+        upcoming: newFilters.upcoming === 'Upcoming',
+        dateSort: newSort,
       })
     );
   };
 
-  const loadMoreData = () => {
+  const handleFilterChange = (filterKey, values) => {
+    const newFilters = {
+      ...filters,
+      [filterKey]: values,
+    };
+    setFilters(newFilters);
+    updateUrlAndFetch(newFilters, searchQuery, sortOrder);
+  };
+
+  const handleClearFilters = () => {
+    const emptyFilters = {
+      types: ['News', 'Event'],
+      focusRegions: [],
+      upcoming: 'Upcoming',
+    };
+    setFilters(emptyFilters);
+    setSearchQuery('');
+    updateUrlAndFetch(emptyFilters, '', sortOrder);
+  };
+
+  const handleSearch = useCallback(
+    debounce((query) => {
+      setSearchQuery(query);
+      updateUrlAndFetch(filters, query, sortOrder);
+    }, 500),
+    [filters, sortOrder]
+  );
+
+  const handleSortChange = () => {
+    const newOrder = sortOrder === 'desc' ? 'asc' : 'desc';
+    setSortOrder(newOrder);
+    updateUrlAndFetch(filters, searchQuery, newOrder);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
     dispatch(
       fetchNewsEvents({
-        page: currentPage + 1,
+        page: page,
         query: searchQuery,
-        filters: activeFilters,
-        upcoming,
-        dateSort: sortConfig.order,
+        filters: {
+          types: filters.types,
+          focusRegions: filters.focusRegions,
+        },
+        upcoming: filters.upcoming === 'Upcoming',
+        dateSort: sortOrder,
       })
     );
   };
-
-  const hasActiveFilters =
-    (router.query.types &&
-      router.query.types.length > 0 &&
-      router.query.types !== 'News,Event') ||
-    (router.query.search && router.query.search.length > 0) ||
-    (router.query.regions && router.query.regions.length > 0);
 
   const handleCardClick = (item) => {
     if (item.type === 'News') {
@@ -186,318 +178,306 @@ export default function NewsEventsDirectory() {
     }
   };
 
+  const totalResults = total || 0;
+  const totalPages = Math.ceil(totalResults / resultsPerPage);
+  const endResult = Math.min(currentPage * resultsPerPage, totalResults);
+
   return (
-    <div className="min-h-screen bg-white text-black">
-      <div className="py-4 px-4 bg-[#f1f3f5] text-black">
-        <div className="flex container mx-auto">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center gap-6 justify-between">
-              <div className="flex gap-6 flex-wrap items-center">
-                <div className="flex rounded-md overflow-hidden border border-gray-200 mr-4">
-                  <button
-                    onClick={() => toggleUpcoming(true)}
-                    className={`px-4 py-1.5 text-sm ${
-                      upcoming
-                        ? 'bg-green-600 text-white'
-                        : 'bg-white text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    Upcoming
-                  </button>
-                  <button
-                    onClick={() => toggleUpcoming(false)}
-                    className={`px-4 py-1.5 text-sm ${
-                      !upcoming
-                        ? 'bg-green-600 text-white'
-                        : 'bg-white text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    Past
-                  </button>
-                </div>
+    <div className="min-h-screen bg-white">
+      <HeroSection
+        searchTerm={searchQuery}
+        setSearchTerm={handleSearch}
+        pageTitle="News & Events"
+        pageDescription="Stay updated with the latest industry news, announcements, and upcoming events."
+      />
 
-                {Object.keys(filterOptions).map((filterType) => (
-                  <div key={filterType} className="relative filter-dropdown">
-                    <button
-                      onClick={() =>
-                        setOpenFilter(
-                          openFilter === filterType ? null : filterType
-                        )
-                      }
-                      className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
-                    >
-                      {filterType === 'types'
-                        ? 'Type'
-                        : filterType === 'focusRegions'
-                        ? 'Region'
-                        : filterType.charAt(0).toUpperCase() +
-                          filterType.slice(1)}
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </button>
-                    {openFilter === filterType && (
-                      <div className="absolute top-full left-0 mt-2 z-10 min-w-[280px]">
-                        {filterType === 'types' ? (
-                          <CheckboxFilter
-                            label="Type"
-                            options={filterOptions.types}
-                            initialSelected={
-                              activeFilters.types.length === 0
-                                ? ['News', 'Event']
-                                : activeFilters.types
-                            }
-                            hasAllOption={false}
-                            onApply={(selectedTypes) => {
-                              handleFilterApply('types', selectedTypes);
-                            }}
-                            onClear={() =>
-                              handleFilterApply('types', ['News', 'Event'])
-                            }
-                          />
-                        ) : filterType === 'focusRegions' ? (
-                          <LocationsFilter
-                            locations={[
-                              'All Locations',
-                              ...filterOptions[filterType],
-                            ]}
-                            initialSelected={activeFilters[filterType] || []}
-                            onApply={(selectedLocations) => {
-                              const locationsToApply =
-                                selectedLocations.includes('All Locations')
-                                  ? []
-                                  : selectedLocations;
+      <div className="container mx-auto mt-[-31px] relative z-10">
+        <FilterSection
+          filters={{
+            region: filters.focusRegions,
+            type: filters.types,
+            upcoming: [filters.upcoming],
+          }}
+          onFilterChange={(filterKey, values) => {
+            if (filterKey === 'region') {
+              handleFilterChange('focusRegions', values);
+            } else if (filterKey === 'upcoming') {
+              handleFilterChange('upcoming', values[0] || 'Upcoming');
+            } else {
+              handleFilterChange(filterKey, values);
+            }
+          }}
+          onClearFilters={handleClearFilters}
+          visibleFilters={['type', 'region']}
+        />
+      </div>
 
-                              handleFilterApply(
-                                'focusRegions',
-                                locationsToApply
-                              );
-                            }}
-                            name={'Region'}
-                            onClear={() => {
-                              handleFilterApply('focusRegions', []);
-                            }}
-                          />
-                        ) : null}
-                      </div>
+      {/* Main Content Section */}
+      <div className="min-h-screen py-8 px-4 md:px-0">
+        <div className="container mx-auto">
+          {/* Results Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="text-gray-600">
+              <span className="font-bold text-primary-600">{endResult}</span>
+              <span className="text-gray-400"> / {totalResults} Results</span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Sort by</span>
+                <button
+                  onClick={handleSortChange}
+                  className="bg-white border border-primary-500 rounded-full px-6 py-2 text-sm font-bold text-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 flex items-center gap-2 hover:bg-primary-50 transition-colors"
+                >
+                  <span>Date</span>
+                  {sortOrder === 'asc' ? (
+                    <ChevronUp className="w-4 h-4" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+
+              <div className="flex items-center bg-white rounded-lg border border-gray-200 p-1">
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 rounded-md transition-colors ${
+                    viewMode === 'list'
+                      ? 'bg-gray-100 text-gray-600'
+                      : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  <List className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-2 rounded-md transition-colors ${
+                    viewMode === 'grid'
+                      ? 'bg-gray-100 text-gray-600'
+                      : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Loading State */}
+          {loading && newsEventsData.length === 0 ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            </div>
+          ) : (
+            <>
+              {/* News/Events Grid or List */}
+              <div
+                className={`${
+                  viewMode === 'grid'
+                    ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                    : 'space-y-6'
+                }`}
+              >
+                {newsEventsData.map((item) => (
+                  <div
+                    key={item.id}
+                    className={`bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300 cursor-pointer ${
+                      viewMode === 'list' ? 'flex' : 'flex flex-col h-full'
+                    }`}
+                    onClick={() => handleCardClick(item)}
+                  >
+                    {viewMode === 'list' ? (
+                      // List View Layout
+                      <>
+                        <div className="relative w-48 h-full overflow-hidden">
+                          {item.imageUrl ? (
+                            <Image
+                              src={getImageUrl(item.imageUrl)}
+                              alt={item.title}
+                              className="w-full h-full object-cover"
+                              unoptimized
+                              fill
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                const parent = e.target.parentNode;
+                                if (parent) {
+                                  parent.innerHTML = `
+                                    <div class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold text-2xl">
+                                      ${item.title.charAt(0).toUpperCase()}
+                                    </div>
+                                  `;
+                                }
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold text-2xl">
+                              {item.title.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 p-5">
+                          <div className="flex items-start justify-between mb-2">
+                            <h3 className="text-lg font-semibold line-clamp-1">
+                              {item.title}
+                            </h3>
+                            {item.regions && item.regions.length > 0 && (
+                              <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full ml-2">
+                                {formatRegionsDisplay(item.regions, regions)}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-gray-600 mb-3 line-clamp-2">
+                            {item.description}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center text-sm text-gray-500">
+                              {item.type === 'Event' ? (
+                                <>
+                                  <Calendar size={16} className="mr-1" />
+                                  <span>Event</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Newspaper size={16} className="mr-1" />
+                                  <span>News</span>
+                                </>
+                              )}
+                            </div>
+                            <time className="text-sm text-gray-500">
+                              {item.displayDate || ''}
+                            </time>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      // Grid View Layout
+                      <>
+                        <div className="relative h-48 w-full overflow-hidden">
+                          {item.imageUrl ? (
+                            <Image
+                              src={getImageUrl(item.imageUrl)}
+                              alt={item.title}
+                              className="w-full h-full object-cover"
+                              unoptimized
+                              fill
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                const parent = e.target.parentNode;
+                                if (parent) {
+                                  parent.innerHTML = `
+                                    <div class="w-full h-full bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
+                                      ${item.title.charAt(0).toUpperCase()}
+                                    </div>
+                                  `;
+                                }
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
+                              {item.title.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-5 flex flex-col flex-1">
+                          {item.regions && item.regions.length > 0 && (
+                            <div className="flex justify-between items-start mb-4">
+                              <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">
+                                {formatRegionsDisplay(item.regions, regions)}
+                              </span>
+                            </div>
+                          )}
+                          <h3 className="text-lg font-semibold mb-3 line-clamp-2">
+                            {item.title}
+                          </h3>
+                          <p className="text-gray-600 mb-4 line-clamp-3 flex-1">
+                            {item.description}
+                          </p>
+
+                          <div className="flex justify-between items-center mt-auto pt-4">
+                            <div className="flex items-center text-sm text-gray-500">
+                              {item.type === 'Event' ? (
+                                <>
+                                  <Calendar size={16} className="mr-1" />
+                                  <span>Event</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Newspaper size={16} className="mr-1" />
+                                  <span>News</span>
+                                </>
+                              )}
+                            </div>
+                            <time className="text-sm text-gray-500">
+                              {item.displayDate || ''}
+                            </time>
+                          </div>
+                        </div>
+                      </>
                     )}
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-          <div className="container mx-auto">
-            <div className="flex justify-end">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSearch(searchQuery);
-                }}
-                className="w-80"
-              >
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search news & events..."
-                    className="w-full pl-4 pr-10 py-2 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      handleSearch(e.target.value);
-                    }}
-                  />
+
+              {/* No Results */}
+              {newsEventsData.length === 0 && !loading && (
+                <div className="text-center py-12">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    No results found
+                  </h3>
+                  <p className="text-gray-600 mt-2">
+                    Try adjusting your filters or search terms
+                  </p>
+                </div>
+              )}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between mt-12">
                   <button
-                    type="submit"
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 transition-colors"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Search size={20} />
+                    <ChevronLeft className="w-4 h-4" />
+                    <span className="font-medium">Previous</span>
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    {generatePageNumbers(currentPage, totalPages).map(
+                      (page, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            typeof page === 'number' && handlePageChange(page);
+                          }}
+                          className={`w-10 h-10 rounded-[50%] font-medium transition-colors ${
+                            page === currentPage
+                              ? 'bg-primary-100 text-primary-600'
+                              : page === '...'
+                              ? 'text-gray-400 cursor-default'
+                              : 'text-gray-600 hover:bg-gray-100'
+                          }`}
+                          disabled={page === '...'}
+                        >
+                          {page}
+                        </button>
+                      )
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span className="font-medium">Next</span>
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
-              </form>
-            </div>
-          </div>
+              )}
+            </>
+          )}
         </div>
-      </div>
-      {hasActiveFilters && (
-        <div className="border-b relative container mx-auto flex items-center justify-between py-2">
-          <div className="px-4  text-black">
-            <div className="flex items-center gap-2 flex-wrap">
-              {Object.entries(activeFilters).map(([filterType, values]) => {
-                if (filterType === 'types' && values.length === 2) {
-                  return null;
-                }
-
-                return values.map((value) => (
-                  <span
-                    key={`${filterType}-${value}`}
-                    className="bg-gray-100 px-3 py-1 rounded-full text-sm flex items-center gap-1"
-                  >
-                    {value}
-                    <button
-                      onClick={() => {
-                        let newValues;
-                        if (filterType === 'types') {
-                          newValues = values.filter((v) => v !== value);
-                          if (newValues.length === 0) {
-                            newValues = ['News', 'Event'];
-                          }
-                        } else {
-                          newValues = values.filter((v) => v !== value);
-                        }
-
-                        const newFilters = {
-                          ...activeFilters,
-                          [filterType]: newValues,
-                        };
-                        setActiveFilters(newFilters);
-                        updateQueryParams(
-                          newFilters,
-                          sortConfig,
-                          searchQuery,
-                          upcoming
-                        );
-                      }}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ));
-              })}
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            {hasActiveFilters && (
-              <button
-                className="text-green-600 hover:text-green-700"
-                onClick={handleClearFilters}
-              >
-                Clear filters
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className="container mx-auto px-4 py-8">
-        {loading && newsEventsData.length === 0 ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {newsEventsData.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300 cursor-pointer flex flex-col h-full"
-                  onClick={() => handleCardClick(item)}
-                >
-                  <div className="relative h-48 w-full overflow-hidden">
-                    {item.imageUrl ? (
-                      <Image
-                        src={getImageUrl(item.imageUrl)}
-                        alt={item.title}
-                        className="w-full h-full object-cover"
-                        unoptimized
-                        fill
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          const parent = e.target.parentNode;
-                          if (parent) {
-                            parent.innerHTML = `
-                              <div class="w-full h-full bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
-                                ${item.title.charAt(0).toUpperCase()}
-                              </div>
-                            `;
-                          }
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
-                        {item.title.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-5 flex flex-col flex-1">
-                    {item.regions && item.regions.length > 0 && (
-                      <div className="flex justify-between items-start mb-4">
-                        <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">
-                          {formatRegionsDisplay(item.regions, regions)}
-                        </span>
-                      </div>
-                    )}
-                    <h3 className="text-lg font-semibold mb-3 line-clamp-2">
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-600 mb-4 line-clamp-3 flex-1">
-                      {item.description}
-                    </p>
-
-                    <div className="flex justify-between items-center mt-auto pt-4">
-                      <div className="flex items-center text-sm text-gray-500">
-                        {item.type === 'Event' ? (
-                          <>
-                            <Calendar size={16} className="mr-1" />
-                            <span>Event</span>
-                          </>
-                        ) : (
-                          <>
-                            <Newspaper size={16} className="mr-1" />
-                            <span>News</span>
-                          </>
-                        )}
-                      </div>
-                      <time className="text-sm text-gray-500">
-                        {item.displayDate ? item.displayDate : ''}
-                      </time>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {newsEventsData.length === 0 && (
-              <div className="text-center py-12">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  No results found
-                </h3>
-                <p className="text-gray-600 mt-2">
-                  Try adjusting your filters or search terms
-                </p>
-              </div>
-            )}
-
-            {hasMore && newsEventsData.length > 0 && (
-              <div className="flex justify-center mt-12">
-                <button
-                  onClick={loadMoreData}
-                  disabled={loading}
-                  className="px-8 py-3 bg-zinc-900 text-white rounded-md hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                >
-                  {loading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      Loading...
-                    </>
-                  ) : (
-                    'Load More'
-                  )}
-                </button>
-              </div>
-            )}
-          </>
-        )}
       </div>
     </div>
   );
