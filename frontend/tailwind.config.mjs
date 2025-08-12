@@ -33,6 +33,7 @@ const config = {
         },
         gray: {
           10: '#F8F9FA',
+          30: '#E8ECEF',
           50: '#8E98A8',
           100: '#F1F3F5',
           200: '#E8ECEF',

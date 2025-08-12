@@ -24,20 +24,12 @@ export default function SocialAccountability() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const {
-    data: socialAccountabilityData,
-    loading,
-    error,
-    currentPage,
-    hasMore,
-  } = useSelector((state) => state.socialAccountability);
-
   const { regions = [], valueChains = [] } = useSelector((state) => state.auth);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     region: [],
-    topic: [], // This will be used for value chain
+    valueChain: [],
   });
 
   useEffect(() => {
@@ -47,7 +39,9 @@ export default function SocialAccountability() {
       region: router.query.focusRegions
         ? router.query.focusRegions.split(',')
         : [],
-      topic: router.query.topic ? router.query.topic.split(',') : [],
+      valueChain: router.query.valueChain
+        ? router.query.valueChain.split(',')
+        : [],
     };
 
     const query = router.query.query || '';
@@ -57,7 +51,7 @@ export default function SocialAccountability() {
 
     const apiFilters = {
       regions: urlFilters.region,
-      valueChain: urlFilters.topic,
+      valueChain: urlFilters.valueChain,
     };
 
     dispatch(
@@ -74,7 +68,8 @@ export default function SocialAccountability() {
     if (newQuery) query.query = newQuery;
     if (newFilters.region.length > 0)
       query.focusRegions = newFilters.region.join(',');
-    if (newFilters.topic.length > 0) query.topic = newFilters.topic.join(',');
+    if (newFilters.valueChain.length > 0)
+      query.valueChain = newFilters.valueChain.join(',');
 
     router.push(
       {
@@ -87,7 +82,7 @@ export default function SocialAccountability() {
 
     const apiFilters = {
       regions: newFilters.region,
-      valueChain: newFilters.topic,
+      valueChain: newFilters.valueChain,
     };
 
     dispatch(clearSocialAccountabilityData());
@@ -112,7 +107,7 @@ export default function SocialAccountability() {
   const handleClearFilters = () => {
     const emptyFilters = {
       region: [],
-      topic: [],
+      valueChain: [],
     };
     setFilters(emptyFilters);
     setSearchTerm('');
@@ -133,7 +128,7 @@ export default function SocialAccountability() {
       : regions;
 
   const selectedValueChain =
-    filters.topic.length > 0 ? filters.topic[0] : 'All';
+    filters.valueChain.length > 0 ? filters.valueChain[0] : 'All';
 
   return (
     <div className="min-h-screen bg-gray-10">
@@ -152,7 +147,7 @@ export default function SocialAccountability() {
           filters={filters}
           onFilterChange={handleFilterChange}
           onClearFilters={handleClearFilters}
-          visibleFilters={['region', 'topic']}
+          visibleFilters={['region', 'valueChain']}
         />
       </div>
 

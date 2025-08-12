@@ -138,3 +138,22 @@ export const UserIcon = ({ ...props }) => (
     />
   </svg>
 );
+
+export const ValueChainIcon = ({ ...props }) => (
+  <svg
+    width="16"
+    height="24"
+    viewBox="0 0 16 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M4.21879 14.0072L3.00879 23.1172L8.00879 20.1172L13.0088 23.1172L11.7988 13.9972M15.0088 8.11719C15.0088 11.9832 11.8748 15.1172 8.00879 15.1172C4.1428 15.1172 1.00879 11.9832 1.00879 8.11719C1.00879 4.25119 4.1428 1.11719 8.00879 1.11719C11.8748 1.11719 15.0088 4.25119 15.0088 8.11719Z"
+      stroke="#21252B"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);

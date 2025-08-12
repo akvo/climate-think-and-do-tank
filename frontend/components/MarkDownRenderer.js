@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Check } from 'lucide-react';
 
 export const MarkdownRenderer = ({ content, components = {} }) => {
   const defaultComponents = {
@@ -25,8 +26,14 @@ export const MarkdownRenderer = ({ content, components = {} }) => {
       <h3 {...props} className="text-lg font-semibold mt-2 mb-1" />
     ),
     p: ({ node, ...props }) => <p {...props} className="mb-4" />,
-    ul: ({ node, ...props }) => (
-      <ul {...props} className="list-disc pl-3 mb-4" />
+    ul: ({ node, ...props }) => <ul {...props} className="space-y-3 mb-4" />,
+    li: ({ node, children, ...props }) => (
+      <li className="flex items-start gap-3" {...props}>
+        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-50 flex items-center justify-center mt-0.5">
+          <Check className="w-4 h-4 text-primary-500" />
+        </span>
+        <span className="text-gray-700">{children}</span>
+      </li>
     ),
     ol: ({ node, ...props }) => (
       <ol {...props} className="list-decimal pl-5 mb-4" />

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { ArrowDownWideNarrow, ArrowUpWideNarrow, Search } from 'lucide-react';
+import { Search, ChevronUp, ChevronDown, LayoutGrid, List } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useSearchParams } from 'next/navigation';
 import OrganizationModal from '@/components/OrganizationModal';
@@ -8,10 +8,10 @@ import {
   clearInvestmentOpportunityProfiles,
   fetchInvestmentOpportunityProfiles,
 } from '@/store/slices/investmentOpportunitySlice';
-import LocationsFilter from '@/components/LocationFilter';
-import CheckboxFilter from '@/components/CheckboxFilter';
 import debounce from 'lodash/debounce';
-import Card from '@/components/Card';
+import HeroSection from '@/components/Hero';
+import FilterSection from '@/components/FilterSection';
+import ResultCard from '@/components/ResultCard';
 
 export default function InvestmentOpportunityProfile() {
   const router = useRouter();
@@ -20,15 +20,14 @@ export default function InvestmentOpportunityProfile() {
   const isInitialLoad = useRef(true);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilters, setActiveFilters] = useState({
+  const [viewMode, setViewMode] = useState('grid');
+  const [filters, setFilters] = useState({
+    region: [],
     valueChain: [],
-    regions: [],
   });
-  const [openFilter, setOpenFilter] = useState(null);
-  const [sortConfig, setSortConfig] = useState({
-    field: 'publication_date',
-    order: 'desc',
-  });
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
 
   const {
     investmentOpportunityProfiles,
@@ -36,537 +35,337 @@ export default function InvestmentOpportunityProfile() {
     error,
     currentPage,
     hasMore,
+    total,
   } = useSelector((state) => state.investmentOpportunity);
 
-  const { regions = [], valueChains = [] } = useSelector((state) => state.auth);
-
-  const filterOptions = {
-    regions: [
-      'All Locations',
-      ...regions.map((region) => region.name || region.attributes?.name),
-    ],
-    valueChain: [
-      'All',
-      ...valueChains
-        .map((topic) => topic.name || topic.attributes?.name)
-        .filter(Boolean),
-    ],
-  };
-
   useEffect(() => {
-    const handleInitialLoad = () => {
-      const search = searchParams.get('search') || '';
-      const valueChain =
-        searchParams.get('valueChain')?.split(',').filter(Boolean) || [];
-      const regions =
-        searchParams.get('regions')?.split(',').filter(Boolean) || [];
-      const sortBy = searchParams.get('sortBy');
-      const sortOrder = searchParams.get('sortOrder') || 'desc';
+    if (!router.isReady) return;
 
-      setSearchQuery(search);
-      setActiveFilters({
-        valueChain: valueChain.filter((vc) =>
-          filterOptions.valueChain.includes(vc)
-        ),
-        regions: regions.filter((r) => filterOptions.regions.includes(r)),
-      });
-      setSortConfig({
-        field: sortBy,
-        order: sortOrder,
-      });
-      dispatch(clearInvestmentOpportunityProfiles());
-    };
-
-    handleInitialLoad();
-  }, []);
-
-  useEffect(() => {
     if (isInitialLoad.current) {
       isInitialLoad.current = false;
-      return;
-    }
 
-    if (!loading) {
-      updateQueryParams(activeFilters, sortConfig, searchQuery);
-      loadData();
-    }
-  }, [activeFilters, sortConfig, searchQuery]);
+      const urlFilters = {
+        region: router.query.region ? router.query.region.split(',') : [],
+        valueChain: router.query.valueChain
+          ? router.query.valueChain.split(',')
+          : [],
+      };
 
-  const updateQueryParams = useCallback(
-    (filters, sort, search) => {
-      const params = new URLSearchParams();
+      const sort = router.query.sort || 'desc';
+      const query = router.query.query || '';
 
-      if (search) params.set('search', search);
-      if (sort.order !== 'desc') params.set('sortOrder', sort.order);
+      setSortOrder(sort);
+      setFilters(urlFilters);
+      setSearchQuery(query);
 
-      Object.entries(filters).forEach(([key, values]) => {
-        if (values.length > 0) {
-          params.set(key, values.join(','));
-        }
-      });
-
-      const newUrl = `?${params.toString()}`;
-      if (newUrl !== window.location.search) {
-        router.push(newUrl, undefined, { shallow: true });
-      }
-    },
-    [router]
-  );
-
-  const loadData = useCallback(
-    debounce((isLoadMore = false) => {
-      dispatch(
-        fetchInvestmentOpportunityProfiles({
-          page: isLoadMore ? currentPage + 1 : 1,
-          query: searchQuery,
-          filters: {
-            valueChain: activeFilters.valueChain,
-            regions: activeFilters.regions,
-          },
-          dateSort: sortConfig.order,
-        })
-      );
-    }, 300),
-    [
-      dispatch,
-      currentPage,
-      searchQuery,
-      activeFilters.valueChain,
-      activeFilters.regions,
-      sortConfig.order,
-    ]
-  );
-
-  const toggleFilter = (type, value) => {
-    setActiveFilters((prev) => ({
-      ...prev,
-      [type]:
-        type === 'date'
-          ? prev[type][0] === value
-            ? []
-            : [value]
-          : prev[type].includes(value)
-          ? prev[type].filter((item) => item !== value)
-          : [...prev[type], value],
-    }));
-  };
-
-  const handleCardClick = (card) => {
-    router.push('/iop/' + card.documentId);
-  };
-
-  const handleSearch = useCallback(
-    debounce((query) => {
-      // Update URL
-      const queryParams = { ...router.query };
-      if (query) {
-        queryParams.search = query;
-      } else {
-        delete queryParams.search;
-      }
-
-      router.push(
-        {
-          pathname: router.pathname,
-          query: queryParams,
-        },
-        undefined,
-        { shallow: true }
-      );
-
-      // Dispatch search action
+      dispatch(clearInvestmentOpportunityProfiles());
       dispatch(
         fetchInvestmentOpportunityProfiles({
           page: 1,
           query,
-          filters: {
-            valueChain: activeFilters.valueChain,
-            regions: activeFilters.regions,
-          },
-          dateSort: sortConfig.order,
+          filters: urlFilters,
+          dateSort: sort,
         })
       );
-    }, 500),
-    [
-      router,
-      dispatch,
-      activeFilters.valueChain,
-      activeFilters.regions,
-      sortConfig.order,
-    ]
-  );
+    }
+  }, [router.isReady]);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    handleSearch(searchQuery);
-  };
+  useEffect(() => {
+    if (!router.isReady || isInitialLoad.current) return;
 
-  const handleSort = () => {
-    setSortConfig((prev) => ({
-      field: 'publication_date',
-      order: prev.order === 'desc' ? 'asc' : 'desc',
-    }));
-  };
-
-  const hasActiveFilters =
-    Object.values(activeFilters).some((filter) => filter.length > 0) ||
-    searchQuery !== '';
-  const updateFilters = (newFilters) => {
-    const query = {};
-    if (searchQuery) query.query = searchQuery;
-    if (newFilters.valueChain.length > 0)
-      query.valueChain = newFilters.valueChain.join(',');
-    if (newFilters.regions.length > 0)
-      query.regions = newFilters.regions.join(',');
-
-    router.push(
-      {
-        pathname: router.pathname,
-        query: { ...query },
-      },
-      undefined,
-      { shallow: true }
-    );
-  };
-
-  const clearFilters = () => {
-    const emptyFilters = {
-      valueChain: [],
-      regions: [],
+    const urlFilters = {
+      region: router.query.region ? router.query.region.split(',') : [],
+      valueChain: router.query.valueChain
+        ? router.query.valueChain.split(',')
+        : [],
     };
 
-    setActiveFilters(emptyFilters);
+    const sort = router.query.sort || 'desc';
+    const query = router.query.query || '';
+
+    const filtersChanged =
+      JSON.stringify(urlFilters) !== JSON.stringify(filters);
+    const queryChanged = query !== searchQuery;
+    const sortChanged = sort !== sortOrder;
+
+    if (filtersChanged || queryChanged || sortChanged) {
+      setSortOrder(sort);
+      setFilters(urlFilters);
+      setSearchQuery(query);
+
+      dispatch(clearInvestmentOpportunityProfiles());
+      dispatch(
+        fetchInvestmentOpportunityProfiles({
+          page: 1,
+          query,
+          filters: urlFilters,
+          dateSort: sort,
+        })
+      );
+    }
+  }, [router.query]);
+
+  const updateUrlAndFetch = useCallback(
+    debounce((newFilters, newQuery, newSort) => {
+      const query = {};
+      if (newQuery) query.query = newQuery;
+      if (newSort !== 'desc') query.sort = newSort;
+      if (newFilters.region.length > 0)
+        query.region = newFilters.region.join(',');
+      if (newFilters.valueChain.length > 0)
+        query.valueChain = newFilters.valueChain.join(',');
+
+      const currentQuery = router.query;
+      const hasChanges = JSON.stringify(query) !== JSON.stringify(currentQuery);
+
+      if (hasChanges) {
+        router.push(
+          {
+            pathname: router.pathname,
+            query,
+          },
+          undefined,
+          { shallow: true }
+        );
+
+        dispatch(clearInvestmentOpportunityProfiles());
+        dispatch(
+          fetchInvestmentOpportunityProfiles({
+            page: 1,
+            query: newQuery,
+            filters: {
+              regions: newFilters.region,
+              valueChain: newFilters.valueChain,
+            },
+            dateSort: newSort,
+          })
+        );
+      }
+    }, 300),
+    [router, dispatch]
+  );
+
+  const handleFilterChange = useCallback(
+    (filterKey, values) => {
+      setFilters((prev) => {
+        const newFilters = {
+          ...prev,
+          [filterKey]: values,
+        };
+
+        updateUrlAndFetch(newFilters, searchQuery, sortOrder);
+
+        return newFilters;
+      });
+    },
+    [searchQuery, sortOrder, updateUrlAndFetch]
+  );
+
+  const handleSearch = useCallback(
+    debounce((query) => {
+      if (query !== searchQuery) {
+        setSearchQuery(query);
+        updateUrlAndFetch(filters, query, sortOrder);
+      }
+    }, 500),
+    [filters, sortOrder, updateUrlAndFetch, searchQuery]
+  );
+
+  const handleSortChange = useCallback(() => {
+    setSortOrder((prev) => {
+      const newOrder = prev === 'desc' ? 'asc' : 'desc';
+      updateUrlAndFetch(filters, searchQuery, newOrder);
+      return newOrder;
+    });
+  }, [filters, searchQuery, updateUrlAndFetch]);
+
+  const handleClearFilters = useCallback(() => {
+    const emptyFilters = {
+      region: [],
+      valueChain: [],
+    };
+
+    setFilters(emptyFilters);
     setSearchQuery('');
+    setSortOrder('desc');
 
-    const query = { ...router.query };
-    delete query.valueChain;
-    delete query.regions;
-    delete query.date;
-    delete query.search;
-    delete query.query;
+    updateUrlAndFetch(emptyFilters, '', 'desc');
+  }, [updateUrlAndFetch]);
 
-    router.push(
-      {
-        pathname: router.pathname,
-        query,
-      },
-      undefined,
-      { shallow: true }
-    );
-
-    dispatch(clearInvestmentOpportunityProfiles());
-    loadData();
+  const handleCardClick = (card) => {
+    if (card.documentId) {
+      router.push('/iop/' + card.documentId);
+    } else {
+      setSelectedCard(card);
+      setIsModalOpen(true);
+    }
   };
+
+  const handleLoadMore = () => {
+    dispatch(
+      fetchInvestmentOpportunityProfiles({
+        page: currentPage + 1,
+        query: searchQuery,
+        filters: {
+          regions: filters.region,
+          valueChain: filters.valueChain,
+        },
+        dateSort: sortOrder,
+      })
+    );
+  };
+
+  const totalResults = total || investmentOpportunityProfiles.length;
+  const currentResults = investmentOpportunityProfiles.length;
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="py-4 px-4 bg-[#f1f3f5] text-black">
-        <div className="flex container mx-auto items-center">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center gap-6 justify-between">
-              <div className="flex gap-6 flex-wrap">
-                {Object.keys(filterOptions).map((filterType) => (
-                  <div key={filterType} className="relative filter-dropdown">
-                    <button
-                      onClick={() =>
-                        setOpenFilter(
-                          openFilter === filterType ? null : filterType
-                        )
-                      }
-                      className="text-gray-700 hover:text-gray-900 flex items-center gap-1"
-                    >
-                      {filterType === 'valueChain'
-                        ? 'Value Chain'
-                        : filterType === 'regions'
-                        ? 'Region'
-                        : filterType === 'date'
-                        ? 'Publication Date'
-                        : filterType.charAt(0).toUpperCase() +
-                          filterType.slice(1)}
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </button>
-                    {openFilter === filterType && (
-                      <div className="absolute top-full left-0 mt-2 z-10 min-w-[300px]">
-                        {filterType === 'valueChain' ? (
-                          <CheckboxFilter
-                            label="Value Chain"
-                            options={filterOptions[filterType].filter(
-                              (opt) => opt !== 'All'
-                            )}
-                            initialSelected={
-                              activeFilters[filterType].length === 0
-                                ? [
-                                    'All',
-                                    ...filterOptions[filterType].filter(
-                                      (opt) => opt !== 'All'
-                                    ),
-                                  ]
-                                : activeFilters[filterType]
-                            }
-                            hasAllOption={true}
-                            onApply={(selectedOptions) => {
-                              const allItemsSelected =
-                                selectedOptions.includes('All') ||
-                                (filterOptions[filterType].filter(
-                                  (opt) => opt !== 'All'
-                                ).length > 0 &&
-                                  filterOptions[filterType]
-                                    .filter((opt) => opt !== 'All')
-                                    .every((opt) =>
-                                      selectedOptions.includes(opt)
-                                    ));
+      <HeroSection
+        searchTerm={searchQuery}
+        setSearchTerm={handleSearch}
+        pageTitle={
+          <>
+            <span className="text-primary-500">Investment Opportunity</span>{' '}
+            Profiles (IOPs)
+          </>
+        }
+        searchText="Search for investment opportunities by region, value chain, or keyword"
+        pageDescription="The latest industry news, interviews, technologies, and resources."
+      />
 
-                              const optionsToApply = allItemsSelected
-                                ? []
-                                : selectedOptions.filter(
-                                    (opt) => opt !== 'All'
-                                  );
+      <div className="container mx-auto mt-[-31px] relative z-10">
+        <FilterSection
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onClearFilters={handleClearFilters}
+          visibleFilters={['region', 'valueChain']}
+          customLabels={{
+            valueChain: 'Value Chain',
+          }}
+        />
+      </div>
 
-                              const newFilters = {
-                                ...activeFilters,
-                                [filterType]: optionsToApply,
-                              };
-                              setActiveFilters(newFilters);
-                              updateFilters(newFilters);
-                              setOpenFilter(null);
-                            }}
-                            onClear={() => {
-                              const newFilters = {
-                                ...activeFilters,
-                                [filterType]: [],
-                              };
-                              setActiveFilters(newFilters);
-                              updateFilters(newFilters);
-                              setOpenFilter(null);
-                            }}
-                          />
-                        ) : filterType === 'regions' ? (
-                          <LocationsFilter
-                            name="Region"
-                            locations={[
-                              'All Locations',
-                              'No Specific Region',
-                              ...filterOptions[filterType],
-                            ]}
-                            initialSelected={activeFilters[filterType]}
-                            onApply={(selectedLocations) => {
-                              const availableLocations = [
-                                'No Specific Region',
-                                ...filterOptions[filterType],
-                              ];
+      <div className="py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-8">
+            <div className="text-gray-600">
+              <span className="font-bold text-primary-600">
+                {currentResults}
+              </span>
+              <span className="text-gray-400"> / {totalResults} Results</span>
+            </div>
 
-                              const allSelected =
-                                availableLocations.length > 0 &&
-                                selectedLocations.length ===
-                                  availableLocations.filter(
-                                    (item) => item !== 'All Locations'
-                                  ).length;
-
-                              const locationsToApply = allSelected
-                                ? []
-                                : selectedLocations;
-
-                              const newFilters = {
-                                ...activeFilters,
-                                [filterType]: locationsToApply,
-                              };
-                              setActiveFilters(newFilters);
-                              updateFilters(newFilters);
-                              setOpenFilter(null);
-                            }}
-                            onClear={() => {
-                              const newFilters = {
-                                ...activeFilters,
-                                [filterType]: [],
-                              };
-                              setActiveFilters(newFilters);
-                              updateFilters(newFilters);
-                              setOpenFilter(null);
-                            }}
-                          />
-                        ) : (
-                          <div className="w-48 bg-white rounded-md shadow-lg border max-h-60 overflow-y-auto">
-                            {filterOptions[filterType].length > 0 ? (
-                              filterOptions[filterType].map((option) => (
-                                <label
-                                  key={option}
-                                  className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer text-black"
-                                >
-                                  <input
-                                    type="checkbox"
-                                    checked={activeFilters[filterType].includes(
-                                      option
-                                    )}
-                                    onChange={() =>
-                                      toggleFilter(filterType, option)
-                                    }
-                                    className="mr-2"
-                                  />
-                                  {option}
-                                </label>
-                              ))
-                            ) : (
-                              <div className="px-4 py-2 text-gray-500">
-                                No options available
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Sort by</span>
                 <button
-                  onClick={handleSort}
-                  className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
+                  onClick={handleSortChange}
+                  className="bg-white border border-primary-500 rounded-full px-6 py-2 text-sm font-bold text-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 flex items-center gap-2 hover:bg-primary-50 transition-colors"
                 >
                   <span>Date</span>
-                  {sortConfig.order === 'desc' ? (
-                    <ArrowDownWideNarrow className="w-4 h-4" />
+                  {sortOrder === 'asc' ? (
+                    <ChevronUp className="w-4 h-4" />
                   ) : (
-                    <ArrowUpWideNarrow className="w-4 h-4" />
+                    <ChevronDown className="w-4 h-4" />
                   )}
+                </button>
+              </div>
+
+              <div className="flex items-center bg-white rounded-lg border border-gray-200 p-1">
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 rounded-md transition-colors ${
+                    viewMode === 'list'
+                      ? 'bg-gray-100 text-gray-600'
+                      : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  <List className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-2 rounded-md transition-colors ${
+                    viewMode === 'grid'
+                      ? 'bg-gray-100 text-gray-600'
+                      : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  <LayoutGrid className="w-4 h-4" />
                 </button>
               </div>
             </div>
           </div>
-          <div className="container mx-auto">
-            <div className="flex justify-end">
-              <form onSubmit={handleSearchSubmit} className="w-96">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Try keywords like: 'tilapia' or 'horticulture'"
-                    className="w-full pl-4 pr-10 py-2 rounded-[26px] border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      handleSearch(e.target.value);
+
+          {loading && investmentOpportunityProfiles.length === 0 ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            </div>
+          ) : (
+            <>
+              <div
+                className={`${
+                  viewMode === 'grid'
+                    ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                    : 'space-y-6'
+                }`}
+              >
+                {investmentOpportunityProfiles.map((card) => (
+                  <ResultCard
+                    key={card.id}
+                    result={{
+                      ...card,
+                      title: `${card.valueChain} Value Chain in ${card.region} County`,
+                      focusRegions: card.region ? [card.region] : ['No Region'],
+                      publishedAt: card.publicationDate || 'No Date',
+                      topic: card.valueChain ? [card.valueChain] : [],
                     }}
+                    showLink={false}
+                    viewMode={viewMode}
+                    onClick={handleCardClick}
                   />
+                ))}
+              </div>
+
+              {investmentOpportunityProfiles.length === 0 && !loading && (
+                <div className="text-center py-12">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    No results found
+                  </h3>
+                  <p className="text-gray-600 mt-2">
+                    Try adjusting your filters or search terms
+                  </p>
+                </div>
+              )}
+
+              {hasMore && investmentOpportunityProfiles.length > 0 && (
+                <div className="flex justify-center mt-12">
                   <button
-                    type="submit"
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 transition-colors"
+                    onClick={handleLoadMore}
+                    disabled={loading}
+                    className="px-8 py-3 bg-zinc-900 text-white rounded-md hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    <Search size={20} />
+                    {loading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Loading...
+                      </>
+                    ) : (
+                      'Load More'
+                    )}
                   </button>
                 </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {(activeFilters.valueChain?.length > 0 ||
-        activeFilters.regions?.length > 0) && (
-        <div className="border-b relative container mx-auto flex items-center justify-between py-2">
-          <div className="px-4  text-black">
-            <div className="flex items-center gap-2 flex-wrap">
-              {Object.entries(activeFilters).map(([filterType, values]) =>
-                values.map((value) => (
-                  <span
-                    key={`${filterType}-${value}`}
-                    className="bg-gray-100 px-3 py-1 rounded-full text-sm flex items-center gap-1"
-                  >
-                    {value}
-                    <button
-                      onClick={() => {
-                        const newFilters = {
-                          ...activeFilters,
-                          [filterType]: activeFilters[filterType].filter(
-                            (v) => v !== value
-                          ),
-                        };
-                        setActiveFilters(newFilters);
-                        updateFilters(newFilters);
-                      }}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))
               )}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {hasActiveFilters && (
-              <button
-                className="text-green-600 hover:text-green-700"
-                onClick={clearFilters}
-              >
-                Clear filters
-              </button>
-            )}
-          </div>
+            </>
+          )}
         </div>
-      )}
-
-      <div className="container mx-auto px-4 py-8">
-        {loading && investmentOpportunityProfiles.length === 0 ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {investmentOpportunityProfiles.map((card) => (
-                <Card
-                  key={card.id}
-                  card={{
-                    ...card,
-                    title: `${card.valueChain} Value Chain in ${card.region} County`,
-                  }}
-                  onClick={handleCardClick}
-                />
-              ))}
-            </div>
-
-            {investmentOpportunityProfiles.length === 0 && (
-              <div className="text-center py-12">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  No results found
-                </h3>
-                <p className="text-gray-600 mt-2">
-                  Try adjusting your filters or search terms
-                </p>
-              </div>
-            )}
-
-            {hasMore && investmentOpportunityProfiles.length > 0 && (
-              <div className="flex justify-center mt-12">
-                <button
-                  onClick={() => loadData(true)}
-                  disabled={loading}
-                  className="px-8 py-3 bg-zinc-900 text-white rounded-md hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                >
-                  {loading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      Loading...
-                    </>
-                  ) : (
-                    'Load More'
-                  )}
-                </button>
-              </div>
-            )}
-          </>
-        )}
       </div>
+
+      <OrganizationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        card={selectedCard}
+        onCardClick={handleCardClick}
+      />
     </div>
   );
 }
