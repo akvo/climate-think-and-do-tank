@@ -1,3 +1,11 @@
+const isEmpty = value => {
+  return (
+    value == null ||  // use `==` to check for null || undefined
+    (typeof value === 'object' && Object.keys(value).length === 0) ||
+    (typeof value === 'string' && value.trim().length === 0)
+  )
+}
+
 module.exports = ({ env }) => {
   // `PLUGIN_PROVIDERS` allows the use of local providers in production build containers for local testing.
   const profile = env.oneOf(
@@ -29,9 +37,8 @@ module.exports = ({ env }) => {
     },
   };
 
-  const uploads = {
-    local: {},
-    external: {
+  const uploads = (profile !== 'local' && !isEmpty(env.json('GCS_SERVICE_ACCOUNT')))
+    ? {
       provider: '@strapi-community/strapi-provider-upload-google-cloud-storage',
       providerOptions: {
         serviceAccount: env.json('GCS_SERVICE_ACCOUNT'),
@@ -42,8 +49,7 @@ module.exports = ({ env }) => {
         uniform: env('GCS_UNIFORM'),
         skipCheckBucket: true,
       },
-    },
-  };
+    } : {};
 
   return {
     graphql: {
@@ -88,7 +94,7 @@ module.exports = ({ env }) => {
     },
     upload: {
       config: {
-        ...uploads[profile],
+        ...uploads,
         sizeLimit: 100 * 1024 * 1024, // 100MB in bytes
       },
     },
