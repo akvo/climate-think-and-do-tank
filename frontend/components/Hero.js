@@ -76,7 +76,7 @@ export default function HeroSection({
                   </svg>
                   <input
                     type="text"
-                    placeholder="Kenya's arid land"
+                    placeholder={searchText || 'Search...'}
                     value={searchValue}
                     onChange={(e) => {
                       setSearchValue(e.target.value);

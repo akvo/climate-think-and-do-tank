@@ -588,6 +588,7 @@ export const fetchStakeholders = createAsyncThunk(
               name: user.full_name || user.username,
               image: user.profile_image,
               focusRegions: user.focus_regions?.map((r) => r.name) || [],
+              topics: user.topics?.map((r) => r.name) || [],
               organization: user.organisation ? user.organisation.name : '',
               data: user,
             }))
