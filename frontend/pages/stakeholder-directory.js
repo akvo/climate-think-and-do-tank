@@ -41,8 +41,8 @@ export default function StakeholderDirectory() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
-    region: [],
-    topic: [],
+    topics: [],
+    focusRegions: [],
     type: [],
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,18 +52,14 @@ export default function StakeholderDirectory() {
   const { stakeholders, loading, error, currentPage, hasMore, user, total } =
     useSelector((state) => state.auth);
 
-  const {
-    topics = [],
-    regions = [],
-    organizations = [],
-  } = useSelector((state) => state.auth);
-
   useEffect(() => {
     if (!router.isReady) return;
 
     const urlFilters = {
-      topic: router.query.topic ? router.query.topic.split(',') : [],
-      region: router.query.region ? router.query.region.split(',') : [],
+      topics: router.query.topics ? router.query.topics.split(',') : [],
+      focusRegions: router.query.focusRegions
+        ? router.query.focusRegions.split(',')
+        : [],
       type: router.query.type ? router.query.type.split(',') : [],
     };
 
@@ -95,10 +91,10 @@ export default function StakeholderDirectory() {
       const queryParams = {};
       if (query) queryParams.query = query;
       if (sort !== 'asc') queryParams.sort = sort;
-      if (newFilters.region?.length > 0)
-        queryParams.region = newFilters.region.join(',');
-      if (newFilters.topic?.length > 0)
-        queryParams.topic = newFilters.topic.join(',');
+      if (newFilters.focusRegions?.length > 0)
+        queryParams.focusRegions = newFilters.focusRegions.join(',');
+      if (newFilters.topics?.length > 0)
+        queryParams.topics = newFilters.topics.join(',');
       if (newFilters.type?.length > 0)
         queryParams.type = newFilters.type.join(',');
 
@@ -117,7 +113,11 @@ export default function StakeholderDirectory() {
   const handleFilterChange = (filterKey, values) => {
     const newFilters = {
       ...filters,
-      [filterKey]: values,
+      [filterKey === 'topic'
+        ? 'topics'
+        : filterKey === 'region'
+        ? 'focusRegions'
+        : filterKey]: values,
     };
     setFilters(newFilters);
     updateUrlAndFetch(newFilters, searchQuery, sortOrder);
@@ -125,8 +125,8 @@ export default function StakeholderDirectory() {
 
   const handleClearFilters = () => {
     const emptyFilters = {
-      region: [],
-      topic: [],
+      focusRegions: [],
+      topics: [],
       type: [],
     };
     setFilters(emptyFilters);
@@ -178,6 +178,8 @@ export default function StakeholderDirectory() {
 
   const totalResults = total || stakeholders.length;
 
+  console.log(filters);
+
   return (
     <div className="min-h-screen bg-white">
       <HeroSection
@@ -192,7 +194,11 @@ export default function StakeholderDirectory() {
 
       <div className="container mx-auto mt-[-31px] relative z-10">
         <FilterSection
-          filters={filters}
+          filters={{
+            topic: filters.topics,
+            region: filters.focusRegions,
+            type: filters.type,
+          }}
           onFilterChange={handleFilterChange}
           onClearFilters={handleClearFilters}
           visibleFilters={['region', 'topic', 'type']}

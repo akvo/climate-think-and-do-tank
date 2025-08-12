@@ -217,10 +217,8 @@ export default function NewsEventsDirectory() {
         />
       </div>
 
-      {/* Main Content Section */}
       <div className="min-h-screen py-8 px-4 md:px-0">
         <div className="container mx-auto">
-          {/* Results Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="text-gray-600">
               <span className="font-bold text-primary-600">{endResult}</span>
@@ -268,14 +266,12 @@ export default function NewsEventsDirectory() {
             </div>
           </div>
 
-          {/* Loading State */}
           {loading && newsEventsData.length === 0 ? (
             <div className="flex justify-center items-center py-20">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
             </div>
           ) : (
             <>
-              {/* News/Events Grid or List */}
               <div
                 className={`${
                   viewMode === 'grid'
@@ -292,7 +288,6 @@ export default function NewsEventsDirectory() {
                     onClick={() => handleCardClick(item)}
                   >
                     {viewMode === 'list' ? (
-                      // List View Layout
                       <>
                         <div className="relative w-48 h-full overflow-hidden">
                           {item.imageUrl ? (
@@ -355,7 +350,6 @@ export default function NewsEventsDirectory() {
                         </div>
                       </>
                     ) : (
-                      // Grid View Layout
                       <>
                         <div className="relative h-48 w-full overflow-hidden">
                           {item.imageUrl ? (
@@ -423,7 +417,6 @@ export default function NewsEventsDirectory() {
                 ))}
               </div>
 
-              {/* No Results */}
               {newsEventsData.length === 0 && !loading && (
                 <div className="text-center py-12">
                   <h3 className="text-lg font-semibold text-gray-900">
@@ -435,7 +428,6 @@ export default function NewsEventsDirectory() {
                 </div>
               )}
 
-              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-between mt-12">
                   <button

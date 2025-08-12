@@ -152,7 +152,14 @@ export default function SocialAccountability() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <KenyaMap regions={mapRegions} valueChain={selectedValueChain} />
+        <KenyaMap
+          regions={mapRegions}
+          valueChain={selectedValueChain}
+          selectedRegions={filters.region}
+          selectedValueChain={
+            filters.valueChain.length > 0 ? filters.valueChain[0] : null
+          }
+        />
       </div>
     </div>
   );
