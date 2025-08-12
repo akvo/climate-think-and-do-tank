@@ -196,6 +196,7 @@ export default function StakeholderDirectory() {
           onFilterChange={handleFilterChange}
           onClearFilters={handleClearFilters}
           visibleFilters={['region', 'topic', 'type']}
+          isStakeholderDirectory={true}
           customLabels={{
             type: 'Type',
           }}

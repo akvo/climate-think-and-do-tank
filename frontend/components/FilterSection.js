@@ -16,6 +16,8 @@ export default function FilterSection({
   onFilterChange,
   onClearFilters,
   visibleFilters = ['region', 'topic', 'type', 'year', 'valueChain'],
+  isStakeholderDirectory = false,
+  isNewsEvents = false,
   className = '',
 }) {
   const {
@@ -70,10 +72,20 @@ export default function FilterSection({
       label: 'Type',
       icon: TypeIcon,
       hasAllOption: false,
-      options: [
-        { value: 'File', label: 'File' },
-        { value: 'Link', label: 'Link' },
-      ],
+      options: isStakeholderDirectory
+        ? [
+            { value: 'Individual', label: 'Individual' },
+            { value: 'Organization', label: 'Organization' },
+          ]
+        : isNewsEvents
+        ? [
+            { value: 'News', label: 'News' },
+            { value: 'Events', label: 'Events' },
+          ]
+        : [
+            { value: 'File', label: 'File' },
+            { value: 'Link', label: 'Link' },
+          ],
     },
     year: {
       label: 'Year',

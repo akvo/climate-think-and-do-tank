@@ -204,11 +204,16 @@ export default function NewsEventsDirectory() {
             } else if (filterKey === 'upcoming') {
               handleFilterChange('upcoming', values[0] || 'Upcoming');
             } else {
-              handleFilterChange(filterKey, values);
+              console.log('Unhandled filter key:', filterKey);
+              handleFilterChange(
+                filterKey === 'type' ? 'types' : filterKey,
+                values
+              );
             }
           }}
+          isNewsEvents={true}
           onClearFilters={handleClearFilters}
-          visibleFilters={['type', 'region']}
+          visibleFilters={['region', 'type']}
         />
       </div>
 
