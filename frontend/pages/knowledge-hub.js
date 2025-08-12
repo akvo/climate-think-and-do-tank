@@ -40,7 +40,7 @@ const ResultsSection = ({
   const endResult = Math.min(currentPage * resultsPerPage, totalResults);
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-8 px-4 md:px-0">
       <div className="container mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div className="text-gray-600">
@@ -108,6 +108,7 @@ const ResultsSection = ({
                   result={result}
                   viewMode={viewMode}
                   onClick={onCardClick}
+                  showLink={true}
                 />
               ))}
             </div>
@@ -335,7 +336,12 @@ const KnowledgeLibrary = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <HeroSection searchTerm={searchTerm} setSearchTerm={handleSearch} />
+      <HeroSection
+        searchTerm={searchTerm}
+        setSearchTerm={handleSearch}
+        pageTitle="Knowledge library"
+        pageDescription="The latest industry news, interviews, technologies, and resources."
+      />
 
       <div className="container mx-auto mt-[-31px] relative z-10">
         <FilterSection

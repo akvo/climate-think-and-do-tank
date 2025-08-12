@@ -39,7 +39,7 @@ export default function HomePage() {
         </section>
 
         <section className="py-16 text-black bg-gray-10 hidden md:block">
-          <div className="container mx-auto px-4 flex justify-center">
+          <div className=" mx-auto px-4 flex justify-center">
             <KenyaMap
               onSelect={(selected) =>
                 router.push(`/social-accountability?regions=${selected}`)

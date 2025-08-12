@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import {
   X,
   Download,
@@ -8,48 +7,10 @@ import {
   FileText,
 } from 'lucide-react';
 import Image from 'next/image';
-import { fetchRelatedKnowledgeHubs } from '@/store/slices/knowledgeHubSlice';
 import { useModal } from '@/hooks/useModal';
 
-export default function KnowledgeHubModal({
-  isOpen,
-  onClose,
-  card,
-  onCardClick,
-}) {
+export default function KnowledgeHubModal({ isOpen, onClose, card }) {
   const overlayRef = useModal(isOpen, onClose);
-  const dispatch = useDispatch();
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const { relatedKnowledgeHubs, relatedLoading, relatedError } = useSelector(
-    (state) => state.knowledgeHub
-  );
-
-  useEffect(() => {
-    if (!isOpen || !card) return;
-    dispatch(
-      fetchRelatedKnowledgeHubs({
-        thematicFocus: card.thematicFocus,
-        currentResourceId: card.id,
-      })
-    );
-  }, [isOpen, card, dispatch]);
-
-  const handleNextSlide = () => {
-    setCurrentSlide(
-      (prev) => (prev + 1) % Math.ceil(relatedKnowledgeHubs.length / 4)
-    );
-  };
-
-  const handlePrevSlide = () => {
-    setCurrentSlide((prev) =>
-      prev === 0 ? Math.ceil(relatedKnowledgeHubs.length / 4) - 1 : prev - 1
-    );
-  };
-
-  const getCurrentSlideResources = () => {
-    const startIndex = currentSlide * 4;
-    return relatedKnowledgeHubs.slice(startIndex, startIndex + 4);
-  };
 
   if (!isOpen || !card) return null;
 
@@ -233,82 +194,6 @@ export default function KnowledgeHubModal({
                 </>
               )}
             </div>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-semibold text-primary-500 mb-4">
-              ASSOCIATED CONTENT
-            </h3>
-            {relatedLoading ? (
-              <div className="flex justify-center items-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-              </div>
-            ) : relatedError ? (
-              <div className="text-red-600 text-center py-8">
-                Failed to load related resources
-              </div>
-            ) : relatedKnowledgeHubs.length === 0 ? (
-              <div className="text-gray-600 text-center py-8">
-                No related resources found
-              </div>
-            ) : (
-              <>
-                <div className="grid grid-cols-4 gap-4">
-                  {getCurrentSlideResources().map((resource, index) => (
-                    <div
-                      key={index}
-                      className="bg-white rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer border border-gray-100"
-                      onClick={() => {
-                        onCardClick(resource);
-                      }}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`Open ${resource.title}`}
-                    >
-                      <div className="text-primary-500 text-xs font-semibold mb-2">
-                        {resource.type}
-                      </div>
-                      <h4 className="font-medium mb-2 text-black text-sm line-clamp-2">
-                        {resource.title}
-                      </h4>
-                      <p className="text-xs text-gray-600 line-clamp-2">
-                        {resource.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                {relatedKnowledgeHubs.length > 4 && (
-                  <div className="flex justify-center mt-4 gap-2 items-center">
-                    <button
-                      onClick={handlePrevSlide}
-                      className="text-gray-600 hover:text-gray-800"
-                    >
-                      ←
-                    </button>
-                    {Array.from({
-                      length: Math.ceil(relatedKnowledgeHubs.length / 4),
-                    }).map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`w-2 h-2 rounded-full transition-colors ${
-                          currentSlide === index
-                            ? 'bg-primary-500'
-                            : 'bg-gray-300'
-                        }`}
-                        aria-label={`Go to slide ${index + 1}`}
-                      />
-                    ))}
-                    <button
-                      onClick={handleNextSlide}
-                      className="text-gray-600 hover:text-gray-800"
-                    >
-                      →
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
           </div>
         </div>
       </div>
