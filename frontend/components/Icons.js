@@ -157,3 +157,60 @@ export const ValueChainIcon = ({ ...props }) => (
     />
   </svg>
 );
+
+export const CollaborationIcon = ({ ...props }) => (
+  <svg
+    width="26"
+    height="26"
+    viewBox="0 0 26 26"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M1 9H25M9 25V9M3.66667 1H22.3333C23.8061 1 25 2.19391 25 3.66667V22.3333C25 23.8061 23.8061 25 22.3333 25H3.66667C2.19391 25 1 23.8061 1 22.3333V3.66667C1 2.19391 2.19391 1 3.66667 1Z"
+      stroke="#C76A4D"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const InvestIcon = ({ ...props }) => (
+  <svg
+    width="30"
+    height="30"
+    viewBox="0 0 30 30"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M11.563 4.54402C15.3985 0.706795 21.619 0.708277 25.456 4.54402C29.2929 8.37976 29.2929 14.6008 25.456 18.438M21.3168 18.5077C21.3168 23.9342 16.9181 28.3333 11.4919 28.3333C6.06576 28.3333 1.66699 23.9342 1.66699 18.5077C1.66699 13.0811 6.06576 8.682 11.4919 8.682C16.9181 8.682 21.3168 13.0811 21.3168 18.5077Z"
+      stroke="#C76A4D"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const DataIcon = ({ ...props }) => (
+  <svg
+    width="32"
+    height="18"
+    viewBox="0 0 32 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M30.6663 1L17.9997 13.6667L11.333 7L1.33301 17M30.6663 1H22.6663M30.6663 1V9"
+      stroke="#C76A4D"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);

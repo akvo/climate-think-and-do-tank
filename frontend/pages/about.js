@@ -8,6 +8,13 @@ import { getImageUrl } from '@/helpers/utilities';
 import HeroSection from '@/components/Hero';
 import Button from '@/components/Button';
 import StatsGrid from '@/components/StatsGrid';
+import {
+  CollaborationIcon,
+  DataIcon,
+  InvestIcon,
+  UserIcon,
+} from '@/components/Icons';
+import InterestedSection from '@/components/ContactSection';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 
@@ -167,82 +174,139 @@ export default function About() {
         </div>
       </section>
 
-      {/* What We Do Section */}
-      <section className="py-20 bg-gray-50 relative overflow-hidden">
+      <section className="bg-white relative overflow-hidden py-20">
         <div
           className="hidden md:block absolute inset-0"
           style={{
-            backgroundImage: "url('/images/graphic.svg')",
-            backgroundPosition: 'right top',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'auto',
-            opacity: 0.05,
+            backgroundImage:
+              "url('/images/graphic.svg'), url('/images/cubes.svg')",
+            backgroundPosition: 'top right, left center',
+            backgroundRepeat: 'no-repeat, no-repeat',
+            backgroundSize: '200px auto, cover',
           }}
         />
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary-600 mb-4">
-              What we do
-            </h2>
-            {about.what_we_do && (
-              <div className="max-w-3xl mx-auto text-gray-600 mb-8">
-                <MarkdownRenderer content={about.what_we_do} />
-              </div>
-            )}
-            <button className="bg-primary-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-primary-700 transition-colors">
-              Sign up
-            </button>
-          </div>
-        </div>
-      </section>
+        <div className="container mx-auto px-4 relative z-10 ">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div className="lg:col-span-1">
+              <h2 className="text-3xl md:text-4xl font-bold text-primary-600 mb-4">
+                What we do
+              </h2>
 
-      {/* Where We Work Section */}
-      {about.where_we_work && (
-        <section className="py-20">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary-600 mb-6 text-center">
-              Where We Work
-            </h2>
-            <div className="max-w-4xl mx-auto text-gray-600 leading-relaxed">
-              <MarkdownRenderer content={about.where_we_work} />
+              {about.what_we_do && (
+                <>
+                  {(() => {
+                    const content = about.what_we_do;
+                    const sections = content.split(/\*\*([^*]+)\*\*/g);
+                    const description = sections[0]?.trim();
+
+                    return description ? (
+                      <div className="text-gray-600 mb-6">
+                        <p>{description}</p>
+                      </div>
+                    ) : null;
+                  })()}
+                </>
+              )}
+
+              <button className="bg-primary-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-primary-700 transition-colors">
+                Sign up
+              </button>
+            </div>
+
+            <div className="lg:col-span-2">
+              {about.what_we_do && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                  {(() => {
+                    const content = about.what_we_do;
+                    const sections = content.split(/\*\*([^*]+)\*\*/g);
+
+                    const services = [];
+                    for (let i = 1; i < sections.length; i += 2) {
+                      if (sections[i] && sections[i + 1]) {
+                        services.push({
+                          title: sections[i].trim(),
+                          description: sections[i + 1].trim(),
+                        });
+                      }
+                    }
+
+                    const serviceIcons = {
+                      'Data & Insights': <DataIcon className="w-6 h-6" />,
+                      'Collaboration Space': (
+                        <CollaborationIcon className="w-6 h-6" />
+                      ),
+                      'Capacity Strengthening': (
+                        <UserIcon className="w-6 h-6" />
+                      ),
+                      'Investment Facilitation': (
+                        <InvestIcon className="w-6 h-6" />
+                      ),
+                    };
+
+                    const orderedServices = [];
+                    const collaborationSpace = services.find(
+                      (s) => s.title === 'Collaboration Space'
+                    );
+                    const dataInsights = services.find(
+                      (s) => s.title === 'Data & Insights'
+                    );
+                    const capacity = services.find(
+                      (s) => s.title === 'Capacity Strengthening'
+                    );
+                    const investment = services.find(
+                      (s) => s.title === 'Investment Facilitation'
+                    );
+
+                    if (collaborationSpace)
+                      orderedServices.push(collaborationSpace);
+                    if (dataInsights) orderedServices.push(dataInsights);
+                    if (capacity) orderedServices.push(capacity);
+                    if (investment) orderedServices.push(investment);
+
+                    return orderedServices.map((service, index) => (
+                      <div key={index} className="text-black">
+                        <div className="flex-shrink-0 text-primary-600 bg-primary-50 inline-flex p-4 rounded-full">
+                          {serviceIcons[service.title] || (
+                            <svg
+                              className="w-12 h-12"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              />
+                            </svg>
+                          )}
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold my-2 mt-4">
+                            {service.title}
+                          </h3>
+                          <p className="text-gray-800 text-md leading-relaxed">
+                            {service.description}
+                          </p>
+                        </div>
+                      </div>
+                    ));
+                  })()}
+                </div>
+              )}
             </div>
           </div>
-        </section>
-      )}
-
-      {/* Join Us Section */}
-      <section className="py-20 bg-gradient-to-br from-primary-50 to-white relative overflow-hidden">
-        <div
-          className="hidden md:block absolute inset-0"
-          style={{
-            backgroundImage: "url('/images/cubes.svg')",
-            backgroundPosition: 'left bottom',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'auto',
-            opacity: 0.1,
-          }}
-        />
-
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Join Us</h2>
-          <div className="max-w-3xl mx-auto text-gray-600 mb-8 leading-relaxed">
-            {about.join_us ? (
-              <MarkdownRenderer content={about.join_us} />
-            ) : (
-              <p>
-                Whether you're an investor, county officer, development partner,
-                or grassroots leader, the Kenya Drylands Investment Hub is your
-                space to connect, collaborate, and catalyze transformative
-                action across the ASALs.
-              </p>
-            )}
-          </div>
-          <button className="bg-primary-600 text-white px-10 py-4 rounded-full font-semibold hover:bg-primary-700 transition-colors text-lg">
-            Sign up now
-          </button>
         </div>
       </section>
+
+      <InterestedSection
+        title="Join Us"
+        description={<MarkdownRenderer content={about.join_us} />}
+        buttonText="Sign up now"
+        buttonLink="/signup"
+      />
     </div>
   );
 }
