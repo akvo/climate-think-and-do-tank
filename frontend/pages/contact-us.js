@@ -3,6 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import { env } from '@/helpers/env-vars';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import Button from '@/components/Button';
 
 export default function ContactPage() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -75,7 +76,7 @@ export default function ContactPage() {
           Drylands. Fill in the form below and we contact you shortly:
         </p>
 
-        <div className="bg-[#f7f7f7] p-8 rounded-lg">
+        <div className="p-8 rounded-lg">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <label htmlFor="name" className="block text-sm font-medium">
@@ -179,13 +180,9 @@ export default function ContactPage() {
                 onChange={handleChange}
               />
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full px-4 py-3 bg-zinc-900 text-white rounded-md hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <Button className="w-full">
               {loading ? 'Sending...' : 'Submit'}
-            </button>
+            </Button>
           </form>
         </div>
       </div>
