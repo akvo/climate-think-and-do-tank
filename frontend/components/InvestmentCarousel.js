@@ -179,8 +179,8 @@ const InvestmentCarousel = () => {
             </p>
           </div>
           <Link
-            href="/investment-opportunities"
-            className="inline-flex items-center px-6 py-3 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-100 transition-colors font-medium"
+            href="/investment-profiles"
+            className="inline-flex items-center px-6 py-3 border border-primary-400 rounded-full text-primary-400 hover:bg-primary-400 hover:text-white transition-colors font-medium"
           >
             Explore investment opportunities
           </Link>
