@@ -261,10 +261,10 @@ export default function NewsEventsDirectory() {
 
                       <div className="absolute top-4 left-4">
                         <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                          className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${
                             item.type === 'Event'
-                              ? 'bg-white text-primary-600'
-                              : 'bg-white text-primary-600'
+                              ? 'bg-primary-50 text-primary-600'
+                              : 'bg-primary-50 text-primary-600'
                           }`}
                         >
                           {item.type === 'Event' ? (
