@@ -9,6 +9,7 @@ import {
   ChevronDown,
   ChevronRight,
   ChevronLeft,
+  MapPin,
 } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -34,7 +35,6 @@ export default function NewsEventsDirectory() {
     data: newsEventsData,
     loading,
     currentPage: dataCurrentPage,
-    hasMore,
     total,
   } = useSelector((state) => state.newsEvents);
 
@@ -48,9 +48,8 @@ export default function NewsEventsDirectory() {
   const [filters, setFilters] = useState({
     types: [],
     focusRegions: [],
-    upcoming: 'Upcoming',
   });
-
+  console.log('filters', filters);
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -61,13 +60,11 @@ export default function NewsEventsDirectory() {
       ? query.focusRegions.split(',').filter(Boolean)
       : [];
     const sortOrder = query.sort || 'desc';
-    const isUpcoming = query.upcoming !== 'false';
 
     setSearchQuery(search);
     setFilters({
       types: types,
       focusRegions: regions,
-      upcoming: isUpcoming ? 'Upcoming' : 'Past',
     });
     setSortOrder(sortOrder);
 
@@ -80,7 +77,6 @@ export default function NewsEventsDirectory() {
           types: types,
           focusRegions: regions,
         },
-        upcoming: isUpcoming,
         dateSort: sortOrder,
       })
     );
@@ -94,7 +90,6 @@ export default function NewsEventsDirectory() {
       query.types = newFilters.types.join(',');
     if (newFilters.focusRegions && newFilters.focusRegions.length > 0)
       query.focusRegions = newFilters.focusRegions.join(',');
-    if (newFilters.upcoming === 'Past') query.upcoming = 'false';
 
     router.push(
       {
@@ -114,7 +109,6 @@ export default function NewsEventsDirectory() {
           types: newFilters.types,
           focusRegions: newFilters.focusRegions,
         },
-        upcoming: newFilters.upcoming === 'Upcoming',
         dateSort: newSort,
       })
     );
@@ -131,9 +125,8 @@ export default function NewsEventsDirectory() {
 
   const handleClearFilters = () => {
     const emptyFilters = {
-      types: ['News', 'Event'],
+      types: [],
       focusRegions: [],
-      upcoming: 'Upcoming',
     };
     setFilters(emptyFilters);
     setSearchQuery('');
@@ -164,7 +157,6 @@ export default function NewsEventsDirectory() {
           types: filters.types,
           focusRegions: filters.focusRegions,
         },
-        upcoming: filters.upcoming === 'Upcoming',
         dateSort: sortOrder,
       })
     );
@@ -189,6 +181,7 @@ export default function NewsEventsDirectory() {
         setSearchTerm={handleSearch}
         pageTitle="News & Events"
         pageDescription="Stay updated with the latest industry news, announcements, and upcoming events."
+        searchText={'Search News & Events'}
       />
 
       <div className="container mx-auto mt-[-31px] relative z-10">
@@ -196,19 +189,12 @@ export default function NewsEventsDirectory() {
           filters={{
             region: filters.focusRegions,
             type: filters.types,
-            upcoming: [filters.upcoming],
           }}
           onFilterChange={(filterKey, values) => {
             if (filterKey === 'region') {
               handleFilterChange('focusRegions', values);
-            } else if (filterKey === 'upcoming') {
-              handleFilterChange('upcoming', values[0] || 'Upcoming');
-            } else {
-              console.log('Unhandled filter key:', filterKey);
-              handleFilterChange(
-                filterKey === 'type' ? 'types' : filterKey,
-                values
-              );
+            } else if (filterKey === 'type') {
+              handleFilterChange('types', values);
             }
           }}
           isNewsEvents={true}
@@ -240,29 +226,6 @@ export default function NewsEventsDirectory() {
                   )}
                 </button>
               </div>
-
-              <div className="flex items-center bg-white rounded-lg border border-gray-200 p-1">
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-md transition-colors ${
-                    viewMode === 'list'
-                      ? 'bg-gray-100 text-gray-600'
-                      : 'text-gray-400 hover:text-gray-600'
-                  }`}
-                >
-                  <List className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-md transition-colors ${
-                    viewMode === 'grid'
-                      ? 'bg-gray-100 text-gray-600'
-                      : 'text-gray-400 hover:text-gray-600'
-                  }`}
-                >
-                  <LayoutGrid className="w-4 h-4" />
-                </button>
-              </div>
             </div>
           </div>
 
@@ -272,151 +235,89 @@ export default function NewsEventsDirectory() {
             </div>
           ) : (
             <>
-              <div
-                className={`${
-                  viewMode === 'grid'
-                    ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-                    : 'space-y-6'
-                }`}
-              >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {newsEventsData.map((item) => (
                   <div
                     key={item.id}
-                    className={`bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300 cursor-pointer ${
-                      viewMode === 'list' ? 'flex' : 'flex flex-col h-full'
-                    }`}
+                    className="bg-white rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group  border border-primary-50"
                     onClick={() => handleCardClick(item)}
                   >
-                    {viewMode === 'list' ? (
-                      <>
-                        <div className="relative w-48 h-full overflow-hidden">
-                          {item.imageUrl ? (
-                            <Image
-                              src={getImageUrl(item.imageUrl)}
-                              alt={item.title}
-                              className="w-full h-full object-cover"
-                              unoptimized
-                              fill
-                              onError={(e) => {
-                                e.target.style.display = 'none';
-                                const parent = e.target.parentNode;
-                                if (parent) {
-                                  parent.innerHTML = `
-                                    <div class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold text-2xl">
-                                      ${item.title.charAt(0).toUpperCase()}
-                                    </div>
-                                  `;
-                                }
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold text-2xl">
-                              {item.title.charAt(0).toUpperCase()}
-                            </div>
-                          )}
+                    <div className="relative h-48 w-full overflow-hidden bg-gray-100">
+                      {item.imageUrl ? (
+                        <Image
+                          src={getImageUrl(item.imageUrl)}
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          fill
+                          unoptimized
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
+                          <span className="text-white text-4xl font-bold">
+                            {item.title.charAt(0).toUpperCase()}
+                          </span>
                         </div>
-                        <div className="flex-1 p-5">
-                          <div className="flex items-start justify-between mb-2">
-                            <h3 className="text-lg font-semibold line-clamp-1">
-                              {item.title}
-                            </h3>
-                            {item.regions && item.regions.length > 0 && (
-                              <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full ml-2">
-                                {formatRegionsDisplay(item.regions, regions)}
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-gray-600 mb-3 line-clamp-2">
-                            {item.description}
-                          </p>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center text-sm text-gray-500">
-                              {item.type === 'Event' ? (
-                                <>
-                                  <Calendar size={16} className="mr-1" />
-                                  <span>Event</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Newspaper size={16} className="mr-1" />
-                                  <span>News</span>
-                                </>
-                              )}
-                            </div>
-                            <time className="text-sm text-gray-500">
-                              {item.displayDate || ''}
-                            </time>
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="relative h-48 w-full overflow-hidden">
-                          {item.imageUrl ? (
-                            <Image
-                              src={getImageUrl(item.imageUrl)}
-                              alt={item.title}
-                              className="w-full h-full object-cover"
-                              unoptimized
-                              fill
-                              onError={(e) => {
-                                e.target.style.display = 'none';
-                                const parent = e.target.parentNode;
-                                if (parent) {
-                                  parent.innerHTML = `
-                                    <div class="w-full h-full bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
-                                      ${item.title.charAt(0).toUpperCase()}
-                                    </div>
-                                  `;
-                                }
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
-                              {item.title.charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                        </div>
-                        <div className="p-5 flex flex-col flex-1">
-                          {item.regions && item.regions.length > 0 && (
-                            <div className="flex justify-between items-start mb-4">
-                              <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">
-                                {formatRegionsDisplay(item.regions, regions)}
-                              </span>
-                            </div>
-                          )}
-                          <h3 className="text-lg font-semibold mb-3 line-clamp-2">
-                            {item.title}
-                          </h3>
-                          <p className="text-gray-600 mb-4 line-clamp-3 flex-1">
-                            {item.description}
-                          </p>
+                      )}
 
-                          <div className="flex justify-between items-center mt-auto pt-4">
-                            <div className="flex items-center text-sm text-gray-500">
-                              {item.type === 'Event' ? (
-                                <>
-                                  <Calendar size={16} className="mr-1" />
-                                  <span>Event</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Newspaper size={16} className="mr-1" />
-                                  <span>News</span>
-                                </>
-                              )}
-                            </div>
-                            <time className="text-sm text-gray-500">
-                              {item.displayDate || ''}
-                            </time>
+                      <div className="absolute top-4 left-4">
+                        <span
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                            item.type === 'Event'
+                              ? 'bg-white text-primary-600'
+                              : 'bg-white text-primary-600'
+                          }`}
+                        >
+                          {item.type === 'Event' ? (
+                            <>
+                              <Calendar size={14} className="mr-1.5" />
+                              Event
+                            </>
+                          ) : (
+                            <>
+                              <Newspaper size={14} className="mr-1.5" />
+                              News
+                            </>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-5">
+                      <div className="flex items-center justify-between mb-3 text-sm">
+                        {item.regions && item.regions.length > 0 && (
+                          <div className="flex items-center text-primary-600">
+                            <MapPin size={14} className="mr-1" />
+                            <span className="font-medium">
+                              {formatRegionsDisplay(item.regions, regions)}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex items-center text-black font-bold">
+                          <Calendar size={14} className="mr-1" />
+                          <time>{item.displayDate || ''}</time>
+                        </div>
+                      </div>
+
+                      <h3 className="text-lg font-semibold mb-3 line-clamp-2 text-black transition-colors flex items-center gap-2 justify-between">
+                        {item.title}
+
+                        <div className="flex justify-end">
+                          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
+                            <ChevronRight
+                              size={16}
+                              className="text-gray-600 group-hover:text-primary-600"
+                            />
                           </div>
                         </div>
-                      </>
-                    )}
+                      </h3>
+
+                      <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
-
               {newsEventsData.length === 0 && !loading && (
                 <div className="text-center py-12">
                   <h3 className="text-lg font-semibold text-gray-900">
@@ -427,11 +328,14 @@ export default function NewsEventsDirectory() {
                   </p>
                 </div>
               )}
-
               {totalPages > 1 && (
                 <div className="flex items-center justify-between mt-12">
                   <button
-                    onClick={() => handlePageChange(currentPage - 1)}
+                    onClick={() => {
+                      const newPage = currentPage - 1;
+                      setCurrentPage(newPage);
+                      handlePageChange(newPage);
+                    }}
                     disabled={currentPage === 1}
                     className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -445,7 +349,10 @@ export default function NewsEventsDirectory() {
                         <button
                           key={index}
                           onClick={() => {
-                            typeof page === 'number' && handlePageChange(page);
+                            if (typeof page === 'number') {
+                              setCurrentPage(page);
+                              handlePageChange(page);
+                            }
                           }}
                           className={`w-10 h-10 rounded-[50%] font-medium transition-colors ${
                             page === currentPage
@@ -463,7 +370,11 @@ export default function NewsEventsDirectory() {
                   </div>
 
                   <button
-                    onClick={() => handlePageChange(currentPage + 1)}
+                    onClick={() => {
+                      const newPage = currentPage + 1;
+                      setCurrentPage(newPage);
+                      handlePageChange(newPage);
+                    }}
                     disabled={currentPage === totalPages}
                     className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >

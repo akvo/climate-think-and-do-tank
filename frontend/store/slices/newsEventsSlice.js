@@ -7,16 +7,22 @@ const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 export const fetchNewsEvents = createAsyncThunk(
   'newsEvents/fetchNewsEvents',
   async (
-    { page = 1, pageSize = 12, query = '', filters = {}, upcoming = true },
+    { page = 1, pageSize = 12, query = '', filters = {}, dateSort = 'desc' },
     { rejectWithValue }
   ) => {
     try {
-      const today = new Date().toISOString().split('T')[0];
-
-      const fetchNews = !filters.types || filters.types.includes('News');
-      const fetchEvents = !filters.types || filters.types.includes('Event');
+      const fetchNews =
+        !filters.types ||
+        filters.types.length === 0 ||
+        filters.types.includes('News');
+      const fetchEvents =
+        !filters.types ||
+        filters.types.length === 0 ||
+        filters.types.includes('Events') ||
+        filters.types.includes('Event');
 
       const promises = [];
+      let totalCount = 0;
 
       if (fetchNews) {
         const newsQueryParams = new URLSearchParams();
@@ -40,16 +46,7 @@ export const fetchNewsEvents = createAsyncThunk(
           });
         }
 
-        let thirtyDaysAgo = new Date();
-        const today = new Date();
-        const todayStr = today.toISOString().split('T')[0];
-
-        if (upcoming) {
-          newsQueryParams.append('filters[publication_date][$gte]', todayStr);
-        } else {
-          newsQueryParams.append('filters[publication_date][$lt]', todayStr);
-        }
-
+        newsQueryParams.append('sort[0]', `publication_date:${dateSort}`);
         newsQueryParams.append('populate[0]', 'regions');
         newsQueryParams.append('populate[1]', 'image');
 
@@ -57,6 +54,10 @@ export const fetchNewsEvents = createAsyncThunk(
           axios
             .get(`${BACKEND_URL}/api/news?${newsQueryParams}`)
             .then((response) => {
+              if (response.data.meta?.pagination?.total) {
+                totalCount += response.data.meta.pagination.total;
+              }
+
               return response.data.data.map((item) => ({
                 id: item.id,
                 documentId: item.documentId,
@@ -68,9 +69,6 @@ export const fetchNewsEvents = createAsyncThunk(
                 displayDate: item.publication_date,
                 regions: item.regions ? item.regions.map((r) => r.name) : [],
                 imageUrl: item.image ? item.image : '',
-                isUpcoming: false,
-                isRecent:
-                  new Date(item.publication_date) >= new Date(thirtyDaysAgo),
               }));
             })
             .catch((error) => {
@@ -102,12 +100,7 @@ export const fetchNewsEvents = createAsyncThunk(
           });
         }
 
-        if (upcoming) {
-          eventsQueryParams.append('filters[event_date][$gte]', today);
-        } else {
-          eventsQueryParams.append('filters[event_date][$lt]', today);
-        }
-
+        eventsQueryParams.append('sort[0]', `event_date:${dateSort}`);
         eventsQueryParams.append('populate[0]', 'regions');
         eventsQueryParams.append('populate[1]', 'image');
 
@@ -115,6 +108,10 @@ export const fetchNewsEvents = createAsyncThunk(
           axios
             .get(`${BACKEND_URL}/api/events?${eventsQueryParams}`)
             .then((response) => {
+              if (response.data.meta?.pagination?.total) {
+                totalCount += response.data.meta.pagination.total;
+              }
+
               return response.data.data.map((item) => ({
                 id: item.id,
                 documentId: item.documentId,
@@ -125,7 +122,6 @@ export const fetchNewsEvents = createAsyncThunk(
                 eventDate: item.event_date || null,
                 displayDate: item.event_date,
                 imageUrl: item.image ? item.image : '',
-                isUpcoming: new Date(item.event_date) >= new Date(today),
                 location: item.map_link || '',
                 startTime: item.start_time || '',
                 endTime: item.end_time || '',
@@ -140,18 +136,25 @@ export const fetchNewsEvents = createAsyncThunk(
       }
 
       const results = await Promise.all(promises);
-
       let combinedResults = [].concat(...results);
 
-      const startIndex = 0;
-      const endIndex = Math.min(pageSize, combinedResults.length);
+      combinedResults.sort((a, b) => {
+        const dateA = new Date(a.displayDate);
+        const dateB = new Date(b.displayDate);
+        return dateSort === 'desc' ? dateB - dateA : dateA - dateB;
+      });
+
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
       const paginatedResults = combinedResults.slice(startIndex, endIndex);
 
       return {
         data: paginatedResults,
         meta: {
           page,
-          hasMore: combinedResults.length > endIndex,
+          pageSize,
+          total: combinedResults.length,
+          hasMore: endIndex < combinedResults.length,
         },
       };
     } catch (error) {
@@ -196,6 +199,11 @@ const newsEventsSlice = createSlice({
       })
       .addCase(fetchNewsEvents.fulfilled, (state, action) => {
         state.loading = false;
+        state.data = action.payload.data;
+        state.currentPage = action.payload.meta.page;
+        state.hasMore = action.payload.meta.hasMore;
+        state.total = action.payload.meta.total;
+        state.error = null;
 
         if (action.meta.arg.page === 1) {
           state.data = action.payload.data;
