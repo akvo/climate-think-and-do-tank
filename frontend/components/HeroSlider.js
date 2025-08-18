@@ -131,7 +131,7 @@ const HeroSlider = ({ setData }) => {
                   <Search className="absolute left-4 text-gray-400 w-5 h-5" />
                   <input
                     type="text"
-                    placeholder="Kenya's arid land"
+                    placeholder="Search all platform content.."
                     value={query}
                     onChange={handleInputChange}
                     className="flex-1 pl-12 pr-4 h-12 text-lg bg-transparent border-none focus:outline-none text-black focus:ring-2 focus:ring-primary-500 rounded-full"
