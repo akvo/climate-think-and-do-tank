@@ -339,8 +339,12 @@ const KnowledgeLibrary = () => {
       <HeroSection
         searchTerm={searchTerm}
         setSearchTerm={handleSearch}
-        pageTitle="Knowledge library"
-        pageDescription="The latest industry news, interviews, technologies, and resources."
+        searchText={
+          'Browse relevant resources using the filters below, or use the search bar'
+        }
+        searchPlaceholder="Search resources.."
+        pageTitle="Knowledge Hub"
+        pageDescription="The Kenya Drylands Investment Hub Knowledge Hub is a centralized repository for resources on investment opportunities, climate change, value chains etc. within the 8 focus ASAL counties"
       />
 
       <div className="container mx-auto mt-[-31px] relative z-10">

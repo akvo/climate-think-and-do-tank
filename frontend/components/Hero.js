@@ -8,6 +8,7 @@ export default function HeroSection({
   pageDescription,
   showSearch = true,
   searchText,
+  searchPlaceholder,
 }) {
   const [searchValue, setSearchValue] = useState('');
 
@@ -76,7 +77,7 @@ export default function HeroSection({
                   </svg>
                   <input
                     type="text"
-                    placeholder={searchText || 'Search...'}
+                    placeholder={searchPlaceholder || searchText || 'Search...'}
                     value={searchValue}
                     onChange={(e) => {
                       setSearchValue(e.target.value);

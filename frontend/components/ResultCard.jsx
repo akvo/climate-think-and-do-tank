@@ -35,22 +35,18 @@ export default function ResultCard({ result, viewMode, onClick, showLink }) {
             className="w-full h-full object-cover rounded-lg sm:rounded-xl md:rounded-2xl"
             unoptimized
             onError={(e) => {
-              const parentDiv = e.target.closest('.relative');
-              if (parentDiv) {
-                e.target.style.display = 'none';
-                const fallbackDiv = document.createElement('div');
-                fallbackDiv.className =
-                  'w-full h-full bg-primary-500 flex items-center justify-center text-white text-xl sm:text-2xl font-bold rounded-lg sm:rounded-xl md:rounded-2xl';
-                fallbackDiv.textContent = result.title.charAt(0).toUpperCase();
-                parentDiv.innerHTML = '';
-                parentDiv.appendChild(fallbackDiv);
-              }
+              e.target.src = '/images/placeholder.jpg';
             }}
           />
         ) : (
-          <div className="w-full h-full bg-primary-500 flex items-center justify-center text-white text-xl sm:text-2xl font-bold rounded-lg sm:rounded-xl md:rounded-2xl">
-            {result.title.charAt(0).toUpperCase()}
-          </div>
+          <Image
+            src="/images/placeholder.jpg"
+            alt={result.title}
+            width={500}
+            height={300}
+            className="w-full h-full object-cover rounded-lg sm:rounded-xl md:rounded-2xl"
+            unoptimized
+          />
         )}
 
         {showLink && (
@@ -98,7 +94,9 @@ export default function ResultCard({ result, viewMode, onClick, showLink }) {
               <div className="flex items-center gap-1">
                 <Calendar className="w-3 sm:w-4 h-3 sm:h-4 text-gray-600 sm:text-black" />
                 <span className="text-gray-600 sm:text-black font-medium sm:font-bold">
-                  {result.publishedAt ? result.publishedAt : 'No Date'}
+                  {result.publishedAt
+                    ? new Date(result.publishedAt).getFullYear()
+                    : 'No Date'}
                 </span>
               </div>
             </div>

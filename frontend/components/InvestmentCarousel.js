@@ -112,7 +112,7 @@ const InvestmentCarousel = () => {
                 : '',
               image: item?.picture_one?.url
                 ? item?.picture_one
-                : '/images/placholder.jpg',
+                : '/images/placeholder.jpg',
             };
           });
 

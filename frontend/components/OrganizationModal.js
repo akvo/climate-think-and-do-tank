@@ -86,7 +86,11 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
                 </svg>
-                <span>{new Date(card.publishedAt).getFullYear()}</span>
+                <span>
+                  {card.publishedAt
+                    ? new Date(card.publishedAt).getFullYear()
+                    : 'No Date'}
+                </span>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -137,29 +141,25 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
           <div className="w-full h-80 bg-gray-200 rounded-2xl mb-8 overflow-hidden">
             {card.image ? (
               <Image
-                src={card.image || '/placeholder.svg'}
+                src={card.image}
                 alt={card.title}
                 width={800}
                 height={320}
                 className="w-full h-full object-cover"
                 unoptimized
                 onError={(e) => {
-                  const parentDiv = e.target.closest('.w-full.h-80');
-                  if (parentDiv) {
-                    e.target.style.display = 'none';
-                    const initialDiv = document.createElement('div');
-                    initialDiv.className =
-                      'w-full h-full bg-primary-500 flex items-center justify-center text-white text-4xl font-bold';
-                    initialDiv.textContent = card.title.charAt(0).toUpperCase();
-                    parentDiv.innerHTML = '';
-                    parentDiv.appendChild(initialDiv);
-                  }
+                  e.target.src = '/images/placeholder.jpg';
                 }}
               />
             ) : (
-              <div className="w-full h-full bg-primary-500 flex items-center justify-center text-white text-4xl font-bold">
-                {card.title.charAt(0).toUpperCase()}
-              </div>
+              <Image
+                src="/images/placeholder.jpg"
+                alt={card.title}
+                width={800}
+                height={320}
+                className="w-full h-full object-cover"
+                unoptimized
+              />
             )}
           </div>
 
@@ -171,30 +171,18 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
             {card.description}
           </div>
 
-          <div className="mb-8">
-            <div className="text-gray-500 text-sm mb-3">
-              Theme/Sector in this document:
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              {card.thematicFocus?.map((theme, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-primary-50 text-primary-500 text-sm rounded-full border border-primary-100"
-                >
-                  {theme}
+          {card.topic && (
+            <div className="mb-8">
+              <div className="text-gray-500 text-sm mb-3">
+                Theme/Sector in this document:
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <span className="px-3 py-1 bg-primary-50 text-primary-500 text-sm rounded-full border border-primary-100">
+                  {card.topic}
                 </span>
-              )) || (
-                <>
-                  <span className="px-3 py-1 bg-primary-50 text-primary-500 text-sm rounded-full border border-primary-100">
-                    Agriculture
-                  </span>
-                  <span className="px-3 py-1 bg-primary-50 text-primary-500 text-sm rounded-full border border-primary-100">
-                    Agriculture
-                  </span>
-                </>
-              )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

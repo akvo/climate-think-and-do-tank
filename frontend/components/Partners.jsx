@@ -3,47 +3,52 @@ import Image from 'next/image';
 
 const PartnersSection = () => {
   const partners = [
-    { id: 1, name: 'VO Partner', src: '/images/placholder.jpg', width: 'w-24' },
+    {
+      id: 1,
+      name: 'VO Partner',
+      src: '/images/placeholder.jpg',
+      width: 'w-24',
+    },
     {
       id: 2,
       name: 'Government Partner 1',
-      src: '/images/placholder.jpg',
+      src: '/images/placeholder.jpg',
       width: 'w-16',
     },
     {
       id: 3,
       name: 'Institutional Partner 1',
-      src: '/images/placholder.jpg',
+      src: '/images/placeholder.jpg',
       width: 'w-16',
     },
     {
       id: 4,
       name: 'VNG International',
-      src: '/images/placholder.jpg',
+      src: '/images/placeholder.jpg',
       width: 'w-20',
     },
     {
       id: 5,
       name: 'Government Partner 2',
-      src: '/images/placholder.jpg',
+      src: '/images/placeholder.jpg',
       width: 'w-16',
     },
     {
       id: 6,
       name: 'Partner Seal',
-      src: '/images/placholder.jpg',
+      src: '/images/placeholder.jpg',
       width: 'w-16',
     },
     {
       id: 7,
       name: 'Institutional Partner 2',
-      src: '/images/placholder.jpg',
+      src: '/images/placeholder.jpg',
       width: 'w-16',
     },
     {
       id: 8,
       name: 'Organization Partner',
-      src: '/images/placholder.jpg',
+      src: '/images/placeholder.jpg',
       width: 'w-16',
     },
   ];
