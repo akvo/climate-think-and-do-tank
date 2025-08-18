@@ -34,8 +34,20 @@
       "type": "text"
     },
     "banner": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images"
+      ]
+    },
+    "banner_description": {
+      "type": "text"
+    },
+    "mission_image": {
+      "allowedTypes": [
+        "images",
+        "files"
       ],
       "type": "media",
       "multiple": false

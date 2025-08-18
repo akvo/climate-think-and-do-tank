@@ -225,7 +225,7 @@ export default function SignUpForm() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter your email address"
-                      className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                      className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
                         formErrors.email ? 'border-red-500' : 'border-gray-200'
                       } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
                     />
@@ -249,9 +249,10 @@ export default function SignUpForm() {
                         id="password"
                         name="password"
                         type={showPassword ? 'text' : 'password'}
+                        placeholder="Enter your password"
                         value={formData.password}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                        className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
                           formErrors.password
                             ? 'border-red-500'
                             : 'border-gray-200'
@@ -288,10 +289,11 @@ export default function SignUpForm() {
                       <input
                         id="confirmPassword"
                         name="confirmPassword"
+                        placeholder="Re-enter your password"
                         type={showConfirmPassword ? 'text' : 'password'}
                         value={formData.confirmPassword}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                        className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
                           formErrors.confirmPassword
                             ? 'border-red-500'
                             : 'border-gray-200'
@@ -323,7 +325,7 @@ export default function SignUpForm() {
                     disabled={isSubmitting}
                     className={`
                     w-full 
-                    bg-green-600 
+                    bg-primary-500 
                     text-white 
                     py-3 
                     rounded-full 
@@ -332,7 +334,7 @@ export default function SignUpForm() {
                     ${
                       isSubmitting
                         ? 'opacity-50 cursor-not-allowed'
-                        : 'hover:bg-green-700'
+                        : 'hover:bg-primary-600'
                     }
                   `}
                   >
@@ -677,7 +679,7 @@ const AdditionalDetails = ({
                               filteredOrganizations.map((org) => (
                                 <div
                                   key={org.id}
-                                  className="p-3 hover:bg-gray-50 cursor-pointer"
+                                  className="p-3 hover:bg-white cursor-pointer"
                                   onClick={() => {
                                     setFormData({
                                       ...formData,

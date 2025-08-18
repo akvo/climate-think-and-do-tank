@@ -53,9 +53,7 @@ const StatsGrid = ({}) => {
         icon={<TopicIcon className="w-12" />}
       />
       <StatBlock
-        value={`${
-          stats.users > 0 ? Math.round((stats.users / 100) * 600) : 600
-        }%`}
+        value={formatNumber(stats.users)}
         label="Users Signed Up"
         icon={<UserIcon className="w-8" />}
       />

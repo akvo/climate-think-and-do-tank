@@ -199,7 +199,7 @@ export default function LoginForm() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter your email"
-                      className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                      className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
                         formErrors.email ? 'border-red-500' : 'border-gray-200'
                       } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
                     />
@@ -221,10 +221,11 @@ export default function LoginForm() {
                       <input
                         id="password"
                         name="password"
+                        placeholder="Enter your password"
                         type={showPassword ? 'text' : 'password'}
                         value={formData.password}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                        className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
                           formErrors.password
                             ? 'border-red-500'
                             : 'border-gray-200'
@@ -275,7 +276,7 @@ export default function LoginForm() {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="user@address.com"
-                        className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                        className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
                           formErrors.email
                             ? 'border-red-500'
                             : 'border-gray-200'
@@ -294,7 +295,7 @@ export default function LoginForm() {
                           onClick={handleSubmit}
                           className={`
                         w-full 
-                      bg-green-600 
+                      bg-primary-600 
                       text-white 
                         py-3 
                         rounded-full 
@@ -303,7 +304,7 @@ export default function LoginForm() {
                       ${
                         isSubmitting
                           ? 'opacity-50 cursor-not-allowed'
-                          : 'hover:bg-zinc-800'
+                          : 'hover:bg-primary-700'
                       }
                     `}
                         >
@@ -348,7 +349,7 @@ export default function LoginForm() {
                           type="text"
                           value={formData.resetCode}
                           onChange={handleChange}
-                          className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                          className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
                             formErrors.resetCode
                               ? 'border-red-500'
                               : 'border-gray-200'
@@ -374,10 +375,10 @@ export default function LoginForm() {
                           type="password"
                           value={formData.newPassword}
                           onChange={handleChange}
-                          className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                          className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
                             formErrors.newPassword
                               ? 'border-red-500'
-                              : 'border-gray-200'
+                              : 'border-gray-100'
                           } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
                         />
                         {formErrors.newPassword && (
@@ -400,7 +401,7 @@ export default function LoginForm() {
                           type="password"
                           value={formData.confirmNewPassword}
                           onChange={handleChange}
-                          className={`w-full px-4 py-3 bg-gray-50 border placeholder:text-black text-black ${
+                          className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
                             formErrors.confirmNewPassword
                               ? 'border-red-500'
                               : 'border-gray-200'
@@ -445,7 +446,7 @@ export default function LoginForm() {
                   disabled={isSubmitting}
                   className={`
                     w-full 
-                    bg-green-600 
+                    bg-primary-400 
                     text-white 
                     py-3 
                     rounded-full 
@@ -454,7 +455,7 @@ export default function LoginForm() {
                     ${
                       isSubmitting
                         ? 'opacity-50 cursor-not-allowed'
-                        : 'hover:bg-green-700'
+                        : 'hover:bg-primary-600'
                     }
                   `}
                 >

@@ -964,18 +964,13 @@ export default function KenyaMap({
             {!selectedCounty && (
               <>
                 <div className="rounded-xl p-6 shadow-lg bg-gray-10 border border-gray-30">
-                  <div className="flex items-start gap-4">
+                  <div className="flex gap-4 items-center">
                     <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 text-primary-400 border-primary-50 border-8 ">
                       <RegionIcon className="w-4 h-4" />
                     </div>
-                    <div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                        Click on the county to explore
-                      </h3>
-                      <p className="text-gray-600">
-                        Get to know more about the county
-                      </p>
-                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900">
+                      Click on the county to explore
+                    </h3>
                   </div>
                 </div>
                 <div className="bg-gray-10 rounded-xl p-6 shadow-lg">
