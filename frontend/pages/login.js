@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login, forgotPassword, resetPassword } from '@/store/slices/authSlice';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
+import { H3 } from '@/components/Heading';
+import { ParagraphMD } from '@/components/Text';
 
 export default function LoginForm() {
   const dispatch = useDispatch();
@@ -156,23 +158,20 @@ export default function LoginForm() {
         <div className="flex-grow flex items-center">
           <div className="max-w-4xl mx-auto w-full">
             <div className="mb-12">
-              <h1 className="text-4xl font-bold text-black mb-6">
+              <H3 variant="bold" className="mb-4">
                 {formData.forgotPassword
                   ? 'Forgot your password'
                   : 'Welcome to the Kenya Drylands Investment Hub'}
-              </h1>
+              </H3>
 
               {formData.forgotPassword ? (
                 <p className="text-gray-600">
                   We’ll send you a code to the email address you signed up with
                 </p>
               ) : (
-                <p className="text-gray-600">
-                  Don&apos;t have an account?{' '}
-                  <Link href="/signup" className="text-gray-900 underline">
-                    Register here. It takes less than a minute.
-                  </Link>
-                </p>
+                <ParagraphMD>
+                  Login for your user account to access the platform’s features
+                </ParagraphMD>
               )}
             </div>
 
@@ -188,7 +187,7 @@ export default function LoginForm() {
                   <div className="space-y-2">
                     <label
                       htmlFor="email"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-md font-bold text-black"
                     >
                       Email
                     </label>
@@ -199,9 +198,11 @@ export default function LoginForm() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter your email"
-                      className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
-                        formErrors.email ? 'border-red-500' : 'border-gray-200'
-                      } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                      className={`w-full px-4 py-3 bg-white border  ${
+                        formErrors.email
+                          ? 'border-primary-500'
+                          : 'border-gray-200'
+                      } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                     />
                     {formErrors.email && (
                       <p className="mt-1 text-sm text-red-600">
@@ -213,7 +214,7 @@ export default function LoginForm() {
                   <div className="space-y-2">
                     <label
                       htmlFor="password"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-md font-bold text-black"
                     >
                       Password
                     </label>
@@ -225,11 +226,11 @@ export default function LoginForm() {
                         type={showPassword ? 'text' : 'password'}
                         value={formData.password}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
+                        className={`w-full px-4 py-3 bg-white border ${
                           formErrors.password
                             ? 'border-red-500'
                             : 'border-gray-200'
-                        } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent pr-10`}
+                        } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent pr-10`}
                       />
                       <button
                         type="button"
@@ -252,9 +253,9 @@ export default function LoginForm() {
                       <button
                         type="button"
                         onClick={handleForgotPassword}
-                        className="text-sm text-gray-600 hover:underline"
+                        className="text-sm text-primary-500 font-bold hover:underline"
                       >
-                        Forgot Password?
+                        Forgot Password
                       </button>
                     </div>
                   </div>
@@ -280,7 +281,7 @@ export default function LoginForm() {
                           formErrors.email
                             ? 'border-red-500'
                             : 'border-gray-200'
-                        } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                        } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                       />
                       {formErrors.email && (
                         <p className="mt-1 text-sm text-red-600">
@@ -353,7 +354,7 @@ export default function LoginForm() {
                             formErrors.resetCode
                               ? 'border-red-500'
                               : 'border-gray-200'
-                          } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                          } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                         />
                         {formErrors.resetCode && (
                           <p className="mt-1 text-sm text-red-600">
@@ -379,7 +380,7 @@ export default function LoginForm() {
                             formErrors.newPassword
                               ? 'border-red-500'
                               : 'border-gray-100'
-                          } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                          } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                         />
                         {formErrors.newPassword && (
                           <p className="mt-1 text-sm text-red-600">
@@ -405,7 +406,7 @@ export default function LoginForm() {
                             formErrors.confirmNewPassword
                               ? 'border-red-500'
                               : 'border-gray-200'
-                          } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                          } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                         />
                         {formErrors.confirmNewPassword && (
                           <p className="mt-1 text-sm text-red-600">
@@ -418,12 +419,13 @@ export default function LoginForm() {
                             disabled={isSubmitting}
                             className={`
                           w-full    
-                        bg-green-600 
+                        bg-primary-500 
                         text-white 
                           py-3 
                           rounded-full 
                           transition-colors 
                           duration-200
+                          font-bold
                           ${
                             isSubmitting
                               ? 'opacity-50 cursor-not-allowed'
@@ -446,7 +448,8 @@ export default function LoginForm() {
                   disabled={isSubmitting}
                   className={`
                     w-full 
-                    bg-primary-400 
+                    font-bold
+                    bg-primary-500 
                     text-white 
                     py-3 
                     rounded-full 
@@ -487,17 +490,24 @@ export default function LoginForm() {
                 </button>
               )}
 
+              <p className="text-[#495057] flex items-center justify-center mt-4 gap-1 text-[16px]">
+                Don&apos;t have an account?{' '}
+                <Link href="/signup" className="text-primary-500 font-bold">
+                  Sign up
+                </Link>
+              </p>
+
               <div className="text-center text-sm text-gray-600 space-y-2">
                 <p>
                   By submitting your files to the platform, you acknowledge that
                   you agree to our{' '}
-                  <a href="/terms" className="text-green-600 hover:underline">
+                  <a href="/terms" className="text-primary-600 hover:underline">
                     Terms of Service
                   </a>{' '}
                   and{' '}
                   <a
                     href="/guidelines"
-                    className="text-green-600 hover:underline"
+                    className="text-primary-600 hover:underline"
                   >
                     Community Guidelines
                   </a>
@@ -507,7 +517,7 @@ export default function LoginForm() {
                   privacy rights.{' '}
                   <a
                     href="/learn-more"
-                    className="text-green-600 hover:underline"
+                    className="text-primary-600 hover:underline"
                   >
                     Learn more
                   </a>

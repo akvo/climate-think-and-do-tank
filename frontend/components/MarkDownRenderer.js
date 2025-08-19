@@ -2,6 +2,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Check } from 'lucide-react';
+import { ParagraphMD } from './Text';
 
 export const MarkdownRenderer = ({ content, components = {} }) => {
   const defaultComponents = {
@@ -25,7 +26,7 @@ export const MarkdownRenderer = ({ content, components = {} }) => {
     h3: ({ node, ...props }) => (
       <h3 {...props} className="text-lg font-semibold mt-2 mb-1" />
     ),
-    p: ({ node, ...props }) => <p {...props} className="mb-4" />,
+    p: ({ node, ...props }) => <ParagraphMD {...props} className="mb-4" />,
     ul: ({ node, ...props }) => <ul {...props} className="space-y-3 mb-4" />,
     li: ({ node, children, ...props }) => (
       <li className="flex items-start gap-3" {...props}>

@@ -14,8 +14,8 @@ const menuItems = [
   {
     label: 'Invest',
     dropdown: [
-      { label: 'Social Accountability', path: '/social-accountability' },
       { label: 'Investment Opportunities', path: '/investment-profiles' },
+      { label: 'Social Accountability', path: '/social-accountability' },
     ],
   },
   { label: 'Connect', path: '/stakeholder-directory' },

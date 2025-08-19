@@ -5,6 +5,9 @@ import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import { useRouter } from 'next/router';
 import { getImageUrl } from '@/helpers/utilities';
+import { H2 } from './Heading';
+import { ParagraphMD } from './Text';
+import Button from './Button';
 
 const HeroSlider = ({ setData }) => {
   const router = useRouter();
@@ -113,17 +116,17 @@ const HeroSlider = ({ setData }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[500px]">
           <div className="max-w-2xl mx-auto px-6 pl-32">
             <div className="mb-12">
-              <h1 className="text-[48px] font-extrabold text-primary-500 mb-4 leading-tight">
+              <H2 className="font-extrabold text-primary-500">
                 Welcome to the Kenya Drylands Investment Hub
-              </h1>
-              <p className="text-xl text-gray-800">
+              </H2>
+              <ParagraphMD className="mt-4">
                 Driving sustainable investment in agrifood, water, and energy
                 across Kenya&apos;s drylands
-              </p>
+              </ParagraphMD>
             </div>
 
             <div className="mb-8">
-              <p className="text-gray-500 mb-[10px]">
+              <p className="text-[#818181] mb-[10px]">
                 Search all platform content
               </p>
               <form onSubmit={handleSearch} className="flex gap-3">
@@ -136,12 +139,9 @@ const HeroSlider = ({ setData }) => {
                     onChange={handleInputChange}
                     className="flex-1 pl-12 pr-4 h-12 text-lg bg-transparent border-none focus:outline-none text-black focus:ring-2 focus:ring-primary-500 rounded-full"
                   />
-                  <button
-                    type="submit"
-                    className="px-8 py-2 mx-1 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-medium transition-colors"
-                  >
+                  <Button variant="primary" className="font-bold">
                     Search
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>

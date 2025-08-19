@@ -1,39 +1,34 @@
 import React from 'react';
-const { cn } = require('@/helpers/utilities');
+import { cn } from '@/helpers/utilities';
 
 const headingStyles = {
   h1: {
-    regular: 'text-5xl md:text-6xl font-roboto-slab font-normal',
-    bold: 'text-5xl md:text-6xl font-roboto-slab font-bold',
-    size: 'text-[48px] md:text-[64px]',
+    regular: 'text-[48px] md:text-[64px] font-roboto-slab font-normal',
+    bold: 'text-[48px] md:text-[64px] font-roboto-slab font-bold',
     lineHeight: 'leading-[56px] md:leading-[68px]',
     tracking: 'tracking-[-0.02em]',
   },
   h2: {
-    regular: 'text-4xl md:text-5xl font-roboto-slab font-normal',
-    bold: 'text-4xl md:text-5xl font-roboto-slab font-bold',
-    size: 'text-[36px] md:text-[48px]',
+    regular: 'text-[36px] md:text-[48px] font-roboto-slab font-normal',
+    bold: 'text-[36px] md:text-[48px] font-roboto-slab font-bold',
     lineHeight: 'leading-[44px] md:leading-[56px]',
     tracking: 'tracking-[-0.02em]',
   },
   h3: {
-    regular: 'text-3xl md:text-4xl font-roboto-slab font-normal',
-    bold: 'text-3xl md:text-4xl font-roboto-slab font-bold',
-    size: 'text-[32px] md:text-[36px]',
+    regular: 'text-[32px] md:text-[36px] font-roboto-slab font-normal',
+    bold: 'text-[32px] md:text-[36px] font-roboto-slab font-bold',
     lineHeight: 'leading-[40px] md:leading-[44px]',
     tracking: 'tracking-[-0.02em]',
   },
   h4: {
-    regular: 'text-2xl md:text-3xl font-roboto-slab font-normal',
-    bold: 'text-2xl md:text-3xl font-roboto-slab font-bold',
-    size: 'text-[24px] md:text-[32px]',
+    regular: 'text-[24px] md:text-[32px] font-roboto-slab font-normal',
+    bold: 'text-[24px] md:text-[32px] font-roboto-slab font-bold',
     lineHeight: 'leading-[32px] md:leading-[40px]',
     tracking: 'tracking-[0]',
   },
   h5: {
-    regular: 'text-xl md:text-2xl font-roboto-slab font-normal',
-    bold: 'text-xl md:text-2xl font-roboto-slab font-bold',
-    size: 'text-[20px] md:text-[24px]',
+    regular: 'text-[20px] md:text-[24px] font-roboto-slab font-normal',
+    bold: 'text-[20px] md:text-[24px] font-roboto-slab font-bold',
     lineHeight: 'leading-[28px] md:leading-[32px]',
     tracking: 'tracking-[-0.025em]',
   },
@@ -56,7 +51,6 @@ const Heading = ({
   }
 
   const baseClasses = styles[variant] || styles.regular;
-  const sizeClasses = styles.size;
   const lineHeightClasses = styles.lineHeight;
   const trackingClasses = styles.tracking;
 

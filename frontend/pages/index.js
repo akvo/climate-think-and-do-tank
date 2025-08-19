@@ -8,6 +8,9 @@ import StatsGrid from '@/components/StatsGrid';
 import PartnersSection from '@/components/Partners';
 import InterestedSection from '@/components/ContactSection';
 import Button from '@/components/Button';
+import { H3 } from '@/components/Heading';
+import { ParagraphMD } from '@/components/Text';
+import Link from 'next/link';
 
 export default function HomePage() {
   const router = useRouter();
@@ -26,12 +29,12 @@ export default function HomePage() {
           <div className="container mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-16 ">
               <div className="col-span-1 md:col-span-5">
-                <h2 className="text-4xl font-bold text-gray-800 leading-tight mb-6">
+                <H3 variant="bold">
                   Welcome to the{' '}
-                  <span className="text-primary-400">
+                  <span className="text-primary-500">
                     Kenya Drylands Investment Hub
                   </span>
-                </h2>
+                </H3>
               </div>
               <div className="col-span-1 md:col-span-7 space-y-8 text-[20px]">
                 <MarkdownRenderer content={data.description} />
@@ -46,23 +49,26 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="flex items-start justify-between gap-6">
               <div>
-                <h2 className="text-3xl font-bold mb-2">
+                <H3 variant="bold" className="mb-4">
                   Explore{' '}
                   <span className="text-primary-500">
                     Kenya&lsquo;s Drylands
                   </span>
-                </h2>
-                <p className="text-lg text-gray-700 mb-12">
+                </H3>
+                <ParagraphMD>
                   KDIH focuses on eight priority counties: Turkana, Marsabit,
                   Isiolo, Samburu, Laikipia, Narok, Kajiado, and Taita Taveta.
                   These regions face the dual challenge of climate vulnerability
                   and untapped investment potential.
-                </p>
+                </ParagraphMD>
               </div>
               <div>
-                <Button className="min-w-[200px]">
+                <Link
+                  href="/social-accountability"
+                  className="inline-flex items-center px-6 py-3 border border-primary-500 rounded-full text-primary-500 hover:bg-primary-500 hover:text-white transition-colors font-bold min-w-[300px] justify-center"
+                >
                   Explore social accountability
-                </Button>
+                </Link>
               </div>
             </div>
           </div>

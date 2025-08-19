@@ -13,7 +13,7 @@ const Button = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-medium rounded-[100px] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed';
+    'inline-flex items-center justify-center font-bold rounded-[100px] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed';
 
   const sizeStyles = {
     xs: 'px-2.5 py-1.5 text-xs',
@@ -25,8 +25,8 @@ const Button = ({
 
   const variantStyles = {
     primary: `
-      bg-primary-500 text-white 
-      hover:bg-primary-700 
+      bg-primary-500 text-white border-primary-500 border-2 
+      hover:bg-white hover:text-primary-500 hover:border-primary-500
       focus:ring-primary-500 
       disabled:bg-primary-300 disabled:text-primary-100
       active:bg-primary-700

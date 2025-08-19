@@ -87,7 +87,7 @@ export default function HeroSection({
                   <Button
                     variant="primary"
                     size="md"
-                    className="hidden lg:block px-4 sm:px-6 md:px-8 mx-1 text-sm sm:text-base bg-primary-500"
+                    className="hidden lg:block px-4 sm:px-6 md:px-8 mx-1 text-sm sm:text-base bg-primary-500 hover:bg-white hover:text-primary-500"
                     onClick={() => {
                       setSearchTerm(searchValue);
                     }}

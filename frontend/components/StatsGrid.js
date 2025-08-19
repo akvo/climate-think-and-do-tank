@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import { InvestmentIcon, TopicIcon, UserIcon } from './Icons';
+import { H2 } from './Heading';
+import { ParagraphMD } from './Text';
 
 const formatNumber = (num) => (num > 0 ? `${num}+` : '0');
 
@@ -76,8 +78,10 @@ const StatBlock = ({ value, label, icon }) => (
     </div>
 
     <div className="mt-20">
-      <p className="text-5xl font-bold text-primary-500 mb-3">{value}</p>
-      <p className="text-gray-800 font-medium text-xl">{label}</p>
+      <H2 className="text-primary-500 mb-3" variant="bold">
+        {value}
+      </H2>
+      <ParagraphMD>{label}</ParagraphMD>
     </div>
   </div>
 );

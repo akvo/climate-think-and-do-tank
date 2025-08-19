@@ -47,9 +47,42 @@ const config = {
           1000: '#21252B',
         },
       },
+      ringColor: {
+        DEFAULT: '#C76A4D',
+      },
+      outlineColor: {
+        DEFAULT: '#C76A4D',
+      },
+      borderColor: {
+        DEFAULT: '#E8ECEF',
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addBase, theme }) {
+      addBase({
+        'input, textarea, select': {
+          color: theme('colors.gray.800'),
+          '&::placeholder': {
+            color: theme('colors.gray.800'),
+            opacity: '0.6',
+          },
+          '&:focus': {
+            outline: 'none',
+            borderColor: theme('colors.primary.500'),
+            boxShadow: `0 0 0 3px ${theme('colors.primary.500')}33`,
+          },
+        },
+        'input::placeholder, textarea::placeholder': {
+          color: theme('colors.gray.800'),
+          opacity: '0.6',
+        },
+        'input, textarea, select': {
+          color: theme('colors.gray.800'),
+        },
+      });
+    },
+  ],
 };
 
 export default config;

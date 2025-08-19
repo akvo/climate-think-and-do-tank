@@ -10,7 +10,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { env } from '@/helpers/env-vars';
-import { H2, H3 } from './Heading';
+import { H3 } from './Heading';
+import { ParagraphMD } from './Text';
 
 const getImageUrl = (image) => {
   if (typeof image === 'string') return image;
@@ -168,21 +169,21 @@ const InvestmentCarousel = () => {
   return (
     <section className="py-16">
       <div className="container mx-auto border-t border-gray-200 pt-16">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-10">
           <div className="mb-6 md:mb-0">
             <H3 variant="bold">
               <span className="text-primary-500">Investment Opportunity</span>{' '}
               <span>Profiles (IOPs)</span>
             </H3>
 
-            <p className="text-gray-600 max-w-2xl">
+            <ParagraphMD className="max-w-2xl mt-4">
               Think and Do Tank Network: the next step towards catalysing
               climate action in Kenya&apos;s Arid and Semi-Arid lands
-            </p>
+            </ParagraphMD>
           </div>
           <Link
             href="/investment-profiles"
-            className="inline-flex items-center px-6 py-3 border border-primary-400 rounded-full text-primary-400 hover:bg-primary-400 hover:text-white transition-colors font-medium"
+            className="inline-flex items-center px-6 py-3 border border-primary-500 rounded-full text-primary-500 hover:bg-primary-500 hover:text-white transition-colors font-bold min-w-[300px] justify-center"
           >
             Explore investment opportunities
           </Link>

@@ -1,34 +1,31 @@
 import React from 'react';
-const { cn } = require('@/helpers/utilities');
+import { cn } from '@/helpers/utilities';
 
 const textStyles = {
   paragraph: {
-    regular: 'text-base font-assistant font-normal',
-    bold: 'text-base font-assistant font-bold',
-    size: 'text-[16px] md:text-[18px]',
+    regular: 'text-[16px] md:text-[18px] font-assistant font-normal',
+    bold: 'text-[16px] md:text-[18px] font-assistant font-bold',
     lineHeight: 'leading-[22px] md:leading-[25px]',
-    tracking: 'tracking-[-0.025em]',
+    tracking: 'tracking-[-0.025px]',
   },
   paragraphMD: {
-    regular: 'text-base font-assistant font-normal',
-    bold: 'text-base font-assistant font-bold',
-    size: 'text-[16px]',
-    lineHeight: 'leading-[22px]',
-    tracking: 'tracking-[-0.025em]',
+    regular: 'text-[18px] md:text-[20px] font-assistant font-normal',
+    bold: 'text-[18px] md:text-[20px] font-assistant font-bold',
+    lineHeight: 'leading-[28px]',
+    tracking: 'tracking-[-0.025px]',
   },
   paragraphSM: {
-    regular: 'text-sm font-assistant font-normal',
-    bold: 'text-sm font-assistant font-bold',
-    size: 'text-[14px]',
+    regular: 'text-[14px] font-assistant font-normal',
+    bold: 'text-[14px] font-assistant font-bold',
     lineHeight: 'leading-[19px]',
-    tracking: 'tracking-[-0.025em]',
+    tracking: 'tracking-[-0.025px]',
   },
   link: {
-    regular: 'text-sm font-assistant font-normal underline cursor-pointer',
-    bold: 'text-sm font-assistant font-bold underline cursor-pointer',
-    size: 'text-[14px] md:text-[15px]',
+    regular:
+      'text-[14px] md:text-[15px] font-assistant font-normal underline cursor-pointer',
+    bold: 'text-[14px] md:text-[15px] font-assistant font-bold underline cursor-pointer',
     lineHeight: 'leading-[19px] md:leading-[20px]',
-    tracking: 'tracking-[-0.025em]',
+    tracking: 'tracking-[-0.025px]',
   },
 };
 

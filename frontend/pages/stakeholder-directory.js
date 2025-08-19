@@ -34,6 +34,7 @@ import { env } from '@/helpers/env-vars';
 import { getImageUrl } from '@/helpers/utilities';
 import HeroSection from '@/components/Hero';
 import FilterSection from '@/components/FilterSection';
+import Button from '@/components/Button';
 
 export default function StakeholderDirectory() {
   const router = useRouter();
@@ -713,23 +714,15 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
           </div>
 
           <div className="flex items-center gap-3">
-            <button
-              onClick={handleShare}
-              className="px-6 py-2.5 border border-primary-400 rounded-full flex items-center gap-2 text-primary-400 hover:bg-primary-500 hover:text-white transition-colors"
-            >
-              <span className="font-medium">Share</span>
+            <Button variant="outline" onClick={handleShare}>
+              <span className="font-medium mr-1">Share</span>
               <Share2 size={18} />
-            </button>
+            </Button>
             {stakeholder.type === 'Individual' &&
               isAuthenticated &&
               renderConnectionButton()}
             {stakeholder.type === 'Individual' && !isAuthenticated && (
-              <button
-                className="px-8 py-3 bg-[#B87B5C] rounded-full text-white font-medium hover:bg-[#A06B4C] transition-colors"
-                onClick={() => router.push('/login')}
-              >
-                Connect
-              </button>
+              <Button className="border">Connect</Button>
             )}
           </div>
         </div>

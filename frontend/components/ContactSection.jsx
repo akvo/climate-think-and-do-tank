@@ -1,5 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
+import { H4 } from './Heading';
+import { ParagraphMD } from './Text';
 
 const InterestedSection = ({
   title = 'Interested?',
@@ -23,15 +25,13 @@ const InterestedSection = ({
       >
         <div className="container mx-auto px-4  py-16  max-w-4xl relative z-10">
           <div className="text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <H4 variant="bold" className="mb-6">
               {title}
-            </h2>
-            <p className="text-lg md:text-xl text-gray-700 mb-10 max-w-3xl mx-auto">
-              {description}
-            </p>
+            </H4>
+            <ParagraphMD className="mb-10">{description}</ParagraphMD>
             <Link
               href={buttonLink}
-              className={`inline-flex items-center px-8 py-3 rounded-full text-white font-medium transition-colors hover:bg-white border border-primary-500 hover:text-primary-500 ${buttonColor}`}
+              className={`inline-flex items-center px-8 py-3 rounded-full text-white font-bold transition-colors hover:bg-white border-2 border-primary-500 hover:text-primary-500 ${buttonColor}`}
             >
               {buttonText}
             </Link>
