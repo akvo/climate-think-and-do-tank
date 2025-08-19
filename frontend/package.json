@@ -11,6 +11,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",
     "axios": "^1.7.9",
+    "clsx": "^2.1.1",
     "cookies-next": "^5.0.2",
     "graphql": "^16.10.0",
     "graphql-request": "^7.1.2",
@@ -24,7 +25,8 @@
     "react-markdown": "^10.1.0",
     "react-redux": "^9.2.0",
     "react-toastify": "^11.0.5",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.1",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

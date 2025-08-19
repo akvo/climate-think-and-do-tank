@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
+const { cn } = require('@/helpers/utilities');
 
 const textStyles = {
   paragraph: {
@@ -58,7 +58,7 @@ export const Text = ({
         baseClasses,
         lineHeightClasses,
         trackingClasses,
-        'text-gray-700',
+        'text-gray-800',
         className
       )}
       {...props}

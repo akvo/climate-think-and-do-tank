@@ -1,4 +1,6 @@
 import { env } from './env-vars';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export const validateEmail = (email) => {
   if (!email.trim()) {
@@ -238,3 +240,7 @@ export const generatePageNumbers = (currentPage, totalPages) => {
 
   return pages;
 };
+
+export function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}

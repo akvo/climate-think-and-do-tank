@@ -20,6 +20,9 @@
         "images",
         "files"
       ]
+    },
+    "order": {
+      "type": "string"
     }
   }
 }

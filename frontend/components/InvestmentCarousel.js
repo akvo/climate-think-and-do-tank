@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { env } from '@/helpers/env-vars';
+import { H2, H3 } from './Heading';
 
 const getImageUrl = (image) => {
   if (typeof image === 'string') return image;
@@ -169,10 +170,11 @@ const InvestmentCarousel = () => {
       <div className="container mx-auto border-t border-gray-200 pt-16">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10">
           <div className="mb-6 md:mb-0">
-            <h2 className="text-4xl font-bold mb-3">
+            <H3 variant="bold">
               <span className="text-primary-500">Investment Opportunity</span>{' '}
-              <span className="text-gray-900">Profiles (IOPs)</span>
-            </h2>
+              <span>Profiles (IOPs)</span>
+            </H3>
+
             <p className="text-gray-600 max-w-2xl">
               Think and Do Tank Network: the next step towards catalysing
               climate action in Kenya&apos;s Arid and Semi-Arid lands
