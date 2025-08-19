@@ -51,7 +51,7 @@ export default function Header() {
       <div className="container mx-auto flex items-center justify-between">
         <Link href="/" className="relative min-w-[216px] h-[40px]">
           <Image
-            src="/images/logo.png"
+            src="/images/logo.svg"
             alt="Logo"
             fill
             className="object-contain"
@@ -73,7 +73,7 @@ export default function Header() {
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-2">
               <Image
-                src="/images/logo.png"
+                src="/images/logo.svg"
                 alt="Logo"
                 width={216}
                 height={40}

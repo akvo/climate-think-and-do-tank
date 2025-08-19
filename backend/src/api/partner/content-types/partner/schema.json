@@ -4,20 +4,22 @@
   "info": {
     "singularName": "partner",
     "pluralName": "partners",
-    "displayName": "Partners"
+    "displayName": "Partners",
+    "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
     "logo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     }
   }
 }

@@ -15,6 +15,7 @@ import {
   UserIcon,
 } from '@/components/Icons';
 import InterestedSection from '@/components/ContactSection';
+import Link from 'next/link';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 
@@ -133,9 +134,19 @@ export default function About() {
                 <MarkdownRenderer content={about.tagline_description} />
               </div>
 
-              <div className="flex flex-wrap gap-4">
-                <Button size="sm">Get in touch</Button>
-                <Button variant="outline">Sign up</Button>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href="/contact-us"
+                  className="text-sm font-semibold text-white bg-primary-500 px-4 py-2 rounded-full hover:bg-white hover:text-primary-500 border hover:border-primary-500 flex items-center"
+                >
+                  Get In Touch
+                </Link>
+                <Link
+                  href="/signup"
+                  className="text-sm font-semibold text-primary-500 bg-white px-4 py-2 rounded-full hover:bg-primary-500 hover:text-white border border-primary-500 hover:border-primary-500 flex items-center"
+                >
+                  Sign up
+                </Link>
               </div>
             </div>
           </div>

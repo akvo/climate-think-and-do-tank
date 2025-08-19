@@ -12,7 +12,7 @@ export default function Footer() {
           <div className="md:col-span-3">
             <Link href="/" className="flex items-center gap-2">
               <Image
-                src="/images/logo.png"
+                src="/images/logo.svg"
                 alt="Kenya Drylands Investment Hub Logo"
                 width={230}
                 height={40}

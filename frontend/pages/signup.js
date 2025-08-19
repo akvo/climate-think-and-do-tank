@@ -185,7 +185,7 @@ export default function SignUpForm() {
           <div className="w-1/2 p-12 px-20 flex flex-col justify-center min-h-screen">
             <Link href="/" className="mb-4 block">
               <Image
-                src="/images/logo.png"
+                src="/images/logo.svg"
                 alt="Kenya Drylands Investment Hub Logo"
                 width={230}
                 height={40}
