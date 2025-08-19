@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Button from './Button';
+import { H2 } from './Heading';
+import { ParagraphMD } from './Text';
 
 export default function HeroSection({
   searchTerm,
@@ -48,12 +50,8 @@ export default function HeroSection({
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-0 py-8 sm:py-12 md:py-16">
         <div className="max-w-2xl">
           <div className="mb-8 sm:mb-12">
-            <h1 className="text-2xl/9 sm:text-3xl md:text-4xl lg:text-[48px]/[54px] font-extrabold text-black mb-3 sm:mb-4 leading-tight">
-              {pageTitle}
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl text-gray-800">
-              {pageDescription}
-            </p>
+            <H2 variant="bold">{pageTitle}</H2>
+            <ParagraphMD className="mt-2">{pageDescription}</ParagraphMD>
           </div>
           {showSearch && (
             <div className="mb-6 sm:mb-8">

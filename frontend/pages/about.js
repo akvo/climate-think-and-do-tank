@@ -16,6 +16,8 @@ import {
 } from '@/components/Icons';
 import InterestedSection from '@/components/ContactSection';
 import Link from 'next/link';
+import { H3, H5 } from '@/components/Heading';
+import { Paragraph, ParagraphMD, ParagraphSM } from '@/components/Text';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 
@@ -127,9 +129,9 @@ export default function About() {
             </div>
 
             <div>
-              <h2 className="text-4xl md:text-5xl/[54px] font-bold mb-6 text-black">
+              <H3 variant="bold" className="mb-4">
                 {about.tagline}
-              </h2>
+              </H3>
               <div className="text-lg text-gray-600 leading-relaxed mb-8">
                 <MarkdownRenderer content={about.tagline_description} />
               </div>
@@ -163,15 +165,15 @@ export default function About() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-primary-50 rounded-2xl">
             <div className="p-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-primary-600 mb-6">
+              <H3 variant="bold" className="text-primary-500 mb-4">
                 Our mission
-              </h2>
+              </H3>
               <div className="text-gray-600 leading-relaxed">
                 <MarkdownRenderer content={about.our_mission} />
               </div>
             </div>
             {about.mission_image && (
-              <div className="relative h-[400px] rounded-lg overflow-hidden shadow-lg">
+              <div className="relative h-[400px] rounded-lg overflow-hidden">
                 <Image
                   src={getImageUrl(about.mission_image)}
                   alt="Our Mission"
@@ -200,9 +202,9 @@ export default function About() {
         <div className="container mx-auto px-4 relative z-10 ">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div className="lg:col-span-1">
-              <h2 className="text-3xl md:text-4xl font-bold text-primary-600 mb-4">
+              <H3 variant="bold" className="text-primary-500 mb-4">
                 What we do
-              </h2>
+              </H3>
 
               {about.what_we_do && (
                 <>
@@ -213,7 +215,7 @@ export default function About() {
 
                     return description ? (
                       <div className="text-gray-600 mb-6">
-                        <p>{description}</p>
+                        <ParagraphMD>{description}</ParagraphMD>
                       </div>
                     ) : null;
                   })()}
@@ -295,12 +297,11 @@ export default function About() {
                           )}
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold my-2 mt-4">
+                          <H5 variant="bold" className=" my-2">
+                            {' '}
                             {service.title}
-                          </h3>
-                          <p className="text-gray-800 text-md leading-relaxed">
-                            {service.description}
-                          </p>
+                          </H5>
+                          <Paragraph>{service.description}</Paragraph>
                         </div>
                       </div>
                     ));
