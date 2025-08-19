@@ -22,6 +22,14 @@
     },
     "homepage_description": {
       "type": "richtext"
+    },
+    "homepage_video": {
+      "allowedTypes": [
+        "files",
+        "videos"
+      ],
+      "type": "media",
+      "multiple": false
     }
   }
 }
