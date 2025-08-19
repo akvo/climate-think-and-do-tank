@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search } from 'lucide-react';
-import Image from 'next/image';
+import { Search, Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import { useRouter } from 'next/router';
@@ -12,11 +11,13 @@ import Button from './Button';
 const HeroSlider = ({ setData }) => {
   const router = useRouter();
 
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [sliderData, setSliderData] = useState([]);
+  const [videoUrl, setVideoUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState('');
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const [videoRef, setVideoRef] = useState(null);
   const [heroData, setHeroData] = useState({
     title: '',
     description: '',
@@ -29,7 +30,7 @@ const HeroSlider = ({ setData }) => {
         const response = await axios.get(
           `${env(
             'NEXT_PUBLIC_BACKEND_URL'
-          )}/api/homepage?populate=hero_image_slider.files`
+          )}/api/homepage?populate=homepage_video`
         );
 
         if (response.data && response.data.data) {
@@ -47,46 +48,20 @@ const HeroSlider = ({ setData }) => {
             description: homepageData.homepage_description,
           });
 
-          if (
-            homepageData.hero_image_slider &&
-            Array.isArray(homepageData.hero_image_slider)
-          ) {
-            const slides = homepageData.hero_image_slider.map(
-              (slide, index) => {
-                const imageUrl =
-                  slide.files && slide.files.length > 0 ? slide.files[0] : '';
-
-                return {
-                  image: imageUrl,
-                };
-              }
-            );
-
-            setSliderData(slides);
+          if (homepageData.homepage_video) {
+            setVideoUrl(getImageUrl(homepageData.homepage_video));
           }
         }
 
         setLoading(false);
       } catch (err) {
-        setError('Failed to load slider data');
+        setError('Failed to load homepage data');
         setLoading(false);
       }
     };
 
     fetchHomepageData();
   }, []);
-
-  useEffect(() => {
-    if (sliderData.length === 0) return;
-
-    const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) =>
-        prevSlide === sliderData.length - 1 ? 0 : prevSlide + 1
-      );
-    }, 5000);
-
-    return () => clearInterval(timer);
-  }, [sliderData.length]);
 
   const handleInputChange = (e) => {
     setQuery(e.target.value);
@@ -102,14 +77,25 @@ const HeroSlider = ({ setData }) => {
     }
   };
 
+  const togglePlayPause = () => {
+    if (videoRef) {
+      if (isPlaying) {
+        videoRef.pause();
+      } else {
+        videoRef.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
   return (
     <section
       className="relative overflow-hidden bg-gray-10"
       style={{
         backgroundImage: "url('/images/cubes.svg')",
-        backgroundPosition: ' left center',
+        backgroundPosition: 'left center',
         backgroundRepeat: 'no-repeat',
-        backgroundSize: ' cover',
+        backgroundSize: 'cover',
       }}
     >
       <div className="">
@@ -117,11 +103,12 @@ const HeroSlider = ({ setData }) => {
           <div className="max-w-2xl mx-auto px-6 pl-32">
             <div className="mb-12">
               <H2 className="font-extrabold text-primary-500">
-                Welcome to the Kenya Drylands Investment Hub
+                {heroData.title ||
+                  'Welcome to the Kenya Drylands Investment Hub'}
               </H2>
               <ParagraphMD className="mt-4">
-                Driving sustainable investment in agrifood, water, and energy
-                across Kenya&apos;s drylands
+                {heroData.description ||
+                  "Driving sustainable investment in agrifood, water, and energy across Kenya's drylands"}
               </ParagraphMD>
             </div>
 
@@ -148,54 +135,54 @@ const HeroSlider = ({ setData }) => {
           </div>
 
           <div className="relative">
-            {sliderData.length > 0 ? (
-              <div className="relative min-h-[600px] max-h-[900px] overflow-hidden">
-                {sliderData.map((slide, index) => (
-                  <div
-                    key={index}
-                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                      index === currentSlide
-                        ? 'opacity-100 z-10'
-                        : 'opacity-0 z-0'
-                    }`}
-                  >
-                    <Image
-                      src={getImageUrl(slide.image)}
-                      alt={`Slide ${index + 1}`}
-                      fill
-                      unoptimized
-                      className="w-full h-full object-cover"
-                      priority={index === currentSlide}
-                    />
-                  </div>
-                ))}
+            {videoUrl ? (
+              <div className="relative min-h-[600px] max-h-[600px] overflow-hidden rounded-lg">
+                <video
+                  ref={(ref) => setVideoRef(ref)}
+                  className="w-full h-full object-cover"
+                  autoPlay
+                  loop
+                  muted={isMuted}
+                  playsInline
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                >
+                  <source src={videoUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
 
-                {sliderData.length > 1 && (
-                  <div className="absolute bottom-6 left-0 right-0 z-30 flex justify-center space-x-3">
-                    {sliderData.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                          index === currentSlide
-                            ? 'bg-white shadow-lg scale-110'
-                            : 'bg-white/60 hover:bg-white/80'
-                        }`}
-                        aria-label={`Go to slide ${index + 1}`}
-                      />
-                    ))}
+                <div className="absolute bottom-6 left-6 right-6 z-30 flex items-center justify-between">
+                  <div className="flex gap-3">
+                    <button
+                      onClick={togglePlayPause}
+                      className="bg-black/50 backdrop-blur-sm text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                      aria-label={isPlaying ? 'Pause video' : 'Play video'}
+                    >
+                      {isPlaying ? (
+                        <Pause className="w-5 h-5" />
+                      ) : (
+                        <Play className="w-5 h-5" />
+                      )}
+                    </button>
                   </div>
-                )}
+                </div>
               </div>
             ) : (
-              <div className="h-[500px] bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl flex items-center justify-center shadow-2xl">
-                <div className="text-center text-primary-600">
-                  <div className="w-24 h-24 mx-auto mb-4 bg-primary-500 rounded-full flex items-center justify-center">
-                    <Search className="w-12 h-12 text-white" />
+              <div className="h-[600px] bg-gradient-to-br from-primary-100 to-primary-200 rounded-lg flex items-center justify-center shadow-2xl">
+                {loading ? (
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
+                    <p className="text-primary-600">Loading video...</p>
                   </div>
-                  <h3 className="text-xl font-semibold">Kenya Drylands</h3>
-                  <p className="text-primary-500">Investment Hub</p>
-                </div>
+                ) : (
+                  <div className="text-center text-primary-600">
+                    <div className="w-24 h-24 mx-auto mb-4 bg-primary-500 rounded-full flex items-center justify-center">
+                      <Play className="w-12 h-12 text-white" />
+                    </div>
+                    <h3 className="text-xl font-semibold">Kenya Drylands</h3>
+                    <p className="text-primary-500">Investment Hub</p>
+                  </div>
+                )}
               </div>
             )}
           </div>

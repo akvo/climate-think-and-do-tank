@@ -21,8 +21,8 @@ const menuItems = [
   { label: 'Connect', path: '/stakeholder-directory' },
   { label: 'Knowledge Hub', path: '/knowledge-hub' },
   {
-    label: 'More',
-    dropdown: [{ label: 'News and Events', path: '/news-events' }],
+    label: 'News and Events',
+    path: '/news-events',
   },
 ];
 
