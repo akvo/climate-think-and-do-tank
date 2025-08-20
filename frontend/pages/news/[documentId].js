@@ -42,7 +42,7 @@ export default function NewsDetailPage() {
       setLoading(true);
       try {
         const response = await axios.get(
-          `${BACKEND_URL}/api/news/${documentId}?populate=image&populate=regions&populate=author`
+          `${BACKEND_URL}/api/news/${documentId}?populate=image&populate=regions`
         );
         if (response.data && response.data.data) {
           const item = response.data.data;

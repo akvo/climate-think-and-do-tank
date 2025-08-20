@@ -87,7 +87,7 @@ export default function Footer() {
                 />
               </Link>
 
-              <div className="flex items-center gap-2 text-sm text-black mt-8">
+              <div className="flex items-center gap-2 text-sm text-black mt-8 font-bold">
                 Powered by
                 <Image
                   src="/images/footer-logo.png"
