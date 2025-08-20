@@ -344,7 +344,7 @@ const KnowledgeLibrary = () => {
         }
         searchPlaceholder="Search resources.."
         pageTitle="Knowledge Hub"
-        pageDescription="The Kenya Drylands Investment Hub Knowledge Hub is a centralized repository for resources on investment opportunities, climate change, value chains etc. within the 8 focus ASAL counties"
+        pageDescription="The Kenya Drylands Investment Hub Knowledge Hub is a centralized repository for resources on investment opportunities, climate change, value chains etc. within the 8 focus ASAL counties."
       />
 
       <div className="container mx-auto mt-[-31px] relative z-10">

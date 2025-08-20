@@ -180,7 +180,7 @@ export default function NewsEventsDirectory() {
         searchTerm={searchQuery}
         setSearchTerm={handleSearch}
         pageTitle="News & Events"
-        pageDescription="Stay updated with the latest industry news, announcements, and upcoming events."
+        pageDescription="Stay updated with the latest news, announcements, and upcoming events."
         searchText={'Search News & Events'}
       />
 

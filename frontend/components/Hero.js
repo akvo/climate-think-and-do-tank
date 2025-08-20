@@ -55,9 +55,11 @@ export default function HeroSection({
           </div>
           {showSearch && (
             <div className="mb-6 sm:mb-8">
-              <p className="text-sm sm:text-base text-gray-500 mb-2 sm:mb-[10px]">
-                {searchText ? searchText : 'Search all knowledge library'}
-              </p>
+              {searchText && (
+                <p className="text-sm sm:text-base text-gray-500 mb-2 sm:mb-[10px]">
+                  {searchText ? searchText : 'Search all knowledge library'}
+                </p>
+              )}
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="relative flex-1 flex items-center bg-white border border-gray-200 rounded-full">
                   <svg

@@ -179,18 +179,16 @@ export default function StakeholderDirectory() {
 
   const totalResults = total || stakeholders.length;
 
-  console.log(filters);
-
   return (
     <div className="min-h-screen bg-white">
       <HeroSection
         searchTerm={searchQuery}
         setSearchTerm={handleSearch}
         pageTitle="Connect with stakeholders"
-        pageDescription="Lorem ipsum dolor sit amet consectetur. Tempus vitae viverra duis ultricies cursus cras arcu."
+        pageDescription="A central place to find and connect with stakeholders driving investment and resilience in the ASALs."
         showSearch={true}
-        searchText={'Search stakeholders by name, region, or topic'}
-        searchPlaceholder="Kenya's arid land"
+        searchText={false}
+        searchPlaceholder="Search users or organizations..."
       />
 
       <div className="container mx-auto mt-[-31px] relative z-10">
@@ -769,6 +767,11 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
                 )}
               {stakeholder.profession && (
                 <p className="text-gray-600 mt-1">{stakeholder.profession}</p>
+              )}{' '}
+              {stakeholder.type === 'Organization' && (
+                <div className="flex items-center gap-2 font-medium text-black">
+                  <span>{stakeholder.organizationType}</span>
+                </div>
               )}
             </div>
           </div>
@@ -781,9 +784,7 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
 
           {stakeholder.valueChains?.length > 0 && (
             <div className="border-t pt-6">
-              <p className="text-gray-500 mb-3">
-                Theme/Sector in this document:
-              </p>
+              <p className="text-gray-500 mb-3">Sector(s) of interest</p>
               <div className="flex flex-wrap gap-2">
                 {stakeholder.valueChains.map((theme, index) => (
                   <span

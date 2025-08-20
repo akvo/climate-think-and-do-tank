@@ -39,7 +39,7 @@ const HeroSlider = ({ setData }) => {
           const heroInfo = {
             title: 'Welcome to the Kenya Drylands Investment Hub',
             description:
-              "Driving sustainable investment in agrifood, water, and energy across Kenya's drylands",
+              "Driving sustainable investment in agrifood, water, and energy across Kenya's drylands.",
           };
 
           setHeroData(heroInfo);

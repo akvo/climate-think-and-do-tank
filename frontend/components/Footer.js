@@ -90,7 +90,7 @@ export default function Footer() {
               <div className="flex items-center gap-2 text-sm text-black mt-8">
                 Powered by
                 <Image
-                  src="/images/footer-logo.jpg"
+                  src="/images/footer-logo.png"
                   alt="Akvo"
                   width={130}
                   height={40}

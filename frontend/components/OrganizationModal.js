@@ -69,7 +69,7 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
                   />
                 </svg>
                 <span className="font-medium">
-                  {card.focusRegions?.join(', ') || 'Location'}
+                  {card.focusRegions?.join(', ') || 'No Region'}
                 </span>
               </div>
               <div className="flex items-center gap-1 text-gray-600">

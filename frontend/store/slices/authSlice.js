@@ -610,6 +610,7 @@ export const fetchStakeholders = createAsyncThunk(
                 ? org.org_image?.formats?.medium
                 : org.org_image?.formats?.small,
               country: org.country?.country_name,
+              organizationType: org.type,
               data: org,
             }))
             .sort((a, b) =>
