@@ -4,6 +4,7 @@ import axios from 'axios';
 import { H5 } from './Heading';
 import { env } from '@/helpers/env-vars';
 import { getImageUrl } from '@/helpers/utilities';
+import Marquee from 'react-fast-marquee';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 
@@ -70,58 +71,39 @@ const PartnersSection = () => {
         </H5>
       </div>
 
-      <div className="relative flex justify-center overflow-hidden">
-        <div className="flex animate-marquee-delayed whitespace-nowrap items-center">
-          {displayPartners.map((partner, index) => (
-            <div
-              key={`set1-${partner.id}-${index}`}
-              className="inline-flex items-center justify-center h-20 min-w-[170px] max-w-[200px] w-auto mx-4 relative flex-shrink-0"
-            >
-              <div className="relative w-full h-full">
-                <Image
-                  src={partner.src}
-                  alt={partner.name}
-                  fill
-                  className="object-contain hover:opacity-100 transition-opacity"
-                  sizes="(max-width: 768px) 120px, 200px"
-                  onError={(e) => {
-                    e.target.src = '/images/placeholder.jpg';
-                  }}
-                />
+      <div className="relative overflow-hidden">
+        <div className="whitespace-nowrap items-center">
+          <Marquee
+            gradient={false}
+            speed={150}
+            pauseOnHover={true}
+            pauseOnClick={true}
+            delay={0}
+            play={true}
+            direction="left"
+          >
+            {displayPartners.map((partner, index) => (
+              <div
+                key={`set1-${partner.id}-${index}`}
+                className="h-20 min-w-[170px] max-w-[200px] w-auto mx-4 relative flex-shrink-0"
+              >
+                <div className="relative w-full h-full">
+                  <Image
+                    src={partner.src}
+                    alt={partner.name}
+                    fill
+                    className="object-contain hover:opacity-100 transition-opacity"
+                    sizes="(max-width: 768px) 120px, 200px"
+                    onError={(e) => {
+                      e.target.src = '/images/placeholder.jpg';
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}{' '}
+          </Marquee>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes marqueeFromCenter {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-100%);
-          }
-        }
-
-        .animate-marquee-delayed {
-          animation: marqueeFromCenter 25s linear infinite;
-          animation-delay: 2s;
-          transform: translateX(0);
-        }
-
-        .animate-marquee-delayed:not(:hover) {
-          animation-fill-mode: both;
-        }
-
-        .relative:hover .animate-marquee-delayed {
-          animation-play-state: paused;
-        }
-
-        .relative {
-          justify-content: center;
-        }
-      `}</style>
     </section>
   );
 };
