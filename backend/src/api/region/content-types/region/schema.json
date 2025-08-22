@@ -37,6 +37,26 @@
       "relation": "manyToOne",
       "target": "api::event.event",
       "inversedBy": "regions"
+    },
+    "population": {
+      "type": "string",
+      "required": true
+    },
+    "area": {
+      "type": "string",
+      "required": true
+    },
+    "languages": {
+      "type": "string",
+      "required": true
+    },
+    "value_chains": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::value-chain.value-chain"
+    },
+    "about": {
+      "type": "text"
     }
   }
 }

@@ -73,11 +73,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className=" mx-auto px-4 flex justify-center">
-            <KenyaMap
-              onSelect={(selected) =>
-                router.push(`/social-accountability?regions=${selected}`)
-              }
-            />
+            <KenyaMap />
           </div>
         </section>
 
