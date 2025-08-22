@@ -318,6 +318,7 @@ export default function InvestmentOpportunityProfile() {
                       focusRegions: card.region ? [card.region] : ['No Region'],
                       publishedAt: card.publicationDate || 'No Date',
                       topic: card.valueChain ? [card.valueChain] : [],
+                      image: card.imageUrl,
                     }}
                     showLink={false}
                     viewMode={viewMode}

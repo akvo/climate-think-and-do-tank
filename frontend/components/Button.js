@@ -40,9 +40,9 @@ const Button = ({
       active:bg-primary-100
     `,
     outline: `
-      bg-transparent border-2 border-primary-500 text-primary-500 
-      hover:bg-primary-500 hover:text-white hover:border-primary-500
-      focus:ring-primary-500 
+      bg-transparent border-2 border-[#6D8D55] text-[#6D8D55] 
+      hover:bg-[#6D8D55] hover:text-white hover:border-[#6D8D55]
+      focus:ring-[#6D8D55] 
       disabled:border-primary-300 disabled:text-primary-300 disabled:hover:bg-transparent disabled:hover:text-primary-300
       active:bg-primary-600 active:border-primary-600
     `,

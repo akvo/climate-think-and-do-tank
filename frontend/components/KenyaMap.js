@@ -2,85 +2,116 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   ChevronRight,
   Download,
-  MapPin,
   Users,
   Globe,
-  TrendingUp,
   X,
   CircleAlert,
 } from 'lucide-react';
 import Button from './Button';
-import { RegionIcon, TopicIcon, TypeIcon, ValueChainIcon } from './Icons';
+import { RegionIcon, ValueChainIcon } from './Icons';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import { MarkdownRenderer } from './MarkDownRenderer';
+import Image from 'next/image';
+import { getImageUrl } from '@/helpers/utilities';
+import { useRouter } from 'next/router';
 
 export default function KenyaMap({
   initialSelected,
   onSelect,
-  valueChain = 'Agriculture',
+  valueChain = null,
 }) {
-  const { regions = [], valueChains = [] } = useSelector((state) => state.auth);
+  const router = useRouter();
+  const { regions = [] } = useSelector((state) => state.auth);
   const [hoveredCounty, setHoveredCounty] = useState(null);
-  const [selectedCounty, setSelectedCounty] = useState(initialSelected || null);
+  const [selectedCounties, setSelectedCounties] = useState(
+    initialSelected ? initialSelected : []
+  );
   const [showCountyDetails, setShowCountyDetails] = useState(false);
   const [countyCenters, setCountyCenters] = useState({});
   const pathRefs = useRef({});
-  const [countyDetails, setCountyDetails] = useState(null);
   const [investmentProfiles, setInvestmentProfiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
-  const projectCounties = regions.length > 0 ? regions.map((r) => r.name) : [];
+  const allProjectCounties = regions
+    .filter((r) => r.name !== 'Other' && r.name !== 'Kenya')
+    .map((r) => r.name);
+
+  const valueChainCounties = valueChain
+    ? regions
+        .filter(
+          (r) =>
+            r.name !== 'Other' &&
+            r.name !== 'Kenya' &&
+            r.value_chains?.some((vc) => vc.name === valueChain)
+        )
+        .map((r) => r.name)
+    : [];
+
+  const activeCounties = valueChain ? valueChainCounties : allProjectCounties;
+
+  const getRegionDetails = (countyName) => {
+    return regions.find((r) => r.name === countyName);
+  };
 
   const handleCountyClick = async (county) => {
-    if (projectCounties.includes(county)) {
-      const newSelection = county === selectedCounty ? null : county;
-      setSelectedCounty(newSelection);
-      setShowCountyDetails(!!newSelection);
+    if (activeCounties.includes(county)) {
+      let newSelection;
 
-      if (newSelection) {
+      if (selectedCounties.includes(county)) {
+        newSelection = selectedCounties.filter((c) => c !== county);
+      } else {
+        newSelection = [...selectedCounties, county];
+      }
+
+      setSelectedCounties(newSelection);
+      setShowCountyDetails(newSelection.length === 1);
+
+      if (newSelection.length > 0) {
         setLoading(true);
         setError(null);
 
         try {
-          const countyDetailsResponse = await axios.get(
-            `${env(
-              'NEXT_PUBLIC_BACKEND_URL'
-            )}/api/social-accountabilities?filters[region][name][$eq]=${newSelection}&populate[0]=other_media_slider.files&populate[1]=community_voices&populate[2]=region&populate[3]=value_chain`
-          );
-          setCountyDetails(countyDetailsResponse.data.data[0] || null);
+          const countyFilters = newSelection
+            .map((c) => `filters[region][name][$in][]=${c}`)
+            .join('&');
 
           const investmentProfilesResponse = await axios.get(
             `${env(
               'NEXT_PUBLIC_BACKEND_URL'
-            )}/api/investment-opportunity-profiles?filters[region][name][$eq]=${newSelection}&populate[0]=value_chain&populate[1]=region&populate[2]=picture_one`
+            )}/api/investment-opportunity-profiles?${countyFilters}&populate[0]=value_chain&populate[1]=region&populate[2]=picture_one`
           );
 
           const profiles = investmentProfilesResponse.data.data.map(
             (profile) => ({
               id: profile.id,
               documentId: profile.documentId,
-              title: profile.title,
+              title: `${profile.value_chain?.name || ''} Value Chain in ${
+                profile.region?.name || ''
+              } County`,
               description: profile.description,
               publicationDate: profile.publication_date,
               publicationYear: new Date(profile.publication_date).getFullYear(),
               valueChain: profile.value_chain?.name || '',
               region: profile.region?.name || '',
-              imageUrl: profile.picture_one || '',
+              imageUrl:
+                profile.picture_one ||
+                profile.picture_one?.formats?.small ||
+                '',
             })
           );
 
           setInvestmentProfiles(profiles);
         } catch (err) {
-          setError('Failed to load county data');
-          console.error('Error fetching county data:', err);
+          setError('Failed to load investment profiles');
+          console.error('Error fetching investment profiles:', err);
         } finally {
           setLoading(false);
         }
       } else {
-        setCountyDetails(null);
         setInvestmentProfiles([]);
       }
 
@@ -90,8 +121,19 @@ export default function KenyaMap({
     }
   };
 
-  const handleMouseEnter = (county) => {
-    setHoveredCounty(county);
+  const handleMouseEnter = (county, event) => {
+    if (activeCounties.includes(county)) {
+      setHoveredCounty(county);
+      const svgRect = event.currentTarget
+        .closest('svg')
+        .getBoundingClientRect();
+      const pathRect = event.currentTarget.getBoundingClientRect();
+
+      setTooltipPosition({
+        x: pathRect.left - svgRect.left + pathRect.width / 2,
+        y: pathRect.top - svgRect.top + pathRect.height / 2,
+      });
+    }
   };
 
   const handleMouseLeave = () => {
@@ -99,8 +141,8 @@ export default function KenyaMap({
   };
 
   const getFillColor = (county) => {
-    if (projectCounties.includes(county)) {
-      if (county === selectedCounty) return '#D99B88';
+    if (activeCounties.includes(county)) {
+      if (selectedCounties.includes(county)) return '#D99B88';
       if (county === hoveredCounty) return '#D99B88';
       return '#F9F0ED';
     }
@@ -112,18 +154,18 @@ export default function KenyaMap({
   };
 
   const getStrokeWidth = (county) => {
-    if (county === selectedCounty) return 0.15;
-    if (projectCounties.includes(county)) return 0.4;
+    if (selectedCounties.includes(county)) return 0.15;
+    if (activeCounties.includes(county)) return 0.4;
     return 0.4;
   };
 
   const getCursorStyle = (county) => {
-    return projectCounties.includes(county) ? 'pointer' : 'default';
+    return activeCounties.includes(county) ? 'pointer' : 'default';
   };
 
   useEffect(() => {
     const newCenters = {};
-    for (const county of projectCounties) {
+    for (const county of activeCounties) {
       const path = pathRefs.current[county];
       if (path) {
         const bbox = path.getBBox();
@@ -134,14 +176,19 @@ export default function KenyaMap({
       }
     }
     setCountyCenters(newCenters);
-  }, [hoveredCounty, selectedCounty]);
+  }, [hoveredCounty, selectedCounties, valueChain]);
+
+  const currentCountyDetails =
+    selectedCounties.length === 1
+      ? getRegionDetails(selectedCounties[0])
+      : null;
 
   return (
     <div className="flex gap-6 p-6 bg-gray-10 w-full">
       <div className="relative flex-1 p-6">
         <div className="flex flex-col lg:flex-row gap-6 p-4 lg:p-6">
           <div className="relative w-full lg:flex-1 order-2 lg:order-1">
-            <div className="w-[200px] md:w-[500px] h-[300px] md:h-[600px] mx-auto">
+            <div className="w-[200px] md:w-[500px] h-[300px] md:h-[600px] mx-auto relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="100%"
@@ -763,10 +810,22 @@ export default function KenyaMap({
                 />
               </svg>
 
-              {hoveredCounty && !selectedCounty && (
-                <div className="absolute top-4 right-4 bg-white shadow-lg rounded-lg p-3 pointer-events-none">
+              {hoveredCounty && (
+                <div
+                  className="absolute bg-white shadow-lg rounded-lg p-3 pointer-events-none z-10"
+                  style={{
+                    left: `${tooltipPosition.x}px`,
+                    top: `${tooltipPosition.y}px`,
+                    transform: 'translate(-50%, -100%)',
+                    marginTop: '-10px',
+                  }}
+                >
                   <p className="font-semibold text-gray-800">{hoveredCounty}</p>
-                  <p className="text-sm text-gray-600">Click to view details</p>
+                  <p className="text-sm text-gray-600">
+                    {selectedCounties.includes(hoveredCounty)
+                      ? 'Click to deselect'
+                      : 'Click to select'}
+                  </p>
                 </div>
               )}
             </div>
@@ -774,121 +833,197 @@ export default function KenyaMap({
             <div className="mt-12 flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-[#F9F0ED] rounded"></div>
-                <span className="text-sm text-gray-600">Focus Counties</span>
+                <span className="text-sm text-gray-600">
+                  {valueChain
+                    ? `Counties with ${valueChain}`
+                    : 'Focus Counties'}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-[#D99B88] rounded"></div>
-                <span className="text-sm text-gray-600">Selected County</span>
+                <span className="text-sm text-gray-600">
+                  Selected {selectedCounties.length > 1 ? 'Counties' : 'County'}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-gray-100 rounded"></div>
                 <span className="text-sm text-gray-600">Other Counties</span>
               </div>
             </div>
-          </div>{' '}
+          </div>
+
           <div className="w-full lg:w-[450px] order-2 space-y-4">
-            {showCountyDetails && selectedCounty && (
-              <>
-                <div className="bg-gray-10 border border-gray-30 rounded-xl shadow-lg p-6 animate-fade-in">
-                  <div className="flex justify-between items-centre">
-                    <h3 className="text-xl font-bold text-primary-500">
-                      {selectedCounty} County
+            {selectedCounties.length > 0 && (
+              <div className="bg-gray-10 border border-gray-30 rounded-xl shadow-lg p-6 animate-fade-in">
+                <div className="flex justify-between items-start">
+                  <div className="w-full">
+                    <h3 className="text-xl font-bold text-primary-500 mb-2">
+                      {selectedCounties.length === 1
+                        ? `${selectedCounties[0]} County`
+                        : `${selectedCounties.length} Counties Selected`}
                     </h3>
-                    <button
-                      onClick={() => {
-                        setSelectedCounty(null);
-                        setShowCountyDetails(false);
-                        setCountyDetails(null);
-                        setInvestmentProfiles([]);
-                      }}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      <X size={20} />
-                    </button>
+                    {selectedCounties.length > 1 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {selectedCounties.map((county) => (
+                          <span
+                            key={county}
+                            className="px-3 py-1 bg-primary-50 text-primary-600 rounded-full text-sm flex items-center gap-1"
+                          >
+                            {county}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCountyClick(county);
+                              }}
+                              className="ml-1 hover:text-primary-800"
+                            >
+                              <X size={14} />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
+                  <button
+                    onClick={() => {
+                      setSelectedCounties([]);
+                      setShowCountyDetails(false);
+                      setInvestmentProfiles([]);
+                    }}
+                    className="text-gray-400 hover:text-gray-600 flex-shrink-0"
+                  >
+                    <X size={20} />
+                  </button>
                 </div>
+              </div>
+            )}
+
+            {showCountyDetails &&
+              selectedCounties.length === 1 &&
+              currentCountyDetails && (
                 <div className="bg-gray-10 border border-gray-30 rounded-xl shadow-lg p-6 animate-fade-in">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl font-bold text-gray-800">
-                      About the county
-                    </h3>
-                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">
+                    About the county
+                  </h3>
 
-                  {loading ? (
-                    <div className="text-center py-4">
-                      <p className="text-gray-600">
-                        Loading county information...
-                      </p>
-                    </div>
-                  ) : error ? (
-                    <div className="text-red-600 py-4">
-                      <p>{error}</p>
-                    </div>
-                  ) : !countyDetails ? (
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 text-primary-400 border-primary-50 border-8 ">
-                        <CircleAlert className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                          No results found
-                        </h3>
-                        <p className="text-gray-600">
-                          Try adjusting your filters or search terms
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-gray-600 mb-4">
-                        {
-                          <MarkdownRenderer
-                            content={countyDetails.description}
-                          />
-                        }
-                      </p>
-                      {countyDetails?.value_chain && (
-                        <div className="border-t border-gray-200 pt-4">
-                          <div className="flex items-center justify-between gap-4 py-1 rounded-md">
-                            <div className="flex items-center gap-2">
-                              <ValueChainIcon className="h-5 w-5 text-gray-700" />
-                              <h4 className="text-lg font-semibold text-gray-800">
-                                Value chains
-                              </h4>
-                            </div>
+                  {currentCountyDetails.about && (
+                    <p className="text-gray-600 mb-4">
+                      <MarkdownRenderer content={currentCountyDetails.about} />
+                    </p>
+                  )}
 
-                            <div className="flex flex-wrap gap-2">
-                              {(Array.isArray(countyDetails.value_chain)
-                                ? countyDetails.value_chain
-                                : [countyDetails.value_chain]
-                              )
-                                .filter(Boolean)
-                                .map((vc, idx) => {
-                                  const label =
-                                    typeof vc === 'string' ? vc : vc?.name;
-                                  return (
-                                    <span
-                                      key={`${label}-${idx}`}
-                                      className="px-4 py-1.5 rounded-full text-sm bg-primary-50 text-primary-500"
-                                    >
-                                      {label}
-                                    </span>
-                                  );
-                                })}
+                  <div className="space-y-3 mb-4">
+                    {currentCountyDetails.population && (
+                      <div className="border-t border-gray-200 pt-4">
+                        <div className="flex items-center justify-between gap-4 py-1 rounded-md">
+                          <div className="flex items-center gap-2">
+                            <Users className="h-5 w-5 text-gray-700" />
+                            <h4 className="text-lg font-semibold text-gray-800">
+                              Population
+                            </h4>
+                          </div>
+
+                          <div className="flex flex-wrap gap-2">
+                            <div className="rounded-full text-sm text-black font-bold">
+                              {currentCountyDetails.population}
                             </div>
                           </div>
                         </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              </>
-            )}
+                      </div>
+                    )}
+                    {currentCountyDetails.area && (
+                      <div className="border-t border-gray-200 pt-4">
+                        <div className="flex items-center justify-between gap-4 py-1 rounded-md">
+                          <div className="flex items-center gap-2">
+                            <RegionIcon className="h-5 w-5 text-gray-700" />
+                            <h4 className="text-lg font-semibold text-gray-800">
+                              Area
+                            </h4>
+                          </div>
 
-            {selectedCounty && (
+                          <div className="flex flex-wrap gap-2">
+                            <div className="rounded-full text-sm text-black font-bold">
+                              {currentCountyDetails.area}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {currentCountyDetails.languages && (
+                      <div className="border-t border-gray-200 pt-4">
+                        <div className="flex items-center justify-between gap-4 py-1 rounded-md">
+                          <div className="flex items-center gap-2">
+                            <Globe className="h-5 w-5 text-gray-700" />
+                            <h4 className="text-lg font-semibold text-gray-800">
+                              Languages
+                            </h4>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {(Array.isArray(currentCountyDetails?.languages)
+                              ? currentCountyDetails.languages
+                              : (currentCountyDetails?.languages || '').split(
+                                  ','
+                                )
+                            )
+                              .map((l) =>
+                                typeof l === 'string' ? l : l?.name ?? ''
+                              )
+                              .map((s) => s.trim())
+                              .filter(Boolean)
+                              .map((lang, idx, arr) => (
+                                <div
+                                  key={`${lang}-${idx}`}
+                                  className="rounded-full text-sm text-black font-bold"
+                                >
+                                  {lang}
+                                  {idx < arr.length - 1 ? ',' : ''}
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {currentCountyDetails.value_chains &&
+                    currentCountyDetails.value_chains.length > 0 && (
+                      <div className="border-t border-gray-200 pt-4">
+                        <div className="flex items-center justify-between gap-4 py-1 rounded-md">
+                          <div className="flex items-center gap-2">
+                            <ValueChainIcon className="h-5 w-5 text-gray-700" />
+                            <h4 className="text-lg font-semibold text-gray-800">
+                              Value chains
+                            </h4>
+                          </div>
+
+                          <div className="flex flex-wrap gap-2">
+                            {currentCountyDetails.value_chains.map(
+                              (vc, idx) => (
+                                <span
+                                  key={`${vc.name}-${idx}`}
+                                  className="px-4 py-1.5 rounded-full text-sm bg-primary-50 text-primary-500"
+                                >
+                                  {vc.name}
+                                </span>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                </div>
+              )}
+
+            {selectedCounties.length > 0 && (
               <div className="bg-gray-10 border border-gray-30 rounded-xl shadow-lg p-6">
                 <h3 className="text-lg font-bold text-gray-800 mb-4">
                   Investment Opportunities
+                  {selectedCounties.length > 1 && (
+                    <span className="text-sm font-normal text-gray-600 ml-2">
+                      (from {selectedCounties.length} counties)
+                    </span>
+                  )}
                 </h3>
 
                 {loading ? (
@@ -899,47 +1034,55 @@ export default function KenyaMap({
                   </div>
                 ) : investmentProfiles.length > 0 ? (
                   <div className="space-y-3">
-                    {investmentProfiles.slice(0, 3).map((profile) => (
-                      <div
-                        key={profile.id}
-                        className="border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-                        onClick={() => {
-                          // Navigate to profile detail page
-                          // router.push(`/investment-profiles/${profile.documentId}`);
-                        }}
-                      >
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-gray-800">
-                              {profile.title}
-                            </h4>
-                            <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                              {profile.description}
-                            </p>
-                            <div className="flex items-center gap-2 mt-2">
-                              <TrendingUp
-                                size={14}
-                                className="text-emerald-500"
+                    <div className="space-y-4">
+                      {investmentProfiles.slice(0, 3).map((profile) => (
+                        <div
+                          key={profile.id}
+                          className="bg-white rounded-xl overflow-hidden hover:shadow-lg transition-shadow cursor-pointer flex"
+                          onClick={() => {
+                            router.push(`/iop/${profile.documentId}`);
+                          }}
+                        >
+                          {profile.imageUrl && (
+                            <div className="w-1/3 h-48">
+                              <Image
+                                src={getImageUrl(profile.imageUrl)}
+                                alt={profile.title}
+                                width={150}
+                                height={150}
+                                unoptimized
+                                className="w-full h-full object-cover"
                               />
-                              <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded">
-                                {profile.valueChain}
-                              </span>
-                              <span className="text-xs text-gray-500">
-                                {profile.publicationYear}
-                              </span>
+                            </div>
+                          )}
+
+                          <div className="flex-1 p-6 flex flex-col justify-between">
+                            <div>
+                              <h4 className="text-xl font-bold text-gray-900 mb-3">
+                                {profile.title}
+                              </h4>
+
+                              <div className="flex flex-wrap gap-2">
+                                <span className="px-4 py-1.5 bg-primary-50 text-primary-500 rounded-full text-sm">
+                                  {profile.valueChain}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="flex justify-end mt-4">
+                              <ChevronRight
+                                className="text-gray-900"
+                                size={24}
+                              />
                             </div>
                           </div>
-                          <ChevronRight
-                            className="text-gray-400 mt-1"
-                            size={20}
-                          />
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 ) : (
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 text-primary-400 border-primary-50 border-8 ">
+                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 text-primary-400 border-primary-50 border-8">
                       <CircleAlert className="h-4 w-4" />
                     </div>
                     <div>
@@ -947,7 +1090,11 @@ export default function KenyaMap({
                         No results found
                       </h3>
                       <p className="text-gray-600">
-                        Try adjusting your filters or search terms
+                        No investment opportunities available for{' '}
+                        {selectedCounties.length > 1
+                          ? 'these counties'
+                          : 'this county'}{' '}
+                        yet
                       </p>
                     </div>
                   </div>
@@ -961,45 +1108,83 @@ export default function KenyaMap({
               </div>
             )}
 
-            {!selectedCounty && (
+            {selectedCounties.length === 0 && (
               <>
                 <div className="rounded-xl p-6 shadow-lg bg-gray-10 border border-gray-30">
                   <div className="flex gap-4 items-center">
-                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 text-primary-400 border-primary-50 border-8 ">
+                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 text-primary-400 border-primary-50 border-8">
                       <RegionIcon className="w-4 h-4" />
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900">
-                      Click on the county to explore
-                    </h3>
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-900">
+                        Click on counties to explore
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        You can select multiple counties
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <div className="bg-gray-10 rounded-xl p-6 shadow-lg">
-                  <div className="flex items-center gap-3 mb-6">
-                    <h3 className="text-xl font-bold text-gray-900">
-                      Counties we are focusing on
-                    </h3>
-                  </div>
 
-                  <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-                    {projectCounties.map((county, index) => (
-                      <button
-                        key={county}
-                        onClick={() => handleCountyClick(county)}
-                        className="flex items-center justify-between p-3 rounded-lg hover:bg-primary-50 hover:shadow-sm transition-all group bg-white"
-                      >
-                        <span className="text-gray-700 group-hover:text-primary-600 font-medium">
-                          {county}
-                        </span>
-                        <ChevronRight
-                          className="text-orange-300 group-hover:text-orange-400"
-                          size={20}
-                        />
-                      </button>
-                    ))}
+                {valueChain && valueChainCounties.length > 0 && (
+                  <div className="bg-gray-10 rounded-xl p-6 shadow-lg border">
+                    <div className="flex items-center gap-3 mb-6">
+                      <ValueChainIcon className="h-6 w-6 text-primary-600" />
+                      <h3 className="text-xl font-bold text-gray-900">
+                        Counties with {valueChain} value chain
+                      </h3>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                      {valueChainCounties.map((county) => (
+                        <button
+                          key={county}
+                          onClick={() => handleCountyClick(county)}
+                          className="flex items-center justify-between p-3 rounded-lg hover:bg-primary-50 hover:shadow-sm transition-all group bg-white"
+                        >
+                          <span className="text-gray-700 group-hover:text-primary-600 font-medium">
+                            {county}
+                          </span>
+                          <ChevronRight
+                            className="text-orange-300 group-hover:text-orange-400"
+                            size={20}
+                          />
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {!valueChain && (
+                  <div className="bg-gray-10 rounded-xl p-6 shadow-lg">
+                    <div className="flex items-center gap-3 mb-6">
+                      <h3 className="text-xl font-bold text-gray-900">
+                        Counties we are focusing on
+                      </h3>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                      {allProjectCounties.map((county) => (
+                        <button
+                          key={county}
+                          onClick={() => handleCountyClick(county)}
+                          className="flex items-center justify-between p-3 rounded-lg hover:bg-primary-50 hover:shadow-sm transition-all group bg-white"
+                        >
+                          <span className="text-gray-700 group-hover:text-primary-600 font-medium">
+                            {county}
+                          </span>
+                          <ChevronRight
+                            className="text-orange-300 group-hover:text-orange-400"
+                            size={20}
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </>
             )}
+
             <div className="border border-gray-200 bg-gray-10 rounded-xl shadow-lg p-6">
               <h3 className="text-lg font-bold text-gray-800 mb-2">
                 Social Accountability Training Manual

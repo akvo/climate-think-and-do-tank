@@ -16,6 +16,11 @@ const nextConfig = {
         hostname: '*.akvotest.org',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '*.googleapis.com',
+        pathname: '/**',
+      },
     ],
   },
 };
