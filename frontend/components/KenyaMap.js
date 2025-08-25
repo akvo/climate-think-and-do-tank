@@ -918,7 +918,7 @@ export default function KenyaMap({
                         <div className="flex items-center justify-between gap-4 py-1 rounded-md">
                           <div className="flex items-center gap-2">
                             <Users className="h-5 w-5 text-gray-700" />
-                            <h4 className="text-lg font-semibold text-gray-800">
+                            <h4 className="text-lg  text-gray-800">
                               Population
                             </h4>
                           </div>
@@ -936,9 +936,7 @@ export default function KenyaMap({
                         <div className="flex items-center justify-between gap-4 py-1 rounded-md">
                           <div className="flex items-center gap-2">
                             <RegionIcon className="h-5 w-5 text-gray-700" />
-                            <h4 className="text-lg font-semibold text-gray-800">
-                              Area
-                            </h4>
+                            <h4 className="text-lg  text-gray-800">Area</h4>
                           </div>
 
                           <div className="flex flex-wrap gap-2">
@@ -955,7 +953,7 @@ export default function KenyaMap({
                         <div className="flex items-center justify-between gap-4 py-1 rounded-md">
                           <div className="flex items-center gap-2">
                             <Globe className="h-5 w-5 text-gray-700" />
-                            <h4 className="text-lg font-semibold text-gray-800">
+                            <h4 className="text-lg  text-gray-800">
                               Languages
                             </h4>
                           </div>
@@ -992,7 +990,7 @@ export default function KenyaMap({
                         <div className="flex items-center justify-between gap-4 py-1 rounded-md">
                           <div className="flex items-center gap-2">
                             <ValueChainIcon className="h-5 w-5 text-gray-700" />
-                            <h4 className="text-lg font-semibold text-gray-800">
+                            <h4 className="text-lg  text-gray-800">
                               Value chains
                             </h4>
                           </div>

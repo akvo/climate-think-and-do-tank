@@ -230,7 +230,7 @@ export default function InvestmentOpportunityProfile() {
           </>
         }
         searchText="Search for investment opportunities by region, value chain, or keyword"
-        pageDescription="The latest industry news, interviews, technologies, and resources."
+        pageDescription="Explore curated climate-resilient investment opportunity profiles in agrifood, water and energy across Kenya’s ASALs. Interested? Reach out to the KDIH network."
       />
 
       <div className="container mx-auto mt-[-31px] relative z-10">
