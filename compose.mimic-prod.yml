@@ -14,6 +14,7 @@ services:
     build: ./frontend
     environment:
       NEXT_PUBLIC_BACKEND_URL: ${BACKEND_URL:-http://localhost/cms}
+      NEXT_PUBLIC_PIWIK_SITE_ID: ${PIWIK_SITE_ID:-}
 
   backend:
     image: tdt-backend
