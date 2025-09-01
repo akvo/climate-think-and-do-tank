@@ -12,6 +12,7 @@ services:
     environment:
       NEXT_TELEMETRY_DISABLED: 1
       NEXT_PUBLIC_BACKEND_URL: http://localhost:1337
+      NEXT_PUBLIC_PIWIK_SITE_ID: ${PIWIK_SITE_ID:-}
 
   backend:
     build:
