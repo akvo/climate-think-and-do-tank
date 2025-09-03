@@ -25,23 +25,31 @@ export default function HomePage() {
       <main className="min-h-screen bg-white">
         <HeroSlider setData={setData} />
 
-        <section className="bg-white py-20 text-gray-800 border-t border-gray-100">
-          <div className="container mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-16 ">
-              <div className="col-span-1 md:col-span-5">
-                <H3 variant="bold">
+        <section className="bg-white py-12 md:py-16 lg:py-20 text-gray-800 border-t border-gray-100">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 lg:gap-16">
+              <div className="col-span-1 lg:col-span-5">
+                <H3
+                  variant="bold"
+                  className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight"
+                >
                   Welcome to the{' '}
                   <span className="text-primary-500">
                     Kenya Drylands Investment Hub
                   </span>
                 </H3>
               </div>
-              <div className="col-span-1 md:col-span-7 space-y-8 text-[20px]">
-                <MarkdownRenderer content={data.description} />
+
+              <div className="col-span-1 lg:col-span-7 space-y-6 md:space-y-8">
+                <div className="text-base sm:text-lg md:text-xl">
+                  <MarkdownRenderer content={data.description} />
+                </div>
               </div>
             </div>
 
-            <StatsGrid />
+            <div className="mt-12 md:mt-16 lg:mt-20">
+              <StatsGrid />
+            </div>
           </div>
         </section>
 

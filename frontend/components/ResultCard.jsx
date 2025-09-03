@@ -113,7 +113,7 @@ export default function ResultCard({ result, viewMode, onClick, showLink }) {
               </div>
             </div>
 
-            <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 md:line-clamp-2">
+            <p className="text-gray-800 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 md:line-clamp-2">
               {result.description}
             </p>
           </div>

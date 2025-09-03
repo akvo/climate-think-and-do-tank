@@ -29,6 +29,7 @@ export default function FilterSection({
   const [tempSelections, setTempSelections] = useState({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   const filterConfigs = {
     region: {
@@ -111,7 +112,12 @@ export default function FilterSection({
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        (!mobileMenuRef.current ||
+          !mobileMenuRef.current.contains(event.target))
+      ) {
         setOpenDropdown(null);
         setTempSelections({});
       }
@@ -270,7 +276,10 @@ export default function FilterSection({
                         {config.hasAllOption && (
                           <>
                             <button
-                              onClick={() => handleAllSelection(filterKey)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAllSelection(filterKey);
+                              }}
                               className="w-full text-left px-4 py-3 transition-colors duration-150 hover:bg-primary-50 flex items-center gap-3"
                             >
                               <div
@@ -309,9 +318,10 @@ export default function FilterSection({
                           return (
                             <button
                               key={option.value}
-                              onClick={() =>
-                                handleTempSelection(filterKey, option.value)
-                              }
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleTempSelection(filterKey, option.value);
+                              }}
                               className="w-full text-left px-4 py-3 transition-colors duration-150 hover:bg-primary-50 flex items-center gap-3"
                             >
                               <div
@@ -388,7 +398,10 @@ export default function FilterSection({
 
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black bg-opacity-50  text-black">
-          <div className="absolute right-0 top-0 bottom-0 w-full sm:w-96 bg-white shadow-2xl">
+          <div
+            ref={mobileMenuRef}
+            className="absolute right-0 top-0 bottom-0 w-full sm:w-96 bg-white shadow-2xl"
+          >
             <div className="flex items-center justify-between p-4 border-b">
               <h2 className="text-lg font-bold">Filters</h2>
               <button
@@ -434,7 +447,10 @@ export default function FilterSection({
                       <div className="px-4 pb-4">
                         {config.hasAllOption && (
                           <button
-                            onClick={() => handleAllSelection(filterKey)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAllSelection(filterKey);
+                            }}
                             className="w-full text-left py-2 flex items-center gap-3"
                           >
                             <div
@@ -469,9 +485,10 @@ export default function FilterSection({
                             return (
                               <button
                                 key={option.value}
-                                onClick={() =>
-                                  handleTempSelection(filterKey, option.value)
-                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleTempSelection(filterKey, option.value);
+                                }}
                                 className="w-full text-left py-2 flex items-center gap-3"
                               >
                                 <div
@@ -498,13 +515,19 @@ export default function FilterSection({
                           <Button
                             variant="primary"
                             size="sm"
-                            onClick={() => handleApply(filterKey)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleApply(filterKey);
+                            }}
                             className="flex-1"
                           >
                             Apply
                           </Button>
                           <Button
-                            onClick={() => handleClearFilter(filterKey)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleClearFilter(filterKey);
+                            }}
                             variant="ghost"
                             size="sm"
                             className="flex-1"

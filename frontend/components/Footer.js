@@ -53,14 +53,16 @@ const socialLinks = [
 ];
 
 const FooterSection = ({ title, links }) => (
-  <div className="md:col-span-3">
-    <ParagraphMD className="mb-4">{title}</ParagraphMD>
-    <ul className="space-y-3">
+  <div className="col-span-6 sm:col-span-4 lg:col-span-3">
+    <ParagraphMD className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold">
+      {title}
+    </ParagraphMD>
+    <ul className="space-y-2 sm:space-y-3">
       {links.map((link) => (
         <li key={link.href}>
           <Link
             href={link.href}
-            className="text-[#21252B] hover:text-gray-800 transition-colors font-bold"
+            className="text-[#21252B] hover:text-gray-800 transition-colors font-bold text-sm sm:text-base"
           >
             {link.label}
           </Link>
@@ -74,20 +76,21 @@ export default function Footer() {
   return (
     <footer className="bg-white text-black rounded-t-lg">
       <div className="bg-gray-20">
-        <div className="container mx-auto py-16">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
-            <div className="md:col-span-3">
-              <Link href="/" className="flex items-center gap-2">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <div className="grid grid-cols-6 sm:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
+            <div className="col-span-6 sm:col-span-12 lg:col-span-3">
+              <Link href="/" className="inline-flex items-center gap-2">
                 <Image
                   src="/images/logo.svg"
                   alt="Kenya Drylands Investment Hub Logo"
                   width={230}
                   height={40}
                   priority
+                  className="w-48 sm:w-56 lg:w-60 h-auto"
                 />
               </Link>
 
-              <div className="flex items-center gap-2 text-sm text-black mt-8 font-bold">
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-black mt-6 sm:mt-8 font-bold">
                 Powered by
                 <Image
                   src="/images/footer-logo.png"
@@ -95,6 +98,7 @@ export default function Footer() {
                   width={130}
                   height={40}
                   priority
+                  className="w-24 sm:w-28 lg:w-32 h-auto"
                 />
               </div>
             </div>
@@ -110,23 +114,23 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="container mx-auto py-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-          <div className="mb-6 md:mb-0">
-            <p className="text-black mb-2">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+          <div className="order-2 lg:order-1">
+            <p className="text-black mb-2 text-sm sm:text-base">
               We apply the principles of open source software, open content and
               open data to all of our work.
             </p>
             <Link
               href="/why-how"
-              className="text-black hover:text-gray-300 transition-colors border-b border-black pb-0.5"
+              className="text-black hover:text-gray-600 transition-colors border-b border-black pb-0.5 text-sm sm:text-base inline-block"
             >
               Find out why and how
             </Link>
           </div>
 
-          <div className="flex items-center gap-8">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6 sm:gap-8 order-1 lg:order-2">
+            <div className="flex items-center gap-3 sm:gap-4">
               {socialLinks.map((social) => {
                 const IconComponent = social.icon;
                 return (
@@ -138,7 +142,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <IconComponent className="w-6 h-6" />
+                    <IconComponent className="w-5 h-5 sm:w-6 sm:h-6" />
                   </Link>
                 );
               })}

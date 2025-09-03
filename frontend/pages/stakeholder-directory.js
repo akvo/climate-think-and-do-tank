@@ -577,16 +577,36 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
     }
   };
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: stakeholder.name,
-        text: `Check out ${stakeholder.name}'s profile`,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast.success('Link copied to clipboard');
+  const handleShare = async () => {
+    try {
+      if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({
+          title: stakeholder.name,
+          text: `Check out ${stakeholder.name}'s profile`,
+          url: window.location.href,
+        })
+      ) {
+        await navigator.share({
+          title: stakeholder.name,
+          text: `Check out ${stakeholder.name}'s profile`,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success('Link copied to clipboard');
+      }
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          toast.success('Link copied to clipboard');
+        } catch (clipboardError) {
+          console.error('Share and clipboard both failed:', clipboardError);
+          toast.error('Unable to share or copy link');
+        }
+      }
     }
   };
 
@@ -720,7 +740,11 @@ export const StakeholderModal = ({ isOpen, onClose, stakeholder, router }) => {
               isAuthenticated &&
               renderConnectionButton()}
             {stakeholder.type === 'Individual' && !isAuthenticated && (
-              <Button className="border">Connect</Button>
+              <div>
+                <Button onClick={() => router.push(`/login`)}>
+                  Login to connect
+                </Button>
+              </div>
             )}
           </div>
         </div>

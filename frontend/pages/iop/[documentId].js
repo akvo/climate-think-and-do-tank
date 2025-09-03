@@ -144,7 +144,7 @@ export default function InvestmentOpportunityProfile() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-2 text-sm">
             <Link
-              href="/investment-opportunities"
+              href="/investment-profiles"
               className="text-gray-500 hover:text-gray-700 flex items-center gap-1"
             >
               <Home className="w-4 h-4" />
