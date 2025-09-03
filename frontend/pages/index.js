@@ -73,7 +73,7 @@ export default function HomePage() {
               <div>
                 <Link
                   href="/social-accountability"
-                  className="inline-flex items-center px-6 py-3 border border-primary-500 rounded-full text-primary-500 hover:bg-primary-500 hover:text-white transition-colors font-bold min-w-[300px] justify-center"
+                  className="inline-flex items-center px-6 py-3 border border-[#6D8D55] rounded-full text-[#6D8D55] hover:bg-[#6D8D55] hover:text-white transition-colors font-bold min-w-[300px] justify-center"
                 >
                   Explore social accountability
                 </Link>

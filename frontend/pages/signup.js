@@ -17,6 +17,7 @@ import ImageUploader from '@/components/ImageUploader';
 import { env } from '@/helpers/env-vars';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import Button from '@/components/Button';
 
 export default function SignUpForm() {
   const dispatch = useDispatch();
@@ -169,7 +170,6 @@ export default function SignUpForm() {
 
       setShowConfirmEmail(true);
     } catch (error) {
-      console.error('Unexpected error during signup:', error);
       setFormErrors({
         general: 'An unexpected error occurred. Please try again.',
       });
@@ -181,40 +181,43 @@ export default function SignUpForm() {
   return (
     <div>
       {!showAdditionalDetails ? (
-        <div className="flex min-h-screen bg-white">
-          <div className="w-1/2 p-12 px-20 flex flex-col justify-center min-h-screen">
+        <div className="flex flex-col lg:flex-row min-h-screen bg-white">
+          <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 xl:px-20 flex flex-col justify-center min-h-screen lg:min-h-screen">
             <Link href="/" className="mb-4 block">
               <Image
-                src="/images/logo.svg"
+                src="/images/logo.png"
                 alt="Kenya Drylands Investment Hub Logo"
                 width={230}
                 height={40}
                 priority
+                className="w-48 sm:w-56 lg:w-60 h-auto"
               />
             </Link>
             <div className="flex-grow flex items-center">
-              <div className="mx-auto w-full">
-                <div className="mb-12">
-                  <h1 className="text-4xl font-bold text-black mb-6">
+              <div className="mx-auto w-full max-w-md lg:max-w-lg xl:max-w-xl">
+                <div className="mb-8 lg:mb-12">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black mb-3 sm:mb-4 lg:mb-6">
                     Welcome to the Think and Do Tank Network
                   </h1>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-sm sm:text-base">
                     Create an Account to Unlock Exclusive Features
                   </p>
                 </div>
 
                 {formErrors.general && (
-                  <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 rounded-full">
+                  <div className="mb-4 sm:mb-6 p-3 bg-red-50 border border-red-200 text-red-700 rounded-full text-sm sm:text-base">
                     {formErrors.general}
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-8">
-                  {/* Email Field */}
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-4 sm:space-y-6 lg:space-y-8"
+                >
                   <div className="space-y-2">
                     <label
                       htmlFor="email"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-xs sm:text-sm font-medium text-gray-700"
                     >
                       Email Address
                     </label>
@@ -225,22 +228,21 @@ export default function SignUpForm() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter your email address"
-                      className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
+                      className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border placeholder:text-gray-500 sm:placeholder:text-black text-black text-sm sm:text-base ${
                         formErrors.email ? 'border-red-500' : 'border-gray-200'
-                      } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+                      } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent`}
                     />
                     {formErrors.email && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className="mt-1 text-xs sm:text-sm text-red-600">
                         {formErrors.email}
                       </p>
                     )}
                   </div>
 
-                  {/* Password Field */}
                   <div className="space-y-2">
                     <label
                       htmlFor="password"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-xs sm:text-sm font-medium text-gray-700"
                     >
                       Create Password
                     </label>
@@ -252,36 +254,35 @@ export default function SignUpForm() {
                         placeholder="Enter your password"
                         value={formData.password}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
+                        className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border placeholder:text-gray-500 sm:placeholder:text-black text-black text-sm sm:text-base ${
                           formErrors.password
                             ? 'border-red-500'
                             : 'border-gray-200'
-                        } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent pr-10`}
+                        } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent pr-10`}
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 p-1"
                       >
                         {showPassword ? (
-                          <EyeOff size={20} />
+                          <EyeOff size={16} className="sm:w-5 sm:h-5" />
                         ) : (
-                          <Eye size={20} />
+                          <Eye size={16} className="sm:w-5 sm:h-5" />
                         )}
                       </button>
                     </div>
                     {formErrors.password && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className="mt-1 text-xs sm:text-sm text-red-600">
                         {formErrors.password}
                       </p>
                     )}
                   </div>
 
-                  {/* Confirm Password Field */}
                   <div className="space-y-2">
                     <label
                       htmlFor="confirmPassword"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-xs sm:text-sm font-medium text-gray-700"
                     >
                       Confirm Password
                     </label>
@@ -293,55 +294,44 @@ export default function SignUpForm() {
                         type={showConfirmPassword ? 'text' : 'password'}
                         value={formData.confirmPassword}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
+                        className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border placeholder:text-gray-500 sm:placeholder:text-black text-black text-sm sm:text-base ${
                           formErrors.confirmPassword
                             ? 'border-red-500'
                             : 'border-gray-200'
-                        } rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent pr-10`}
+                        } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent pr-10`}
                       />
                       <button
                         type="button"
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
                         }
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 p-1"
                       >
                         {showConfirmPassword ? (
-                          <EyeOff size={20} />
+                          <EyeOff size={16} className="sm:w-5 sm:h-5" />
                         ) : (
-                          <Eye size={20} />
+                          <Eye size={16} className="sm:w-5 sm:h-5" />
                         )}
                       </button>
                     </div>
                     {formErrors.confirmPassword && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className="mt-1 text-xs sm:text-sm text-red-600">
                         {formErrors.confirmPassword}
                       </p>
                     )}
                   </div>
 
-                  <button
+                  <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`
-                    w-full 
-                    bg-primary-500 
-                    text-white 
-                    py-3 
-                    rounded-full 
-                    transition-colors 
-                    duration-200
-                    ${
-                      isSubmitting
-                        ? 'opacity-50 cursor-not-allowed'
-                        : 'hover:bg-primary-600'
-                    }
-                  `}
+                    className={`w-full
+                  ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
+                `}
                   >
                     {isSubmitting ? (
                       <div className="flex items-center justify-center">
                         <svg
-                          className="animate-spin h-5 w-5 mr-3"
+                          className="animate-spin h-4 w-4 sm:h-5 sm:w-5 mr-2 sm:mr-3"
                           viewBox="0 0 24 24"
                         >
                           <circle
@@ -363,30 +353,30 @@ export default function SignUpForm() {
                     ) : (
                       'Create My Account'
                     )}
-                  </button>
+                  </Button>
 
-                  <div className="text-center text-sm text-gray-600 space-y-2">
+                  <div className="text-center text-xs sm:text-sm text-gray-600 space-y-2">
                     <p>
                       By creating an account, you agree to our{' '}
                       <a
                         href="/terms"
-                        className="text-green-600 hover:underline"
+                        className="text-primary-600 hover:underline"
                       >
                         Terms of Service
                       </a>{' '}
                       and{' '}
                       <a
                         href="/guidelines"
-                        className="text-green-600 hover:underline"
+                        className="text-primary-600 hover:underline"
                       >
                         Community Guidelines
                       </a>
                     </p>
                     <p>
-                      Ensure compliance with copyright and privacy rights.
+                      Ensure compliance with copyright and privacy rights.{' '}
                       <a
                         href="/learn-more"
-                        className="text-green-600 hover:underline"
+                        className="text-primary-600 hover:underline"
                       >
                         Learn more
                       </a>
@@ -397,8 +387,7 @@ export default function SignUpForm() {
             </div>
           </div>
 
-          {/* Right Section - Image Carousel */}
-          <div className="w-1/2 relative">
+          <div className="hidden lg:block lg:w-1/2 relative">
             {slides.map((slide, index) => (
               <div
                 key={index}
@@ -417,7 +406,6 @@ export default function SignUpForm() {
               </div>
             ))}
 
-            {/* Carousel Indicators */}
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2">
               {slides.map((_, index) => (
                 <button
@@ -513,8 +501,8 @@ const AdditionalDetails = ({
   };
 
   return (
-    <div className="flex h-screen ">
-      <div className="w-1/2 flex flex-col justify-center p-12 px-20 bg-zinc-900 text-white overflow-hidden">
+    <div className="flex flex-col lg:flex-row min-h-screen">
+      <div className="w-full lg:w-1/2 flex flex-col justify-center p-6 sm:p-8 lg:p-12 xl:px-20 bg-zinc-900 text-white lg:h-screen">
         <Link href="/" className="mb-4 block">
           <Image
             src="/images/logo-white.png"
@@ -522,15 +510,16 @@ const AdditionalDetails = ({
             width={230}
             height={40}
             priority
+            className="w-48 sm:w-56 lg:w-60 h-auto"
           />
         </Link>
 
-        <div className="flex-grow flex items-center justify-center">
-          <div className="mx-auto w-full">
-            <div className="mb-8">
-              <div className="w-12 h-12 bg-zinc-700 rounded-full flex items-center justify-center">
+        <div className="flex-grow flex items-center justify-center py-8 lg:py-0">
+          <div className="mx-auto w-full max-w-md">
+            <div className="mb-6 lg:mb-8">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-zinc-700 rounded-full flex items-center justify-center">
                 <svg
-                  className="w-6 h-6 text-zinc-400"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-zinc-400"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
@@ -539,19 +528,18 @@ const AdditionalDetails = ({
               </div>
             </div>
 
-            <div className="mb-10">
-              <h2 className="text-2xl font-bold mb-2">
+            <div className="mb-8 lg:mb-10">
+              <h2 className="text-xl sm:text-2xl font-bold mb-2">
                 Create your account in a few clicks
               </h2>
             </div>
 
-            {/* Steps */}
-            <div className="flex flex-col">
+            <div className="flex flex-row lg:flex-col gap-4 lg:gap-0 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0">
               {steps.map((step, index) => (
-                <div key={step.number} className="flex">
+                <div key={step.number} className="flex flex-shrink-0">
                   <div className="flex flex-col items-center">
                     <div
-                      className={`w-16 h-16 rounded-full flex items-center justify-center ${
+                      className={`w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center ${
                         step.completed
                           ? 'bg-transparent border-2 border-white'
                           : step.active
@@ -561,7 +549,7 @@ const AdditionalDetails = ({
                     >
                       {step.completed ? (
                         <svg
-                          className="w-8 h-8 text-white"
+                          className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -570,445 +558,338 @@ const AdditionalDetails = ({
                           <path d="M5 13l4 4L19 7" />
                         </svg>
                       ) : (
-                        <span className="text-3xl text-white">
+                        <span className="text-xl sm:text-2xl lg:text-3xl text-white">
                           {step.number}
                         </span>
                       )}
                     </div>
 
                     {index < steps.length - 1 && (
-                      <div className="w-0.5 h-24 bg-white"></div>
+                      <div className="hidden lg:block w-0.5 h-24 bg-white"></div>
                     )}
                   </div>
 
-                  <div className="ml-12 mt-4">
-                    <span className="text-2xl text-white">{step.label}</span>
+                  <div className="ml-4 lg:ml-12 mt-3 lg:mt-4">
+                    <span className="text-sm sm:text-base lg:text-2xl text-white whitespace-nowrap">
+                      {step.label}
+                    </span>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-8">
-              <p className="text-zinc-400">{form.email}</p>
+            <div className="mt-6 lg:mt-8">
+              <p className="text-zinc-400 text-sm sm:text-base">{form.email}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Right Panel */}
-      <div className="w-1/2 p-12 bg-white text-black overflow-y-auto">
+      <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 bg-white text-black overflow-y-auto">
         {steps.find((step) => step.active)?.number === 2 && (
-          <div className="table h-full w-full">
-            <div className="table-cell align-middle">
-              <div className="max-w-2xl mx-auto">
-                <h2 className="text-3xl font-bold mb-6 text-black">
-                  Basic Information
-                </h2>
+          <div className="min-h-full flex items-center justify-center">
+            <div className="w-full max-w-2xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-black">
+                Basic Information
+              </h2>
 
-                {formErrors.general && (
-                  <div
-                    id="error-summary"
-                    className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6"
-                  >
-                    <p className="font-medium">{formErrors.general}</p>
-                  </div>
-                )}
-                <form onSubmit={handleSubmit} className="space-y-8">
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="name"
-                      className="block text-lg font-medium text-gray-700"
-                    >
-                      Name
+              {formErrors.general && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-4 sm:mb-6 text-sm sm:text-base">
+                  <p className="font-medium">{formErrors.general}</p>
+                </div>
+              )}
+
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-4 sm:space-y-6 lg:space-y-8"
+              >
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base lg:text-lg font-medium text-gray-700">
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter your full name"
+                    className="w-full p-3 sm:p-4 py-2 text-sm sm:text-base bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    name="name"
+                    value={formData.name || ''}
+                    onChange={handleChange}
+                  />
+                  {formErrors.name && (
+                    <p className="text-red-500 text-xs sm:text-sm mt-1">
+                      {formErrors.name}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <label className="block text-sm sm:text-base lg:text-lg font-medium text-gray-700">
+                      Organization name
                     </label>
+                    <div className="relative inline-block ml-2 group">
+                      <div className="flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 text-xs font-medium text-gray-800 bg-gray-300 rounded-full cursor-help">
+                        i
+                      </div>
+                      <div className="hidden sm:block absolute z-10 w-64 p-3 text-xs sm:text-sm text-left text-white bg-gray-800 rounded-md shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 transition-opacity duration-300">
+                        Take care when setting your organisation as these will
+                        be checked by an admin as part of the approval process
+                        <div className="absolute w-3 h-3 bg-gray-800 transform rotate-45 left-1/2 -translate-x-1/2 -bottom-1.5"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="relative flex flex-col sm:flex-row gap-2 border border-gray-200 rounded-full p-1">
                     <input
-                      id="name"
                       type="text"
-                      placeholder="Enter your full name"
-                      className="w-full p-4 py-2 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      name="name"
-                      value={formData.name || ''}
-                      onChange={handleChange}
-                    />{' '}
-                    {formErrors.name && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {formErrors.name}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center">
-                      <label
-                        htmlFor="organization"
-                        className="block text-lg font-medium text-gray-700"
-                      >
-                        Organization name
-                      </label>
-                      <div className="relative inline-block ml-2 group">
-                        <div className="flex items-center justify-center w-5 h-5 text-xs font-medium text-gray-800 bg-gray-300 rounded-full cursor-help">
-                          i
-                        </div>
-                        <div className="absolute z-10 w-64 p-3 text-sm text-left text-white bg-gray-800 rounded-md shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 transition-opacity duration-300">
-                          Take care when setting your organisation as these will
-                          be checked by an admin as part of the approval
-                          process, who may reach out with further questions
-                          <div className="absolute w-3 h-3 bg-gray-800 transform rotate-45 left-1/2 -translate-x-1/2 -bottom-1.5"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="relative flex gap-2 border border-gray-200 rounded-full p-1">
-                      <div className="relative flex-1">
-                        <input
-                          id="organisation"
-                          type="text"
-                          placeholder="Search by organisation name"
-                          className="w-full p-4 py-2 bg-white rounded-full focus:outline-none"
-                          name="organisation"
-                          value={searchTerm || ''}
-                          onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                            setShowSuggestions(true);
-                          }}
-                          onFocus={() => setShowSuggestions(true)}
-                        />
-
-                        {showSuggestions && searchTerm && (
-                          <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                            {filteredOrganizations.length > 0 ? (
-                              filteredOrganizations.map((org) => (
-                                <div
-                                  key={org.id}
-                                  className="p-3 hover:bg-white cursor-pointer"
-                                  onClick={() => {
-                                    setFormData({
-                                      ...formData,
-                                      organisation: org.id,
-                                      organisationName: org.name,
-                                    });
-                                    setSearchTerm(org.name);
-                                    setShowSuggestions(false);
-                                  }}
-                                >
-                                  {org.name}
-                                </div>
-                              ))
-                            ) : (
-                              <div className="p-3 text-gray-500">
-                                No organizations found
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => setIsOrgModal(true)}
-                        className="px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center gap-2 whitespace-nowrap"
-                      >
-                        Add Organization
-                        <span className="font-bold">+</span>
-                      </button>
-                    </div>
-                    {formErrors.organisation && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {formErrors.organisation}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex justify-between w-[100%] gap-4">
-                    <div className="w-2/4">
-                      <CustomDropdown
-                        id="role"
-                        label="Role"
-                        options={[
-                          { id: 'Academia', label: 'Academia' },
-                          { id: 'Governmental', label: 'Governmental' },
-                          { id: 'NGO / non-profit', label: 'NGO / non-profit' },
-                          {
-                            id: 'Investor / private sector',
-                            label: 'Investor / private sector',
-                          },
-                          {
-                            id: 'Local communities / groups / cooperatives',
-                            label: 'Local communities / groups / cooperatives',
-                          },
-                        ]}
-                        isMulti={false}
-                        value={formData.role}
-                        onChange={(value) =>
-                          setFormData({ ...formData, role: value })
-                        }
-                        placeholder="Enter your role"
-                      />
-                      {formErrors.role && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {formErrors.role}
-                        </p>
-                      )}
-                    </div>
-                    <div className="w-2/4">
-                      <CustomDropdown
-                        id="country"
-                        label="Country of residence"
-                        options={
-                          country &&
-                          country.map((f) => {
-                            return {
-                              id: f.id,
-                              label: f.country_name,
-                            };
-                          })
-                        }
-                        isMulti={false}
-                        value={formData.countryOfResidence}
-                        onChange={(value) =>
-                          setFormData({
-                            ...formData,
-                            countryOfResidence: value,
-                          })
-                        }
-                        placeholder="Select country"
-                        searchable={true}
-                      />
-                      {formErrors.countryOfResidence && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {formErrors.countryOfResidence}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div>
-                    <CustomDropdown
-                      id="regions"
-                      label="Focus Region"
-                      options={
-                        regions &&
-                        regions.map((f) => {
-                          return {
-                            id: f.id,
-                            label: f.name,
-                          };
-                        })
-                      }
-                      isMulti={true}
-                      value={formData.regions}
-                      onChange={(value) =>
-                        setFormData({ ...formData, regions: value })
-                      }
-                      placeholder="Select regions"
+                      placeholder="Search by organisation name"
+                      className="w-full p-3 sm:p-4 py-2 text-sm sm:text-base bg-white rounded-full focus:outline-none"
+                      value={searchTerm || ''}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setShowSuggestions(true);
+                      }}
+                      onFocus={() => setShowSuggestions(true)}
                     />
-                    {formErrors.regions && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {formErrors.regions}
-                      </p>
-                    )}
-                  </div>
 
-                  <div>
-                    <CustomDropdown
-                      id="topics"
-                      label="Topics"
-                      options={
-                        topics &&
-                        topics.map((f) => {
-                          return {
-                            id: f.id,
-                            label: f.name,
-                          };
-                        })
-                      }
-                      isMulti={true}
-                      value={formData.topics}
-                      onChange={(value) =>
-                        setFormData({ ...formData, topics: value })
-                      }
-                      placeholder="Select topics"
-                    />
-                    {formErrors.topics && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {formErrors.topics}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <CustomDropdown
-                      id="looking_fors"
-                      label="Looking for"
-                      options={
-                        lookingFors &&
-                        lookingFors.map((f) => {
-                          return {
-                            id: f.id,
-                            label: f.name,
-                          };
-                        })
-                      }
-                      isMulti={true}
-                      value={formData.looking_fors}
-                      onChange={(value) =>
-                        setFormData({ ...formData, looking_fors: value })
-                      }
-                      placeholder="Select option"
-                    />
-                    {formErrors.looking_fors && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {formErrors.looking_fors}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="linkedin"
-                      className="block text-lg font-medium text-gray-700"
+                    <button
+                      type="button"
+                      onClick={() => setIsOrgModal(true)}
+                      className="px-3 sm:px-6 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 whitespace-nowrap"
                     >
-                      Linkedin Profile
-                    </label>
-                    <div className="relative">
-                      <input
-                        id="linkedin"
-                        type="text"
-                        placeholder="https://www.linkedin.com/in/user-o-bb6123b2/"
-                        className="w-full p-4 py-2 pl-6 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        name="linkedin"
-                        value={formData.linkedin || ''}
-                        onChange={handleChange}
-                      />
-                      <button
-                        type="button"
-                        className="absolute inset-y-0 right-4 flex items-center text-gray-400"
-                      >
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                          ></path>
-                        </svg>
-                      </button>
-                      {formErrors.linkedin && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {formErrors.linkedin}
-                        </p>
-                      )}
-                    </div>
+                      <span className="hidden sm:inline">Add Organization</span>
+                      <span className="sm:hidden">Add Org</span>
+                      <span className="font-bold">+</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="w-full sm:w-1/2">
+                    <CustomDropdown
+                      id="role"
+                      label="Role"
+                      options={[
+                        { id: 'Academia', label: 'Academia' },
+                        { id: 'Governmental', label: 'Governmental' },
+                        { id: 'NGO / non-profit', label: 'NGO / non-profit' },
+                        {
+                          id: 'Investor / private sector',
+                          label: 'Investor / private sector',
+                        },
+                        {
+                          id: 'Local communities / groups / cooperatives',
+                          label: 'Local communities / groups / cooperatives',
+                        },
+                      ]}
+                      isMulti={false}
+                      value={formData.role}
+                      onChange={(value) =>
+                        setFormData({ ...formData, role: value })
+                      }
+                      placeholder="Enter your role"
+                    />
                   </div>
 
-                  <div className="space-y-4 mt-6">
-                    <div className="flex items-start gap-3">
-                      <input
-                        type="checkbox"
-                        id="newsletter"
-                        className="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        checked={formData.newsletter || false}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            newsletter: e.target.checked,
-                          })
-                        }
-                      />
-                      <label
-                        htmlFor="newsletter"
-                        className="text-base text-gray-700"
-                      >
-                        Send me the latest News and Updates
-                      </label>
-                    </div>
+                  <div className="w-full sm:w-1/2">
+                    <CustomDropdown
+                      id="country"
+                      label="Country of residence"
+                      options={country?.map((f) => ({
+                        id: f.id,
+                        label: f.country_name,
+                      }))}
+                      isMulti={false}
+                      value={formData.countryOfResidence}
+                      onChange={(value) =>
+                        setFormData({
+                          ...formData,
+                          countryOfResidence: value,
+                        })
+                      }
+                      placeholder="Select country"
+                      searchable={true}
+                    />
+                  </div>
+                </div>
 
-                    <div className="flex items-start gap-3">
-                      <input
-                        type="checkbox"
-                        id="terms"
-                        className="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        checked={formData.acceptTerms || false}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            acceptTerms: e.target.checked,
-                          })
-                        }
-                      />
-                      <label
-                        htmlFor="terms"
-                        className="text-base text-gray-700"
+                <div>
+                  <CustomDropdown
+                    id="regions"
+                    label="Focus Region"
+                    options={
+                      regions &&
+                      regions.map((f) => {
+                        return {
+                          id: f.id,
+                          label: f.name,
+                        };
+                      })
+                    }
+                    isMulti={true}
+                    value={formData.regions}
+                    onChange={(value) =>
+                      setFormData({ ...formData, regions: value })
+                    }
+                    placeholder="Select regions"
+                  />
+                  {formErrors.regions && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {formErrors.regions}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <CustomDropdown
+                    id="topics"
+                    label="Topics"
+                    options={
+                      topics &&
+                      topics.map((f) => {
+                        return {
+                          id: f.id,
+                          label: f.name,
+                        };
+                      })
+                    }
+                    isMulti={true}
+                    value={formData.topics}
+                    onChange={(value) =>
+                      setFormData({ ...formData, topics: value })
+                    }
+                    placeholder="Select topics"
+                  />
+                  {formErrors.topics && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {formErrors.topics}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <CustomDropdown
+                    id="looking_fors"
+                    label="Looking for"
+                    options={
+                      lookingFors &&
+                      lookingFors.map((f) => {
+                        return {
+                          id: f.id,
+                          label: f.name,
+                        };
+                      })
+                    }
+                    isMulti={true}
+                    value={formData.looking_fors}
+                    onChange={(value) =>
+                      setFormData({ ...formData, looking_fors: value })
+                    }
+                    placeholder="Select option"
+                  />
+                  {formErrors.looking_fors && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {formErrors.looking_fors}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="linkedin"
+                    className="block text-lg font-medium text-gray-700"
+                  >
+                    Linkedin Profile
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="linkedin"
+                      type="text"
+                      placeholder="https://www.linkedin.com/in/user-o-bb6123b2/"
+                      className="w-full p-4 py-2 pl-6 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      name="linkedin"
+                      value={formData.linkedin || ''}
+                      onChange={handleChange}
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-4 flex items-center text-gray-400"
+                    >
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        I accept the{' '}
-                        <span className="font-bold">Terms of Service</span> and
-                        I&apos;m authorised to accept for my organization
-                      </label>{' '}
-                    </div>
-                    {formErrors.acceptTerms && (
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                        ></path>
+                      </svg>
+                    </button>
+                    {formErrors.linkedin && (
                       <p className="text-red-500 text-sm mt-1">
-                        {formErrors.acceptTerms}
+                        {formErrors.linkedin}
                       </p>
                     )}
                   </div>
+                </div>
 
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={`
-                  w-full 
-                  bg-green-600 
-                  text-white 
-                  py-2 
-                  rounded-full 
-                  text-lg
-                  font-medium
-                  transition-colors 
-                  duration-200
-                  ${
-                    isSubmitting
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'hover:bg-green-700'
-                  }
-                `}
-                  >
-                    {isSubmitting ? (
-                      <div className="flex items-center justify-center">
-                        <svg
-                          className="animate-spin h-5 w-5 mr-3"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
-                        Submitting...
-                      </div>
-                    ) : (
-                      'Continue'
-                    )}
-                  </button>
-                </form>
-              </div>{' '}
+                <div className="space-y-3 sm:space-y-4 mt-4 sm:mt-6">
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 sm:mt-1 h-4 w-4 sm:h-5 sm:w-5 rounded border-gray-300"
+                      checked={formData.newsletter || false}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          newsletter: e.target.checked,
+                        })
+                      }
+                    />
+                    <label className="text-xs sm:text-sm lg:text-base text-gray-700">
+                      Send me the latest News and Updates
+                    </label>
+                  </div>
+
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 sm:mt-1 h-4 w-4 sm:h-5 sm:w-5 rounded border-gray-300"
+                      checked={formData.acceptTerms || false}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          acceptTerms: e.target.checked,
+                        })
+                      }
+                    />
+                    <label className="text-xs sm:text-sm lg:text-base text-gray-700">
+                      I accept the{' '}
+                      <span className="font-bold">Terms of Service</span> and
+                      I&apos;m authorized to accept for my organization
+                    </label>
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`
+                w-full 
+                ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
+              `}
+                >
+                  {isSubmitting ? 'Submitting...' : 'Continue'}
+                </Button>
+              </form>
             </div>
           </div>
         )}
-        {steps.find((step) => step.active)?.number === 3 && (
-          <ConfirmEmail user={form} router={router} />
-        )}
+
         {isOrgModal && (
           <OrganizationModal
             onClose={() => {
@@ -1054,7 +935,9 @@ const ConfirmEmail = ({ user, router }) => {
         );
       case 'success':
         return (
-          <span className="text-green-600 ml-1">Verification email sent!</span>
+          <span className="text-primary-600 ml-1">
+            Verification email sent!
+          </span>
         );
       case 'error':
         return (
@@ -1085,12 +968,9 @@ const ConfirmEmail = ({ user, router }) => {
       <p className="text-gray-600 mb-4">
         We’ll send you a link to the email address you signed up with
       </p>
-      <button
-        className="px-4 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors min-w-72"
-        onClick={() => router.push('/login')}
-      >
+      <Button className="min-w-72" onClick={() => router.push('/login')}>
         Continue
-      </button>
+      </Button>
     </div>
   );
 };
@@ -1193,7 +1073,7 @@ const OrganizationModal = ({
             <input
               type="text"
               placeholder="Enter your organization name"
-              className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-600"
               value={formData.org_name}
               onChange={(e) =>
                 setFormData({ ...formData, org_name: e.target.value })
@@ -1208,7 +1088,7 @@ const OrganizationModal = ({
               <input
                 type="text"
                 placeholder="www.myorg.com"
-                className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 pr-10"
+                className="w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-600 pr-10"
                 value={formData.website}
                 onChange={(e) => {
                   let value = e.target.value;
@@ -1265,12 +1145,9 @@ const OrganizationModal = ({
             }}
           />
 
-          <button
-            type="submit"
-            className="w-full px-4 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors"
-          >
+          <Button type="submit" className="w-full ">
             Save
-          </button>
+          </Button>
         </form>
       </div>
     </div>

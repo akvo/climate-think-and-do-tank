@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { H3 } from '@/components/Heading';
 import { ParagraphMD } from '@/components/Text';
+import Button from '@/components/Button';
 
 export default function LoginForm() {
   const dispatch = useDispatch();
@@ -144,50 +145,57 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white">
-      <div className="w-1/2 p-12 flex flex-col justify-center min-h-screen">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-white">
+      <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 flex flex-col justify-center min-h-screen lg:min-h-screen">
         <Link href="/" className="mb-4 block">
           <Image
-            src="/images/logo.svg"
+            src="/images/logo.png"
             alt="Kenya Drylands Investment Hub Logo"
             width={230}
             height={40}
             priority
+            className="w-48 sm:w-56 lg:w-60 h-auto"
           />
         </Link>
+
         <div className="flex-grow flex items-center">
-          <div className="max-w-4xl mx-auto w-full">
-            <div className="mb-12">
-              <H3 variant="bold" className="mb-4">
+          <div className="max-w-md lg:max-w-lg xl:max-w-xl mx-auto w-full">
+            <div className="mb-8 lg:mb-12">
+              <H3
+                variant="bold"
+                className="mb-3 lg:mb-4 text-2xl sm:text-3xl lg:text-4xl"
+              >
                 {formData.forgotPassword
                   ? 'Forgot your password'
                   : 'Welcome to the Kenya Drylands Investment Hub'}
               </H3>
 
               {formData.forgotPassword ? (
-                <p className="text-gray-600">
-                  We’ll send you a code to the email address you signed up with
+                <p className="text-gray-600 text-sm sm:text-base">
+                  We&apos;ll send you a code to the email address you signed up
+                  with
                 </p>
               ) : (
-                <ParagraphMD>
-                  Login for your user account to access the platform’s features
+                <ParagraphMD className="text-sm sm:text-base">
+                  Login for your user account to access the platform&apos;s
+                  features
                 </ParagraphMD>
               )}
             </div>
 
             {formErrors.general && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded">
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded text-sm sm:text-base">
                 {formErrors.general}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               {!formData.forgotPassword ? (
                 <>
                   <div className="space-y-2">
                     <label
                       htmlFor="email"
-                      className="block text-md font-bold text-black"
+                      className="block text-sm sm:text-md font-bold text-black"
                     >
                       Email
                     </label>
@@ -198,14 +206,14 @@ export default function LoginForm() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter your email"
-                      className={`w-full px-4 py-3 bg-white border  ${
+                      className={`w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-white border ${
                         formErrors.email
                           ? 'border-primary-500'
                           : 'border-gray-200'
                       } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                     />
                     {formErrors.email && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className="mt-1 text-xs sm:text-sm text-red-600">
                         {formErrors.email}
                       </p>
                     )}
@@ -214,7 +222,7 @@ export default function LoginForm() {
                   <div className="space-y-2">
                     <label
                       htmlFor="password"
-                      className="block text-md font-bold text-black"
+                      className="block text-sm sm:text-md font-bold text-black"
                     >
                       Password
                     </label>
@@ -226,7 +234,7 @@ export default function LoginForm() {
                         type={showPassword ? 'text' : 'password'}
                         value={formData.password}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-white border ${
+                        className={`w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-white border ${
                           formErrors.password
                             ? 'border-red-500'
                             : 'border-gray-200'
@@ -238,14 +246,14 @@ export default function LoginForm() {
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
                       >
                         {showPassword ? (
-                          <EyeOff size={20} />
+                          <EyeOff size={18} className="sm:w-5 sm:h-5" />
                         ) : (
-                          <Eye size={20} />
+                          <Eye size={18} className="sm:w-5 sm:h-5" />
                         )}
                       </button>
                     </div>
                     {formErrors.password && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className="mt-1 text-xs sm:text-sm text-red-600">
                         {formErrors.password}
                       </p>
                     )}
@@ -253,7 +261,7 @@ export default function LoginForm() {
                       <button
                         type="button"
                         onClick={handleForgotPassword}
-                        className="text-sm text-primary-500 font-bold hover:underline"
+                        className="text-xs sm:text-sm text-primary-500 font-bold hover:underline"
                       >
                         Forgot Password
                       </button>
@@ -262,162 +270,229 @@ export default function LoginForm() {
                 </>
               ) : (
                 <>
-                  {!formData.showResetCode && (
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium"
-                      >
-                        Email
-                      </label>
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="user@address.com"
-                        className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
-                          formErrors.email
-                            ? 'border-red-500'
-                            : 'border-gray-200'
-                        } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
-                      />
-                      {formErrors.email && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {formErrors.email}
-                        </p>
-                      )}
-
-                      <div className="pt-6">
-                        <button
-                          type="button"
-                          disabled={isSubmitting}
-                          onClick={handleSubmit}
-                          className={`
-                        w-full 
-                      bg-primary-600 
-                      text-white 
-                        py-3 
-                        rounded-full 
-                        transition-colors 
-                        duration-200
-                      ${
-                        isSubmitting
-                          ? 'opacity-50 cursor-not-allowed'
-                          : 'hover:bg-primary-700'
-                      }
-                    `}
+                  {!formData.forgotPassword ? (
+                    <>
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="email"
+                          className="block text-md font-bold text-black"
                         >
-                          {isSubmitting ? 'Sending...' : 'Send Reset Code'}
-                        </button>
-                        <button
-                          type="button"
-                          disabled={isSubmitting}
-                          onClick={() =>
-                            setFormData({ ...formData, forgotPassword: false })
-                          }
-                          className={`
+                          Email
+                        </label>
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          placeholder="Enter your email"
+                          className={`w-full px-4 py-3 bg-white border  ${
+                            formErrors.email
+                              ? 'border-primary-500'
+                              : 'border-gray-200'
+                          } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                        />
+                        {formErrors.email && (
+                          <p className="mt-1 text-sm text-red-600">
+                            {formErrors.email}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="password"
+                          className="block text-md font-bold text-black"
+                        >
+                          Password
+                        </label>
+                        <div className="relative">
+                          <input
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            type={showPassword ? 'text' : 'password'}
+                            value={formData.password}
+                            onChange={handleChange}
+                            className={`w-full px-4 py-3 bg-white border ${
+                              formErrors.password
+                                ? 'border-red-500'
+                                : 'border-gray-200'
+                            } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent pr-10`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                          >
+                            {showPassword ? (
+                              <EyeOff size={20} />
+                            ) : (
+                              <Eye size={20} />
+                            )}
+                          </button>
+                        </div>
+                        {formErrors.password && (
+                          <p className="mt-1 text-sm text-red-600">
+                            {formErrors.password}
+                          </p>
+                        )}
+                        <div className="flex justify-end">
+                          <button
+                            type="button"
+                            onClick={handleForgotPassword}
+                            className="text-sm text-primary-500 font-bold hover:underline"
+                          >
+                            Forgot Password
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {!formData.showResetCode && (
+                        <div className="space-y-2">
+                          <label
+                            htmlFor="email"
+                            className="block text-sm font-medium text-black"
+                          >
+                            Email
+                          </label>
+                          <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="user@address.com"
+                            className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
+                              formErrors.email
+                                ? 'border-red-500'
+                                : 'border-gray-200'
+                            } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                          />
+                          {formErrors.email && (
+                            <p className="mt-1 text-sm text-red-600">
+                              {formErrors.email}
+                            </p>
+                          )}
+
+                          <div className="pt-6">
+                            <Button
+                              type="button"
+                              disabled={isSubmitting}
+                              onClick={handleSubmit}
+                              className={`
                         w-full 
-                      bg-white 
-                        border
-                        py-3 
-                        rounded-full 
-                        transition-colors 
-                        duration-200
-                        text-zinc-800
+                      ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
+                    `}
+                            >
+                              {isSubmitting ? 'Sending...' : 'Send Reset Code'}
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              disabled={isSubmitting}
+                              onClick={() =>
+                                setFormData({
+                                  ...formData,
+                                  forgotPassword: false,
+                                })
+                              }
+                              className={`
+                        w-full 
                         mt-2
                     `}
-                        >
-                          {'Back to Login'}
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                            >
+                              {'Back to Login'}
+                            </Button>
+                          </div>
+                        </div>
+                      )}
 
-                  {formData.showResetCode && (
-                    <>
-                      <div className="space-y-2 text-black">
-                        <label
-                          htmlFor="resetCode"
-                          className="block text-sm font-medium"
-                        >
-                          Reset Code
-                        </label>
-                        <input
-                          id="resetCode"
-                          name="resetCode"
-                          type="text"
-                          value={formData.resetCode}
-                          onChange={handleChange}
-                          className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
-                            formErrors.resetCode
-                              ? 'border-red-500'
-                              : 'border-gray-200'
-                          } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
-                        />
-                        {formErrors.resetCode && (
-                          <p className="mt-1 text-sm text-red-600">
-                            {formErrors.resetCode}
-                          </p>
-                        )}
-                      </div>
+                      {formData.showResetCode && (
+                        <>
+                          <div className="space-y-2 text-black">
+                            <label
+                              htmlFor="resetCode"
+                              className="block text-sm font-medium"
+                            >
+                              Reset Code
+                            </label>
+                            <input
+                              id="resetCode"
+                              name="resetCode"
+                              type="text"
+                              value={formData.resetCode}
+                              onChange={handleChange}
+                              className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
+                                formErrors.resetCode
+                                  ? 'border-red-500'
+                                  : 'border-gray-200'
+                              } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                            />
+                            {formErrors.resetCode && (
+                              <p className="mt-1 text-sm text-red-600">
+                                {formErrors.resetCode}
+                              </p>
+                            )}
+                          </div>
 
-                      <div className="space-y-2 text-black">
-                        <label
-                          htmlFor="newPassword"
-                          className="block text-sm font-medium"
-                        >
-                          New Password
-                        </label>
-                        <input
-                          id="newPassword"
-                          name="newPassword"
-                          type="password"
-                          value={formData.newPassword}
-                          onChange={handleChange}
-                          className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
-                            formErrors.newPassword
-                              ? 'border-red-500'
-                              : 'border-gray-100'
-                          } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
-                        />
-                        {formErrors.newPassword && (
-                          <p className="mt-1 text-sm text-red-600">
-                            {formErrors.newPassword}
-                          </p>
-                        )}
-                      </div>
+                          <div className="space-y-2 text-black">
+                            <label
+                              htmlFor="newPassword"
+                              className="block text-sm font-medium"
+                            >
+                              New Password
+                            </label>
+                            <input
+                              id="newPassword"
+                              name="newPassword"
+                              type="password"
+                              value={formData.newPassword}
+                              onChange={handleChange}
+                              className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
+                                formErrors.newPassword
+                                  ? 'border-red-500'
+                                  : 'border-gray-100'
+                              } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                            />
+                            {formErrors.newPassword && (
+                              <p className="mt-1 text-sm text-red-600">
+                                {formErrors.newPassword}
+                              </p>
+                            )}
+                          </div>
 
-                      <div className="space-y-2 text-black">
-                        <label
-                          htmlFor="confirmNewPassword"
-                          className="block text-sm font-medium"
-                        >
-                          Confirm New Password
-                        </label>
-                        <input
-                          id="confirmNewPassword"
-                          name="confirmNewPassword"
-                          type="password"
-                          value={formData.confirmNewPassword}
-                          onChange={handleChange}
-                          className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
-                            formErrors.confirmNewPassword
-                              ? 'border-red-500'
-                              : 'border-gray-200'
-                          } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
-                        />
-                        {formErrors.confirmNewPassword && (
-                          <p className="mt-1 text-sm text-red-600">
-                            {formErrors.confirmNewPassword}
-                          </p>
-                        )}
-                        <div className="pt-4">
-                          <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`
+                          <div className="space-y-2 text-black">
+                            <label
+                              htmlFor="confirmNewPassword"
+                              className="block text-sm font-medium"
+                            >
+                              Confirm New Password
+                            </label>
+                            <input
+                              id="confirmNewPassword"
+                              name="confirmNewPassword"
+                              type="password"
+                              value={formData.confirmNewPassword}
+                              onChange={handleChange}
+                              className={`w-full px-4 py-3 bg-white border placeholder:text-black text-black ${
+                                formErrors.confirmNewPassword
+                                  ? 'border-red-500'
+                                  : 'border-gray-200'
+                              } rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                            />
+                            {formErrors.confirmNewPassword && (
+                              <p className="mt-1 text-sm text-red-600">
+                                {formErrors.confirmNewPassword}
+                              </p>
+                            )}
+                            <div className="pt-4">
+                              <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className={`
                           w-full    
                         bg-primary-500 
                         text-white 
@@ -432,21 +507,23 @@ export default function LoginForm() {
                               : 'hover:bg-zinc-800'
                           }
                         `}
-                          >
-                            {isSubmitting ? 'Resetting...' : 'Reset Password'}
-                          </button>
-                        </div>
-                      </div>
+                              >
+                                {isSubmitting
+                                  ? 'Resetting...'
+                                  : 'Reset Password'}
+                              </button>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </>
                   )}
-                </>
-              )}
 
-              {!formData.forgotPassword && (
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`
+                  {!formData.forgotPassword && (
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className={`
                     w-full 
                     font-bold
                     bg-primary-500 
@@ -461,11 +538,50 @@ export default function LoginForm() {
                         : 'hover:bg-primary-600'
                     }
                   `}
+                    >
+                      {isSubmitting ? (
+                        <div className="flex items-center justify-center">
+                          <svg
+                            className="animate-spin h-5 w-5 mr-3"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Logging in...
+                        </div>
+                      ) : (
+                        'Log In'
+                      )}
+                    </button>
+                  )}
+                </>
+              )}
+
+              {!formData.forgotPassword && (
+                <Button
+                  type="submit"
+                  variant="primary"
+                  disabled={isSubmitting}
+                  className={`w-full 
+                ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
+              `}
                 >
                   {isSubmitting ? (
                     <div className="flex items-center justify-center">
                       <svg
-                        className="animate-spin h-5 w-5 mr-3"
+                        className="animate-spin h-4 w-4 sm:h-5 sm:w-5 mr-3"
                         viewBox="0 0 24 24"
                       >
                         <circle
@@ -487,17 +603,17 @@ export default function LoginForm() {
                   ) : (
                     'Log In'
                   )}
-                </button>
+                </Button>
               )}
 
-              <p className="text-[#495057] flex items-center justify-center mt-4 gap-1 text-[16px]">
+              <p className="text-[#495057] flex items-center justify-center mt-4 gap-1 text-sm sm:text-base">
                 Don&apos;t have an account?{' '}
                 <Link href="/signup" className="text-primary-500 font-bold">
                   Sign up
                 </Link>
               </p>
 
-              <div className="text-center text-sm text-gray-600 space-y-2">
+              <div className="text-center text-xs sm:text-sm text-gray-600 space-y-2">
                 <p>
                   By submitting your files to the platform, you acknowledge that
                   you agree to our{' '}
@@ -528,8 +644,7 @@ export default function LoginForm() {
         </div>
       </div>
 
-      {/* Right Section - Image Carousel */}
-      <div className="w-1/2 relative">
+      <div className="hidden lg:block lg:w-1/2 relative">
         {slides.map((slide, index) => (
           <div
             key={index}
@@ -548,7 +663,6 @@ export default function LoginForm() {
           </div>
         ))}
 
-        {/* Carousel Indicators */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2">
           {slides.map((_, index) => (
             <button
