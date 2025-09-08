@@ -138,7 +138,6 @@ export default function EventDetailPage() {
       </Head>
 
       <div className="min-h-screen bg-white">
-        {/* Breadcrumb */}
         <div className="bg-white ">
           <div className="container mx-auto px-4 py-4">
             <nav className="flex items-center gap-2 text-sm">
@@ -169,9 +168,7 @@ export default function EventDetailPage() {
         </div>
 
         <div className="container mx-auto px-4 py-8">
-          {/* Title and Date Row */}
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
-            {/* Title and Description */}
             <div className="flex-1">
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 {event.title}
@@ -212,37 +209,44 @@ export default function EventDetailPage() {
             </div>
           )}
 
-          <div className="flex flex-wrap md:flex-nowrap items-start justify-between gap-6 md:gap-8 mb-8 py-8 border-b">
-            <div className="flex items-start gap-3">
-              <Clock size={20} className="text-gray-400 mt-0.5" />
-              <div>
+          <div className="flex flex-wrap lg:flex-nowrap items-start justify-between gap-6 mb-8 py-8 border-b">
+            <div className="flex items-start gap-3 flex-1 basis-full sm:basis-1/2 lg:basis-0">
+              <Clock size={20} className="text-gray-400 mt-0.5 flex-shrink-0" />
+              <div className="min-w-0">
                 <p className="text-sm text-black mb-1">Time</p>
-                <p className="font-medium text-gray-900">{formatEventTime()}</p>
+                <p className="font-medium text-gray-900 break-words">
+                  {formatEventTime()}
+                </p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3">
-              <MapPin size={20} className="text-gray-400 mt-0.5" />
-              <div>
+            <div className="flex items-start gap-3 flex-1 basis-full sm:basis-1/2 lg:basis-0">
+              <MapPin
+                size={20}
+                className="text-gray-400 mt-0.5 flex-shrink-0"
+              />
+              <div className="min-w-0">
                 <p className="text-sm text-black mb-1">Location</p>
-                <p className="font-medium text-gray-900">
+                <p className="font-medium text-gray-900 break-words">
                   {event.address ||
                     'Isiolo Resort Conference Hall, Isiolo Town, Isiolo County, Kenya'}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3">
-              <Users size={20} className="text-black mt-0.5" />
-              <div>
+            <div className="flex items-start gap-3 flex-1 basis-full sm:basis-1/2 lg:basis-0">
+              <Users size={20} className="text-gray-400 mt-0.5 flex-shrink-0" />
+              <div className="min-w-0">
                 <p className="text-sm text-black mb-1">Type of event</p>
-                <p className="font-medium text-gray-900">{event.eventType}</p>
+                <p className="font-medium text-gray-900 break-words">
+                  {event.eventType}
+                </p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 flex-1 basis-full sm:basis-1/2 lg:basis-0">
               <svg
-                className="w-5 h-5 text-gray-400 mt-0.5"
+                className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -254,13 +258,15 @@ export default function EventDetailPage() {
                   d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
                 />
               </svg>
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm text-black mb-1">Hosted by</p>
-                <p className="font-medium text-gray-900">{event.host}</p>
+                <p className="font-medium text-gray-900 break-words">
+                  {event.host}
+                </p>
               </div>
             </div>
 
-            <div>
+            <div className="flex items-start justify-start lg:justify-end flex-1 basis-full sm:basis-1/2 lg:basis-0">
               <Button onClick={handleShare}>
                 <Share2 size={16} className="mr-1" />
                 <span className="font-medium">Share</span>

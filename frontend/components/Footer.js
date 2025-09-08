@@ -92,14 +92,20 @@ export default function Footer() {
 
               <div className="flex items-center gap-2 text-xs sm:text-sm text-black mt-6 sm:mt-8 font-bold">
                 Powered by
-                <Image
-                  src="/images/footer-logo.png"
-                  alt="Akvo"
-                  width={130}
-                  height={40}
-                  priority
-                  className="w-24 sm:w-28 lg:w-32 h-auto"
-                />
+                <Link
+                  href={'https://akvo.org'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Image
+                    src="/images/footer-logo.png"
+                    alt="Akvo"
+                    width={130}
+                    height={40}
+                    priority
+                    className="w-24 sm:w-28 lg:w-32 h-auto"
+                  />
+                </Link>
               </div>
             </div>
 

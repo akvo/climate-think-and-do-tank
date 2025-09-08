@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Search,
   Download,
@@ -19,12 +19,21 @@ import {
   clearSocialAccountabilityData,
 } from '@/store/slices/socialAccountabilitySlice';
 import HeroSection from '@/components/Hero';
+import OtherMediaCarousel from '@/components/MediaCarousel';
+import CommunityVoicesSection from '@/components/CommunityVoicesSection';
 
 export default function SocialAccountability() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [activeTab, setActiveTab] = useState('voices');
 
   const { regions = [], valueChains = [] } = useSelector((state) => state.auth);
+
+  const {
+    data: socialAccountabilityData = [],
+    loading,
+    error,
+  } = useSelector((state) => state.socialAccountability);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
@@ -130,6 +139,53 @@ export default function SocialAccountability() {
   const selectedValueChain =
     filters.valueChain.length > 0 ? filters.valueChain[0] : 'All';
 
+  const allCommunityVoices = useMemo(() => {
+    const voices = [];
+    socialAccountabilityData.forEach((item) => {
+      if (item.community_voices && Array.isArray(item.community_voices)) {
+        item.community_voices.forEach((voice) => {
+          voices.push({
+            ...voice,
+            region: item.region,
+            valueChain: item.valueChain,
+            parentId: item.id,
+            parentTitle: item.title,
+          });
+        });
+      }
+    });
+    return voices;
+  }, [socialAccountabilityData]);
+
+  const allOtherMedia = useMemo(() => {
+    const media = [];
+    socialAccountabilityData.forEach((item) => {
+      if (item.other_media && Array.isArray(item.other_media)) {
+        item.other_media.forEach((mediaItem) => {
+          media.push({
+            ...mediaItem,
+            region: item.region,
+            valueChain: item.valueChain,
+            parentId: item.id,
+            parentTitle: item.title,
+          });
+        });
+      }
+    });
+    return media;
+  }, [socialAccountabilityData]);
+
+  const currentRegion = filters.region.length > 0 ? filters.region[0] : null;
+
+  const handleMapCountySelect = (selectedCounties) => {
+    const newFilters = {
+      ...filters,
+      region: selectedCounties,
+    };
+    setFilters(newFilters);
+    updateUrlAndFetch(newFilters, searchTerm);
+  };
+
   return (
     <div className="min-h-screen bg-gray-10">
       <HeroSection
@@ -159,8 +215,89 @@ export default function SocialAccountability() {
               : null
           }
           initialSelected={filters.region}
+          onSelect={handleMapCountySelect}
         />
       </div>
+
+      {filters.region.length > 0 && (
+        <div className="mx-auto py-8 px-4 text-black">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold mb-4">Community Voices</h2>
+            <div className="flex gap-6 mb-8">
+              <button
+                onClick={() => setActiveTab('voices')}
+                className={`
+                font-semibold px-6 py-2 rounded-t-xl focus:outline-none
+                transition
+                ${
+                  activeTab === 'voices'
+                    ? 'bg-[#F7F9FA] text-gray-900 border-b-4 border-[#DFE4E8]'
+                    : 'bg-transparent text-gray-600 hover:text-primary-500'
+                }
+                text-2xl
+              `}
+                style={{
+                  borderBottom:
+                    activeTab === 'voices'
+                      ? '4px solid #DFE4E8'
+                      : '4px solid transparent',
+                }}
+              >
+                Highlighted Community Voices
+              </button>
+              <button
+                onClick={() => setActiveTab('media')}
+                className={`
+                font-semibold px-6 py-2 rounded-t-xl focus:outline-none
+                transition
+               ${
+                 activeTab === 'media'
+                   ? 'bg-[#F7F9FA] text-gray-900 border-b-4 border-[#DFE4E8]'
+                   : 'bg-transparent text-gray-600 hover:text-primary-500'
+               }
+                text-2xl
+              `}
+                style={{
+                  borderBottom:
+                    activeTab === 'media'
+                      ? '4px solid #DFE4E8'
+                      : '4px solid transparent',
+                }}
+              >
+                Other Media
+              </button>
+            </div>
+          </div>
+
+          {loading && (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0DA2D7]"></div>
+            </div>
+          )}
+
+          {!loading && (
+            <>
+              {activeTab === 'voices' && (
+                <CommunityVoicesSection
+                  voices={allCommunityVoices}
+                  county={currentRegion}
+                />
+              )}
+              {activeTab === 'media' && (
+                <OtherMediaCarousel media={allOtherMedia} />
+              )}
+            </>
+          )}
+
+          {!loading && socialAccountabilityData.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">
+                No data available for the selected filters.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

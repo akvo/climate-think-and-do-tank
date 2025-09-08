@@ -50,11 +50,6 @@ const OtherMediaCarousel = ({ media }) => {
         </button>
       </div>
       <div className="flex gap-6">
-        {visibleFiles.length === 0 && (
-          <div className="w-full text-center text-gray-500">
-            No media available
-          </div>
-        )}
         {visibleFiles.map((file) => (
           <div
             key={file.parentId}

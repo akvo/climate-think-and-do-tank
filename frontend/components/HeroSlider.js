@@ -131,10 +131,7 @@ const HeroSlider = ({ setData }) => {
                       onChange={handleInputChange}
                       className="flex-1 pl-10 sm:pl-12 pr-3 sm:pr-4 h-10 sm:h-12 text-sm sm:text-base lg:text-lg bg-transparent border-none focus:outline-none text-black focus:ring-2 focus:ring-primary-500 rounded-full"
                     />
-                    <Button
-                      variant="primary"
-                      className="font-bold text-sm sm:text-base h-8 sm:h-10 px-3 sm:px-4"
-                    >
+                    <Button variant="primary" className="mr-[2px]">
                       Search
                     </Button>
                   </div>

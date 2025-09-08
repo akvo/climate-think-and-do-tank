@@ -38,10 +38,20 @@ export default function FilterSection({
       hasAllOption: true,
       allOptionLabel: 'All locations',
       options: [
-        ...regions.map((region) => ({
-          value: region.name,
-          label: region.name,
-        })),
+        ...regions
+          .filter(
+            (region) => region.name !== 'Kenya' && region.name !== 'Other'
+          )
+          .map((region) => ({
+            value: region.name,
+            label: region.name,
+          })),
+        ...(regions.find((r) => r.name === 'Kenya')
+          ? [{ value: 'Kenya', label: 'Kenya' }]
+          : []),
+        ...(regions.find((r) => r.name === 'Other')
+          ? [{ value: 'Other', label: 'Other' }]
+          : []),
         { value: 'No Specific Region', label: 'No Specific Region' },
       ],
     },

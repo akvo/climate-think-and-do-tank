@@ -71,6 +71,11 @@ export const fetchSocialAccountabilityData = createAsyncThunk(
       socialAccountabilityQueryParams.append('populate[0]', 'value_chain');
       socialAccountabilityQueryParams.append('populate[1]', 'region');
       socialAccountabilityQueryParams.append('populate[3]', 'profile_picture');
+      socialAccountabilityQueryParams.append(
+        'populate[4]',
+        'other_media_slider.files'
+      );
+      socialAccountabilityQueryParams.append('populate[5]', 'community_voices');
 
       const response = await axios.get(
         `${BACKEND_URL}/api/social-accountabilities?${socialAccountabilityQueryParams}`
@@ -90,6 +95,13 @@ export const fetchSocialAccountabilityData = createAsyncThunk(
         investments: item.investments || [],
         impacts: item.impacts || [],
         imageUrl: item.profile_picture || '',
+        community_voices: item.community_voices || [],
+        other_media:
+          item.other_media_slider?.files?.map((file) => ({
+            name: file.name,
+            url: file.url,
+            mime: file.mime,
+          })) || [],
       }));
 
       return {

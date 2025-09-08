@@ -228,7 +228,7 @@ export default function SearchResults() {
               ) {
                 return (
                   <Link
-                    href={`/investment-opportunities/${item.id}`}
+                    href={`/investment-profiles/${item.id}`}
                     key={`inv-${item.id || index}`}
                     className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 text-black"
                   >

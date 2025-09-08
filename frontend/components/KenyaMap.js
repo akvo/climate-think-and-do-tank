@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, use } from 'react';
 import {
   ChevronRight,
   Download,
@@ -56,6 +56,13 @@ export default function KenyaMap({
   const getRegionDetails = (countyName) => {
     return regions.find((r) => r.name === countyName);
   };
+
+  useEffect(() => {
+    if (initialSelected && Array.isArray(initialSelected)) {
+      setSelectedCounties(initialSelected);
+      setShowCountyDetails(initialSelected.length === 1);
+    }
+  }, [initialSelected]);
 
   const handleCountyClick = async (county) => {
     if (activeCounties.includes(county)) {
@@ -891,6 +898,9 @@ export default function KenyaMap({
                       setSelectedCounties([]);
                       setShowCountyDetails(false);
                       setInvestmentProfiles([]);
+                      if (typeof onSelect === 'function') {
+                        onSelect([]);
+                      }
                     }}
                     className="text-gray-400 hover:text-gray-600 flex-shrink-0"
                   >

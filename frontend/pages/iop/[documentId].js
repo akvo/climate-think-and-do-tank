@@ -122,7 +122,7 @@ export default function InvestmentOpportunityProfile() {
                 : 'This investment opportunity could not be found.'}
             </p>
             <button
-              onClick={() => router.push('/investment-opportunities')}
+              onClick={() => router.push('/investment-profiles')}
               className="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-6 rounded-md transition-colors"
             >
               Back to Opportunities
@@ -173,7 +173,7 @@ export default function InvestmentOpportunityProfile() {
             )}
           </div>
           <Link
-            href="/investment-opportunities"
+            href="/investment-profiles"
             className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2.5 rounded-full font-bold transition-colors flex items-center gap-2"
           >
             Invest

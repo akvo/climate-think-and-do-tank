@@ -222,9 +222,12 @@ export default function About() {
                 </>
               )}
 
-              <button className="bg-primary-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-primary-700 transition-colors">
-                Sign up
-              </button>
+              <Link
+                href="/signup"
+                className={`inline-flex items-center px-8 py-2 rounded-full text-white font-bold transition-colors hover:bg-white border-2 border-primary-500 hover:text-primary-500 bg-primary-500`}
+              >
+                Sign Up
+              </Link>
             </div>
 
             <div className="lg:col-span-2">
