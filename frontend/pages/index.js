@@ -53,9 +53,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="py-16 text-black bg-gray-10 hidden md:block">
+        <section className="py-16 text-black bg-gray-10 md:block">
           <div className="container mx-auto px-4">
-            <div className="flex items-start justify-between gap-6">
+            <div className="flex flex-col md:flex-row items-start justify-between gap-6">
               <div>
                 <H3 variant="bold" className="mb-4">
                   Explore{' '}
