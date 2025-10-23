@@ -33,10 +33,7 @@ export default function HomePage() {
                   variant="bold"
                   className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight"
                 >
-                  Welcome to the{' '}
-                  <span className="text-primary-500">
-                    Kenya Drylands Investment Hub
-                  </span>
+                  Convene, Connect, Catalyze
                 </H3>
               </div>
 
