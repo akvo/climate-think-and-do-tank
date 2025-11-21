@@ -196,8 +196,10 @@ const InvestmentCarousel = () => {
             </H3>
 
             <ParagraphMD className="max-w-2xl mt-3 sm:mt-4 text-sm sm:text-base">
-              Think and Do Tank Network: the next step towards catalysing
-              climate action in Kenya&apos;s Arid and Semi-Arid lands
+              Think and Do Tank Network: catalyzing investments in Kenya&apos;s
+              Arid and Semi-Arid lands&quot; TO &quot;Kenya Drylands Investment
+              Hub: your next step towards catalyzing climate action in
+              Kenya&apos;s Arid and Semi-Arid lands
             </ParagraphMD>
           </div>
           <Link

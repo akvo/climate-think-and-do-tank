@@ -5,7 +5,7 @@ import { ParagraphMD } from './Text';
 
 const InterestedSection = ({
   title = 'Interested?',
-  description = 'To express interest, access additional data, or be connected to local stakeholders, contact the Kenya Drylands Investment Hub (DKIH):',
+  description = 'To express interest, access additional data, or be connected to investment opportunities, contact the Kenya Drylands Investment Hub (KDIH):',
   buttonText = 'Contact us',
   buttonLink = '/contact-us',
   backgroundColor = 'bg-gray-10',

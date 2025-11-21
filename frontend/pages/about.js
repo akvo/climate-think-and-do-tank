@@ -41,7 +41,7 @@ export default function About() {
           setAbout({
             title: item.title || 'Kenya Drylands Investment Hub',
             tagline:
-              item.tagline || 'Empowering Investment, Building Resilience',
+              item.tagline || 'Empowering Investments, Building Resilience',
             tagline_description: item.tagline_description || '',
             banner_description: item.banner_description || '',
             our_mission: item.our_mission || '',
