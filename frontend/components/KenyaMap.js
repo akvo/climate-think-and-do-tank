@@ -21,13 +21,55 @@ import { useRouter } from 'next/router';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 
-const getValueChainImage = (valueChainName) => {
-  if (!valueChainName) return null;
-  const name = valueChainName.toLowerCase();
-  if (name.includes('livestock')) return '/images/livestock.svg';
-  if (name.includes('fish') || name.includes('aqua')) return '/images/fish.svg';
-  if (name.includes('agri') || name.includes('crop')) return '/images/agri.svg';
-  return null;
+const getValueChainData = (valueChainName) => {
+  if (!valueChainName)
+    return {
+      image: '/images/agri.svg',
+      bgColor: 'bg-green-600',
+      borderColor: 'border-green-300',
+    };
+  const name = valueChainName.toLowerCase().trim();
+  if (
+    name.includes('livestock') ||
+    name.includes('animal') ||
+    name.includes('cattle') ||
+    name.includes('goat') ||
+    name.includes('camel')
+  ) {
+    return {
+      image: '/images/livestock.svg',
+      bgColor: 'bg-pink-200',
+      borderColor: 'border-pink-300',
+    };
+  }
+  if (
+    name.includes('fish') ||
+    name.includes('aqua') ||
+    name.includes('fisheries')
+  ) {
+    return {
+      image: '/images/fish.svg',
+      bgColor: 'bg-blue-900',
+      borderColor: 'border-blue-300',
+    };
+  }
+  if (
+    name.includes('agri') ||
+    name.includes('crop') ||
+    name.includes('farm') ||
+    name.includes('horticulture')
+  ) {
+    return {
+      image: '/images/agri.svg',
+      bgColor: 'bg-green-600',
+      borderColor: 'border-green-300',
+    };
+  }
+  return {
+    image: '/images/agri.svg',
+    bgColor: 'bg-green-600',
+    borderColor: 'border-green-300',
+  };
 };
 
 export default function KenyaMap({
@@ -929,10 +971,6 @@ export default function KenyaMap({
               selectedCounties.length === 1 &&
               currentCountyDetails && (
                 <div className="bg-gray-10 border border-gray-30 rounded-xl shadow-lg overflow-hidden">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-800 p-4 sm:p-6 pb-0">
-                    About the county
-                  </h3>
-
                   <div className="flex flex-col">
                     {/* County Image */}
                     <div className="relative">
@@ -940,7 +978,9 @@ export default function KenyaMap({
                         <div className="relative w-full h-[200px] sm:h-[250px]">
                           <Image
                             src={
-                              currentCountyDetails.county_image.url.startsWith('http')
+                              currentCountyDetails.county_image.url.startsWith(
+                                'http'
+                              )
                                 ? currentCountyDetails.county_image.url
                                 : `${BACKEND_URL}${currentCountyDetails.county_image.url}`
                             }
@@ -948,25 +988,6 @@ export default function KenyaMap({
                             fill
                             className="object-cover"
                           />
-                          {/* Value Chain Badges */}
-                          <div className="absolute bottom-4 left-4 flex gap-2">
-                            {currentCountyDetails.value_chains?.map((vc, idx) => {
-                              const vcImage = getValueChainImage(vc.name);
-                              return vcImage ? (
-                                <div
-                                  key={idx}
-                                  className="bg-white rounded-full p-2 shadow-lg"
-                                >
-                                  <Image
-                                    src={vcImage}
-                                    alt={vc.name}
-                                    width={24}
-                                    height={24}
-                                  />
-                                </div>
-                              ) : null;
-                            })}
-                          </div>
                         </div>
                       ) : (
                         <div className="w-full h-[200px] sm:h-[250px] bg-gray-200 flex items-center justify-center">
@@ -975,44 +996,90 @@ export default function KenyaMap({
                       )}
                     </div>
 
-                    {/* Sub-locations Tabs and Content */}
+                    {/* Content Section */}
                     <div className="p-4 sm:p-6">
+                      {/* Value Chains Row */}
+                      {currentCountyDetails.value_chains?.length > 0 && (
+                        <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+                          <div className="flex items-center gap-2">
+                            <ValueChainIcon className="w-5 h-5 text-gray-600" />
+                            <span className="text-sm text-gray-700">
+                              Value chains
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {currentCountyDetails.value_chains.map(
+                              (vc, idx) => {
+                                const vcData = getValueChainData(vc.name);
+                                return (
+                                  <div
+                                    key={idx}
+                                    className={`inline-flex items-center gap-2 pl-1 pr-3 py-1`}
+                                  >
+                                    <div
+                                      className={`flex items-center justify-center`}
+                                    >
+                                      <Image
+                                        src={vcData.image}
+                                        alt={vc.name}
+                                        width={100}
+                                        height={60}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              }
+                            )}
+                          </div>
+                        </div>
+                      )}
+
                       {/* Sub-location Tabs */}
                       {currentCountyDetails.sub_locations?.length > 0 && (
                         <>
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {currentCountyDetails.sub_locations.map((subLoc, idx) => (
-                              <button
-                                key={idx}
-                                onClick={() => setActiveSubLocation(idx)}
-                                className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors ${
-                                  activeSubLocation === idx
-                                    ? 'bg-[#F47B20] text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                }`}
-                              >
-                                {subLoc.name}
-                              </button>
-                            ))}
+                          <div className="flex flex-wrap gap-4 mb-4 border-b border-gray-200">
+                            {currentCountyDetails.sub_locations.map(
+                              (subLoc, idx) => (
+                                <button
+                                  key={idx}
+                                  onClick={() => setActiveSubLocation(idx)}
+                                  className={`pb-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
+                                    activeSubLocation === idx
+                                      ? 'text-[#F47B20] border-[#F47B20]'
+                                      : 'text-gray-500 border-transparent hover:text-gray-700'
+                                  }`}
+                                >
+                                  {subLoc.name}
+                                </button>
+                              )
+                            )}
                           </div>
 
                           {/* Investment Priorities */}
                           <div className="mb-4">
-                            <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
-                              Investment Priorities
+                            <h4 className="text-sm sm:text-base font-bold text-gray-900 mb-3">
+                              Identified Community Investment Priorities:
                             </h4>
-                            {currentCountyDetails.sub_locations[activeSubLocation]
-                              ?.investment_priorities && (
-                              <ul className="space-y-1.5">
+                            {currentCountyDetails.sub_locations[
+                              activeSubLocation
+                            ]?.investment_priorities && (
+                              <ul className="space-y-3">
                                 {currentCountyDetails.sub_locations[
                                   activeSubLocation
                                 ].investment_priorities
                                   .split('\n')
                                   .filter((line) => line.trim())
                                   .map((priority, idx) => (
-                                    <li key={idx} className="flex items-start gap-2">
-                                      <Check className="w-4 h-4 text-[#F47B20] flex-shrink-0 mt-0.5" />
-                                      <span className="text-xs sm:text-sm text-gray-700">{priority.trim()}</span>
+                                    <li
+                                      key={idx}
+                                      className="flex items-start gap-3"
+                                    >
+                                      <div className="w-5 h-5 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <Check className="w-3 h-3 text-primary-500" />
+                                      </div>
+                                      <span className="text-sm text-gray-700">
+                                        {priority.trim()}
+                                      </span>
                                     </li>
                                   ))}
                               </ul>
@@ -1023,13 +1090,14 @@ export default function KenyaMap({
                           {currentCountyDetails.sub_locations[activeSubLocation]
                             ?.potential_impact && (
                             <div>
-                              <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
-                                Potential Impact/Benefit
+                              <h4 className="text-sm sm:text-base font-bold text-gray-900 mb-2">
+                                Potential Impact/benefit
                               </h4>
-                              <p className="text-xs sm:text-sm text-gray-700">
+                              <p className="text-sm text-gray-700">
                                 {
-                                  currentCountyDetails.sub_locations[activeSubLocation]
-                                    .potential_impact
+                                  currentCountyDetails.sub_locations[
+                                    activeSubLocation
+                                  ].potential_impact
                                 }
                               </p>
                             </div>
