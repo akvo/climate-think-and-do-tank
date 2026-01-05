@@ -9,6 +9,7 @@ import { getImageUrl } from '@/helpers/utilities';
 import {
   Home,
   ChevronRight,
+  ChevronDown,
   AlertCircle,
   ArrowRight,
   Check,
@@ -28,6 +29,7 @@ export default function InvestmentOpportunityProfile() {
   const { documentId } = router.query;
 
   const [activeSection, setActiveSection] = useState('county_sector_overview');
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -466,8 +468,68 @@ export default function InvestmentOpportunityProfile() {
           </div>
 
           <div className="grid lg:grid-cols-[280px_1fr] gap-8">
-            {/* Sidebar Navigation */}
-            <div className="space-y-2">
+            {/* Mobile Dropdown Navigation */}
+            <div className="lg:hidden relative mb-4">
+              <button
+                onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
+                className="w-full flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded bg-primary-500 text-white flex items-center justify-center text-xs font-bold">
+                    {sections.find((s) => s.id === activeSection)?.number}
+                  </span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {sections.find((s) => s.id === activeSection)?.name}
+                  </span>
+                </div>
+                <ChevronDown
+                  className={`w-5 h-5 text-gray-500 transition-transform ${
+                    mobileDropdownOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+
+              {mobileDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 max-h-[300px] overflow-y-auto">
+                  {sections.map((section) => (
+                    <button
+                      key={section.id}
+                      onClick={() => {
+                        setActiveSection(section.id);
+                        setMobileDropdownOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 p-4 text-left transition-colors border-b border-gray-100 last:border-b-0 ${
+                        activeSection === section.id
+                          ? 'bg-primary-50'
+                          : 'hover:bg-gray-50'
+                      }`}
+                    >
+                      <span
+                        className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                          activeSection === section.id
+                            ? 'bg-primary-500 text-white'
+                            : 'bg-gray-200 text-gray-600'
+                        }`}
+                      >
+                        {section.number}
+                      </span>
+                      <span
+                        className={`text-sm ${
+                          activeSection === section.id
+                            ? 'text-primary-500 font-medium'
+                            : 'text-gray-600'
+                        }`}
+                      >
+                        {section.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Desktop Sidebar Navigation */}
+            <div className="hidden lg:block space-y-2">
               {sections.map((section) => (
                 <button
                   key={section.id}
@@ -506,7 +568,7 @@ export default function InvestmentOpportunityProfile() {
                 (section) =>
                   activeSection === section.id && (
                     <div key={section.id}>
-                      <div className="flex gap-8">
+                      <div className="flex flex-col lg:flex-row gap-8">
                         <div className="flex-1">
                           <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
                             {section.name}
@@ -523,7 +585,7 @@ export default function InvestmentOpportunityProfile() {
                             )}
                           </div>
                         </div>
-                        {/* Section Image */}
+                        {/* Section Image - Desktop (side) */}
                         {profile[section.imageField] && (
                           <div className="hidden lg:block w-[300px] flex-shrink-0">
                             <div className="relative h-[400px] rounded-xl overflow-hidden">
@@ -538,6 +600,20 @@ export default function InvestmentOpportunityProfile() {
                           </div>
                         )}
                       </div>
+                      {/* Section Image - Mobile (bottom) */}
+                      {profile[section.imageField] && (
+                        <div className="lg:hidden mt-6">
+                          <div className="relative h-[250px] rounded-xl overflow-hidden">
+                            <Image
+                              src={getImageUrl(profile[section.imageField])}
+                              alt={section.name}
+                              fill
+                              className="object-contain"
+                              unoptimized
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )
               )}
