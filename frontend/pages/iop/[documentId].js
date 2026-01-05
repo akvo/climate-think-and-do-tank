@@ -38,48 +38,56 @@ export default function InvestmentOpportunityProfile() {
       number: 1,
       name: 'County & Sector Overview',
       contentField: 'county_sector_overview',
+      imageField: 'county_sector_overview_image',
     },
     {
       id: 'value_chain_profile_status',
       number: 2,
       name: 'Value Chain Profile & Current Status',
       contentField: 'value_chain_profile_status',
+      imageField: 'value_chain_profile_status_image',
     },
     {
       id: 'market_opportunity_demand',
       number: 3,
       name: 'Market Opportunity & Demand Outlook',
       contentField: 'market_opportunity_demand',
+      imageField: 'market_opportunity_demand_image',
     },
     {
       id: 'investment_opportunity',
       number: 4,
       name: 'The Investment Opportunity',
       contentField: 'investment_opportunity',
+      imageField: 'investment_opportunity_image',
     },
     {
       id: 'required_inputs_infrastructure',
       number: 5,
       name: 'Required Inputs, Infrastructure & Enablers',
       contentField: 'required_inputs_infrastructure',
+      imageField: 'required_inputs_infrastructure_image',
     },
     {
       id: 'investment_needs_financial',
       number: 6,
       name: 'Investment Needs & Financial Snapshot',
       contentField: 'investment_needs_financial',
+      imageField: 'investment_needs_financial_image',
     },
     {
       id: 'enabling_environment_policies',
       number: 7,
       name: 'Enabling Environment, Policies & Partnerships',
       contentField: 'enabling_environment_policies',
+      imageField: 'enabling_environment_policies_image',
     },
     {
       id: 'risks_mitigation',
       number: 8,
       name: 'Risks & Mitigation Measures',
       contentField: 'risks_mitigation',
+      imageField: 'risks_mitigation_image',
     },
   ];
 
@@ -501,13 +509,13 @@ export default function InvestmentOpportunityProfile() {
                             )}
                           </div>
                         </div>
-                        {/* County Map */}
-                        {profile.county_map_image && (
+                        {/* Section Image */}
+                        {profile[section.imageField] && (
                           <div className="hidden lg:block w-[300px] flex-shrink-0">
                             <div className="relative h-[400px] rounded-xl overflow-hidden">
                               <Image
-                                src={getImageUrl(profile.county_map_image)}
-                                alt="County Map"
+                                src={getImageUrl(profile[section.imageField])}
+                                alt={section.name}
                                 fill
                                 className="object-contain"
                                 unoptimized

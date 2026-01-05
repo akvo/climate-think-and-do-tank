@@ -203,6 +203,356 @@
           "sortable": false
         }
       },
+      "key_highlights": {
+        "edit": {
+          "label": "key_highlights",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "key_highlights",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "indicative_capex": {
+        "edit": {
+          "label": "indicative_capex",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "indicative_capex",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "indicative_capex_subtitle": {
+        "edit": {
+          "label": "indicative_capex_subtitle",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "indicative_capex_subtitle",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "annual_throughput": {
+        "edit": {
+          "label": "annual_throughput",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "annual_throughput",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "annual_throughput_subtitle": {
+        "edit": {
+          "label": "annual_throughput_subtitle",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "annual_throughput_subtitle",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "payback_period": {
+        "edit": {
+          "label": "payback_period",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "payback_period",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "payback_period_subtitle": {
+        "edit": {
+          "label": "payback_period_subtitle",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "payback_period_subtitle",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "why_now": {
+        "edit": {
+          "label": "why_now",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "why_now",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "county_sector_overview": {
+        "edit": {
+          "label": "county_sector_overview",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "county_sector_overview",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "county_sector_overview_image": {
+        "edit": {
+          "label": "county_sector_overview_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "county_sector_overview_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "value_chain_profile_status": {
+        "edit": {
+          "label": "value_chain_profile_status",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "value_chain_profile_status",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "value_chain_profile_status_image": {
+        "edit": {
+          "label": "value_chain_profile_status_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "value_chain_profile_status_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "market_opportunity_demand": {
+        "edit": {
+          "label": "market_opportunity_demand",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "market_opportunity_demand",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "market_opportunity_demand_image": {
+        "edit": {
+          "label": "market_opportunity_demand_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "market_opportunity_demand_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "investment_opportunity": {
+        "edit": {
+          "label": "investment_opportunity",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "investment_opportunity",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "investment_opportunity_image": {
+        "edit": {
+          "label": "investment_opportunity_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "investment_opportunity_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "required_inputs_infrastructure": {
+        "edit": {
+          "label": "required_inputs_infrastructure",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "required_inputs_infrastructure",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "required_inputs_infrastructure_image": {
+        "edit": {
+          "label": "required_inputs_infrastructure_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "required_inputs_infrastructure_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "investment_needs_financial": {
+        "edit": {
+          "label": "investment_needs_financial",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "investment_needs_financial",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "investment_needs_financial_image": {
+        "edit": {
+          "label": "investment_needs_financial_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "investment_needs_financial_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "enabling_environment_policies": {
+        "edit": {
+          "label": "enabling_environment_policies",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "enabling_environment_policies",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "enabling_environment_policies_image": {
+        "edit": {
+          "label": "enabling_environment_policies_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "enabling_environment_policies_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "risks_mitigation": {
+        "edit": {
+          "label": "risks_mitigation",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "risks_mitigation",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "risks_mitigation_image": {
+        "edit": {
+          "label": "risks_mitigation_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "risks_mitigation_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "investment_pdf": {
+        "edit": {
+          "label": "investment_pdf",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "investment_pdf",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -274,72 +624,164 @@
           {
             "name": "value_chain",
             "size": 6
-          }
-        ],
-        [
+          },
           {
             "name": "region",
             "size": 6
-          },
-          {
-            "name": "picture_one",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "investor_snapshot_text",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "the_investment_case_image",
-            "size": 6
-          },
-          {
-            "name": "business_blueprint_image",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "risk_and_impact_profile_image",
-            "size": 6
-          },
-          {
-            "name": "closing_information_image",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "the_investment_case_text",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "business_blueprint_text",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "risk_and_impact_profile_text",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "closing_information_text",
-            "size": 12
           }
         ],
         [
           {
             "name": "publication_date",
             "size": 4
+          }
+        ],
+        [
+          {
+            "name": "picture_one",
+            "size": 6
+          },
+          {
+            "name": "investment_pdf",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "key_highlights",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "indicative_capex",
+            "size": 6
+          },
+          {
+            "name": "indicative_capex_subtitle",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "annual_throughput",
+            "size": 6
+          },
+          {
+            "name": "annual_throughput_subtitle",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "payback_period",
+            "size": 6
+          },
+          {
+            "name": "payback_period_subtitle",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "why_now",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "county_sector_overview",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "county_sector_overview_image",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "value_chain_profile_status",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "value_chain_profile_status_image",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "market_opportunity_demand",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "market_opportunity_demand_image",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "investment_opportunity",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "investment_opportunity_image",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "required_inputs_infrastructure",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "required_inputs_infrastructure_image",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "investment_needs_financial",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "investment_needs_financial_image",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "enabling_environment_policies",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "enabling_environment_policies_image",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "risks_mitigation",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "risks_mitigation_image",
+            "size": 6
           }
         ]
       ]

@@ -97,28 +97,70 @@
     "county_sector_overview": {
       "type": "richtext"
     },
+    "county_sector_overview_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
     "value_chain_profile_status": {
       "type": "richtext"
+    },
+    "value_chain_profile_status_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
     },
     "market_opportunity_demand": {
       "type": "richtext"
     },
+    "market_opportunity_demand_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
     "investment_opportunity": {
       "type": "richtext"
+    },
+    "investment_opportunity_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
     },
     "required_inputs_infrastructure": {
       "type": "richtext"
     },
+    "required_inputs_infrastructure_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
     "investment_needs_financial": {
       "type": "richtext"
+    },
+    "investment_needs_financial_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
     },
     "enabling_environment_policies": {
       "type": "richtext"
     },
+    "enabling_environment_policies_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
     "risks_mitigation": {
       "type": "richtext"
     },
-    "county_map_image": {
+    "risks_mitigation_image": {
       "type": "media",
       "multiple": false,
       "required": false,

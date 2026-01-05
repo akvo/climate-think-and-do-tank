@@ -106,6 +106,16 @@
       "locale": null
     },
     {
+      "documentId": "vzbygmd10x7hhvxyn3gokpuh",
+      "action": "api::partner.partner.find",
+      "locale": null
+    },
+    {
+      "documentId": "lrc2z2o06bmfwrflz8tj80ea",
+      "action": "api::partner.partner.findOne",
+      "locale": null
+    },
+    {
       "documentId": "do8vo7e7o7cnzbjvzlgce1n4",
       "action": "api::region.region.find",
       "locale": null
