@@ -537,7 +537,7 @@ export default function InvestmentOpportunityProfile() {
                   className={`w-full flex items-start gap-3 p-3 text-left transition-colors ${
                     activeSection === section.id
                       ? 'bg-white border-r-4 border-primary-500'
-                      : 'hover:bg-primary-50'
+                      : 'bg-[#ACB5BD]/10 hover:bg-[#ACB5BD]/20'
                   }`}
                 >
                   <span
