@@ -69,6 +69,66 @@
     },
     "closing_information_text": {
       "type": "richtext"
+    },
+    "key_highlights": {
+      "type": "richtext"
+    },
+    "indicative_capex": {
+      "type": "string"
+    },
+    "indicative_capex_subtitle": {
+      "type": "string"
+    },
+    "annual_throughput": {
+      "type": "string"
+    },
+    "annual_throughput_subtitle": {
+      "type": "string"
+    },
+    "payback_period": {
+      "type": "string"
+    },
+    "payback_period_subtitle": {
+      "type": "string"
+    },
+    "why_now": {
+      "type": "text"
+    },
+    "county_sector_overview": {
+      "type": "richtext"
+    },
+    "value_chain_profile_status": {
+      "type": "richtext"
+    },
+    "market_opportunity_demand": {
+      "type": "richtext"
+    },
+    "investment_opportunity": {
+      "type": "richtext"
+    },
+    "required_inputs_infrastructure": {
+      "type": "richtext"
+    },
+    "investment_needs_financial": {
+      "type": "richtext"
+    },
+    "enabling_environment_policies": {
+      "type": "richtext"
+    },
+    "risks_mitigation": {
+      "type": "richtext"
+    },
+    "county_map_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "investment_pdf": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["files"]
     }
   }
 }

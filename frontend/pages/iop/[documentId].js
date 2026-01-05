@@ -6,47 +6,80 @@ import { env } from '@/helpers/env-vars';
 import { MarkdownRenderer } from '@/components/MarkDownRenderer';
 import Link from 'next/link';
 import { getImageUrl } from '@/helpers/utilities';
-import { Home, ChevronRight, AlertCircle, ArrowRight } from 'lucide-react';
-import { RegionIcon } from '@/components/Icons';
+import {
+  Home,
+  ChevronRight,
+  AlertCircle,
+  ArrowRight,
+  Check,
+  Upload,
+  FileDown,
+} from 'lucide-react';
+import {
+  RegionIcon,
+  TwitterIcon,
+  LinkedinIcon,
+  ValueChainIcon,
+} from '@/components/Icons';
 import InterestedSection from '@/components/ContactSection';
 
 export default function InvestmentOpportunityProfile() {
   const router = useRouter();
   const { documentId } = router.query;
 
-  const [activeTab, setActiveTab] = useState('the_investment_case_text');
+  const [activeSection, setActiveSection] = useState('county_sector_overview');
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const tabs = [
+  const sections = [
     {
-      id: 'the_investment_case_text',
-      name: 'The investment case',
-      title: 'The Investment Case',
-      contentField: 'the_investment_case_text',
-      imageField: 'the_investment_case_image',
+      id: 'county_sector_overview',
+      number: 1,
+      name: 'County & Sector Overview',
+      contentField: 'county_sector_overview',
     },
     {
-      id: 'business_blueprint_text',
-      name: 'Business blueprint',
-      title: 'Business Blueprint',
-      contentField: 'business_blueprint_text',
-      imageField: 'business_blueprint_image',
+      id: 'value_chain_profile_status',
+      number: 2,
+      name: 'Value Chain Profile & Current Status',
+      contentField: 'value_chain_profile_status',
     },
     {
-      id: 'risk_and_impact_profile_text',
-      name: 'Risk and impact profile',
-      title: 'Risk & Impact Profile',
-      contentField: 'risk_and_impact_profile_text',
-      imageField: 'risk_and_impact_profile_image',
+      id: 'market_opportunity_demand',
+      number: 3,
+      name: 'Market Opportunity & Demand Outlook',
+      contentField: 'market_opportunity_demand',
     },
     {
-      id: 'closing_information_text',
-      name: 'Investment recommendation',
-      title: 'Investment Recommendation',
-      contentField: 'closing_information_text',
-      imageField: 'closing_information_image',
+      id: 'investment_opportunity',
+      number: 4,
+      name: 'The Investment Opportunity',
+      contentField: 'investment_opportunity',
+    },
+    {
+      id: 'required_inputs_infrastructure',
+      number: 5,
+      name: 'Required Inputs, Infrastructure & Enablers',
+      contentField: 'required_inputs_infrastructure',
+    },
+    {
+      id: 'investment_needs_financial',
+      number: 6,
+      name: 'Investment Needs & Financial Snapshot',
+      contentField: 'investment_needs_financial',
+    },
+    {
+      id: 'enabling_environment_policies',
+      number: 7,
+      name: 'Enabling Environment, Policies & Partnerships',
+      contentField: 'enabling_environment_policies',
+    },
+    {
+      id: 'risks_mitigation',
+      number: 8,
+      name: 'Risks & Mitigation Measures',
+      contentField: 'risks_mitigation',
     },
   ];
 
@@ -92,6 +125,66 @@ export default function InvestmentOpportunityProfile() {
         url: window.location.href,
       });
     }
+  };
+
+  const handleTwitterShare = () => {
+    const text = profile?.value_chain?.name
+      ? `${profile.value_chain.name} Value Chain in ${profile.region?.name} County`
+      : 'Investment Opportunity';
+    const url = typeof window !== 'undefined' ? window.location.href : '';
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        text
+      )}&url=${encodeURIComponent(url)}`,
+      '_blank'
+    );
+  };
+
+  const handleLinkedInShare = () => {
+    const url = typeof window !== 'undefined' ? window.location.href : '';
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+        url
+      )}`,
+      '_blank'
+    );
+  };
+
+  const parseKeyHighlights = (text) => {
+    if (!text) return [];
+    // Try to extract key highlights from markdown content
+    // Look for bullet points that might be key highlights
+    const lines = text.split('\n');
+    const highlights = [];
+    let inHighlightsSection = false;
+
+    for (const line of lines) {
+      // Check if we're in a Key Highlights section
+      if (
+        line.toLowerCase().includes('key highlight') ||
+        line.toLowerCase().includes('highlights')
+      ) {
+        inHighlightsSection = true;
+        continue;
+      }
+
+      // Extract bullet points
+      const bulletMatch = line.match(/^[-*•]\s*(.+)/);
+      if (bulletMatch && inHighlightsSection) {
+        highlights.push(bulletMatch[1].trim());
+      }
+
+      // Stop if we hit another section header
+      if (
+        inHighlightsSection &&
+        line.match(/^#{1,3}\s/) &&
+        !line.toLowerCase().includes('highlight')
+      ) {
+        break;
+      }
+    }
+
+    return highlights;
   };
 
   if (loading) {
@@ -166,11 +259,6 @@ export default function InvestmentOpportunityProfile() {
               <RegionIcon className="w-4 h-4" />
               <span className="font-medium">{profile.region?.name} County</span>
             </div>
-            {formattedDate && (
-              <span className="text-sm text-gray-500">
-                <time>{formattedDate}</time>
-              </span>
-            )}
           </div>
           <Link
             href="/investment-profiles"
@@ -198,149 +286,241 @@ export default function InvestmentOpportunityProfile() {
           </div>
         )}
 
+        {/* Published Info and Share Section */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-6">
+          <div className="flex flex-wrap items-start gap-8 md:gap-16">
+            <div>
+              <p className="text-sm text-gray-500 mb-1">Published by</p>
+              <p className="font-semibold text-gray-900">
+                Resilience Think and Do Tank
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 mb-1">Published on</p>
+              <p className="font-semibold text-gray-900">{formattedDate}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 mb-1">Value chain</p>
+              <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full">
+                <ValueChainIcon className="w-4 h-4" />
+                <span className="font-medium text-gray-900">
+                  {profile.value_chain?.name}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleTwitterShare}
+              className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-primary-500 hover:border-primary-500 hover:text-white transition-colors group"
+              aria-label="Share on Twitter"
+            >
+              <TwitterIcon className="w-5 h-5 group-hover:[&_path]:fill-white" />
+            </button>
+            <button
+              onClick={handleLinkedInShare}
+              className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-primary-500 hover:border-primary-500 hover:text-white transition-colors group"
+              aria-label="Share on LinkedIn"
+            >
+              <LinkedinIcon className="w-5 h-5 group-hover:[&_path]:fill-white" />
+            </button>
+            <button
+              onClick={handleShare}
+              className="h-10 flex items-center gap-2 px-4 rounded-full border border-gray-300 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition-colors group"
+            >
+              <span className="text-sm font-medium text-gray-700 group-hover:text-white">
+                Share
+              </span>
+              <Upload className="w-4 h-4 text-gray-500 group-hover:text-white" />
+            </button>
+          </div>
+        </div>
+
+        {/* Key Highlights Section */}
         {(() => {
-          const snapshotText = profile.investor_snapshot_text || '';
-          const extractContent = (text, marker) => {
-            const escapedMarker = marker.replace(/[?]/g, '\\?');
-            const regex = new RegExp(
-              `\\*\\*${escapedMarker}\\*\\*\\s*:?\\s*([^\\n]+?)(?=\\n\\*\\*|\\n-|$)`,
-              'i'
-            );
-            const match = text.match(regex);
-            console.log(match);
-            if (match) {
-              if (marker === 'Interested?') {
-                return match[1].trim();
-              }
-              return match[1].replace(/\[.*?\]\(.*?\)/g, '').trim();
+          // Try to get highlights from dedicated field or parse from investment case text
+          let highlights = [];
+
+          if (profile.key_highlights) {
+            // If key_highlights is a string, split by newlines
+            if (typeof profile.key_highlights === 'string') {
+              highlights = profile.key_highlights
+                .split('\n')
+                .map((line) => line.replace(/^[-*•]\s*/, '').trim())
+                .filter((line) => line.length > 0);
+            } else if (Array.isArray(profile.key_highlights)) {
+              highlights = profile.key_highlights;
             }
-            return null;
-          };
+          } else {
+            // Try parsing from the_investment_case_text
+            highlights = parseKeyHighlights(profile.the_investment_case_text);
+          }
 
-          const opportunity = extractContent(snapshotText, 'Opportunity');
-          const roiEstimate = extractContent(snapshotText, 'ROI Estimate');
-          const strategicFit = extractContent(snapshotText, 'Strategic Fit');
-          const interested = extractContent(snapshotText, 'Interested?');
-
-          const irrMatch = roiEstimate?.match(/IRR of (\d+–\d+%|\d+-\d+%)/i);
-          const irrValue = irrMatch
-            ? irrMatch[1].replace('-', '–')
-            : 'IRR of 18–25%';
+          if (highlights.length === 0) return null;
 
           return (
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-              <div className="border rounded-2xl p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  Opportunity
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {opportunity ||
-                    'Commercial beef fattening and export-oriented livestock aggregation in Taita Taveta County.'}
-                </p>
-              </div>
-              <div className="border rounded-2xl p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  ROI Estimate
-                </h3>
-                <p className="text-3xl font-bold text-gray-900 mb-2">
-                  {irrValue}
-                </p>
-                <p className="text-gray-600 text-sm">
-                  {roiEstimate ||
-                    'Breakeven in 2–3 years; potential IRR of 18–25% depending on scale.'}
-                </p>
-              </div>
-              <div className="border rounded-2xl p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  Strategic fit
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {strategicFit ||
-                    'Access to Mombasa port and regional markets, improving infrastructure, and county-backed livestock initiatives.'}
-                </p>
-              </div>
-              <div className="border rounded-2xl p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  Interested?
-                </h3>
-                <div className="text-gray-600 leading-relaxed">
-                  {interested ? (
-                    <MarkdownRenderer content={interested} />
-                  ) : (
-                    <p>
-                      Reach out to the <strong>KDIH network</strong> for
-                      connections, data, and support.
-                    </p>
-                  )}
-                </div>
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                Key Highlights
+              </h2>
+              <div className="grid md:grid-cols-2 gap-x-12 gap-y-4">
+                {highlights.map((highlight, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-primary-500" />
+                    </div>
+                    <p className="text-gray-700">{highlight}</p>
+                  </div>
+                ))}
               </div>
             </div>
           );
         })()}
 
-        <div className="border-b border-gray-200 mb-8">
-          <div className="flex gap-8 overflow-x-auto">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`pb-4 px-1 text-sm font-medium whitespace-nowrap transition-colors relative
-                  ${
-                    activeTab === tab.id
-                      ? 'text-primary-600 border-b-2 border-primary-600'
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-              >
-                {tab.name}
-              </button>
-            ))}
+        {/* Snapshot Cards */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="border rounded-2xl p-6">
+            <h3 className="text-base font-medium text-gray-900 mb-4">
+              Indicative CAPEX:
+            </h3>
+            <p className="text-3xl font-bold text-gray-900 mb-2">
+              {profile.indicative_capex || 'KES 25–60 m'}
+            </p>
+            <p className="text-gray-500 text-sm">
+              {profile.indicative_capex_subtitle || 'depending on scale and technology'}
+            </p>
+          </div>
+          <div className="border rounded-2xl p-6">
+            <h3 className="text-base font-medium text-gray-900 mb-4">
+              Potential annual throughput
+            </h3>
+            <p className="text-3xl font-bold text-gray-900 mb-2">
+              {profile.annual_throughput || '1,000–3,000 head'}
+            </p>
+            {profile.annual_throughput_subtitle && (
+              <p className="text-gray-500 text-sm">
+                {profile.annual_throughput_subtitle}
+              </p>
+            )}
+          </div>
+          <div className="border rounded-2xl p-6">
+            <h3 className="text-base font-medium text-gray-900 mb-4">
+              Payback period:
+            </h3>
+            <p className="text-3xl font-bold text-gray-900 mb-2">
+              {profile.payback_period || '3–4 years'}
+            </p>
+            <p className="text-gray-500 text-sm">
+              {profile.payback_period_subtitle || 'driven by strong margins on finished animals'}
+            </p>
+          </div>
+          <div className="border rounded-2xl p-6">
+            <h3 className="text-base font-medium text-gray-900 mb-4">
+              Why Now?
+            </h3>
+            <p className="text-gray-500 leading-relaxed text-sm">
+              {profile.why_now || 'Rising beef demand, county support for commercialization, and persistent supply-quality gaps create a timely opportunity for private-sector entry.'}
+            </p>
           </div>
         </div>
 
-        <div className="py-8">
-          {tabs.map(
-            (tab) =>
-              activeTab === tab.id && (
-                <div key={tab.id} className="grid md:grid-cols-2 gap-12">
-                  <div className="relative h-[400px] rounded-xl overflow-hidden bg-gray-100">
-                    {profile[tab.imageField] ? (
-                      <Image
-                        src={getImageUrl(profile[tab.imageField])}
-                        alt={`${tab.name} Visual`}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-gray-400">
-                          No image available
-                        </span>
-                      </div>
-                    )}
-                  </div>
+        {/* The Investment Case Overview Section */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary-500">
+              The Investment Case Overview
+            </h2>
+            {profile.investment_pdf && (
+              <a
+                href={getImageUrl(profile.investment_pdf)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 border border-primary-500 text-primary-500 rounded-full hover:bg-primary-50 transition-colors"
+              >
+                <span className="text-sm font-medium">Investment opportunity (PDF)</span>
+                <FileDown className="w-4 h-4" />
+              </a>
+            )}
+          </div>
 
-                  <div>
-                    <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                      {tab.title}
-                    </h2>
-                    <div className="prose prose-lg max-w-none text-black">
-                      {profile[tab.contentField] ? (
-                        <>
-                          <MarkdownRenderer
-                            content={profile[tab.contentField]}
-                          />
-                        </>
-                      ) : (
-                        <p className="text-gray-500 italic">
-                          No {tab.name.toLowerCase()} information available.
-                        </p>
-                      )}
+          <div className="grid lg:grid-cols-[280px_1fr] gap-8">
+            {/* Sidebar Navigation */}
+            <div className="space-y-2">
+              {sections.map((section) => (
+                <button
+                  key={section.id}
+                  onClick={() => setActiveSection(section.id)}
+                  className={`w-full flex items-start gap-3 p-3 text-left transition-colors ${
+                    activeSection === section.id
+                      ? 'bg-white border-r-4 border-primary-500'
+                      : 'hover:bg-primary-50'
+                  }`}
+                >
+                  <span
+                    className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                      activeSection === section.id
+                        ? 'bg-primary-500 text-white'
+                        : 'bg-gray-200 text-gray-600'
+                    }`}
+                  >
+                    {section.number}
+                  </span>
+                  <span
+                    className={`text-sm ${
+                      activeSection === section.id
+                        ? 'text-primary-500 font-medium'
+                        : 'text-gray-600'
+                    }`}
+                  >
+                    {section.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Content Area */}
+            <div>
+              {sections.map(
+                (section) =>
+                  activeSection === section.id && (
+                    <div key={section.id}>
+                      <div className="flex gap-8">
+                        <div className="flex-1">
+                          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+                            {section.name}
+                          </h3>
+                          <div className="prose prose-lg max-w-none text-gray-700">
+                            {profile[section.contentField] ? (
+                              <MarkdownRenderer
+                                content={profile[section.contentField]}
+                              />
+                            ) : (
+                              <p className="text-gray-500 italic">
+                                No {section.name.toLowerCase()} information available.
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        {/* County Map */}
+                        {profile.county_map_image && (
+                          <div className="hidden lg:block w-[300px] flex-shrink-0">
+                            <div className="relative h-[400px] rounded-xl overflow-hidden">
+                              <Image
+                                src={getImageUrl(profile.county_map_image)}
+                                alt="County Map"
+                                fill
+                                className="object-contain"
+                                unoptimized
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-              )
-          )}
+                  )
+              )}
+            </div>
+          </div>
         </div>
 
         <InterestedSection />
