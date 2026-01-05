@@ -57,6 +57,17 @@
     },
     "about": {
       "type": "text"
+    },
+    "county_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "sub_locations": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.sub-location"
     }
   }
 }

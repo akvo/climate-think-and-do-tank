@@ -93,6 +93,105 @@
           "sortable": true
         }
       },
+      "population": {
+        "edit": {
+          "label": "population",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "population",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "area": {
+        "edit": {
+          "label": "area",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "area",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "languages": {
+        "edit": {
+          "label": "languages",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "languages",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "value_chains": {
+        "edit": {
+          "label": "value_chains",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "name"
+        },
+        "list": {
+          "label": "value_chains",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "about": {
+        "edit": {
+          "label": "about",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "about",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "county_image": {
+        "edit": {
+          "label": "county_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "county_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "sub_locations": {
+        "edit": {
+          "label": "sub_locations",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "sub_locations",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -184,6 +283,42 @@
           {
             "name": "event",
             "size": 6
+          },
+          {
+            "name": "population",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "area",
+            "size": 6
+          },
+          {
+            "name": "languages",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "value_chains",
+            "size": 6
+          },
+          {
+            "name": "about",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "county_image",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "sub_locations",
+            "size": 12
           }
         ]
       ]

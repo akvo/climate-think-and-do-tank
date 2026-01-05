@@ -1,13 +1,13 @@
 {
-  "key": "plugin_content_manager_configuration_content_types::api::homepage.homepage",
+  "key": "plugin_content_manager_configuration_content_types::api::partner.partner",
   "value": {
     "settings": {
       "bulkable": true,
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "homepage_blurb",
-      "defaultSortBy": "homepage_blurb",
+      "mainField": "order",
+      "defaultSortBy": "order",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -19,60 +19,32 @@
           "sortable": true
         }
       },
-      "hero_image_slider": {
+      "logo": {
         "edit": {
-          "label": "hero_image_slider",
+          "label": "logo",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "hero_image_slider",
+          "label": "logo",
           "searchable": false,
           "sortable": false
         }
       },
-      "homepage_blurb": {
+      "order": {
         "edit": {
-          "label": "homepage_blurb",
+          "label": "order",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "homepage_blurb",
+          "label": "order",
           "searchable": true,
           "sortable": true
-        }
-      },
-      "homepage_description": {
-        "edit": {
-          "label": "homepage_description",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "homepage_description",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "homepage_video": {
-        "edit": {
-          "label": "homepage_video",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "homepage_video",
-          "searchable": false,
-          "sortable": false
         }
       },
       "createdAt": {
@@ -137,38 +109,24 @@
     "layouts": {
       "list": [
         "id",
-        "hero_image_slider",
-        "homepage_blurb",
+        "logo",
+        "order",
         "createdAt"
       ],
       "edit": [
         [
           {
-            "name": "hero_image_slider",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "homepage_blurb",
+            "name": "logo",
             "size": 6
-          }
-        ],
-        [
+          },
           {
-            "name": "homepage_description",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "homepage_video",
+            "name": "order",
             "size": 6
           }
         ]
       ]
     },
-    "uid": "api::homepage.homepage"
+    "uid": "api::partner.partner"
   },
   "type": "object",
   "environment": null,

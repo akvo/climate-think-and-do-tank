@@ -131,6 +131,34 @@
           "sortable": false
         }
       },
+      "banner_description": {
+        "edit": {
+          "label": "banner_description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "banner_description",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "mission_image": {
+        "edit": {
+          "label": "mission_image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "mission_image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -241,6 +269,16 @@
         [
           {
             "name": "banner",
+            "size": 6
+          },
+          {
+            "name": "banner_description",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "mission_image",
             "size": 6
           }
         ]

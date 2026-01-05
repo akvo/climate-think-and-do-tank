@@ -727,7 +727,7 @@ export const fetchOrganizationsAndRegions = createAsyncThunk(
           `${BACKEND_URL}/api/organisations?status=published&pagination[pageSize]=250`
         ),
         axios.get(
-          `${BACKEND_URL}/api/regions?status=published&pagination[pageSize]=250&populate=value_chains`
+          `${BACKEND_URL}/api/regions?status=published&pagination[pageSize]=250&populate[0]=value_chains&populate[1]=county_image&populate[2]=sub_locations`
         ),
         axios.get(
           `${BACKEND_URL}/api/looking-fors?status=published&pagination[pageSize]=250`

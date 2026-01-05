@@ -6,6 +6,8 @@ import {
   Globe,
   X,
   CircleAlert,
+  Check,
+  MapPin,
 } from 'lucide-react';
 import Button from './Button';
 import { RegionIcon, ValueChainIcon } from './Icons';
@@ -16,6 +18,17 @@ import { MarkdownRenderer } from './MarkDownRenderer';
 import Image from 'next/image';
 import { getImageUrl } from '@/helpers/utilities';
 import { useRouter } from 'next/router';
+
+const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
+
+const getValueChainImage = (valueChainName) => {
+  if (!valueChainName) return null;
+  const name = valueChainName.toLowerCase();
+  if (name.includes('livestock')) return '/images/livestock.svg';
+  if (name.includes('fish') || name.includes('aqua')) return '/images/fish.svg';
+  if (name.includes('agri') || name.includes('crop')) return '/images/agri.svg';
+  return null;
+};
 
 export default function KenyaMap({
   initialSelected,
@@ -35,6 +48,7 @@ export default function KenyaMap({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [activeSubLocation, setActiveSubLocation] = useState(0);
 
   const allProjectCounties = regions
     .filter((r) => r.name !== 'Other' && r.name !== 'Kenya')
@@ -61,6 +75,7 @@ export default function KenyaMap({
     if (initialSelected && Array.isArray(initialSelected)) {
       setSelectedCounties(initialSelected);
       setShowCountyDetails(initialSelected.length === 1);
+      setActiveSubLocation(0);
     }
   }, [initialSelected]);
 
@@ -913,111 +928,116 @@ export default function KenyaMap({
             {showCountyDetails &&
               selectedCounties.length === 1 &&
               currentCountyDetails && (
-                <div className="bg-gray-10 border border-gray-30 rounded-xl shadow-lg p-4 sm:p-6">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">
+                <div className="bg-gray-10 border border-gray-30 rounded-xl shadow-lg overflow-hidden">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-800 p-4 sm:p-6 pb-0">
                     About the county
                   </h3>
 
-                  {currentCountyDetails.about && (
-                    <div className="text-sm sm:text-base text-gray-600 mb-4">
-                      <MarkdownRenderer content={currentCountyDetails.about} />
-                    </div>
-                  )}
-
-                  <div className="space-y-3 mb-4">
-                    {currentCountyDetails.population && (
-                      <div className="border-t border-gray-200 pt-4">
-                        <div className="flex items-center justify-between gap-4 py-1 rounded-md">
-                          <div className="flex items-center gap-2">
-                            <Users className="h-5 w-5 text-gray-700" />
-                            <h4 className="text-lg  text-gray-800">
-                              Population
-                            </h4>
-                          </div>
-
-                          <div className="flex flex-wrap gap-2">
-                            <div className="rounded-full text-sm text-black font-bold">
-                              {currentCountyDetails.population}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    {currentCountyDetails.area && (
-                      <div className="border-t border-gray-200 pt-4">
-                        <div className="flex items-center justify-between gap-4 py-1 rounded-md">
-                          <div className="flex items-center gap-2">
-                            <RegionIcon className="h-5 w-5 text-gray-700" />
-                            <h4 className="text-lg  text-gray-800">Area</h4>
-                          </div>
-
-                          <div className="flex flex-wrap gap-2">
-                            <div className="rounded-full text-sm text-black font-bold">
-                              {currentCountyDetails.area}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {currentCountyDetails.languages && (
-                      <div className="border-t border-gray-200 pt-4">
-                        <div className="flex items-center justify-between gap-4 py-1 rounded-md">
-                          <div className="flex items-center gap-2">
-                            <Globe className="h-5 w-5 text-gray-700" />
-                            <h4 className="text-lg  text-gray-800">
-                              Languages
-                            </h4>
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            {(Array.isArray(currentCountyDetails?.languages)
-                              ? currentCountyDetails.languages
-                              : (currentCountyDetails?.languages || '').split(
-                                  ','
-                                )
-                            )
-                              .map((l) =>
-                                typeof l === 'string' ? l : l?.name ?? ''
-                              )
-                              .map((s) => s.trim())
-                              .filter(Boolean)
-                              .map((lang, idx, arr) => (
+                  <div className="flex flex-col">
+                    {/* County Image */}
+                    <div className="relative">
+                      {currentCountyDetails.county_image?.url ? (
+                        <div className="relative w-full h-[200px] sm:h-[250px]">
+                          <Image
+                            src={
+                              currentCountyDetails.county_image.url.startsWith('http')
+                                ? currentCountyDetails.county_image.url
+                                : `${BACKEND_URL}${currentCountyDetails.county_image.url}`
+                            }
+                            alt={currentCountyDetails.name || 'County'}
+                            fill
+                            className="object-cover"
+                          />
+                          {/* Value Chain Badges */}
+                          <div className="absolute bottom-4 left-4 flex gap-2">
+                            {currentCountyDetails.value_chains?.map((vc, idx) => {
+                              const vcImage = getValueChainImage(vc.name);
+                              return vcImage ? (
                                 <div
-                                  key={`${lang}-${idx}`}
-                                  className="rounded-full text-sm text-black font-bold"
+                                  key={idx}
+                                  className="bg-white rounded-full p-2 shadow-lg"
                                 >
-                                  {lang}
-                                  {idx < arr.length - 1 ? ',' : ''}
+                                  <Image
+                                    src={vcImage}
+                                    alt={vc.name}
+                                    width={24}
+                                    height={24}
+                                  />
                                 </div>
-                              ))}
+                              ) : null;
+                            })}
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {currentCountyDetails.value_chains?.length > 0 && (
-                    <div className="border-t border-gray-200 pt-4 mt-4">
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                        <div className="flex items-center gap-2">
-                          <ValueChainIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-700" />
-                          <h4 className="text-base sm:text-lg text-gray-800">
-                            Value chains
-                          </h4>
+                      ) : (
+                        <div className="w-full h-[200px] sm:h-[250px] bg-gray-200 flex items-center justify-center">
+                          <MapPin className="w-12 h-12 text-gray-400" />
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                          {currentCountyDetails.value_chains.map((vc, idx) => (
-                            <span
-                              key={`${vc.name}-${idx}`}
-                              className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm bg-primary-50 text-primary-500"
-                            >
-                              {vc.name}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
+                      )}
                     </div>
-                  )}
+
+                    {/* Sub-locations Tabs and Content */}
+                    <div className="p-4 sm:p-6">
+                      {/* Sub-location Tabs */}
+                      {currentCountyDetails.sub_locations?.length > 0 && (
+                        <>
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {currentCountyDetails.sub_locations.map((subLoc, idx) => (
+                              <button
+                                key={idx}
+                                onClick={() => setActiveSubLocation(idx)}
+                                className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors ${
+                                  activeSubLocation === idx
+                                    ? 'bg-[#F47B20] text-white'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                }`}
+                              >
+                                {subLoc.name}
+                              </button>
+                            ))}
+                          </div>
+
+                          {/* Investment Priorities */}
+                          <div className="mb-4">
+                            <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
+                              Investment Priorities
+                            </h4>
+                            {currentCountyDetails.sub_locations[activeSubLocation]
+                              ?.investment_priorities && (
+                              <ul className="space-y-1.5">
+                                {currentCountyDetails.sub_locations[
+                                  activeSubLocation
+                                ].investment_priorities
+                                  .split('\n')
+                                  .filter((line) => line.trim())
+                                  .map((priority, idx) => (
+                                    <li key={idx} className="flex items-start gap-2">
+                                      <Check className="w-4 h-4 text-[#F47B20] flex-shrink-0 mt-0.5" />
+                                      <span className="text-xs sm:text-sm text-gray-700">{priority.trim()}</span>
+                                    </li>
+                                  ))}
+                              </ul>
+                            )}
+                          </div>
+
+                          {/* Potential Impact */}
+                          {currentCountyDetails.sub_locations[activeSubLocation]
+                            ?.potential_impact && (
+                            <div>
+                              <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
+                                Potential Impact/Benefit
+                              </h4>
+                              <p className="text-xs sm:text-sm text-gray-700">
+                                {
+                                  currentCountyDetails.sub_locations[activeSubLocation]
+                                    .potential_impact
+                                }
+                              </p>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
               )}
 

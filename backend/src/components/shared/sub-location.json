@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_shared_sub_locations",
+  "info": {
+    "displayName": "Sub Location",
+    "description": "Sub-location with investment priorities"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "investment_priorities": {
+      "type": "text"
+    },
+    "potential_impact": {
+      "type": "text"
+    }
+  }
+}

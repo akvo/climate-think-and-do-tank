@@ -363,7 +363,7 @@ export default function InvestmentOpportunityProfile() {
 
         {/* Key Highlights Section */}
         {(() => {
-          // Try to get highlights from dedicated field or parse from investment case text
+          // Try to get highlights from dedicated field
           let highlights = [];
 
           if (profile.key_highlights) {
@@ -376,9 +376,6 @@ export default function InvestmentOpportunityProfile() {
             } else if (Array.isArray(profile.key_highlights)) {
               highlights = profile.key_highlights;
             }
-          } else {
-            // Try parsing from the_investment_case_text
-            highlights = parseKeyHighlights(profile.the_investment_case_text);
           }
 
           if (highlights.length === 0) return null;

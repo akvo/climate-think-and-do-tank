@@ -146,16 +146,16 @@
           "sortable": false
         }
       },
-      "approved": {
+      "blocked": {
         "edit": {
-          "label": "approved",
+          "label": "blocked",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "approved",
+          "label": "blocked",
           "searchable": true,
           "sortable": true
         }
@@ -234,7 +234,12 @@
       }
     },
     "layouts": {
-      "list": ["id", "firstname", "lastname", "username"],
+      "list": [
+        "id",
+        "firstname",
+        "lastname",
+        "username"
+      ],
       "edit": [
         [
           {
@@ -270,16 +275,16 @@
           {
             "name": "roles",
             "size": 6
-          },
-          {
-            "name": "approved",
-            "size": 4
           }
         ],
         [
           {
             "name": "preferedLanguage",
             "size": 6
+          },
+          {
+            "name": "blocked",
+            "size": 4
           }
         ]
       ]
