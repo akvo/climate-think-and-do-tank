@@ -158,6 +158,15 @@ export default function InvestmentOpportunityProfile() {
     );
   };
 
+  const getValueChainImage = (valueChainName) => {
+    if (!valueChainName) return null;
+    const name = valueChainName.toLowerCase();
+    if (name.includes('livestock')) return '/images/livestock.svg';
+    if (name.includes('fish') || name.includes('aqua')) return '/images/fish.svg';
+    if (name.includes('agri') || name.includes('crop')) return '/images/agri.svg';
+    return null;
+  };
+
   const parseKeyHighlights = (text) => {
     if (!text) return [];
     // Try to extract key highlights from markdown content
@@ -309,12 +318,20 @@ export default function InvestmentOpportunityProfile() {
             </div>
             <div>
               <p className="text-sm text-gray-500 mb-1">Value chain</p>
-              <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full">
-                <ValueChainIcon className="w-4 h-4" />
-                <span className="font-medium text-gray-900">
-                  {profile.value_chain?.name}
-                </span>
-              </div>
+              {getValueChainImage(profile.value_chain?.name) ? (
+                <img
+                  src={getValueChainImage(profile.value_chain?.name)}
+                  alt={profile.value_chain?.name}
+                  className="h-7"
+                />
+              ) : (
+                <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full">
+                  <ValueChainIcon className="w-4 h-4" />
+                  <span className="font-medium text-gray-900">
+                    {profile.value_chain?.name}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-3">
