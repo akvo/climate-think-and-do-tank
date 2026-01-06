@@ -444,12 +444,13 @@
       "locale": null
     },
     {
-      "documentId": "doqh9ywb50hgyg56zq660b0l",
+      "documentId": "p33wemxeomljrmxa6q4v2p4w",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
       "properties": {
         "fields": [
+          "title",
           "publication_date",
           "value_chain",
           "region",
@@ -524,12 +525,13 @@
       "locale": null
     },
     {
-      "documentId": "teywi59nwlz0vl5f6mx7eusp",
+      "documentId": "rv8igkzzurmwgzs9g61ts1vy",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
       "properties": {
         "fields": [
+          "title",
           "publication_date",
           "value_chain",
           "region",
@@ -586,12 +588,13 @@
       "locale": null
     },
     {
-      "documentId": "uccz2jkc6o6ilabktwcrbl8k",
+      "documentId": "k3wmrcypuxk67j8nukezx19j",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::investment-opportunity-profile.investment-opportunity-profile",
       "properties": {
         "fields": [
+          "title",
           "publication_date",
           "value_chain",
           "region",
