@@ -130,21 +130,25 @@ export default function InvestmentOpportunityProfile() {
     });
   };
 
+  const getTitle = () => {
+    if (profile?.title) return profile.title;
+    if (profile?.value_chain?.name) {
+      return `${profile.value_chain.name} Value Chain in ${profile.region?.name} County`;
+    }
+    return 'Investment Opportunity';
+  };
+
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: profile?.value_chain?.name
-          ? `${profile.value_chain.name} Value Chain in ${profile.region?.name} County`
-          : 'Investment Opportunity',
+        title: getTitle(),
         url: window.location.href,
       });
     }
   };
 
   const handleTwitterShare = () => {
-    const text = profile?.value_chain?.name
-      ? `${profile.value_chain.name} Value Chain in ${profile.region?.name} County`
-      : 'Investment Opportunity';
+    const text = getTitle();
     const url = typeof window !== 'undefined' ? window.location.href : '';
     window.open(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -269,10 +273,7 @@ export default function InvestmentOpportunityProfile() {
               <span>Invest</span>
             </Link>
             <ChevronRight className="w-4 h-4 text-gray-400" />
-            <span className="text-gray-900">
-              {profile.value_chain?.name} Value Chain in {profile.region?.name}{' '}
-              County
-            </span>
+            <span className="text-gray-900">{getTitle()}</span>
           </div>
         </div>
       </div>
@@ -295,8 +296,7 @@ export default function InvestmentOpportunityProfile() {
         </div>
 
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-          {profile.value_chain?.name} Value Chain in {profile.region?.name}{' '}
-          County
+          {getTitle()}
         </h1>
 
         {imageUrl && (

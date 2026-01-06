@@ -314,7 +314,7 @@ export default function InvestmentOpportunityProfile() {
                     key={card.id}
                     result={{
                       ...card,
-                      title: `${card.valueChain} Value Chain in ${card.region} County`,
+                      title: card.title || `${card.valueChain} Value Chain in ${card.region} County`,
                       focusRegions: card.region ? [card.region] : ['No Region'],
                       publishedAt: card.publicationDate || 'No Date',
                       topic: card.valueChain ? [card.valueChain] : [],
