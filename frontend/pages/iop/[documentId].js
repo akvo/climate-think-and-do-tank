@@ -106,7 +106,7 @@ export default function InvestmentOpportunityProfile() {
         const response = await axios.get(
           `${env(
             'NEXT_PUBLIC_BACKEND_URL'
-          )}/api/investment-opportunity-profiles/${documentId}?populate=deep`
+          )}/api/investment-opportunity-profiles/${documentId}?populate=*`
         );
         setProfile(response.data.data);
         setLoading(false);
