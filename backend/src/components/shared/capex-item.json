@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_capex_items",
+  "info": {
+    "displayName": "CAPEX Item",
+    "icon": "dollar-sign"
+  },
+  "options": {},
+  "attributes": {
+    "amount": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_shared_checklist_items",
+  "info": {
+    "displayName": "Checklist Item",
+    "icon": "check"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "text"
+    }
+  }
+}

@@ -1066,7 +1066,7 @@ export default function KenyaMap({
                                   onClick={() => setActiveSubLocation(idx)}
                                   className={`pb-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
                                     activeSubLocation === idx
-                                      ? 'text-[#F47B20] border-[#F47B20]'
+                                      ? 'text-primary-500 border-primary-500'
                                       : 'text-gray-500 border-transparent hover:text-gray-700'
                                   }`}
                                 >

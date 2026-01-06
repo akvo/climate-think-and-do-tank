@@ -41,6 +41,7 @@ export default function InvestmentOpportunityProfile() {
       name: 'County & Sector Overview',
       contentField: 'county_sector_overview',
       imageField: 'county_sector_overview_image',
+      layout: 'text-image',
     },
     {
       id: 'value_chain_profile_status',
@@ -48,6 +49,7 @@ export default function InvestmentOpportunityProfile() {
       name: 'Value Chain Profile & Current Status',
       contentField: 'value_chain_profile_status',
       imageField: 'value_chain_profile_status_image',
+      layout: 'text-image',
     },
     {
       id: 'market_opportunity_demand',
@@ -55,27 +57,28 @@ export default function InvestmentOpportunityProfile() {
       name: 'Market Opportunity & Demand Outlook',
       contentField: 'market_opportunity_demand',
       imageField: 'market_opportunity_demand_image',
+      layout: 'text-image',
     },
     {
       id: 'investment_opportunity',
       number: 4,
       name: 'The Investment Opportunity',
       contentField: 'investment_opportunity',
-      imageField: 'investment_opportunity_image',
+      layout: 'two-columns',
     },
     {
       id: 'required_inputs_infrastructure',
       number: 5,
       name: 'Required Inputs, Infrastructure & Enablers',
       contentField: 'required_inputs_infrastructure',
-      imageField: 'required_inputs_infrastructure_image',
+      layout: 'grid-cards',
     },
     {
       id: 'investment_needs_financial',
       number: 6,
       name: 'Investment Needs & Financial Snapshot',
       contentField: 'investment_needs_financial',
-      imageField: 'investment_needs_financial_image',
+      layout: 'financial',
     },
     {
       id: 'enabling_environment_policies',
@@ -83,13 +86,14 @@ export default function InvestmentOpportunityProfile() {
       name: 'Enabling Environment, Policies & Partnerships',
       contentField: 'enabling_environment_policies',
       imageField: 'enabling_environment_policies_image',
+      layout: 'text-image',
     },
     {
       id: 'risks_mitigation',
       number: 8,
       name: 'Risks & Mitigation Measures',
       contentField: 'risks_mitigation',
-      imageField: 'risks_mitigation_image',
+      layout: 'two-columns',
     },
   ];
 
@@ -102,7 +106,7 @@ export default function InvestmentOpportunityProfile() {
         const response = await axios.get(
           `${env(
             'NEXT_PUBLIC_BACKEND_URL'
-          )}/api/investment-opportunity-profiles/${documentId}?populate=*`
+          )}/api/investment-opportunity-profiles/${documentId}?populate=deep`
         );
         setProfile(response.data.data);
         setLoading(false);
@@ -570,12 +574,63 @@ export default function InvestmentOpportunityProfile() {
                 (section) =>
                   activeSection === section.id && (
                     <div key={section.id}>
-                      <div className="flex flex-col lg:flex-row gap-8">
-                        <div className="w-full lg:w-1/2">
+                      {/* Layout: Text + Image (50/50) */}
+                      {section.layout === 'text-image' && (
+                        <>
+                          <div className="flex flex-col lg:flex-row gap-8">
+                            <div className="w-full lg:w-1/2">
+                              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+                                {section.name}
+                              </h3>
+                              <div className="prose prose-lg max-w-none text-gray-700">
+                                {profile[section.contentField] ? (
+                                  <MarkdownRenderer
+                                    content={profile[section.contentField]}
+                                  />
+                                ) : (
+                                  <p className="text-gray-500 italic">
+                                    No {section.name.toLowerCase()} information available.
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                            {profile[section.imageField] && (
+                              <div className="hidden lg:block w-1/2">
+                                <div className="relative w-full min-h-[400px] rounded-xl overflow-hidden">
+                                  <Image
+                                    src={getImageUrl(profile[section.imageField])}
+                                    alt={section.name}
+                                    fill
+                                    className="object-contain"
+                                    unoptimized
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          {profile[section.imageField] && (
+                            <div className="lg:hidden mt-6">
+                              <div className="relative h-[250px] rounded-xl overflow-hidden">
+                                <Image
+                                  src={getImageUrl(profile[section.imageField])}
+                                  alt={section.name}
+                                  fill
+                                  className="object-contain"
+                                  unoptimized
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      )}
+
+                      {/* Layout: Two Columns with Checkmarks */}
+                      {section.layout === 'two-columns' && (
+                        <div>
                           <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
                             {section.name}
                           </h3>
-                          <div className="prose prose-lg max-w-none text-gray-700">
+                          <div className="prose prose-lg max-w-none text-gray-700 mb-8">
                             {profile[section.contentField] ? (
                               <MarkdownRenderer
                                 content={profile[section.contentField]}
@@ -586,34 +641,148 @@ export default function InvestmentOpportunityProfile() {
                               </p>
                             )}
                           </div>
-                        </div>
-                        {/* Section Image - Desktop (side) */}
-                        {profile[section.imageField] && (
-                          <div className="hidden lg:block w-1/2">
-                            <div className="relative w-full h-full rounded-xl overflow-hidden">
-                              <Image
-                                src={getImageUrl(profile[section.imageField])}
-                                alt={section.name}
-                                fill
-                                className="object-contain"
-                                unoptimized
-                              />
+                          {profile[`${section.id}_column1_title`] && (
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                              <div>
+                                <h4 className="text-xl font-bold text-gray-900 mb-4">
+                                  {profile[`${section.id}_column1_title`]}
+                                </h4>
+                                <div className="space-y-4">
+                                  {profile[`${section.id}_column1_items`]?.map((item, idx) => (
+                                    <div key={idx} className="flex items-start gap-3">
+                                      <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <Check className="w-4 h-4 text-green-600" />
+                                      </div>
+                                      <p className="text-gray-700">{item.text}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                              <div>
+                                <h4 className="text-xl font-bold text-gray-900 mb-4">
+                                  {profile[`${section.id}_column2_title`]}
+                                </h4>
+                                <div className="space-y-4">
+                                  {profile[`${section.id}_column2_items`]?.map((item, idx) => (
+                                    <div key={idx} className="flex items-start gap-3">
+                                      <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <Check className="w-4 h-4 text-green-600" />
+                                      </div>
+                                      <p className="text-gray-700">{item.text}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Layout: Grid Cards */}
+                      {section.layout === 'grid-cards' && (
+                        <div>
+                          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+                            {section.name}
+                          </h3>
+                          {profile[section.contentField] && (
+                            <p className="text-gray-700 text-lg mb-8">
+                              {profile[`${section.id}_subtitle`] || 'A successful operation requires:'}
+                            </p>
+                          )}
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {profile[`${section.id}_cards`]?.map((card, idx) => (
+                              <div
+                                key={idx}
+                                className="bg-gray-50 rounded-xl p-6 border border-gray-100"
+                              >
+                                <h4 className="font-semibold text-gray-900 mb-2">
+                                  {card.title}
+                                </h4>
+                                <p className="text-gray-600 text-sm">
+                                  {card.description}
+                                </p>
+                              </div>
+                            ))}
                           </div>
-                        )}
-                      </div>
-                      {/* Section Image - Mobile (bottom) */}
-                      {profile[section.imageField] && (
-                        <div className="lg:hidden mt-6">
-                          <div className="relative h-[250px] rounded-xl overflow-hidden">
-                            <Image
-                              src={getImageUrl(profile[section.imageField])}
-                              alt={section.name}
-                              fill
-                              className="object-contain"
-                              unoptimized
-                            />
+                          {!profile[`${section.id}_cards`] && profile[section.contentField] && (
+                            <div className="prose prose-lg max-w-none text-gray-700">
+                              <MarkdownRenderer content={profile[section.contentField]} />
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Layout: Financial */}
+                      {section.layout === 'financial' && (
+                        <div>
+                          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+                            {section.name}
+                          </h3>
+
+                          {profile[`${section.id}_capex_title`] && (
+                            <>
+                              <p className="text-gray-700 font-medium mb-4">
+                                {profile[`${section.id}_capex_title`] || 'Indicative CAPEX:'}
+                              </p>
+                              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+                                {profile[`${section.id}_capex_items`]?.map((item, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="bg-white rounded-xl p-4 border border-gray-200"
+                                  >
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <span className="text-xs text-gray-500">KES</span>
+                                    </div>
+                                    <p className="text-xl font-bold text-gray-900">
+                                      {item.amount}
+                                    </p>
+                                    <p className="text-gray-600 text-sm mt-1">
+                                      {item.description}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </>
+                          )}
+
+                          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {profile[`${section.id}_operating_cost`] && (
+                              <div className="border-l-4 border-green-500 pl-4">
+                                <h4 className="text-xl font-bold text-gray-900 mb-3">
+                                  Operating cost
+                                </h4>
+                                <p className="text-gray-700">
+                                  {profile[`${section.id}_operating_cost`]}
+                                </p>
+                              </div>
+                            )}
+                            {profile[`${section.id}_revenue_streams`] && (
+                              <div className="border-l-4 border-green-500 pl-4">
+                                <h4 className="text-xl font-bold text-gray-900 mb-3">
+                                  Revenue streams
+                                </h4>
+                                <p className="text-gray-700">
+                                  {profile[`${section.id}_revenue_streams`]}
+                                </p>
+                              </div>
+                            )}
+                            {profile[`${section.id}_payback_period`] && (
+                              <div className="border-l-4 border-green-500 pl-4">
+                                <h4 className="text-xl font-bold text-gray-900 mb-3">
+                                  Estimated payback period
+                                </h4>
+                                <p className="text-gray-700">
+                                  {profile[`${section.id}_payback_period`]}
+                                </p>
+                              </div>
+                            )}
                           </div>
+
+                          {!profile[`${section.id}_capex_items`] && profile[section.contentField] && (
+                            <div className="prose prose-lg max-w-none text-gray-700 mt-6">
+                              <MarkdownRenderer content={profile[section.contentField]} />
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
