@@ -321,10 +321,12 @@ export default function InvestmentOpportunityProfile() {
             <div>
               <p className="text-sm text-gray-500 mb-1">Value chain</p>
               {getValueChainImage(profile.value_chain?.name) ? (
-                <img
+                <Image
                   src={getValueChainImage(profile.value_chain?.name)}
                   alt={profile.value_chain?.name}
-                  className="h-7"
+                  width={28}
+                  height={28}
+                  className="h-7 w-auto"
                 />
               ) : (
                 <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full">
@@ -537,14 +539,14 @@ export default function InvestmentOpportunityProfile() {
                   className={`w-full flex items-start gap-3 p-3 text-left transition-colors ${
                     activeSection === section.id
                       ? 'bg-white border-r-4 border-primary-500'
-                      : 'bg-[#ACB5BD]/10 hover:bg-[#ACB5BD]/20'
+                      : 'bg-white hover:bg-orange-50'
                   }`}
                 >
                   <span
                     className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold flex-shrink-0 ${
                       activeSection === section.id
                         ? 'bg-primary-500 text-white'
-                        : 'bg-gray-200 text-gray-600'
+                        : 'bg-[#ACB5BD] text-white'
                     }`}
                   >
                     {section.number}
@@ -569,7 +571,7 @@ export default function InvestmentOpportunityProfile() {
                   activeSection === section.id && (
                     <div key={section.id}>
                       <div className="flex flex-col lg:flex-row gap-8">
-                        <div className="flex-1">
+                        <div className="w-full lg:w-1/2">
                           <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
                             {section.name}
                           </h3>
@@ -587,8 +589,8 @@ export default function InvestmentOpportunityProfile() {
                         </div>
                         {/* Section Image - Desktop (side) */}
                         {profile[section.imageField] && (
-                          <div className="hidden lg:block w-[300px] flex-shrink-0">
-                            <div className="relative h-[400px] rounded-xl overflow-hidden">
+                          <div className="hidden lg:block w-1/2">
+                            <div className="relative w-full h-full rounded-xl overflow-hidden">
                               <Image
                                 src={getImageUrl(profile[section.imageField])}
                                 alt={section.name}

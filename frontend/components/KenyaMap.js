@@ -876,7 +876,7 @@ export default function KenyaMap({
 
               {hoveredCounty && (
                 <div
-                  className="absolute bg-white shadow-lg rounded-lg p-2 sm:p-3 pointer-events-none z-10 text-xs sm:text-sm"
+                  className="absolute bg-white shadow-lg rounded-lg p-2 sm:p-3 pointer-events-none z-10 text-xs sm:text-sm min-w-[150px]"
                   style={{
                     left: `${tooltipPosition.x}px`,
                     top: `${tooltipPosition.y}px`,
@@ -885,7 +885,27 @@ export default function KenyaMap({
                   }}
                 >
                   <p className="font-semibold text-gray-800">{hoveredCounty}</p>
-                  <p className="text-gray-600">
+                  {getRegionDetails(hoveredCounty)?.value_chains?.length > 0 && (
+                    <div className="mt-1">
+                      <p className="text-gray-500 text-xs">Value Chains:</p>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {getRegionDetails(hoveredCounty).value_chains.map((vc, idx) => {
+                          const vcData = getValueChainData(vc.name);
+                          return (
+                            <Image
+                              key={idx}
+                              src={vcData.image}
+                              alt={vc.name}
+                              width={28}
+                              height={28}
+                              className="h-7 w-auto"
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  <p className="text-gray-600 mt-1">
                     {selectedCounties.includes(hoveredCounty)
                       ? 'Click to deselect'
                       : 'Click to select'}
@@ -1022,8 +1042,9 @@ export default function KenyaMap({
                                       <Image
                                         src={vcData.image}
                                         alt={vc.name}
-                                        width={100}
-                                        height={60}
+                                        width={28}
+                                        height={28}
+                                        className="h-7 w-auto"
                                       />
                                     </div>
                                   </div>
@@ -1231,10 +1252,16 @@ export default function KenyaMap({
                 Download our comprehensive guide on social accountability
                 practices
               </p>
-              <Button variant="primary" className="w-full">
-                <Download size={16} className="mr-2" />
-                Download Manual
-              </Button>
+              <a
+                href="/Social Accountability Training Manual.pdf"
+                download="Social Accountability Training Manual.pdf"
+                className="w-full"
+              >
+                <Button variant="primary" className="w-full">
+                  <Download size={16} className="mr-2" />
+                  Download Manual
+                </Button>
+              </a>
             </div>
           </div>
         </div>
