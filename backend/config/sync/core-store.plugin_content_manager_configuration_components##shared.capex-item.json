@@ -1,0 +1,76 @@
+{
+  "key": "plugin_content_manager_configuration_components::shared.capex-item",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "amount",
+      "defaultSortBy": "amount",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "amount": {
+        "edit": {
+          "label": "amount",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "amount",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "description": {
+        "edit": {
+          "label": "description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "description",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "amount",
+        "description"
+      ],
+      "edit": [
+        [
+          {
+            "name": "amount",
+            "size": 6
+          },
+          {
+            "name": "description",
+            "size": 6
+          }
+        ]
+      ]
+    },
+    "uid": "shared.capex-item",
+    "isComponent": true
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}
