@@ -27,9 +27,18 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const slides = [
-    'https://picsum.photos/1200/800?random=1',
-    'https://picsum.photos/1200/800?random=2',
-    'https://picsum.photos/1200/800?random=3',
+    {
+      image: '/images/auth/auth-slide-2.jpg',
+      quote: 'Speed meets strategy—navigate the investment landscape effortlessly with real-time insights and adaptive tools.',
+      author: 'Kwame Mfugaji',
+      location: 'Kajiado, Kenya',
+    },
+    {
+      image: '/images/auth/auth-slide-4.jpg',
+      quote: 'Capitalize on opportunities instantly with smart tools that keep you ahead in a dynamic market.',
+      author: 'Kwame Mfugaji',
+      location: 'Kajiado, Kenya',
+    },
   ];
 
   const validateForm = () => {
@@ -653,17 +662,26 @@ export default function LoginForm() {
             }`}
           >
             <Image
-              src={slide}
+              src={slide.image}
               alt={`Slide ${index + 1}`}
               fill
-              className="object-cover"
+              className="object-cover blur-[2px]"
               priority={index === 0}
-              unoptimized
             />
+            <div className="absolute inset-0 bg-black/30" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-8 lg:p-12 text-white text-center">
+              <p className="text-2xl lg:text-3xl xl:text-4xl font-bold leading-relaxed max-w-xl">
+                {slide.quote}
+              </p>
+            </div>
+            <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-white text-center z-10">
+              <p className="font-extrabold text-xl">{slide.author}</p>
+              <p className="text-white/80 font-semibold">{slide.location}</p>
+            </div>
           </div>
         ))}
 
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2">
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
           {slides.map((_, index) => (
             <button
               key={index}
