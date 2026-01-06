@@ -149,12 +149,6 @@
     "required_inputs_infrastructure": {
       "type": "richtext"
     },
-    "required_inputs_infrastructure_image": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": ["images"]
-    },
     "required_inputs_infrastructure_subtitle": {
       "type": "string"
     },

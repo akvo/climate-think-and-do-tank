@@ -168,8 +168,10 @@ export default function InvestmentOpportunityProfile() {
     if (!valueChainName) return null;
     const name = valueChainName.toLowerCase();
     if (name.includes('livestock')) return '/images/livestock.svg';
-    if (name.includes('fish') || name.includes('aqua')) return '/images/fish.svg';
-    if (name.includes('agri') || name.includes('crop')) return '/images/agri.svg';
+    if (name.includes('fish') || name.includes('aqua'))
+      return '/images/fish.svg';
+    if (name.includes('agri') || name.includes('crop'))
+      return '/images/agri.svg';
     return null;
   };
 
@@ -417,7 +419,8 @@ export default function InvestmentOpportunityProfile() {
               {profile.indicative_capex || 'KES 25–60 m'}
             </p>
             <p className="text-gray-500 text-sm">
-              {profile.indicative_capex_subtitle || 'depending on scale and technology'}
+              {profile.indicative_capex_subtitle ||
+                'depending on scale and technology'}
             </p>
           </div>
           <div className="border rounded-2xl p-6">
@@ -441,7 +444,8 @@ export default function InvestmentOpportunityProfile() {
               {profile.payback_period || '3–4 years'}
             </p>
             <p className="text-gray-500 text-sm">
-              {profile.payback_period_subtitle || 'driven by strong margins on finished animals'}
+              {profile.payback_period_subtitle ||
+                'driven by strong margins on finished animals'}
             </p>
           </div>
           <div className="border rounded-2xl p-6">
@@ -449,7 +453,8 @@ export default function InvestmentOpportunityProfile() {
               Why Now?
             </h3>
             <p className="text-gray-500 leading-relaxed text-sm">
-              {profile.why_now || 'Rising beef demand, county support for commercialization, and persistent supply-quality gaps create a timely opportunity for private-sector entry.'}
+              {profile.why_now ||
+                'Rising beef demand, county support for commercialization, and persistent supply-quality gaps create a timely opportunity for private-sector entry.'}
             </p>
           </div>
         </div>
@@ -467,7 +472,9 @@ export default function InvestmentOpportunityProfile() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-4 py-2 border border-primary-500 text-primary-500 rounded-full hover:bg-primary-50 transition-colors"
               >
-                <span className="text-sm font-medium">Investment opportunity (PDF)</span>
+                <span className="text-sm font-medium">
+                  Investment opportunity (PDF)
+                </span>
                 <FileDown className="w-4 h-4" />
               </a>
             )}
@@ -589,16 +596,19 @@ export default function InvestmentOpportunityProfile() {
                                   />
                                 ) : (
                                   <p className="text-gray-500 italic">
-                                    No {section.name.toLowerCase()} information available.
+                                    No {section.name.toLowerCase()} information
+                                    available.
                                   </p>
                                 )}
                               </div>
                             </div>
                             {profile[section.imageField] && (
                               <div className="hidden lg:block w-1/2">
-                                <div className="relative w-full min-h-[400px] rounded-xl overflow-hidden">
+                                <div className="relative w-full h-full rounded-xl overflow-hidden">
                                   <Image
-                                    src={getImageUrl(profile[section.imageField])}
+                                    src={getImageUrl(
+                                      profile[section.imageField]
+                                    )}
                                     alt={section.name}
                                     fill
                                     className="object-contain"
@@ -637,7 +647,8 @@ export default function InvestmentOpportunityProfile() {
                               />
                             ) : (
                               <p className="text-gray-500 italic">
-                                No {section.name.toLowerCase()} information available.
+                                No {section.name.toLowerCase()} information
+                                available.
                               </p>
                             )}
                           </div>
@@ -648,14 +659,21 @@ export default function InvestmentOpportunityProfile() {
                                   {profile[`${section.id}_column1_title`]}
                                 </h4>
                                 <div className="space-y-4">
-                                  {profile[`${section.id}_column1_items`]?.map((item, idx) => (
-                                    <div key={idx} className="flex items-start gap-3">
-                                      <div className="w-5 h-5 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <Check className="w-3 h-3 text-primary-500" />
+                                  {profile[`${section.id}_column1_items`]?.map(
+                                    (item, idx) => (
+                                      <div
+                                        key={idx}
+                                        className="flex items-start gap-3"
+                                      >
+                                        <div className="w-5 h-5 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                          <Check className="w-3 h-3 text-primary-500" />
+                                        </div>
+                                        <p className="text-gray-700">
+                                          {item.text}
+                                        </p>
                                       </div>
-                                      <p className="text-gray-700">{item.text}</p>
-                                    </div>
-                                  ))}
+                                    )
+                                  )}
                                 </div>
                               </div>
                               <div>
@@ -663,14 +681,21 @@ export default function InvestmentOpportunityProfile() {
                                   {profile[`${section.id}_column2_title`]}
                                 </h4>
                                 <div className="space-y-4">
-                                  {profile[`${section.id}_column2_items`]?.map((item, idx) => (
-                                    <div key={idx} className="flex items-start gap-3">
-                                      <div className="w-5 h-5 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <Check className="w-3 h-3 text-primary-500" />
+                                  {profile[`${section.id}_column2_items`]?.map(
+                                    (item, idx) => (
+                                      <div
+                                        key={idx}
+                                        className="flex items-start gap-3"
+                                      >
+                                        <div className="w-5 h-5 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                          <Check className="w-3 h-3 text-primary-500" />
+                                        </div>
+                                        <p className="text-gray-700">
+                                          {item.text}
+                                        </p>
                                       </div>
-                                      <p className="text-gray-700">{item.text}</p>
-                                    </div>
-                                  ))}
+                                    )
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -686,29 +711,35 @@ export default function InvestmentOpportunityProfile() {
                           </h3>
                           {profile[section.contentField] && (
                             <p className="text-gray-700 text-lg mb-8">
-                              {profile[`${section.id}_subtitle`] || 'A successful operation requires:'}
+                              {profile[`${section.id}_subtitle`] ||
+                                'A successful operation requires:'}
                             </p>
                           )}
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {profile[`${section.id}_cards`]?.map((card, idx) => (
-                              <div
-                                key={idx}
-                                className="bg-gray-50 rounded-xl p-6 border border-gray-100"
-                              >
-                                <h4 className="font-semibold text-gray-900 mb-2">
-                                  {card.title}
-                                </h4>
-                                <p className="text-gray-600 text-sm">
-                                  {card.description}
-                                </p>
-                              </div>
-                            ))}
+                            {profile[`${section.id}_cards`]?.map(
+                              (card, idx) => (
+                                <div
+                                  key={idx}
+                                  className="bg-white rounded-xl p-6 border border-gray-200"
+                                >
+                                  <h4 className="font-semibold text-gray-900 mb-2">
+                                    {card.title}
+                                  </h4>
+                                  <p className="text-gray-600 text-sm">
+                                    {card.description}
+                                  </p>
+                                </div>
+                              )
+                            )}
                           </div>
-                          {!profile[`${section.id}_cards`] && profile[section.contentField] && (
-                            <div className="prose prose-lg max-w-none text-gray-700">
-                              <MarkdownRenderer content={profile[section.contentField]} />
-                            </div>
-                          )}
+                          {!profile[`${section.id}_cards`] &&
+                            profile[section.contentField] && (
+                              <div className="prose prose-lg max-w-none text-gray-700">
+                                <MarkdownRenderer
+                                  content={profile[section.contentField]}
+                                />
+                              </div>
+                            )}
                         </div>
                       )}
 
@@ -722,25 +753,37 @@ export default function InvestmentOpportunityProfile() {
                           {profile[`${section.id}_capex_title`] && (
                             <>
                               <p className="text-gray-700 font-medium mb-4">
-                                {profile[`${section.id}_capex_title`] || 'Indicative CAPEX:'}
+                                {profile[`${section.id}_capex_title`] ||
+                                  'Indicative CAPEX:'}
                               </p>
                               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-                                {profile[`${section.id}_capex_items`]?.map((item, idx) => (
-                                  <div
-                                    key={idx}
-                                    className="bg-white rounded-xl p-4 border border-gray-200"
-                                  >
-                                    <div className="flex items-center gap-2 mb-2">
-                                      <span className="text-xs text-gray-500">KES</span>
+                                {profile[`${section.id}_capex_items`]?.map(
+                                  (item, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="bg-white rounded-xl p-4 border border-gray-200"
+                                    >
+                                      <div className="flex items-center gap-2 mb-2">
+                                        <Image
+                                          src="/images/kenya-flag.png"
+                                          alt="Kenya"
+                                          width={16}
+                                          height={16}
+                                          className="w-5 h-5 rounded-full object-cover"
+                                        />
+                                        <span className="text-xs text-gray-500">
+                                          KES
+                                        </span>
+                                      </div>
+                                      <p className="text-xl font-bold text-gray-900">
+                                        {item.amount}
+                                      </p>
+                                      <p className="text-gray-600 text-sm mt-1">
+                                        {item.description}
+                                      </p>
                                     </div>
-                                    <p className="text-xl font-bold text-gray-900">
-                                      {item.amount}
-                                    </p>
-                                    <p className="text-gray-600 text-sm mt-1">
-                                      {item.description}
-                                    </p>
-                                  </div>
-                                ))}
+                                  )
+                                )}
                               </div>
                             </>
                           )}
@@ -778,11 +821,14 @@ export default function InvestmentOpportunityProfile() {
                             )}
                           </div>
 
-                          {!profile[`${section.id}_capex_items`] && profile[section.contentField] && (
-                            <div className="prose prose-lg max-w-none text-gray-700 mt-6">
-                              <MarkdownRenderer content={profile[section.contentField]} />
-                            </div>
-                          )}
+                          {!profile[`${section.id}_capex_items`] &&
+                            profile[section.contentField] && (
+                              <div className="prose prose-lg max-w-none text-gray-700 mt-6">
+                                <MarkdownRenderer
+                                  content={profile[section.contentField]}
+                                />
+                              </div>
+                            )}
                         </div>
                       )}
                     </div>
