@@ -650,8 +650,8 @@ export default function InvestmentOpportunityProfile() {
                                 <div className="space-y-4">
                                   {profile[`${section.id}_column1_items`]?.map((item, idx) => (
                                     <div key={idx} className="flex items-start gap-3">
-                                      <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <Check className="w-4 h-4 text-green-600" />
+                                      <div className="w-5 h-5 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <Check className="w-3 h-3 text-primary-500" />
                                       </div>
                                       <p className="text-gray-700">{item.text}</p>
                                     </div>
@@ -665,8 +665,8 @@ export default function InvestmentOpportunityProfile() {
                                 <div className="space-y-4">
                                   {profile[`${section.id}_column2_items`]?.map((item, idx) => (
                                     <div key={idx} className="flex items-start gap-3">
-                                      <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <Check className="w-4 h-4 text-green-600" />
+                                      <div className="w-5 h-5 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <Check className="w-3 h-3 text-primary-500" />
                                       </div>
                                       <p className="text-gray-700">{item.text}</p>
                                     </div>
@@ -747,7 +747,7 @@ export default function InvestmentOpportunityProfile() {
 
                           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             {profile[`${section.id}_operating_cost`] && (
-                              <div className="border-l-4 border-green-500 pl-4">
+                              <div className="border border-gray-200 rounded-xl p-6">
                                 <h4 className="text-xl font-bold text-gray-900 mb-3">
                                   Operating cost
                                 </h4>
@@ -757,7 +757,7 @@ export default function InvestmentOpportunityProfile() {
                               </div>
                             )}
                             {profile[`${section.id}_revenue_streams`] && (
-                              <div className="border-l-4 border-green-500 pl-4">
+                              <div className="border border-gray-200 rounded-xl p-6">
                                 <h4 className="text-xl font-bold text-gray-900 mb-3">
                                   Revenue streams
                                 </h4>
@@ -767,7 +767,7 @@ export default function InvestmentOpportunityProfile() {
                               </div>
                             )}
                             {profile[`${section.id}_payback_period`] && (
-                              <div className="border-l-4 border-green-500 pl-4">
+                              <div className="border border-gray-200 rounded-xl p-6">
                                 <h4 className="text-xl font-bold text-gray-900 mb-3">
                                   Estimated payback period
                                 </h4>
