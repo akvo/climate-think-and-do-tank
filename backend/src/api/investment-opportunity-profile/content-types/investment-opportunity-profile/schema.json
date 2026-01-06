@@ -130,32 +130,8 @@
       "required": false,
       "allowedTypes": ["images"]
     },
-    "investment_opportunity_column1_title": {
-      "type": "string"
-    },
-    "investment_opportunity_column1_items": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.checklist-item"
-    },
-    "investment_opportunity_column2_title": {
-      "type": "string"
-    },
-    "investment_opportunity_column2_items": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.checklist-item"
-    },
     "required_inputs_infrastructure": {
       "type": "richtext"
-    },
-    "required_inputs_infrastructure_subtitle": {
-      "type": "string"
-    },
-    "required_inputs_infrastructure_cards": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.info-card"
     },
     "investment_needs_financial": {
       "type": "richtext"
@@ -165,23 +141,6 @@
       "multiple": false,
       "required": false,
       "allowedTypes": ["images"]
-    },
-    "investment_needs_financial_capex_title": {
-      "type": "string"
-    },
-    "investment_needs_financial_capex_items": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.capex-item"
-    },
-    "investment_needs_financial_operating_cost": {
-      "type": "text"
-    },
-    "investment_needs_financial_revenue_streams": {
-      "type": "text"
-    },
-    "investment_needs_financial_payback_period": {
-      "type": "text"
     },
     "enabling_environment_policies": {
       "type": "richtext"
@@ -200,22 +159,6 @@
       "multiple": false,
       "required": false,
       "allowedTypes": ["images"]
-    },
-    "risks_mitigation_column1_title": {
-      "type": "string"
-    },
-    "risks_mitigation_column1_items": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.checklist-item"
-    },
-    "risks_mitigation_column2_title": {
-      "type": "string"
-    },
-    "risks_mitigation_column2_items": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.checklist-item"
     },
     "investment_pdf": {
       "type": "media",
