@@ -231,6 +231,20 @@
           "sortable": false
         }
       },
+      "indicative_capex_title": {
+        "edit": {
+          "label": "indicative_capex_title",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "indicative_capex_title",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "indicative_capex": {
         "edit": {
           "label": "indicative_capex",
@@ -255,6 +269,20 @@
         },
         "list": {
           "label": "indicative_capex_subtitle",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "annual_throughput_title": {
+        "edit": {
+          "label": "annual_throughput_title",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "annual_throughput_title",
           "searchable": true,
           "sortable": true
         }
@@ -287,6 +315,20 @@
           "sortable": true
         }
       },
+      "payback_period_title": {
+        "edit": {
+          "label": "payback_period_title",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "payback_period_title",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "payback_period": {
         "edit": {
           "label": "payback_period",
@@ -311,6 +353,20 @@
         },
         "list": {
           "label": "payback_period_subtitle",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "why_now_title": {
+        "edit": {
+          "label": "why_now_title",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "why_now_title",
           "searchable": true,
           "sortable": true
         }
@@ -808,38 +864,54 @@
         ],
         [
           {
+            "name": "indicative_capex_title",
+            "size": 4
+          },
+          {
             "name": "indicative_capex",
-            "size": 6
+            "size": 4
           },
           {
             "name": "indicative_capex_subtitle",
-            "size": 6
+            "size": 4
           }
         ],
         [
           {
+            "name": "annual_throughput_title",
+            "size": 4
+          },
+          {
             "name": "annual_throughput",
-            "size": 6
+            "size": 4
           },
           {
             "name": "annual_throughput_subtitle",
-            "size": 6
+            "size": 4
           }
         ],
         [
           {
+            "name": "payback_period_title",
+            "size": 4
+          },
+          {
             "name": "payback_period",
-            "size": 6
+            "size": 4
           },
           {
             "name": "payback_period_subtitle",
-            "size": 6
+            "size": 4
           }
         ],
         [
           {
+            "name": "why_now_title",
+            "size": 6
+          },
+          {
             "name": "why_now",
-            "size": 12
+            "size": 6
           }
         ],
         [

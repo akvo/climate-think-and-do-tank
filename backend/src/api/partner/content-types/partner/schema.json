@@ -23,6 +23,11 @@
     },
     "order": {
       "type": "string"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["implementer", "partner"],
+      "default": "partner"
     }
   }
 }

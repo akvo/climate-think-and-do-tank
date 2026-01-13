@@ -465,12 +465,16 @@
           "risk_and_impact_profile_text",
           "closing_information_text",
           "key_highlights",
+          "indicative_capex_title",
           "indicative_capex",
           "indicative_capex_subtitle",
+          "annual_throughput_title",
           "annual_throughput",
           "annual_throughput_subtitle",
+          "payback_period_title",
           "payback_period",
           "payback_period_subtitle",
+          "why_now_title",
           "why_now",
           "county_sector_overview",
           "county_sector_overview_image",
@@ -546,12 +550,16 @@
           "risk_and_impact_profile_text",
           "closing_information_text",
           "key_highlights",
+          "indicative_capex_title",
           "indicative_capex",
           "indicative_capex_subtitle",
+          "annual_throughput_title",
           "annual_throughput",
           "annual_throughput_subtitle",
+          "payback_period_title",
           "payback_period",
           "payback_period_subtitle",
+          "why_now_title",
           "why_now",
           "county_sector_overview",
           "county_sector_overview_image",
@@ -609,12 +617,16 @@
           "risk_and_impact_profile_text",
           "closing_information_text",
           "key_highlights",
+          "indicative_capex_title",
           "indicative_capex",
           "indicative_capex_subtitle",
+          "annual_throughput_title",
           "annual_throughput",
           "annual_throughput_subtitle",
+          "payback_period_title",
           "payback_period",
           "payback_period_subtitle",
+          "why_now_title",
           "why_now",
           "county_sector_overview",
           "county_sector_overview_image",
@@ -931,7 +943,8 @@
       "properties": {
         "fields": [
           "logo",
-          "order"
+          "order",
+          "type"
         ]
       },
       "conditions": [],
@@ -963,7 +976,8 @@
       "properties": {
         "fields": [
           "logo",
-          "order"
+          "order",
+          "type"
         ]
       },
       "conditions": [],
@@ -977,7 +991,8 @@
       "properties": {
         "fields": [
           "logo",
-          "order"
+          "order",
+          "type"
         ]
       },
       "conditions": [],

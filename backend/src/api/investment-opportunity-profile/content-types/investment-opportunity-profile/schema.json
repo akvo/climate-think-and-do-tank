@@ -76,10 +76,16 @@
     "key_highlights": {
       "type": "richtext"
     },
+    "indicative_capex_title": {
+      "type": "string"
+    },
     "indicative_capex": {
       "type": "string"
     },
     "indicative_capex_subtitle": {
+      "type": "string"
+    },
+    "annual_throughput_title": {
       "type": "string"
     },
     "annual_throughput": {
@@ -88,10 +94,16 @@
     "annual_throughput_subtitle": {
       "type": "string"
     },
+    "payback_period_title": {
+      "type": "string"
+    },
     "payback_period": {
       "type": "string"
     },
     "payback_period_subtitle": {
+      "type": "string"
+    },
+    "why_now_title": {
       "type": "string"
     },
     "why_now": {

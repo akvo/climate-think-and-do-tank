@@ -65,12 +65,12 @@ const StatsGrid = ({}) => {
 
 const StatBlock = ({ value, label, icon }) => (
   <div
-    className="relative bg-gray-10 rounded-2xl p-8"
+    className="relative bg-gray-10 rounded-2xl p-8 overflow-hidden"
     style={{
-      backgroundImage: "url('/images/graphic.svg')",
-      backgroundPosition: 'right -10% top -170%',
+      backgroundImage: "url('/images/decorative.svg')",
+      backgroundPosition: 'right -2px top -2px',
       backgroundRepeat: 'no-repeat',
-      backgroundSize: '30%',
+      backgroundSize: '200px',
     }}
   >
     <div className="absolute top-6 left-6 text-primary-500 bg-primary-50 rounded-full flex items-center justify-center w-14 h-14">

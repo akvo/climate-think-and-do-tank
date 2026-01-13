@@ -413,22 +413,23 @@ export default function InvestmentOpportunityProfile() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <div className="border rounded-2xl p-6">
             <h3 className="text-base font-medium text-gray-900 mb-4">
-              Indicative CAPEX:
+              {profile.indicative_capex_title || 'Indicative CAPEX'}
             </h3>
             <p className="text-3xl font-bold text-gray-900 mb-2">
-              {profile.indicative_capex || 'KES 25–60 m'}
+              {profile.indicative_capex || 'N.A.'}
             </p>
-            <p className="text-gray-500 text-sm">
-              {profile.indicative_capex_subtitle ||
-                'depending on scale and technology'}
-            </p>
+            {profile.indicative_capex_subtitle && (
+              <p className="text-gray-500 text-sm">
+                {profile.indicative_capex_subtitle}
+              </p>
+            )}
           </div>
           <div className="border rounded-2xl p-6">
             <h3 className="text-base font-medium text-gray-900 mb-4">
-              Potential annual throughput
+              {profile.annual_throughput_title || 'Potential annual throughput'}
             </h3>
             <p className="text-3xl font-bold text-gray-900 mb-2">
-              {profile.annual_throughput || '1,000–3,000 head'}
+              {profile.annual_throughput || 'N.A.'}
             </p>
             {profile.annual_throughput_subtitle && (
               <p className="text-gray-500 text-sm">
@@ -438,23 +439,23 @@ export default function InvestmentOpportunityProfile() {
           </div>
           <div className="border rounded-2xl p-6">
             <h3 className="text-base font-medium text-gray-900 mb-4">
-              Payback period:
+              {profile.payback_period_title || 'Payback period'}
             </h3>
             <p className="text-3xl font-bold text-gray-900 mb-2">
-              {profile.payback_period || '3–4 years'}
+              {profile.payback_period || 'N.A.'}
             </p>
-            <p className="text-gray-500 text-sm">
-              {profile.payback_period_subtitle ||
-                'driven by strong margins on finished animals'}
-            </p>
+            {profile.payback_period_subtitle && (
+              <p className="text-gray-500 text-sm">
+                {profile.payback_period_subtitle}
+              </p>
+            )}
           </div>
           <div className="border rounded-2xl p-6">
             <h3 className="text-base font-medium text-gray-900 mb-4">
-              Why Now?
+              {profile.why_now_title || 'Why Now?'}
             </h3>
             <p className="text-gray-500 leading-relaxed text-sm">
-              {profile.why_now ||
-                'Rising beef demand, county support for commercialization, and persistent supply-quality gaps create a timely opportunity for private-sector entry.'}
+              {profile.why_now || 'N.A.'}
             </p>
           </div>
         </div>
