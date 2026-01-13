@@ -76,37 +76,37 @@
     "key_highlights": {
       "type": "richtext"
     },
-    "indicative_capex_title": {
+    "box1_title": {
       "type": "string"
     },
-    "indicative_capex": {
+    "box1_mainText": {
       "type": "string"
     },
-    "indicative_capex_subtitle": {
+    "box1_subtitle": {
       "type": "string"
     },
-    "annual_throughput_title": {
+    "box2_title": {
       "type": "string"
     },
-    "annual_throughput": {
+    "box2_mainText": {
       "type": "string"
     },
-    "annual_throughput_subtitle": {
+    "box2_subtitle": {
       "type": "string"
     },
-    "payback_period_title": {
+    "box3_title": {
       "type": "string"
     },
-    "payback_period": {
+    "box3_mainText": {
       "type": "string"
     },
-    "payback_period_subtitle": {
+    "box3_subtitle": {
       "type": "string"
     },
-    "why_now_title": {
+    "box4_title": {
       "type": "string"
     },
-    "why_now": {
+    "box4_mainText": {
       "type": "text"
     },
     "county_sector_overview": {

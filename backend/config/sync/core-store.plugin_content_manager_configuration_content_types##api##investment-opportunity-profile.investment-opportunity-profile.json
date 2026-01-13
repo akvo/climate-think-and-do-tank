@@ -231,156 +231,156 @@
           "sortable": false
         }
       },
-      "indicative_capex_title": {
+      "box1_title": {
         "edit": {
-          "label": "indicative_capex_title",
+          "label": "box1_title",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "indicative_capex_title",
+          "label": "box1_title",
           "searchable": true,
           "sortable": true
         }
       },
-      "indicative_capex": {
+      "box1_mainText": {
         "edit": {
-          "label": "indicative_capex",
+          "label": "box1_mainText",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "indicative_capex",
+          "label": "box1_mainText",
           "searchable": true,
           "sortable": true
         }
       },
-      "indicative_capex_subtitle": {
+      "box1_subtitle": {
         "edit": {
-          "label": "indicative_capex_subtitle",
+          "label": "box1_subtitle",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "indicative_capex_subtitle",
+          "label": "box1_subtitle",
           "searchable": true,
           "sortable": true
         }
       },
-      "annual_throughput_title": {
+      "box2_title": {
         "edit": {
-          "label": "annual_throughput_title",
+          "label": "box2_title",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "annual_throughput_title",
+          "label": "box2_title",
           "searchable": true,
           "sortable": true
         }
       },
-      "annual_throughput": {
+      "box2_mainText": {
         "edit": {
-          "label": "annual_throughput",
+          "label": "box2_mainText",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "annual_throughput",
+          "label": "box2_mainText",
           "searchable": true,
           "sortable": true
         }
       },
-      "annual_throughput_subtitle": {
+      "box2_subtitle": {
         "edit": {
-          "label": "annual_throughput_subtitle",
+          "label": "box2_subtitle",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "annual_throughput_subtitle",
+          "label": "box2_subtitle",
           "searchable": true,
           "sortable": true
         }
       },
-      "payback_period_title": {
+      "box3_title": {
         "edit": {
-          "label": "payback_period_title",
+          "label": "box3_title",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "payback_period_title",
+          "label": "box3_title",
           "searchable": true,
           "sortable": true
         }
       },
-      "payback_period": {
+      "box3_mainText": {
         "edit": {
-          "label": "payback_period",
+          "label": "box3_mainText",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "payback_period",
+          "label": "box3_mainText",
           "searchable": true,
           "sortable": true
         }
       },
-      "payback_period_subtitle": {
+      "box3_subtitle": {
         "edit": {
-          "label": "payback_period_subtitle",
+          "label": "box3_subtitle",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "payback_period_subtitle",
+          "label": "box3_subtitle",
           "searchable": true,
           "sortable": true
         }
       },
-      "why_now_title": {
+      "box4_title": {
         "edit": {
-          "label": "why_now_title",
+          "label": "box4_title",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "why_now_title",
+          "label": "box4_title",
           "searchable": true,
           "sortable": true
         }
       },
-      "why_now": {
+      "box4_mainText": {
         "edit": {
-          "label": "why_now",
+          "label": "box4_mainText",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "why_now",
+          "label": "box4_mainText",
           "searchable": false,
           "sortable": false
         }
@@ -793,53 +793,53 @@
         ],
         [
           {
-            "name": "indicative_capex_title",
+            "name": "box1_title",
             "size": 4
           },
           {
-            "name": "indicative_capex",
+            "name": "box1_mainText",
             "size": 4
           },
           {
-            "name": "indicative_capex_subtitle",
+            "name": "box1_subtitle",
             "size": 4
           }
         ],
         [
           {
-            "name": "annual_throughput_title",
+            "name": "box2_title",
             "size": 4
           },
           {
-            "name": "annual_throughput",
+            "name": "box2_mainText",
             "size": 4
           },
           {
-            "name": "annual_throughput_subtitle",
+            "name": "box2_subtitle",
             "size": 4
           }
         ],
         [
           {
-            "name": "payback_period_title",
+            "name": "box3_title",
             "size": 4
           },
           {
-            "name": "payback_period",
+            "name": "box3_mainText",
             "size": 4
           },
           {
-            "name": "payback_period_subtitle",
+            "name": "box3_subtitle",
             "size": 4
           }
         ],
         [
           {
-            "name": "why_now_title",
+            "name": "box4_title",
             "size": 6
           },
           {
-            "name": "why_now",
+            "name": "box4_mainText",
             "size": 6
           }
         ],

@@ -413,49 +413,49 @@ export default function InvestmentOpportunityProfile() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <div className="border rounded-2xl p-6">
             <h3 className="text-base font-medium text-gray-900 mb-4">
-              {profile.indicative_capex_title || 'Indicative CAPEX'}
+              {profile.box1_title || 'N.A.'}
             </h3>
             <p className="text-3xl font-bold text-gray-900 mb-2">
-              {profile.indicative_capex || 'N.A.'}
+              {profile.box1_mainText || 'N.A.'}
             </p>
-            {profile.indicative_capex_subtitle && (
+            {profile.box1_subtitle && (
               <p className="text-gray-500 text-sm">
-                {profile.indicative_capex_subtitle}
+                {profile.box1_subtitle}
               </p>
             )}
           </div>
           <div className="border rounded-2xl p-6">
             <h3 className="text-base font-medium text-gray-900 mb-4">
-              {profile.annual_throughput_title || 'Potential annual throughput'}
+              {profile.box2_title || 'N.A.'}
             </h3>
             <p className="text-3xl font-bold text-gray-900 mb-2">
-              {profile.annual_throughput || 'N.A.'}
+              {profile.box2_mainText || 'N.A.'}
             </p>
-            {profile.annual_throughput_subtitle && (
+            {profile.box2_subtitle && (
               <p className="text-gray-500 text-sm">
-                {profile.annual_throughput_subtitle}
+                {profile.box2_subtitle}
               </p>
             )}
           </div>
           <div className="border rounded-2xl p-6">
             <h3 className="text-base font-medium text-gray-900 mb-4">
-              {profile.payback_period_title || 'Payback period'}
+              {profile.box3_title || 'N.A.'}
             </h3>
             <p className="text-3xl font-bold text-gray-900 mb-2">
-              {profile.payback_period || 'N.A.'}
+              {profile.box3_mainText || 'N.A.'}
             </p>
-            {profile.payback_period_subtitle && (
+            {profile.box3_subtitle && (
               <p className="text-gray-500 text-sm">
-                {profile.payback_period_subtitle}
+                {profile.box3_subtitle}
               </p>
             )}
           </div>
           <div className="border rounded-2xl p-6">
             <h3 className="text-base font-medium text-gray-900 mb-4">
-              {profile.why_now_title || 'Why Now?'}
+              {profile.box4_title || 'N.A.'}
             </h3>
-            <p className="text-gray-500 leading-relaxed text-sm">
-              {profile.why_now || 'N.A.'}
+            <p className="text-gray-900 leading-relaxed text-sm">
+              {profile.box4_mainText || 'N.A.'}
             </p>
           </div>
         </div>

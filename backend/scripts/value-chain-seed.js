@@ -7,7 +7,7 @@ async function seedValueChains() {
 
   console.log('Starting value chain seeding process...');
 
-  const valueChains = ['Fish', 'Livestock', 'Crops', 'Other'];
+  const valueChains = ['Fish', 'Livestock', 'Crops'];
 
   try {
     for (const valueChainName of valueChains) {
