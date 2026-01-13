@@ -787,12 +787,6 @@
         ],
         [
           {
-            "name": "key_highlights",
-            "size": 12
-          }
-        ],
-        [
-          {
             "name": "box1_title",
             "size": 4
           },
@@ -841,6 +835,12 @@
           {
             "name": "box4_mainText",
             "size": 6
+          }
+        ],
+        [
+          {
+            "name": "key_highlights",
+            "size": 12
           }
         ],
         [
