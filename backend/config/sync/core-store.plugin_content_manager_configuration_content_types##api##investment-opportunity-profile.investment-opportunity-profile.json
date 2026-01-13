@@ -530,7 +530,6 @@
           "label": "investment_opportunity_column2_items",
           "description": "",
           "placeholder": "",
-          "visible": true,
           "visible": false,
           "editable": true
         },
