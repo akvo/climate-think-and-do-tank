@@ -96,7 +96,7 @@
           "label": "investor_snapshot_text",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -110,7 +110,7 @@
           "label": "the_investment_case_image",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -124,7 +124,7 @@
           "label": "business_blueprint_image",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -138,7 +138,7 @@
           "label": "risk_and_impact_profile_image",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -152,7 +152,7 @@
           "label": "closing_information_image",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -166,7 +166,7 @@
           "label": "the_investment_case_text",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -180,7 +180,7 @@
           "label": "business_blueprint_text",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -208,7 +208,7 @@
           "label": "closing_information_text",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -488,7 +488,7 @@
           "label": "investment_opportunity_column1_title",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -502,7 +502,7 @@
           "label": "investment_opportunity_column1_items",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -516,7 +516,7 @@
           "label": "investment_opportunity_column2_title",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -531,6 +531,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -581,76 +582,6 @@
           "sortable": false
         }
       },
-      "investment_needs_financial_capex_title": {
-        "edit": {
-          "label": "investment_needs_financial_capex_title",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "investment_needs_financial_capex_title",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "investment_needs_financial_capex_items": {
-        "edit": {
-          "label": "investment_needs_financial_capex_items",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "investment_needs_financial_capex_items",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "investment_needs_financial_operating_cost": {
-        "edit": {
-          "label": "investment_needs_financial_operating_cost",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "investment_needs_financial_operating_cost",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "investment_needs_financial_revenue_streams": {
-        "edit": {
-          "label": "investment_needs_financial_revenue_streams",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "investment_needs_financial_revenue_streams",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "investment_needs_financial_payback_period": {
-        "edit": {
-          "label": "investment_needs_financial_payback_period",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "investment_needs_financial_payback_period",
-          "searchable": true,
-          "sortable": true
-        }
-      },
       "enabling_environment_policies": {
         "edit": {
           "label": "enabling_environment_policies",
@@ -698,7 +629,7 @@
           "label": "risks_mitigation_column1_title",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -712,7 +643,7 @@
           "label": "risks_mitigation_column1_items",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -726,7 +657,7 @@
           "label": "risks_mitigation_column2_title",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -740,7 +671,7 @@
           "label": "risks_mitigation_column2_items",
           "description": "",
           "placeholder": "",
-          "visible": true,
+          "visible": false,
           "editable": true
         },
         "list": {
@@ -823,24 +754,23 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "value_chain",
-        "region",
-        "publication_date"
-      ],
+      "list": ["id", "title", "value_chain", "region", "publication_date"],
       "edit": [
         [
           {
-            "name": "value_chain",
-            "size": 6
-          },
-          {
-            "name": "region",
-            "size": 6
+            "name": "title",
+            "size": 12
           }
         ],
         [
+          {
+            "name": "value_chain",
+            "size": 4
+          },
+          {
+            "name": "region",
+            "size": 4
+          },
           {
             "name": "publication_date",
             "size": 4
@@ -958,6 +888,18 @@
         ],
         [
           {
+            "name": "required_inputs_infrastructure_subtitle",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "required_inputs_infrastructure_cards",
+            "size": 12
+          }
+        ],
+        [
+          {
             "name": "investment_needs_financial",
             "size": 12
           }
@@ -978,98 +920,6 @@
           {
             "name": "risks_mitigation",
             "size": 12
-          }
-        ],
-        [
-          {
-            "name": "investment_opportunity_column1_title",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "investment_opportunity_column1_items",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "investment_opportunity_column2_title",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "investment_opportunity_column2_items",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "required_inputs_infrastructure_subtitle",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "required_inputs_infrastructure_cards",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "investment_needs_financial_capex_title",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "investment_needs_financial_capex_items",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "investment_needs_financial_operating_cost",
-            "size": 6
-          },
-          {
-            "name": "investment_needs_financial_revenue_streams",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "investment_needs_financial_payback_period",
-            "size": 6
-          },
-          {
-            "name": "risks_mitigation_column1_title",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "risks_mitigation_column1_items",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "risks_mitigation_column2_title",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "risks_mitigation_column2_items",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "title",
-            "size": 6
           }
         ]
       ]

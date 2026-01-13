@@ -78,7 +78,7 @@ export default function InvestmentOpportunityProfile() {
       number: 6,
       name: 'Investment Needs & Financial Snapshot',
       contentField: 'investment_needs_financial',
-      layout: 'financial',
+      layout: 'text-image',
     },
     {
       id: 'enabling_environment_policies',
@@ -93,7 +93,7 @@ export default function InvestmentOpportunityProfile() {
       number: 8,
       name: 'Risks & Mitigation Measures',
       contentField: 'risks_mitigation',
-      layout: 'two-columns',
+      layout: 'text-image',
     },
   ];
 

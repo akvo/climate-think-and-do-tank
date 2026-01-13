@@ -166,23 +166,6 @@
     "investment_needs_financial": {
       "type": "richtext"
     },
-    "investment_needs_financial_capex_title": {
-      "type": "string"
-    },
-    "investment_needs_financial_capex_items": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.capex-item"
-    },
-    "investment_needs_financial_operating_cost": {
-      "type": "text"
-    },
-    "investment_needs_financial_revenue_streams": {
-      "type": "text"
-    },
-    "investment_needs_financial_payback_period": {
-      "type": "text"
-    },
     "enabling_environment_policies": {
       "type": "richtext"
     },
