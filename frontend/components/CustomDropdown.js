@@ -125,7 +125,7 @@ const CustomDropdown = ({
   return (
     <div className={`space-y-2 ${className}`}>
       {label && (
-        <label htmlFor={id} className="block text-lg font-medium text-gray-700">
+        <label htmlFor={id} className="block text-lg font-semibold text-black">
           {label}
         </label>
       )}

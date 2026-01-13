@@ -226,7 +226,7 @@ export default function SignUpForm() {
                   <div className="space-y-2">
                     <label
                       htmlFor="email"
-                      className="block text-xs sm:text-sm font-medium text-gray-700"
+                      className="block text-xs sm:text-sm font-semibold text-black"
                     >
                       Email Address
                     </label>
@@ -251,7 +251,7 @@ export default function SignUpForm() {
                   <div className="space-y-2">
                     <label
                       htmlFor="password"
-                      className="block text-xs sm:text-sm font-medium text-gray-700"
+                      className="block text-xs sm:text-sm font-semibold text-black"
                     >
                       Create Password
                     </label>
@@ -291,7 +291,7 @@ export default function SignUpForm() {
                   <div className="space-y-2">
                     <label
                       htmlFor="confirmPassword"
-                      className="block text-xs sm:text-sm font-medium text-gray-700"
+                      className="block text-xs sm:text-sm font-semibold text-black"
                     >
                       Confirm Password
                     </label>
@@ -363,6 +363,16 @@ export default function SignUpForm() {
                       'Create My Account'
                     )}
                   </Button>
+
+                  <div className="text-center text-sm sm:text-base text-gray-600 mt-6">
+                    Already have an account?{' '}
+                    <Link
+                      href="/login"
+                      className="text-primary-600 font-medium hover:underline"
+                    >
+                      Login
+                    </Link>
+                  </div>
 
                   <div className="text-center text-xs sm:text-sm text-gray-600 space-y-2">
                     <p>
@@ -622,7 +632,7 @@ const AdditionalDetails = ({
                 className="space-y-4 sm:space-y-6 lg:space-y-8"
               >
                 <div className="space-y-2">
-                  <label className="block text-sm sm:text-base lg:text-lg font-medium text-gray-700">
+                  <label className="block text-sm sm:text-base lg:text-lg font-semibold text-black">
                     Name
                   </label>
                   <input
@@ -642,7 +652,7 @@ const AdditionalDetails = ({
 
                 <div className="space-y-2">
                   <div className="flex items-center">
-                    <label className="block text-sm sm:text-base lg:text-lg font-medium text-gray-700">
+                    <label className="block text-sm sm:text-base lg:text-lg font-semibold text-black">
                       Organization name
                     </label>
                     <div className="relative inline-block ml-2 group">
@@ -815,7 +825,7 @@ const AdditionalDetails = ({
                 <div className="space-y-2">
                   <label
                     htmlFor="linkedin"
-                    className="block text-lg font-medium text-gray-700"
+                    className="block text-lg font-semibold text-black"
                   >
                     Linkedin Profile
                   </label>
@@ -1087,7 +1097,7 @@ const OrganizationModal = ({
             </div>
           )}
           <div className="space-y-2">
-            <label className="block text-sm font-medium">Name</label>
+            <label className="block text-sm font-semibold">Name</label>
             <input
               type="text"
               placeholder="Enter your organization name"
@@ -1101,7 +1111,7 @@ const OrganizationModal = ({
 
           {/* Website */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium">Website</label>
+            <label className="block text-sm font-semibold">Website</label>
             <div className="relative">
               <input
                 type="text"

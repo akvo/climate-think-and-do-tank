@@ -186,7 +186,7 @@ const ProfileDetails = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Profile Image */}
               <div>
-                <label className="block text-lg font-medium text-gray-700 mb-3">
+                <label className="block text-lg font-semibold text-black mb-3">
                   Profile Picture
                 </label>
                 {editMode ? (
@@ -235,7 +235,7 @@ const ProfileDetails = () => {
               </div>
 
               <div>
-                <label className="block text-lg font-medium text-gray-700 mb-2">
+                <label className="block text-lg font-semibold text-black mb-2">
                   Name
                 </label>
                 {editMode ? (
@@ -254,7 +254,7 @@ const ProfileDetails = () => {
                 )}
               </div>
               <div>
-                <label className="block text-lg font-medium text-gray-700 mb-2">
+                <label className="block text-lg font-semibold text-black mb-2">
                   Email Address
                 </label>
                 <div className="relative">
@@ -283,7 +283,7 @@ const ProfileDetails = () => {
               </div>
 
               <div>
-                <label className="block text-lg font-medium text-gray-700 mb-2">
+                <label className="block text-lg font-semibold text-black mb-2">
                   Organization name
                 </label>
                 <div className="relative">
@@ -332,7 +332,7 @@ const ProfileDetails = () => {
                   />
                 ) : (
                   <>
-                    <label className="block text-lg font-medium text-gray-700 mb-2">
+                    <label className="block text-lg font-semibold text-black mb-2">
                       Country of residence
                     </label>
                     <p className="text-gray-900 py-2 px-1">
@@ -364,7 +364,7 @@ const ProfileDetails = () => {
                   />
                 ) : (
                   <>
-                    <label className="block text-lg font-medium text-gray-700 mb-2">
+                    <label className="block text-lg font-semibold text-black mb-2">
                       Focus Region
                     </label>
                     <div className="py-2 px-1">
@@ -409,7 +409,7 @@ const ProfileDetails = () => {
                   />
                 ) : (
                   <>
-                    <label className="block text-lg font-medium text-gray-700 mb-2">
+                    <label className="block text-lg font-semibold text-black mb-2">
                       Topics
                     </label>
                     <div className="py-2 px-1">
@@ -454,7 +454,7 @@ const ProfileDetails = () => {
                   />
                 ) : (
                   <>
-                    <label className="block text-lg font-medium text-gray-700 mb-2">
+                    <label className="block text-lg font-semibold text-black mb-2">
                       Looking For
                     </label>
                     <div className="py-2 px-1">
@@ -508,7 +508,7 @@ const ProfileDetails = () => {
                   />
                 ) : (
                   <>
-                    <label className="block text-lg font-medium text-gray-700 mb-2">
+                    <label className="block text-lg font-semibold text-black mb-2">
                       Role
                     </label>
                     <p className="text-gray-900 py-2 px-1">
@@ -520,7 +520,7 @@ const ProfileDetails = () => {
 
               {/* LinkedIn */}
               <div>
-                <label className="block text-lg font-medium text-gray-700 mb-2">
+                <label className="block text-lg font-semibold text-black mb-2">
                   LinkedIn Profile
                 </label>
                 {editMode ? (

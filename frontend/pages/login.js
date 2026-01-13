@@ -363,7 +363,7 @@ export default function LoginForm() {
                         <div className="space-y-2">
                           <label
                             htmlFor="email"
-                            className="block text-sm font-medium text-black"
+                            className="block text-sm font-semibold text-black"
                           >
                             Email
                           </label>
@@ -424,7 +424,7 @@ export default function LoginForm() {
                           <div className="space-y-2 text-black">
                             <label
                               htmlFor="resetCode"
-                              className="block text-sm font-medium"
+                              className="block text-sm font-semibold"
                             >
                               Reset Code
                             </label>
@@ -450,7 +450,7 @@ export default function LoginForm() {
                           <div className="space-y-2 text-black">
                             <label
                               htmlFor="newPassword"
-                              className="block text-sm font-medium"
+                              className="block text-sm font-semibold"
                             >
                               New Password
                             </label>
@@ -476,7 +476,7 @@ export default function LoginForm() {
                           <div className="space-y-2 text-black">
                             <label
                               htmlFor="confirmNewPassword"
-                              className="block text-sm font-medium"
+                              className="block text-sm font-semibold"
                             >
                               Confirm New Password
                             </label>

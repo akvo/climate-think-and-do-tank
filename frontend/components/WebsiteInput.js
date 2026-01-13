@@ -41,7 +41,7 @@ const WebsiteInput = () => {
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium">Website</label>
+      <label className="block text-sm font-semibold text-black">Website</label>
       <div className="relative">
         <input
           type="text"

@@ -66,21 +66,27 @@ export default function ContactPage() {
     }));
   };
 
+  const inputClassName =
+    'w-full px-4 py-3 rounded-full bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent text-sm sm:text-base';
+
   return (
     <div className="min-h-screen py-16 px-4 bg-white text-black">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-4">Contact Us</h1>
         <p className="text-gray-600 text-center mb-12">
-          Need support? The The Kenya Drylands Investment Hub supports you in
+          Need support? The Kenya Drylands Investment Hub supports you in
           increasing investments and building resilience in Kenya&apos;s
-          Drylands. Fill in the form below and we contact you shortly:
+          Drylands. Fill in the form below and we will contact you shortly:
         </p>
 
         <div className="p-8 rounded-lg">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label htmlFor="name" className="block text-sm font-medium">
-                Name
+              <label
+                htmlFor="name"
+                className="block text-xs sm:text-sm font-semibold text-black"
+              >
+                Your name
               </label>
               <input
                 id="name"
@@ -88,7 +94,7 @@ export default function ContactPage() {
                 type="text"
                 required
                 placeholder="Enter your name"
-                className="w-full px-4 py-3 rounded-md bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className={inputClassName}
                 value={formData.name}
                 onChange={handleChange}
               />
@@ -97,26 +103,27 @@ export default function ContactPage() {
             <div className="space-y-2">
               <label
                 htmlFor="organization"
-                className="block text-sm font-medium"
+                className="block text-xs sm:text-sm font-semibold text-black"
               >
                 Organization
               </label>
-              <div className="relative">
-                <input
-                  id="organization"
-                  name="organization"
-                  type="text"
-                  required
-                  placeholder="Enter your organization"
-                  className="w-full px-4 py-3 rounded-md bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
-                  value={formData.organization}
-                  onChange={handleChange}
-                />
-              </div>
+              <input
+                id="organization"
+                name="organization"
+                type="text"
+                required
+                placeholder="Enter your organization"
+                className={inputClassName}
+                value={formData.organization}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium">
+              <label
+                htmlFor="email"
+                className="block text-xs sm:text-sm font-semibold text-black"
+              >
                 Email
               </label>
               <input
@@ -125,14 +132,17 @@ export default function ContactPage() {
                 type="email"
                 required
                 placeholder="Enter your email"
-                className="w-full px-4 py-3 rounded-md bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className={inputClassName}
                 value={formData.email}
                 onChange={handleChange}
               />
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="subject" className="block text-sm font-medium">
+              <label
+                htmlFor="subject"
+                className="block text-xs sm:text-sm font-semibold text-black"
+              >
                 Subject
               </label>
               <div className="relative">
@@ -140,7 +150,7 @@ export default function ContactPage() {
                   id="subject"
                   name="subject"
                   required
-                  className="w-full px-4 py-3 rounded-md bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
+                  className={`${inputClassName} appearance-none pr-10`}
                   value={formData.subject}
                   onChange={handleChange}
                 >
@@ -159,14 +169,17 @@ export default function ContactPage() {
                   <option value="Other">Other</option>
                 </select>
                 <ChevronDown
-                  className="absolute right-4 top-3.5 text-gray-400 pointer-events-none"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
                   size={20}
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="message" className="block text-sm font-medium">
+              <label
+                htmlFor="message"
+                className="block text-xs sm:text-sm font-semibold text-black"
+              >
                 Enter your message
               </label>
               <textarea
@@ -174,13 +187,14 @@ export default function ContactPage() {
                 name="message"
                 required
                 rows={6}
-                placeholder="Give a brief resource description"
-                className="w-full px-4 py-3 rounded-md bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Give a brief description of your inquiry"
+                className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent text-sm sm:text-base"
                 value={formData.message}
                 onChange={handleChange}
               />
             </div>
-            <Button className="w-full">
+
+            <Button className="w-full" disabled={loading}>
               {loading ? 'Sending...' : 'Submit'}
             </Button>
           </form>
