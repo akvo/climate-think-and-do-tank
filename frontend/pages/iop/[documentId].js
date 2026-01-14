@@ -412,51 +412,67 @@ export default function InvestmentOpportunityProfile() {
         {/* Snapshot Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <div className="border rounded-2xl p-6">
-            <h3 className="text-base font-medium text-gray-900 mb-4">
-              {profile.box1_title || 'N.A.'}
-            </h3>
-            <p className="text-3xl font-bold text-gray-900 mb-2">
-              {profile.box1_mainText || 'N.A.'}
-            </p>
+            {profile.box1_title && (
+              <h3 className="text-base font-medium text-gray-900 mb-4">
+                {profile.box1_title}
+              </h3>
+            )}
+            {profile.box1_mainText && (
+              <p className="text-3xl font-bold text-gray-900 mb-2">
+                {profile.box1_mainText}
+              </p>
+            )}
             {profile.box1_subtitle && (
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-800 leading-relaxed text-sm">
                 {profile.box1_subtitle}
               </p>
             )}
           </div>
           <div className="border rounded-2xl p-6">
-            <h3 className="text-base font-medium text-gray-900 mb-4">
-              {profile.box2_title || 'N.A.'}
-            </h3>
-            <p className="text-3xl font-bold text-gray-900 mb-2">
-              {profile.box2_mainText || 'N.A.'}
-            </p>
+            {profile.box2_title && (
+              <h3 className="text-base font-medium text-gray-900 mb-4">
+                {profile.box2_title}
+              </h3>
+            )}
+            {profile.box2_mainText && (
+              <p className="text-3xl font-bold text-gray-900 mb-2">
+                {profile.box2_mainText}
+              </p>
+            )}
             {profile.box2_subtitle && (
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-800 leading-relaxed text-sm">
                 {profile.box2_subtitle}
               </p>
             )}
           </div>
           <div className="border rounded-2xl p-6">
-            <h3 className="text-base font-medium text-gray-900 mb-4">
-              {profile.box3_title || 'N.A.'}
-            </h3>
-            <p className="text-3xl font-bold text-gray-900 mb-2">
-              {profile.box3_mainText || 'N.A.'}
-            </p>
+            {profile.box3_title && (
+              <h3 className="text-base font-medium text-gray-900 mb-4">
+                {profile.box3_title}
+              </h3>
+            )}
+            {profile.box3_mainText && (
+              <p className="text-3xl font-bold text-gray-900 mb-2">
+                {profile.box3_mainText}
+              </p>
+            )}
             {profile.box3_subtitle && (
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-800 leading-relaxed text-sm">
                 {profile.box3_subtitle}
               </p>
             )}
           </div>
           <div className="border rounded-2xl p-6">
-            <h3 className="text-base font-medium text-gray-900 mb-4">
-              {profile.box4_title || 'N.A.'}
-            </h3>
-            <p className="text-gray-900 leading-relaxed text-sm">
-              {profile.box4_mainText || 'N.A.'}
-            </p>
+            {profile.box4_title && (
+              <h3 className="text-base font-medium text-gray-900 mb-4">
+                {profile.box4_title}
+              </h3>
+            )}
+            {profile.box4_mainText && (
+              <p className="text-gray-800 leading-relaxed text-sm">
+                {profile.box4_mainText}
+              </p>
+            )}
           </div>
         </div>
 
