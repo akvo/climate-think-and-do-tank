@@ -5,6 +5,13 @@ import { Check } from 'lucide-react';
 import { ParagraphMD } from './Text';
 
 export const MarkdownRenderer = ({ content, components = {} }) => {
+  // Preprocess content to handle literal \n\n and \n in text
+  const processedContent = content
+    ?.replaceAll('\\n\\n', '\n\n')
+    .replaceAll('\\n', '\n')
+    .replaceAll(' \\n\\n ', '\n\n')
+    .replaceAll(' \\n ', '\n');
+
   const defaultComponents = {
     a: ({ node, ...props }) => {
       const isSignup = props.href === '/signup';
@@ -26,7 +33,8 @@ export const MarkdownRenderer = ({ content, components = {} }) => {
     h3: ({ node, ...props }) => (
       <h3 {...props} className="text-lg font-semibold mt-2 mb-1" />
     ),
-    p: ({ node, ...props }) => <ParagraphMD {...props} className="mb-4" />,
+    p: ({ node, ...props }) => <ParagraphMD {...props} className="mb-6" />,
+    br: () => <br className="block my-4" />,
     ul: ({ node, ...props }) => <ul {...props} className="space-y-3 mb-4" />,
     li: ({ node, children, ...props }) => (
       <li className="flex items-start gap-3" {...props}>
@@ -56,7 +64,7 @@ export const MarkdownRenderer = ({ content, components = {} }) => {
 
   return (
     <ReactMarkdown remarkPlugins={[remarkGfm]} components={defaultComponents}>
-      {content}
+      {processedContent}
     </ReactMarkdown>
   );
 };

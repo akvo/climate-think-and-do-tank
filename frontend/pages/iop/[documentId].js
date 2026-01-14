@@ -423,7 +423,7 @@ export default function InvestmentOpportunityProfile() {
               </p>
             )}
             {profile.box1_subtitle && (
-              <p className="text-gray-800 leading-relaxed text-sm">
+              <p className="text-gray-800 leading-relaxed text-sm whitespace-pre-line">
                 {profile.box1_subtitle}
               </p>
             )}
@@ -440,7 +440,7 @@ export default function InvestmentOpportunityProfile() {
               </p>
             )}
             {profile.box2_subtitle && (
-              <p className="text-gray-800 leading-relaxed text-sm">
+              <p className="text-gray-800 leading-relaxed text-sm whitespace-pre-line">
                 {profile.box2_subtitle}
               </p>
             )}
@@ -457,7 +457,7 @@ export default function InvestmentOpportunityProfile() {
               </p>
             )}
             {profile.box3_subtitle && (
-              <p className="text-gray-800 leading-relaxed text-sm">
+              <p className="text-gray-800 leading-relaxed text-sm whitespace-pre-line">
                 {profile.box3_subtitle}
               </p>
             )}
@@ -469,7 +469,7 @@ export default function InvestmentOpportunityProfile() {
               </h3>
             )}
             {profile.box4_mainText && (
-              <p className="text-gray-800 leading-relaxed text-sm">
+              <p className="text-gray-800 leading-relaxed text-sm whitespace-pre-line">
                 {profile.box4_mainText}
               </p>
             )}
