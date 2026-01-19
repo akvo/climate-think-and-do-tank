@@ -3,7 +3,8 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Head from 'next/head';
 import Link from 'next/link';
-import { ChevronLeft, Clock, MapPin, Users, Share2 } from 'lucide-react';
+import { ChevronLeft, Clock, MapPin, Users, Share2, Upload } from 'lucide-react';
+import { TwitterIcon, LinkedinIcon } from '@/components/Icons';
 import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import { getImageUrl } from '@/helpers/utilities';
@@ -71,6 +72,23 @@ export default function EventDetailPage() {
       navigator.clipboard.writeText(window.location.href);
       alert('Link copied to clipboard!');
     }
+  };
+
+  const handleTwitterShare = () => {
+    const text = event?.title || 'Event';
+    const url = typeof window !== 'undefined' ? window.location.href : '';
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+      '_blank'
+    );
+  };
+
+  const handleLinkedInShare = () => {
+    const url = typeof window !== 'undefined' ? window.location.href : '';
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      '_blank'
+    );
   };
 
   function formatTimeWithAmPm(timeStr) {
@@ -266,11 +284,28 @@ export default function EventDetailPage() {
               </div>
             </div>
 
-            <div className="flex items-start justify-start lg:justify-end flex-1 basis-full sm:basis-1/2 lg:basis-0">
-              <Button onClick={handleShare}>
-                <Share2 size={16} className="mr-1" />
-                <span className="font-medium">Share</span>
-              </Button>
+            <div className="flex items-center justify-start lg:justify-end flex-1 basis-full sm:basis-1/2 lg:basis-0 gap-3">
+              <button
+                onClick={handleTwitterShare}
+                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-primary-500 hover:border-primary-500 hover:text-white transition-colors group"
+                aria-label="Share on Twitter"
+              >
+                <TwitterIcon className="w-5 h-5 group-hover:[&_path]:fill-white" />
+              </button>
+              <button
+                onClick={handleLinkedInShare}
+                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-primary-500 hover:border-primary-500 hover:text-white transition-colors group"
+                aria-label="Share on LinkedIn"
+              >
+                <LinkedinIcon className="w-5 h-5 group-hover:[&_path]:fill-white" />
+              </button>
+              <button
+                onClick={handleShare}
+                className="h-10 flex items-center gap-2 px-4 rounded-full border border-gray-300 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition-colors group"
+              >
+                <span className="text-sm font-medium text-gray-700 group-hover:text-white">Share</span>
+                <Upload className="w-4 h-4 text-gray-500 group-hover:text-white" />
+              </button>
             </div>
           </div>
 

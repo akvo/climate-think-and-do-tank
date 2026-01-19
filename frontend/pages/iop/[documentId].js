@@ -144,6 +144,9 @@ export default function InvestmentOpportunityProfile() {
         title: getTitle(),
         url: window.location.href,
       });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
     }
   };
 
