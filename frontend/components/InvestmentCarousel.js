@@ -110,7 +110,7 @@ const InvestmentCarousel = () => {
         const response = await axios.get(
           `${env(
             'NEXT_PUBLIC_BACKEND_URL'
-          )}/api/investment-opportunity-profiles?populate[0]=picture_one&populate[1]=region&populate[2]=value_chain&pagination[limit]=12&sort=createdAt:desc`
+          )}/api/investment-opportunity-profiles?populate[0]=picture_one&populate[1]=regions&populate[2]=value_chain&pagination[limit]=12&sort=createdAt:desc`
         );
 
         if (response.data && response.data.data) {
@@ -118,8 +118,8 @@ const InvestmentCarousel = () => {
             return {
               id: item.id,
               documentId: item.documentId,
-              title: `${item.value_chain.name} In ${item.region.name}`,
-              region: item.region.name,
+              title: `${item.value_chain?.name} In ${item.regions?.[0]?.name || ''}`,
+              region: item.regions?.[0]?.name || '',
               amount: '$0',
               period: item.publication_date
                 ? new Date(item.publication_date).toLocaleDateString('en-US', {

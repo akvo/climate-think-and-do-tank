@@ -133,7 +133,7 @@ export default function InvestmentOpportunityProfile() {
   const getTitle = () => {
     if (profile?.title) return profile.title;
     if (profile?.value_chain?.name) {
-      return `${profile.value_chain.name} Value Chain in ${profile.region?.name} County`;
+      return `${profile.value_chain.name} Value Chain in ${profile.regions?.[0]?.name} County`;
     }
     return 'Investment Opportunity';
   };
@@ -283,7 +283,7 @@ export default function InvestmentOpportunityProfile() {
           <div className="flex items-center gap-4">
             <div className="bg-primary-50 text-primary-500 px-4 py-2 rounded-full flex items-center gap-2">
               <RegionIcon className="w-4 h-4" />
-              <span className="font-medium">{profile.region?.name} County</span>
+              <span className="font-medium">{profile.regions?.[0]?.name} County</span>
             </div>
           </div>
           <Link

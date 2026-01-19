@@ -75,7 +75,7 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
         'value_chain'
       );
 
-      investmentOpportunityProfileQueryParams.append('populate[1]', 'region');
+      investmentOpportunityProfileQueryParams.append('populate[1]', 'regions');
       investmentOpportunityProfileQueryParams.append(
         'populate[2]',
         'picture_one'
@@ -94,7 +94,7 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
           publicationDate: profile.publication_date,
           publicationYear: new Date(profile.publication_date).getFullYear(),
           valueChain: profile.value_chain?.name || '',
-          region: profile.region?.name || '',
+          region: profile.regions?.[0]?.name || '',
           imageUrl: profile.picture_one || '',
         })
       );

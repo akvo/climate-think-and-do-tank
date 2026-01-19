@@ -821,8 +821,8 @@ export async function searchContentAcrossTypes({ query }) {
           data.investmentOpportunityProfiles?.map((inv) => ({
             id: inv.id,
             attributes: {
-              title: `${inv.value_chain.name} In ${inv.region.name}`,
-              category: inv.region.name || 'Investment',
+              title: `${inv.value_chain?.name} In ${inv.regions?.[0]?.name || ''}`,
+              category: inv.regions?.[0]?.name || 'Investment',
               publication_date: inv.publication_date,
             },
           })) || [],

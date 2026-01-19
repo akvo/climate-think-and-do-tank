@@ -62,9 +62,9 @@
           "sortable": true
         }
       },
-      "region": {
+      "regions": {
         "edit": {
-          "label": "region",
+          "label": "regions",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -72,7 +72,7 @@
           "mainField": "name"
         },
         "list": {
-          "label": "region",
+          "label": "regions",
           "searchable": true,
           "sortable": true
         }
@@ -753,7 +753,7 @@
       }
     },
     "layouts": {
-      "list": ["id", "title", "value_chain", "region", "publication_date"],
+      "list": ["id", "title", "value_chain", "regions", "publication_date"],
       "edit": [
         [
           {
@@ -767,7 +767,7 @@
             "size": 4
           },
           {
-            "name": "region",
+            "name": "regions",
             "size": 4
           },
           {

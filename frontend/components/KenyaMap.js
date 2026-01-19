@@ -146,7 +146,7 @@ export default function KenyaMap({
           const investmentProfilesResponse = await axios.get(
             `${env(
               'NEXT_PUBLIC_BACKEND_URL'
-            )}/api/investment-opportunity-profiles?${countyFilters}&populate[0]=value_chain&populate[1]=region&populate[2]=picture_one`
+            )}/api/investment-opportunity-profiles?${countyFilters}&populate[0]=value_chain&populate[1]=regions&populate[2]=picture_one`
           );
 
           const profiles = investmentProfilesResponse.data.data.map(
@@ -154,13 +154,13 @@ export default function KenyaMap({
               id: profile.id,
               documentId: profile.documentId,
               title: `${profile.value_chain?.name || ''} Value Chain in ${
-                profile.region?.name || ''
+                profile.regions?.[0]?.name || ''
               } County`,
               description: profile.description,
               publicationDate: profile.publication_date,
               publicationYear: new Date(profile.publication_date).getFullYear(),
               valueChain: profile.value_chain?.name || '',
-              region: profile.region?.name || '',
+              region: profile.regions?.[0]?.name || '',
               imageUrl:
                 profile.picture_one ||
                 profile.picture_one?.formats?.small ||
