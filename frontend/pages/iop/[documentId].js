@@ -280,11 +280,13 @@ export default function InvestmentOpportunityProfile() {
 
       <div className="container mx-auto px-4 py-8 pt-2">
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <div className="bg-primary-50 text-primary-500 px-4 py-2 rounded-full flex items-center gap-2">
-              <RegionIcon className="w-4 h-4" />
-              <span className="font-medium">{profile.regions?.[0]?.name} County</span>
-            </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            {profile.regions?.map((region, index) => (
+              <div key={region.id || index} className="bg-primary-50 text-primary-500 px-4 py-2 rounded-full flex items-center gap-2">
+                <RegionIcon className="w-4 h-4" />
+                <span className="font-medium">{region.name} County</span>
+              </div>
+            ))}
           </div>
           <Link
             href="/investment-profiles"
