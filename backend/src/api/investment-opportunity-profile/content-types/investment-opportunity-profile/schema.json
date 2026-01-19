@@ -23,16 +23,21 @@
       "relation": "oneToOne",
       "target": "api::value-chain.value-chain"
     },
-    "region": {
+    "regions": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "oneToMany",
       "target": "api::region.region"
     },
     "picture_one": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "investor_snapshot_text": {
       "type": "richtext"
@@ -41,25 +46,45 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "business_blueprint_image": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "risk_and_impact_profile_image": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "closing_information_image": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "the_investment_case_text": {
       "type": "richtext"
@@ -116,7 +141,9 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "value_chain_profile_status": {
       "type": "richtext"
@@ -125,7 +152,9 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "market_opportunity_demand": {
       "type": "richtext"
@@ -134,7 +163,9 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "investment_opportunity": {
       "type": "richtext"
@@ -173,7 +204,9 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "risks_mitigation": {
       "type": "richtext"
@@ -198,7 +231,9 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["files"]
+      "allowedTypes": [
+        "files"
+      ]
     }
   }
 }

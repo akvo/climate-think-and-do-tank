@@ -220,14 +220,13 @@ export default function SocialAccountability() {
       </div>
 
       {filters.region.length > 0 && (
-        <div className="mx-auto py-8 px-4 text-black">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold mb-4">Community Voices</h2>
+        <div className="max-w-7xl mx-auto py-8 px-4 text-black">
+          <div className="flex items-center justify-start">
             <div className="flex gap-6 mb-8">
               <button
                 onClick={() => setActiveTab('voices')}
                 className={`
-                font-semibold px-6 py-2 rounded-t-xl focus:outline-none
+                font-bold px-6 py-2 rounded-t-xl focus:outline-none
                 transition
                 ${
                   activeTab === 'voices'
@@ -243,12 +242,12 @@ export default function SocialAccountability() {
                       : '4px solid transparent',
                 }}
               >
-                Highlighted Community Voices
+                Community Voices
               </button>
               <button
                 onClick={() => setActiveTab('media')}
                 className={`
-                font-semibold px-6 py-2 rounded-t-xl focus:outline-none
+                font-bold px-6 py-2 rounded-t-xl focus:outline-none
                 transition
                ${
                  activeTab === 'media'
