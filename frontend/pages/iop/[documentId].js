@@ -626,14 +626,14 @@ export default function InvestmentOpportunityProfile() {
                             </div>
                             {profile[section.imageField] && (
                               <div className="hidden lg:block w-1/2">
-                                <div className="relative w-full h-full rounded-xl overflow-hidden">
+                                <div className="relative w-full h-full">
                                   <Image
                                     src={getImageUrl(
                                       profile[section.imageField]
                                     )}
                                     alt={section.name}
                                     fill
-                                    className="object-contain"
+                                    className="object-contain rounded-xl"
                                     unoptimized
                                   />
                                 </div>
@@ -642,12 +642,12 @@ export default function InvestmentOpportunityProfile() {
                           </div>
                           {profile[section.imageField] && (
                             <div className="lg:hidden mt-6">
-                              <div className="relative h-[250px] rounded-xl overflow-hidden">
+                              <div className="relative h-[250px]">
                                 <Image
                                   src={getImageUrl(profile[section.imageField])}
                                   alt={section.name}
                                   fill
-                                  className="object-contain"
+                                  className="object-contain rounded-xl"
                                   unoptimized
                                 />
                               </div>
