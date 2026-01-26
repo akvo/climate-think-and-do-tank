@@ -633,7 +633,7 @@ export default function InvestmentOpportunityProfile() {
                                     )}
                                     alt={section.name}
                                     fill
-                                    className="object-contain rounded-xl"
+                                    className="object-cover rounded-xl"
                                     unoptimized
                                   />
                                 </div>
@@ -647,7 +647,7 @@ export default function InvestmentOpportunityProfile() {
                                   src={getImageUrl(profile[section.imageField])}
                                   alt={section.name}
                                   fill
-                                  className="object-contain rounded-xl"
+                                  className="object-cover rounded-xl"
                                   unoptimized
                                 />
                               </div>
