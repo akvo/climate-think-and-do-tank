@@ -8,6 +8,42 @@ import Marquee from 'react-fast-marquee';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 
+const ImplementerRow = ({ implementers, title, highlightedText }) => {
+  if (implementers.length === 0) return null;
+
+  return (
+    <div className="mb-12">
+      <div className="text-center mb-8 px-4">
+        <H5 variant="bold">
+          {title} <span className="text-primary-500">{highlightedText}</span>
+        </H5>
+      </div>
+
+      <div className="flex flex-wrap justify-center items-center gap-8 px-4">
+        {implementers.map((partner) => (
+          <div
+            key={partner.id}
+            className="h-20 min-w-[170px] max-w-[200px] w-auto relative flex-shrink-0"
+          >
+            <div className="relative w-full h-full">
+              <Image
+                src={partner.src}
+                alt={partner.name}
+                fill
+                className="object-contain hover:opacity-100 transition-opacity"
+                sizes="(max-width: 768px) 120px, 200px"
+                onError={(e) => {
+                  e.target.src = '/images/placeholder.jpg';
+                }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const PartnerRow = ({ partners, title, highlightedText }) => {
   if (partners.length === 0) return null;
 
@@ -83,7 +119,9 @@ const PartnersSection = () => {
           }));
 
           setImplementers(
-            formattedData.filter((p) => p.type === 'implementer')
+            formattedData
+              .filter((p) => p.type === 'implementer')
+              .sort((a, b) => a.order - b.order)
           );
           setPartners(formattedData.filter((p) => p.type === 'partner'));
         }
@@ -118,8 +156,8 @@ const PartnersSection = () => {
 
   return (
     <section className="py-16 overflow-hidden">
-      <PartnerRow
-        partners={implementers}
+      <ImplementerRow
+        implementers={implementers}
         title="Implemented"
         highlightedText="by"
       />

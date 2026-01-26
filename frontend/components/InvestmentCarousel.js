@@ -10,13 +10,9 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { env } from '@/helpers/env-vars';
+import { getImageUrl } from '@/helpers/utilities';
 import { H3 } from './Heading';
 import { ParagraphMD } from './Text';
-
-const getImageUrl = (image) => {
-  if (typeof image === 'string') return image;
-  return image?.url || '/images/placeholder.jpg';
-};
 
 const IOPCard = ({ investment, onClick }) => {
   return (
@@ -26,7 +22,7 @@ const IOPCard = ({ investment, onClick }) => {
     >
       <div className="relative h-48 sm:h-52 lg:h-56">
         <Image
-          src={getImageUrl(investment.image)}
+          src={investment.image}
           alt={investment.title}
           fill
           className="object-cover"
@@ -127,8 +123,8 @@ const InvestmentCarousel = () => {
                     year: 'numeric',
                   })
                 : '',
-              image: item?.picture_one?.url
-                ? item?.picture_one
+              image: item?.picture_one
+                ? getImageUrl(item.picture_one)
                 : '/images/placeholder.jpg',
             };
           });
