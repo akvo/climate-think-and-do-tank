@@ -168,7 +168,7 @@ const CustomDropdown = ({
             </>
           ) : (
             // Single-select text
-            <span className={selectedItems ? '' : 'text-gray-500'}>
+            <span className={selectedItems ? 'text-gray-900' : 'text-gray-500'}>
               {selectedItems ? selectedItems.label : placeholder}
             </span>
           )}
@@ -232,7 +232,7 @@ const CustomDropdown = ({
                 filteredOptions.map((option) => (
                   <div
                     key={option.id}
-                    className="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer"
+                    className="flex items-center p-2 hover:bg-gray-100 rounded cursor-pointer text-gray-900"
                     onClick={() => handleSelect(option.id)}
                   >
                     {isMulti && (

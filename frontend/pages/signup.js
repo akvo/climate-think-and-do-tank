@@ -943,6 +943,12 @@ const AdditionalDetails = ({
           </div>
         )}
 
+        {steps.find((step) => step.active)?.number === 3 && (
+          <div className="min-h-full flex items-center justify-center">
+            <ConfirmEmail user={form} router={router} />
+          </div>
+        )}
+
         {isOrgModal && (
           <OrganizationModal
             onClose={() => {
