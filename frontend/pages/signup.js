@@ -142,11 +142,11 @@ export default function SignUpForm() {
           username: formData.email,
           stakeholder_role: additionalData.role,
           full_name: additionalData.name,
-          looking_fors: additionalData.looking_fors.map((r) => ({ id: r })),
-          regions: additionalData.regions.map((r) => ({ id: r })),
-          topics: additionalData.topics.map((r) => ({ id: r })),
+          looking_fors: additionalData.looking_fors,
+          regions: additionalData.regions,
+          topics: additionalData.topics,
           country: additionalData.countryOfResidence,
-          organisation: { id: additionalData.organisation },
+          organisation: additionalData.organisation || null,
         })
       );
 
@@ -650,7 +650,7 @@ const AdditionalDetails = ({
                   )}
                 </div>
 
-                <div className="space-y-2">
+                <div className="relative space-y-2">
                   <div className="flex items-center">
                     <label className="block text-sm sm:text-base lg:text-lg font-semibold text-black">
                       Organization name
@@ -678,6 +678,9 @@ const AdditionalDetails = ({
                         setShowSuggestions(true);
                       }}
                       onFocus={() => setShowSuggestions(true)}
+                      onBlur={() =>
+                        setTimeout(() => setShowSuggestions(false), 200)
+                      }
                     />
 
                     <button
@@ -690,6 +693,28 @@ const AdditionalDetails = ({
                       <span className="font-bold">+</span>
                     </button>
                   </div>
+
+                  {showSuggestions && filteredOrganizations.length > 0 && (
+                    <ul className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                      {filteredOrganizations.map((org) => (
+                        <li
+                          key={org.id}
+                          className="px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100"
+                          onMouseDown={() => {
+                            setSearchTerm(org.name);
+                            setFormData((prev) => ({
+                              ...prev,
+                              organisation: org.documentId,
+                              org_name: org.name,
+                            }));
+                            setShowSuggestions(false);
+                          }}
+                        >
+                          {org.name}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -724,7 +749,7 @@ const AdditionalDetails = ({
                       id="country"
                       label="Country of residence"
                       options={country?.map((f) => ({
-                        id: f.id,
+                        id: f.documentId,
                         label: f.country_name,
                       }))}
                       isMulti={false}
@@ -749,7 +774,7 @@ const AdditionalDetails = ({
                       regions &&
                       regions.map((f) => {
                         return {
-                          id: f.id,
+                          id: f.documentId,
                           label: f.name,
                         };
                       })
@@ -776,7 +801,7 @@ const AdditionalDetails = ({
                       topics &&
                       topics.map((f) => {
                         return {
-                          id: f.id,
+                          id: f.documentId,
                           label: f.name,
                         };
                       })
@@ -803,7 +828,7 @@ const AdditionalDetails = ({
                       lookingFors &&
                       lookingFors.map((f) => {
                         return {
-                          id: f.id,
+                          id: f.documentId,
                           label: f.name,
                         };
                       })
@@ -1055,7 +1080,7 @@ const OrganizationModal = ({
 
         setFormData({
           ...formData,
-          organisation: newOrganization.id,
+          organisation: newOrganization.documentId,
           organisationName: newOrganization.name,
           country: '',
         });
@@ -1150,7 +1175,7 @@ const OrganizationModal = ({
               country &&
               country.map((f) => {
                 return {
-                  id: f.id,
+                  id: f.documentId,
                   label: f.country_name,
                 };
               })
