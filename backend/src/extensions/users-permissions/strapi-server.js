@@ -72,18 +72,48 @@ module.exports = (plugin) => {
 
     const originalRegister = controller.register;
     controller.register = async (ctx) => {
+      // Extract relation fields before calling original register
+      const {
+        organisation,
+        focus_regions,
+        looking_fors,
+        topics,
+        country,
+        ...rest
+      } = ctx.request.body;
+
+      // Pass only non-relation fields to original register
+      ctx.request.body = rest;
+
       await originalRegister(ctx);
 
       if (ctx.body && ctx.body.user) {
         const { user } = ctx.body;
 
+        // Build relation data
+        const relationData = { approved: false };
+
+        if (organisation) {
+          relationData.organisation = { connect: [organisation] };
+        }
+        if (Array.isArray(focus_regions) && focus_regions.length > 0) {
+          relationData.focus_regions = { connect: focus_regions };
+        }
+        if (Array.isArray(looking_fors) && looking_fors.length > 0) {
+          relationData.looking_fors = { connect: looking_fors };
+        }
+        if (Array.isArray(topics) && topics.length > 0) {
+          relationData.topics = { connect: topics };
+        }
+        if (country) {
+          relationData.country = { connect: [country] };
+        }
+
         const updatedUser = await strapi.entityService.update(
           'plugin::users-permissions.user',
           user.id,
           {
-            data: {
-              approved: false,
-            },
+            data: relationData,
           }
         );
 
