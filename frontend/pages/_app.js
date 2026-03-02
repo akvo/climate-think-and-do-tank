@@ -43,22 +43,26 @@ function AppContent({ Component, pageProps }) {
   );
 }
 
-function LoadPiwikAnalytics() {
-  const piwikSiteId = env('NEXT_PUBLIC_PIWIK_SITE_ID');
+function LoadMotomoAnalytics() {
+  const motomoSiteId = env('NEXT_PUBLIC_MOTOMO_SITE_ID');
 
-  if (!piwikSiteId) {
+  if (!motomoSiteId) {
     return null;
   }
-
   return (
-    <Script id="piwik-analytics" strategy="afterInteractive">
+    <Script id="motomo-analytics" strategy="afterInteractive">
       {`
-(function(window, document, dataLayerName, id) {
-window[dataLayerName]=window[dataLayerName]||[],window[dataLayerName].push({start:(new Date).getTime(),event:"stg.start"});var scripts=document.getElementsByTagName('script')[0],tags=document.createElement('script');
-var qP=[];dataLayerName!=="dataLayer"&&qP.push("data_layer_name="+dataLayerName);var qPString=qP.length>0?("?"+qP.join("&")):"";
-tags.async=!0,tags.src="https://akvo.containers.piwik.pro/"+id+".js"+qPString,scripts.parentNode.insertBefore(tags,scripts);
-!function(a,n,i){a[n]=a[n]||{};for(var c=0;c<i.length;c++)!function(i){a[n][i]=a[n][i]||{},a[n][i].api=a[n][i].api||function(){var a=[].slice.call(arguments,0);"string"==typeof a[0]&&window[dataLayerName].push({event:n+"."+i+":"+a[0],parameters:[].slice.call(arguments,1)})}}(i[c])}(window,"ppms",["tm","cm"]);
-})(window, document, 'dataLayer', '${piwikSiteId}');
+var _paq = window._paq = window._paq || [];
+/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+_paq.push(['trackPageView']);
+_paq.push(['enableLinkTracking']);
+(function() {
+  var u="https://matomo.cloud.akvo.org/";
+  _paq.push(['setTrackerUrl', u+'matomo.php']);
+  _paq.push(['setSiteId', '${motomoSiteId}']);
+  var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+  g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+})();
       `}
     </Script>
   );
@@ -104,7 +108,7 @@ function LoadAkvoRag() {
 function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
-      <LoadPiwikAnalytics />
+      <LoadMotomoAnalytics />
       <LoadAkvoRag />
       <AuthProvider>
         <AppContent Component={Component} pageProps={pageProps} />
