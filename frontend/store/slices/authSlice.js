@@ -404,7 +404,7 @@ export const verifyEmail = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.error || 'Verification failed'
+        error.response?.data?.error?.message || 'Verification failed'
       );
     }
   }
