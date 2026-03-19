@@ -86,7 +86,7 @@ export default function ContactPage() {
                 htmlFor="name"
                 className="block text-xs sm:text-sm font-semibold text-black"
               >
-                Your name
+                Your name <span className="text-red-500">*</span>
               </label>
               <input
                 id="name"
@@ -111,7 +111,6 @@ export default function ContactPage() {
                 id="organization"
                 name="organization"
                 type="text"
-                required
                 placeholder="Enter your organization"
                 className={inputClassName}
                 value={formData.organization}
@@ -124,7 +123,7 @@ export default function ContactPage() {
                 htmlFor="email"
                 className="block text-xs sm:text-sm font-semibold text-black"
               >
-                Email
+                Email <span className="text-red-500">*</span>
               </label>
               <input
                 id="email"
@@ -143,7 +142,7 @@ export default function ContactPage() {
                 htmlFor="subject"
                 className="block text-xs sm:text-sm font-semibold text-black"
               >
-                Subject
+                Subject <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <select
@@ -180,7 +179,7 @@ export default function ContactPage() {
                 htmlFor="message"
                 className="block text-xs sm:text-sm font-semibold text-black"
               >
-                Enter your message
+                Enter your message <span className="text-red-500">*</span>
               </label>
               <textarea
                 id="message"
