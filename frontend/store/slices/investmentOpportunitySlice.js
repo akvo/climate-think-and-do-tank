@@ -59,7 +59,7 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
       if (filters.regions && filters.regions.length > 0) {
         filters.regions.forEach((chain, index) => {
           investmentOpportunityProfileQueryParams.append(
-            `filters[region][name][$in][${index}]`,
+            `filters[regions][name][$in][${index}]`,
             chain
           );
         });

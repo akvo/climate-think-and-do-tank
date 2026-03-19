@@ -140,7 +140,7 @@ export default function KenyaMap({
 
         try {
           const countyFilters = newSelection
-            .map((c) => `filters[region][name][$in][]=${c}`)
+            .map((c) => `filters[regions][name][$in][]=${c}`)
             .join('&');
 
           const investmentProfilesResponse = await axios.get(
