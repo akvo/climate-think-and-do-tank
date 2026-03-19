@@ -39,7 +39,7 @@ export const validatePassword = (password) => {
   // - Contains at least one number
   // - Contains at least one special character
   const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s]).{8,}$/;
 
   if (!passwordRegex.test(password)) {
     return 'Password must be at least 8 characters with uppercase, lowercase, number, and special character';

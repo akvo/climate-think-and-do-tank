@@ -106,7 +106,7 @@ export default function SearchResults() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-white py-12">
       <div className="container mx-auto px-4">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-6 text-black">Search Results</h1>
@@ -125,7 +125,7 @@ export default function SearchResults() {
               </div>
               <button
                 type="submit"
-                className="px-8 py-3 bg-green-600 hover:bg-green-800 text-white rounded-[100px] font-medium transition-colors"
+                className="px-8 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-[100px] font-medium transition-colors"
               >
                 Search
               </button>
@@ -138,7 +138,7 @@ export default function SearchResults() {
                 onClick={() => setActiveTab('all')}
                 className={`px-4 py-2 font-medium text-sm ${
                   activeTab === 'all'
-                    ? 'text-green-700 border-b-2 border-green-700'
+                    ? 'text-primary-600 border-b-2 border-primary-600'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -148,7 +148,7 @@ export default function SearchResults() {
                 onClick={() => setActiveTab('organizations')}
                 className={`px-4 py-2 font-medium text-sm ${
                   activeTab === 'organizations'
-                    ? 'text-green-700 border-b-2 border-green-700'
+                    ? 'text-primary-600 border-b-2 border-primary-600'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -158,7 +158,7 @@ export default function SearchResults() {
                 onClick={() => setActiveTab('investments')}
                 className={`px-4 py-2 font-medium text-sm ${
                   activeTab === 'investments'
-                    ? 'text-green-700 border-b-2 border-green-700'
+                    ? 'text-primary-600 border-b-2 border-primary-600'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -168,7 +168,7 @@ export default function SearchResults() {
                 onClick={() => setActiveTab('knowledge')}
                 className={`px-4 py-2 font-medium text-sm ${
                   activeTab === 'knowledge'
-                    ? 'text-green-700 border-b-2 border-green-700'
+                    ? 'text-primary-600 border-b-2 border-primary-600'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -179,7 +179,7 @@ export default function SearchResults() {
         </div>
         {loading ? (
           <div className="flex justify-center items-center py-12">
-            <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : query && !totalResults ? (
           <div className="text-center py-12">
@@ -228,18 +228,18 @@ export default function SearchResults() {
               ) {
                 return (
                   <Link
-                    href={`/investment-profiles/${item.id}`}
+                    href={`/iop/${item.id}`}
                     key={`inv-${item.id || index}`}
                     className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 text-black"
                   >
                     <div className="relative">
-                      <div className="bg-green-500 text-white px-3 py-1 text-sm">
+                      <div className="bg-primary-500 text-white px-3 py-1 text-sm">
                         Investment Opportunity Profiles
                       </div>
                     </div>
                     <div className="p-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full" />
+                        <div className="w-2 h-2 bg-primary-500 rounded-full" />
                         <span className="text-sm text-gray-600">
                           {item.attributes.category || 'Investment'}
                         </span>

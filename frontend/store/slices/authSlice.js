@@ -1,12 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { setCookie, deleteCookie, getCookie } from 'cookies-next';
-import { gql } from 'graphql-request';
-import { GraphQLClient } from 'graphql-request';
 import { env } from '@/helpers/env-vars';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
-const graphqlClient = new GraphQLClient(`${BACKEND_URL}/graphql`);
 
 export const getAuthToken = () => {
   const token = getCookie('token');
@@ -762,86 +759,64 @@ export const fetchOrganizationsAndRegions = createAsyncThunk(
   }
 );
 
-const SEARCH_QUERY = gql`
-  query Search($query: String!) {
-    organisations(filters: { name: { containsi: $query } }) {
-      name
-    }
-    regions(filters: { name: { containsi: $query } }) {
-      name
-    }
-  }
-`;
-
 export async function searchContentAcrossTypes({ query }) {
   try {
-    const SEARCH_QUERY = gql`
-      query SearchContent($query: String!) {
-        organisations(filters: { name: { contains: $query } }) {
-          name
-        }
+    const encodedQuery = encodeURIComponent(query);
 
-        investmentOpportunityProfiles(
-          filters: { value_chain: { name: { containsi: $query } } }
-        ) {
-          value_chain {
-            name
-          }
-          region {
-            name
-          }
-          publication_date
-        }
-
-        knowledgeHubs(filters: { title: { containsi: $query } }) {
-          title
-          description
-          publishedAt
-          image {
-            url
-          }
-        }
-      }
-    `;
-
-    const data = await graphqlClient.request(SEARCH_QUERY, { query });
+    const [orgsResponse, iopsResponse, khResponse] = await Promise.all([
+      axios.get(
+        `${BACKEND_URL}/api/organisations?filters[name][$containsi]=${encodedQuery}&pagination[pageSize]=20`
+      ),
+      axios.get(
+        `${BACKEND_URL}/api/investment-opportunity-profiles?` +
+          `filters[$or][0][title][$containsi]=${encodedQuery}` +
+          `&filters[$or][1][value_chain][name][$containsi]=${encodedQuery}` +
+          `&filters[$or][2][regions][name][$containsi]=${encodedQuery}` +
+          `&populate[0]=value_chain&populate[1]=regions` +
+          `&pagination[pageSize]=20`
+      ),
+      axios.get(
+        `${BACKEND_URL}/api/knowledge-hubs?` +
+          `filters[$or][0][title][$containsi]=${encodedQuery}` +
+          `&filters[$or][1][description][$containsi]=${encodedQuery}` +
+          `&populate[0]=image` +
+          `&pagination[pageSize]=20`
+      ),
+    ]);
 
     return {
       organizations: {
-        items:
-          data.organisations?.map((org) => ({
-            id: `org-${Math.random().toString(36).substr(2, 9)}`,
-            attributes: {
-              name: org.name,
-            },
-          })) || [],
+        items: (orgsResponse.data.data || []).map((org) => ({
+          id: org.documentId,
+          attributes: {
+            name: org.name,
+          },
+        })),
       },
       investments: {
-        items:
-          data.investmentOpportunityProfiles?.map((inv) => ({
-            id: inv.id,
-            attributes: {
-              title: `${inv.value_chain?.name} In ${inv.regions?.[0]?.name || ''}`,
-              category: inv.regions?.[0]?.name || 'Investment',
-              publication_date: inv.publication_date,
-            },
-          })) || [],
+        items: (iopsResponse.data.data || []).map((inv) => ({
+          id: inv.documentId,
+          attributes: {
+            title: inv.title || `${inv.value_chain?.name} in ${inv.regions?.[0]?.name || ''}`,
+            category: inv.regions?.[0]?.name || 'Investment',
+            publication_date: inv.publication_date,
+          },
+        })),
       },
       knowledgeHub: {
-        items:
-          data.knowledgeHubs?.map((item) => ({
-            id: item.id,
-            attributes: {
-              title: item.title,
-              description: item.description,
-              published_at: item.publishedAt,
-              image: item.image ? { url: item.image } : null,
-            },
-          })) || [],
+        items: (khResponse.data.data || []).map((item) => ({
+          id: item.documentId,
+          attributes: {
+            title: item.title,
+            description: item.description,
+            published_at: item.publishedAt,
+            image: item.image ? { url: item.image } : null,
+          },
+        })),
       },
     };
   } catch (error) {
-    console.error('Search error:', error.response || error);
+    console.error('Search error:', error.response?.data || error.message);
 
     return {
       organizations: { items: [] },

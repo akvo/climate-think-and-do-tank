@@ -42,17 +42,19 @@ export default function ContactPage() {
         }
       );
 
-      toast.success(
-        'Your message has been sent successfully. We will get back to you soon!'
-      );
-
       if (!response.ok) {
         throw new Error('Failed to send message');
       }
 
+      toast.success(
+        'Thank you for contacting us. We will get back to you shortly.'
+      );
       resetForm();
     } catch (error) {
       console.error('Error sending message:', error);
+      toast.error(
+        'Failed to send your message. Please try again later.'
+      );
     } finally {
       setLoading(false);
     }
