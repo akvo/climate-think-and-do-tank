@@ -82,6 +82,11 @@ export default function HeroSection({
                     onChange={(e) => {
                       setSearchValue(e.target.value);
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        setSearchTerm(searchValue);
+                      }
+                    }}
                     className="flex-1 pl-10 sm:pl-12 pr-3 sm:pr-4 h-10 sm:h-12 text-sm sm:text-base lg:text-lg bg-transparent border-none focus:outline-none text-black"
                   />
                   <Button

@@ -63,7 +63,10 @@ export default function InvestmentOpportunityProfile() {
         fetchInvestmentOpportunityProfiles({
           page: 1,
           query,
-          filters: urlFilters,
+          filters: {
+            regions: urlFilters.region,
+            valueChain: urlFilters.valueChain,
+          },
           dateSort: sort,
         })
       );
@@ -98,7 +101,10 @@ export default function InvestmentOpportunityProfile() {
         fetchInvestmentOpportunityProfiles({
           page: 1,
           query,
-          filters: urlFilters,
+          filters: {
+            regions: urlFilters.region,
+            valueChain: urlFilters.valueChain,
+          },
           dateSort: sort,
         })
       );
@@ -162,13 +168,11 @@ export default function InvestmentOpportunityProfile() {
   );
 
   const handleSearch = useCallback(
-    debounce((query) => {
-      if (query !== searchQuery) {
-        setSearchQuery(query);
-        updateUrlAndFetch(filters, query, sortOrder);
-      }
-    }, 500),
-    [filters, sortOrder, updateUrlAndFetch, searchQuery]
+    (query) => {
+      setSearchQuery(query);
+      updateUrlAndFetch(filters, query, sortOrder);
+    },
+    [filters, sortOrder, updateUrlAndFetch]
   );
 
   const handleSortChange = useCallback(() => {

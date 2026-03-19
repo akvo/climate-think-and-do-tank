@@ -17,10 +17,11 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
 
       if (query) {
         baseQueryParams.append(
-          'filters[$or][0][value_chain][$containsi]',
+          'filters[$or][0][value_chain][name][$containsi]',
           query
         );
-        baseQueryParams.append('filters[$or][2][region][$containsi]', query);
+        baseQueryParams.append('filters[$or][1][regions][name][$containsi]', query);
+        baseQueryParams.append('filters[$or][2][title][$containsi]', query);
         baseQueryParams.append(
           'filters[$or][3][investor_snapshot_text][$containsi]',
           query
