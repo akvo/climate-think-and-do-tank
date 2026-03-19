@@ -24,7 +24,7 @@ const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 const getValueChainData = (valueChainName) => {
   if (!valueChainName)
     return {
-      image: '/images/agri.svg',
+      image: '/images/crop.svg',
       bgColor: 'bg-green-600',
       borderColor: 'border-green-300',
     };
@@ -60,13 +60,13 @@ const getValueChainData = (valueChainName) => {
     name.includes('horticulture')
   ) {
     return {
-      image: '/images/agri.svg',
+      image: '/images/crop.svg',
       bgColor: 'bg-green-600',
       borderColor: 'border-green-300',
     };
   }
   return {
-    image: '/images/agri.svg',
+    image: '/images/crop.svg',
     bgColor: 'bg-green-600',
     borderColor: 'border-green-300',
   };

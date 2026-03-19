@@ -178,7 +178,7 @@ export default function InvestmentOpportunityProfile() {
     if (name.includes('fish') || name.includes('aqua'))
       return '/images/fish.svg';
     if (name.includes('agri') || name.includes('crop'))
-      return '/images/agri.svg';
+      return '/images/crop.svg';
     return null;
   };
 
