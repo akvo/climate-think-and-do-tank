@@ -530,10 +530,10 @@ const AdditionalDetails = ({
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
-      <div className="w-full lg:w-1/2 flex flex-col justify-center p-6 sm:p-8 lg:p-12 xl:px-20 bg-zinc-900 text-white lg:h-screen">
+      <div className="w-full lg:w-1/2 flex flex-col justify-center p-6 sm:p-8 lg:p-12 xl:px-20 bg-white text-black lg:h-screen">
         <Link href="/" className="mb-4 block">
           <Image
-            src="/images/logo-white.png"
+            src="/images/logo.png"
             alt="Kenya Drylands Investment Hub Logo"
             width={230}
             height={40}
@@ -545,9 +545,9 @@ const AdditionalDetails = ({
         <div className="flex-grow flex items-center justify-center py-8 lg:py-0">
           <div className="mx-auto w-full max-w-md">
             <div className="mb-6 lg:mb-8">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-zinc-700 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 rounded-full flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6 text-zinc-400"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
@@ -569,15 +569,15 @@ const AdditionalDetails = ({
                     <div
                       className={`w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center ${
                         step.completed
-                          ? 'bg-transparent border-2 border-white'
+                          ? 'bg-transparent border-2 border-primary-500'
                           : step.active
-                          ? 'bg-zinc-600'
-                          : 'bg-transparent border-2 border-white'
+                          ? 'bg-primary-500'
+                          : 'bg-transparent border-2 border-gray-300'
                       }`}
                     >
                       {step.completed ? (
                         <svg
-                          className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white"
+                          className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-primary-500"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -586,19 +586,19 @@ const AdditionalDetails = ({
                           <path d="M5 13l4 4L19 7" />
                         </svg>
                       ) : (
-                        <span className="text-xl sm:text-2xl lg:text-3xl text-white">
+                        <span className="text-xl sm:text-2xl lg:text-3xl text-white font-medium">
                           {step.number}
                         </span>
                       )}
                     </div>
 
                     {index < steps.length - 1 && (
-                      <div className="hidden lg:block w-0.5 h-24 bg-white"></div>
+                      <div className="hidden lg:block w-0.5 h-24 bg-gray-300"></div>
                     )}
                   </div>
 
                   <div className="ml-4 lg:ml-12 mt-3 lg:mt-4">
-                    <span className="text-sm sm:text-base lg:text-2xl text-white whitespace-nowrap">
+                    <span className="text-sm sm:text-base lg:text-2xl text-black whitespace-nowrap">
                       {step.label}
                     </span>
                   </div>
@@ -607,7 +607,7 @@ const AdditionalDetails = ({
             </div>
 
             <div className="mt-6 lg:mt-8">
-              <p className="text-zinc-400 text-sm sm:text-base">{form.email}</p>
+              <p className="text-gray-500 text-sm sm:text-base">{form.email}</p>
             </div>
           </div>
         </div>
@@ -622,8 +622,20 @@ const AdditionalDetails = ({
               </h2>
 
               {formErrors.general && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-4 sm:mb-6 text-sm sm:text-base">
+                <div
+                  id="error-summary"
+                  className="bg-red-50 border border-red-200 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg mb-4 sm:mb-6 text-sm sm:text-base"
+                >
                   <p className="font-medium">{formErrors.general}</p>
+                  {Object.entries(formErrors).filter(([key]) => key !== 'general').length > 0 && (
+                    <ul className="mt-2 list-disc list-inside text-sm">
+                      {Object.entries(formErrors)
+                        .filter(([key]) => key !== 'general')
+                        .map(([key, value]) => (
+                          <li key={key}>{value}</li>
+                        ))}
+                    </ul>
+                  )}
                 </div>
               )}
 
@@ -715,6 +727,11 @@ const AdditionalDetails = ({
                       ))}
                     </ul>
                   )}
+                  {formErrors.organisation && (
+                    <p className="text-red-500 text-xs sm:text-sm mt-1">
+                      {formErrors.organisation}
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -742,6 +759,11 @@ const AdditionalDetails = ({
                       }
                       placeholder="Enter your role"
                     />
+                    {formErrors.role && (
+                      <p className="text-red-500 text-xs sm:text-sm mt-1">
+                        {formErrors.role}
+                      </p>
+                    )}
                   </div>
 
                   <div className="w-full sm:w-1/2">
@@ -763,6 +785,11 @@ const AdditionalDetails = ({
                       placeholder="Select country"
                       searchable={true}
                     />
+                    {formErrors.countryOfResidence && (
+                      <p className="text-red-500 text-xs sm:text-sm mt-1">
+                        {formErrors.countryOfResidence}
+                      </p>
+                    )}
                   </div>
                 </div>
 
