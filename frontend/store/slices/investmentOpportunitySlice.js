@@ -16,32 +16,29 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
       baseQueryParams.append('pagination[pageSize]', pageSize);
 
       if (query) {
-        baseQueryParams.append(
-          'filters[$or][0][value_chain][name][$containsi]',
-          query
-        );
-        baseQueryParams.append('filters[$or][1][regions][name][$containsi]', query);
-        baseQueryParams.append('filters[$or][2][title][$containsi]', query);
-        baseQueryParams.append(
-          'filters[$or][3][investor_snapshot_text][$containsi]',
-          query
-        );
-        baseQueryParams.append(
-          'filters[$or][4][the_investment_case_text][$containsi]',
-          query
-        );
-        baseQueryParams.append(
-          'filters[$or][5][business_blueprint_text][$containsi]',
-          query
-        );
-        baseQueryParams.append(
-          'filters[$or][6][risk_and_impact_profile_text][$containsi]',
-          query
-        );
-        baseQueryParams.append(
-          'filters[$or][7][closing_information_text][$containsi]',
-          query
-        );
+        const searchFields = [
+          'value_chain][name',
+          'regions][name',
+          'title',
+          'investor_snapshot_text',
+          'the_investment_case_text',
+          'business_blueprint_text',
+          'risk_and_impact_profile_text',
+          'closing_information_text',
+          'key_highlights',
+          'county_sector_overview',
+          'value_chain_profile_status',
+          'market_opportunity_demand',
+          'investment_opportunity',
+          'enabling_environment_policies',
+          'risks_mitigation',
+        ];
+        searchFields.forEach((field, index) => {
+          baseQueryParams.append(
+            `filters[$or][${index}][${field}][$containsi]`,
+            query
+          );
+        });
       }
 
       const investmentOpportunityProfileQueryParams = new URLSearchParams(

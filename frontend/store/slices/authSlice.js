@@ -772,6 +772,18 @@ export async function searchContentAcrossTypes({ query }) {
           `filters[$or][0][title][$containsi]=${encodedQuery}` +
           `&filters[$or][1][value_chain][name][$containsi]=${encodedQuery}` +
           `&filters[$or][2][regions][name][$containsi]=${encodedQuery}` +
+          `&filters[$or][3][investor_snapshot_text][$containsi]=${encodedQuery}` +
+          `&filters[$or][4][the_investment_case_text][$containsi]=${encodedQuery}` +
+          `&filters[$or][5][business_blueprint_text][$containsi]=${encodedQuery}` +
+          `&filters[$or][6][risk_and_impact_profile_text][$containsi]=${encodedQuery}` +
+          `&filters[$or][7][closing_information_text][$containsi]=${encodedQuery}` +
+          `&filters[$or][8][key_highlights][$containsi]=${encodedQuery}` +
+          `&filters[$or][9][county_sector_overview][$containsi]=${encodedQuery}` +
+          `&filters[$or][10][market_opportunity_demand][$containsi]=${encodedQuery}` +
+          `&filters[$or][11][investment_opportunity][$containsi]=${encodedQuery}` +
+          `&filters[$or][12][investment_needs_financial][$containsi]=${encodedQuery}` +
+          `&filters[$or][13][enabling_environment_policies][$containsi]=${encodedQuery}` +
+          `&filters[$or][14][risks_mitigation][$containsi]=${encodedQuery}` +
           `&populate[0]=value_chain&populate[1]=regions` +
           `&pagination[pageSize]=20`
       ),
