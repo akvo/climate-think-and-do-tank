@@ -645,7 +645,7 @@ const AdditionalDetails = ({
               >
                 <div className="space-y-2">
                   <label className="block text-sm sm:text-base lg:text-lg font-semibold text-black">
-                    Name
+                    Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -665,7 +665,7 @@ const AdditionalDetails = ({
                 <div className="relative space-y-2">
                   <div className="flex items-center">
                     <label className="block text-sm sm:text-base lg:text-lg font-semibold text-black">
-                      Organization name
+                      Organization name <span className="text-red-500">*</span>
                     </label>
                     <div className="relative inline-block ml-2 group">
                       <div className="flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 text-xs font-medium text-gray-800 bg-gray-300 rounded-full cursor-help">
@@ -706,25 +706,41 @@ const AdditionalDetails = ({
                     </button>
                   </div>
 
-                  {showSuggestions && filteredOrganizations.length > 0 && (
+                  {showSuggestions && searchTerm && (
                     <ul className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                      {filteredOrganizations.map((org) => (
-                        <li
-                          key={org.id}
-                          className="px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100"
-                          onMouseDown={() => {
-                            setSearchTerm(org.name);
-                            setFormData((prev) => ({
-                              ...prev,
-                              organisation: org.documentId,
-                              org_name: org.name,
-                            }));
-                            setShowSuggestions(false);
-                          }}
-                        >
-                          {org.name}
+                      {filteredOrganizations.length > 0 ? (
+                        filteredOrganizations.map((org) => (
+                          <li
+                            key={org.id}
+                            className="px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100"
+                            onMouseDown={() => {
+                              setSearchTerm(org.name);
+                              setFormData((prev) => ({
+                                ...prev,
+                                organisation: org.documentId,
+                                org_name: org.name,
+                              }));
+                              setShowSuggestions(false);
+                            }}
+                          >
+                            {org.name}
+                          </li>
+                        ))
+                      ) : (
+                        <li className="px-4 py-3 text-sm text-gray-500">
+                          No matching organization found.{' '}
+                          <button
+                            type="button"
+                            onMouseDown={() => {
+                              setShowSuggestions(false);
+                              setIsOrgModal(true);
+                            }}
+                            className="text-primary-500 font-semibold hover:underline"
+                          >
+                            Click here to add a new organization
+                          </button>
                         </li>
-                      ))}
+                      )}
                     </ul>
                   )}
                   {formErrors.organisation && (
@@ -739,6 +755,7 @@ const AdditionalDetails = ({
                     <CustomDropdown
                       id="role"
                       label="Role"
+                      required
                       options={[
                         { id: 'Academia', label: 'Academia' },
                         { id: 'Governmental', label: 'Governmental' },
@@ -770,6 +787,7 @@ const AdditionalDetails = ({
                     <CustomDropdown
                       id="country"
                       label="Country of residence"
+                      required
                       options={country?.map((f) => ({
                         id: f.documentId,
                         label: f.country_name,

@@ -28,6 +28,7 @@ const CustomDropdown = ({
   disabled = false,
   searchable = false,
   alphabetical = true,
+  required = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -126,7 +127,7 @@ const CustomDropdown = ({
     <div className={`space-y-2 ${className}`}>
       {label && (
         <label htmlFor={id} className="block text-lg font-semibold text-black">
-          {label}
+          {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
 
