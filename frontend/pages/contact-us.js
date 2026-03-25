@@ -195,7 +195,7 @@ export default function ContactPage() {
               />
             </div>
 
-            <Button className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Sending...' : 'Submit'}
             </Button>
           </form>
