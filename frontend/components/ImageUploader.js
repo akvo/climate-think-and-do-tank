@@ -61,7 +61,7 @@ const ImageUploader = ({
       <div
         className="w-full h-48 border-2 border-dashed rounded-xl flex flex-col items-center justify-center 
         hover:border-green-500 transition-colors cursor-pointer 
-        border-gray-200 bg-gray-50"
+        border-gray-200 bg-[#fafafa]"
         onClick={() => fileInputRef.current?.click()}
       >
         {previewUrl ? (

@@ -530,7 +530,7 @@ const AdditionalDetails = ({
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
-      <div className="w-full lg:w-1/2 flex flex-col justify-center p-6 sm:p-8 lg:p-12 xl:px-20 bg-white text-black lg:h-screen">
+      <div className="w-full lg:w-1/2 flex flex-col justify-center p-6 sm:p-8 lg:p-12 xl:px-20 bg-[#fafafa] text-black lg:h-screen">
         <Link href="/" className="mb-4 block">
           <Image
             src="/images/logo.png"
@@ -1173,7 +1173,7 @@ const OrganizationModal = ({
             </div>
           )}
           <div className="space-y-2">
-            <label className="block text-sm font-semibold">Name</label>
+            <label className="block text-sm font-semibold">Name <span className="text-red-500">*</span></label>
             <input
               type="text"
               placeholder="Enter your organization name"
@@ -1209,6 +1209,7 @@ const OrganizationModal = ({
           <CustomDropdown
             id="type"
             label="Organization type"
+            required
             options={[
               { id: 'NGO', label: 'NGO' },
               { id: 'Company', label: 'Company' },
@@ -1222,6 +1223,7 @@ const OrganizationModal = ({
           <CustomDropdown
             id="country"
             label="Country"
+            required
             options={
               country &&
               country.map((f) => {
