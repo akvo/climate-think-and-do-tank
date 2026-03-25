@@ -19,12 +19,12 @@
       "icon": "check-square",
       "options": {
         "from": {
-          "name": "Administration Panel",
+          "name": "Kenya Drylands Investment Hub",
           "email": "tdt.noreply@akvo.org"
         },
         "response_email": "",
         "object": "Account confirmation",
-        "message": "<p>Thank you for registering!</p>\n\n<p>You have to confirm your email address. Please click on the link below.</p>\n\n<p><%= URL %>?confirmation=<%= CODE %></p>\n\n<p>Thanks.</p>"
+        "message": "<p>Hello,</p>\n<p>Thank you for registering on the <strong>Kenya Drylands Investment Hub (KDIH)</strong>.</p>\n<p>To complete your registration and activate your account, please confirm your email address by clicking the link below:</p>\n<p>Confirm your email address:</p>\n<p><%= URL %>?confirmation=<%= CODE %></p>\n<p>This step is required before you can access the platform.</p>\n<p>If you did not create an account, you can safely ignore this email.</p>\n<p>Best regards,<br>Kenya Drylands Investment Hub Team</p>"
       }
     }
   },
