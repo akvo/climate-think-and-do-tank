@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import ProfileNavigation from '@/components/ProfileNavigation';
 import withAuth from '@/components/withAuth';
 import ProfileLayout from '@/components/ProfileLayout';
 import ImageUploader from '@/components/ImageUploader';
@@ -18,6 +17,7 @@ import Link from 'next/link';
 import { deleteCookie, getCookie } from 'cookies-next';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/router';
+import Button from '@/components/Button';
 
 const ProfileDetails = () => {
   const router = useRouter();
@@ -113,6 +113,7 @@ const ProfileDetails = () => {
       setIsSubmitting(false);
     }
   };
+
   const handleDeleteAccount = async () => {
     try {
       setLoading(true);
@@ -152,12 +153,12 @@ const ProfileDetails = () => {
   if (!userProfile && !loading) {
     return (
       <ProfileLayout>
-        <div className="min-h-screen bg-gray-50 p-8 flex items-center justify-center">
+        <div className="flex items-center justify-center py-20">
           <div className="text-center">
             <h2 className="text-xl font-semibold text-gray-800">
               No user data found
             </h2>
-            <p className="text-gray-600 mt-2">Please try logging in again</p>
+            <p className="text-gray-500 mt-2">Please try logging in again</p>
           </div>
         </div>
       </ProfileLayout>
@@ -167,28 +168,60 @@ const ProfileDetails = () => {
   if (loading && !userProfile) {
     return (
       <ProfileLayout>
-        <div className="min-h-screen bg-gray-50 p-8 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-200 border-t-primary-500"></div>
         </div>
       </ProfileLayout>
     );
   }
 
+  const FieldView = ({ label, children }) => (
+    <div>
+      <label className="block text-sm font-semibold text-gray-500 mb-1">
+        {label}
+      </label>
+      <div className="text-black">{children}</div>
+    </div>
+  );
+
+  const TagList = ({ items, emptyText = 'Not provided', color = 'primary' }) => {
+    if (!items || items.length === 0) {
+      return <p className="text-gray-400">{emptyText}</p>;
+    }
+    return (
+      <div className="flex flex-wrap gap-2">
+        {items.map((item) => (
+          <span
+            key={item.id}
+            className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full text-sm font-medium"
+          >
+            {item.name}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <ProfileLayout>
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="container mx-auto bg-white shadow-lg rounded-xl">
-          <div className="p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-8">
-              Profile Details
-            </h2>
+      <div className="bg-white rounded-2xl border border-gray-100">
+        <div className="p-6 sm:p-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-xl font-bold text-black">Profile Details</h2>
+            {!editMode && (
+              <Button
+                onClick={() => setEditMode(true)}
+                size="sm"
+              >
+                Edit Profile
+              </Button>
+            )}
+          </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-8">
               {/* Profile Image */}
               <div>
-                <label className="block text-lg font-semibold text-black mb-3">
-                  Profile Picture
-                </label>
                 {editMode ? (
                   <ImageUploader
                     src={
@@ -202,7 +235,7 @@ const ProfileDetails = () => {
                     user={userProfile}
                   />
                 ) : (
-                  <div className="w-32 h-32 rounded-full overflow-hidden shadow-md">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-100">
                     <Image
                       src={
                         userProfile?.profile_image &&
@@ -213,13 +246,15 @@ const ProfileDetails = () => {
                       alt={userProfile?.full_name || 'User'}
                       className="object-cover w-full h-full"
                       unoptimized
-                      width={128}
-                      height={128}
+                      width={96}
+                      height={96}
                       onError={(e) => {
                         const fallbackEl = document.createElement('div');
                         fallbackEl.className =
-                          'w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-3xl';
-                        fallbackEl.textContent = (userProfile?.full_name || 'U')
+                          'w-full h-full bg-primary-500 flex items-center justify-center text-white font-bold text-3xl';
+                        fallbackEl.textContent = (
+                          userProfile?.full_name || 'U'
+                        )
                           .charAt(0)
                           .toUpperCase();
 
@@ -234,440 +269,323 @@ const ProfileDetails = () => {
                 )}
               </div>
 
-              <div>
-                <label className="block text-lg font-semibold text-black mb-2">
-                  Name
-                </label>
-                {editMode ? (
-                  <input
-                    type="text"
-                    name="full_name"
-                    value={formData?.full_name || ''}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-                    placeholder="Enter your full name"
-                  />
-                ) : (
-                  <p className="text-gray-900 py-2 px-1">
-                    {userProfile?.full_name || 'Not provided'}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="block text-lg font-semibold text-black mb-2">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    value={userProfile?.email || ''}
-                    disabled
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-gray-500 cursor-not-allowed"
-                  />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                    <svg
-                      className="w-5 h-5 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              {/* Two column grid for basic fields */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {/* Name */}
+                <div>
+                  {editMode ? (
+                    <div className="space-y-2">
+                      <label className="block text-sm font-semibold text-black">
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        name="full_name"
+                        value={formData?.full_name || ''}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-full border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent focus:outline-none text-sm"
+                        placeholder="Enter your full name"
                       />
-                    </svg>
-                  </div>
+                    </div>
+                  ) : (
+                    <FieldView label="Name">
+                      {userProfile?.full_name || 'Not provided'}
+                    </FieldView>
+                  )}
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-lg font-semibold text-black mb-2">
-                  Organization name
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={userProfile?.organisation?.name || 'Not provided'}
-                    disabled
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-gray-500 cursor-not-allowed"
-                  />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                    <svg
-                      className="w-5 h-5 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
+                {/* Email */}
+                <FieldView label="Email Address">
+                  {userProfile?.email || 'Not provided'}
+                </FieldView>
 
-              <div>
-                {editMode ? (
-                  <CustomDropdown
-                    id="country"
-                    label="Country of residence"
-                    options={country.map((c) => ({
-                      id: c.id,
-                      label: c.country_name,
-                    }))}
-                    value={formData.country}
-                    onChange={(value) =>
-                      handleChange({
-                        target: { name: 'country', value },
-                      })
-                    }
-                    placeholder="Select your country"
-                    searchable={true}
-                    className="w-full"
-                  />
-                ) : (
-                  <>
-                    <label className="block text-lg font-semibold text-black mb-2">
-                      Country of residence
-                    </label>
-                    <p className="text-gray-900 py-2 px-1">
+                {/* Organization */}
+                <FieldView label="Organization">
+                  {userProfile?.organisation?.name || 'Not provided'}
+                </FieldView>
+
+                {/* Country */}
+                <div>
+                  {editMode ? (
+                    <CustomDropdown
+                      id="country"
+                      label="Country of residence"
+                      options={country.map((c) => ({
+                        id: c.id,
+                        label: c.country_name,
+                      }))}
+                      value={formData.country}
+                      onChange={(value) =>
+                        handleChange({
+                          target: { name: 'country', value },
+                        })
+                      }
+                      placeholder="Select your country"
+                      searchable={true}
+                    />
+                  ) : (
+                    <FieldView label="Country of residence">
                       {userProfile?.country?.country_name || 'Not provided'}
-                    </p>
-                  </>
-                )}
-              </div>
+                    </FieldView>
+                  )}
+                </div>
 
-              <div>
-                {editMode ? (
-                  <CustomDropdown
-                    id="focus_regions"
-                    label="Focus Region"
-                    options={regions.map((region) => ({
-                      id: region.id,
-                      label: region.name,
-                    }))}
-                    isMulti={true}
-                    value={formData.focus_regions}
-                    onChange={(value) =>
-                      handleChange({
-                        target: { name: 'focus_regions', value },
-                      })
-                    }
-                    placeholder="Select focus regions"
-                    searchable={true}
-                    className="w-full"
-                  />
-                ) : (
-                  <>
-                    <label className="block text-lg font-semibold text-black mb-2">
-                      Focus Region
-                    </label>
-                    <div className="py-2 px-1">
-                      {userProfile?.focus_regions &&
-                      userProfile.focus_regions.length > 0 ? (
-                        <div className="flex flex-wrap gap-2">
-                          {userProfile.focus_regions.map((region) => (
-                            <span
-                              key={region.id}
-                              className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm"
-                            >
-                              {region.name}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-gray-900">Not provided</p>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
-              <div>
-                {editMode ? (
-                  <CustomDropdown
-                    id="topics"
-                    label="Topics"
-                    options={topics.map((region) => ({
-                      id: region.id,
-                      label: region.name,
-                    }))}
-                    isMulti={true}
-                    value={formData.topics}
-                    onChange={(value) =>
-                      handleChange({
-                        target: { name: 'topics', value },
-                      })
-                    }
-                    placeholder="Select topics"
-                    searchable={true}
-                    className="w-full"
-                  />
-                ) : (
-                  <>
-                    <label className="block text-lg font-semibold text-black mb-2">
-                      Topics
-                    </label>
-                    <div className="py-2 px-1">
-                      {userProfile?.topics && userProfile.topics.length > 0 ? (
-                        <div className="flex flex-wrap gap-2">
-                          {userProfile.topics.map((region) => (
-                            <span
-                              key={region.id}
-                              className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm"
-                            >
-                              {region.name}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-gray-900">Not provided</p>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div>
-                {editMode ? (
-                  <CustomDropdown
-                    id="looking_fors"
-                    label="Looking For"
-                    options={lookingFors.map((option) => ({
-                      id: option.id,
-                      label: option.name,
-                    }))}
-                    isMulti={true}
-                    value={formData.looking_fors}
-                    onChange={(value) =>
-                      handleChange({
-                        target: { name: 'looking_fors', value },
-                      })
-                    }
-                    placeholder="What are you looking for?"
-                    searchable={true}
-                    className="w-full"
-                  />
-                ) : (
-                  <>
-                    <label className="block text-lg font-semibold text-black mb-2">
-                      Looking For
-                    </label>
-                    <div className="py-2 px-1">
-                      {userProfile?.looking_fors &&
-                      userProfile.looking_fors.length > 0 ? (
-                        <div className="flex flex-wrap gap-2">
-                          {userProfile.looking_fors.map((option) => (
-                            <span
-                              key={option.id}
-                              className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-                            >
-                              {option.name}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-gray-900">Not provided</p>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Stakeholder Role */}
-              <div>
-                {editMode ? (
-                  <CustomDropdown
-                    id="stakeholder_role"
-                    label="Stakeholder Role"
-                    options={[
-                      { id: 'Academia', label: 'Academia' },
-                      { id: 'Governmental', label: 'Governmental' },
-                      { id: 'NGO / non-profit', label: 'NGO / non-profit' },
-                      {
-                        id: 'Investor / private sector',
-                        label: 'Investor / private sector',
-                      },
-                      {
-                        id: 'Local communities / groups / cooperatives',
-                        label: 'Local communities / groups / cooperatives',
-                      },
-                    ]}
-                    value={formData.stakeholder_role}
-                    onChange={(value) =>
-                      handleChange({
-                        target: { name: 'stakeholder_role', value },
-                      })
-                    }
-                    placeholder="Select your role"
-                    className="w-full"
-                  />
-                ) : (
-                  <>
-                    <label className="block text-lg font-semibold text-black mb-2">
-                      Role
-                    </label>
-                    <p className="text-gray-900 py-2 px-1">
+                {/* Role */}
+                <div>
+                  {editMode ? (
+                    <CustomDropdown
+                      id="stakeholder_role"
+                      label="Role"
+                      options={[
+                        { id: 'Academia', label: 'Academia' },
+                        { id: 'Governmental', label: 'Governmental' },
+                        {
+                          id: 'NGO / non-profit',
+                          label: 'NGO / non-profit',
+                        },
+                        {
+                          id: 'Investor / private sector',
+                          label: 'Investor / private sector',
+                        },
+                        {
+                          id: 'Local communities / groups / cooperatives',
+                          label: 'Local communities / groups / cooperatives',
+                        },
+                      ]}
+                      value={formData.stakeholder_role}
+                      onChange={(value) =>
+                        handleChange({
+                          target: { name: 'stakeholder_role', value },
+                        })
+                      }
+                      placeholder="Select your role"
+                    />
+                  ) : (
+                    <FieldView label="Role">
                       {userProfile?.stakeholder_role || 'Not provided'}
-                    </p>
-                  </>
-                )}
-              </div>
+                    </FieldView>
+                  )}
+                </div>
 
-              {/* LinkedIn */}
-              <div>
-                <label className="block text-lg font-semibold text-black mb-2">
-                  LinkedIn Profile
-                </label>
-                {editMode ? (
-                  <input
-                    type="url"
-                    name="linkedin"
-                    value={formData.linkedin || ''}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-                    placeholder="https://linkedin.com/in/yourprofile"
-                  />
-                ) : (
-                  <p className="text-gray-900 py-2 px-1">
-                    {userProfile?.linkedin ? (
-                      <a
-                        href={userProfile.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline"
-                      >
-                        {userProfile.linkedin}
-                      </a>
-                    ) : (
-                      'Not provided'
-                    )}
-                  </p>
-                )}
-              </div>
-
-              {editMode && (
-                <div className="pt-6 border-t border-gray-200">
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 />
-                          Saving...
-                        </>
+                {/* LinkedIn */}
+                <div>
+                  {editMode ? (
+                    <div className="space-y-2">
+                      <label className="block text-sm font-semibold text-black">
+                        LinkedIn Profile
+                      </label>
+                      <input
+                        type="url"
+                        name="linkedin"
+                        value={formData.linkedin || ''}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-full border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent focus:outline-none text-sm"
+                        placeholder="https://linkedin.com/in/yourprofile"
+                      />
+                    </div>
+                  ) : (
+                    <FieldView label="LinkedIn Profile">
+                      {userProfile?.linkedin ? (
+                        <a
+                          href={userProfile.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary-500 hover:underline"
+                        >
+                          {userProfile.linkedin}
+                        </a>
                       ) : (
-                        'Save Changes'
+                        'Not provided'
                       )}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEditMode(false)}
-                      className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors font-medium"
-                    >
-                      Cancel
-                    </button>
-                  </div>
+                    </FieldView>
+                  )}
+                </div>
+              </div>
+
+              {/* Full width fields for multi-select */}
+              <div className="space-y-6">
+                {/* Focus Regions */}
+                <div>
+                  {editMode ? (
+                    <CustomDropdown
+                      id="focus_regions"
+                      label="Focus Region"
+                      options={regions.map((region) => ({
+                        id: region.id,
+                        label: region.name,
+                      }))}
+                      isMulti={true}
+                      value={formData.focus_regions}
+                      onChange={(value) =>
+                        handleChange({
+                          target: { name: 'focus_regions', value },
+                        })
+                      }
+                      placeholder="Select focus regions"
+                      searchable={true}
+                    />
+                  ) : (
+                    <FieldView label="Focus Region">
+                      <TagList items={userProfile?.focus_regions} />
+                    </FieldView>
+                  )}
+                </div>
+
+                {/* Topics */}
+                <div>
+                  {editMode ? (
+                    <CustomDropdown
+                      id="topics"
+                      label="Topics"
+                      options={topics.map((topic) => ({
+                        id: topic.id,
+                        label: topic.name,
+                      }))}
+                      isMulti={true}
+                      value={formData.topics}
+                      onChange={(value) =>
+                        handleChange({
+                          target: { name: 'topics', value },
+                        })
+                      }
+                      placeholder="Select topics"
+                      searchable={true}
+                    />
+                  ) : (
+                    <FieldView label="Topics">
+                      <TagList items={userProfile?.topics} />
+                    </FieldView>
+                  )}
+                </div>
+
+                {/* Looking For */}
+                <div>
+                  {editMode ? (
+                    <CustomDropdown
+                      id="looking_fors"
+                      label="Looking For"
+                      options={lookingFors.map((option) => ({
+                        id: option.id,
+                        label: option.name,
+                      }))}
+                      isMulti={true}
+                      value={formData.looking_fors}
+                      onChange={(value) =>
+                        handleChange({
+                          target: { name: 'looking_fors', value },
+                        })
+                      }
+                      placeholder="What are you looking for?"
+                      searchable={true}
+                    />
+                  ) : (
+                    <FieldView label="Looking For">
+                      <TagList items={userProfile?.looking_fors} />
+                    </FieldView>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              {editMode && (
+                <div className="flex gap-3 pt-4 border-t border-gray-100">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    loading={isSubmitting}
+                  >
+                    {isSubmitting ? 'Saving...' : 'Save Changes'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setEditMode(false)}
+                  >
+                    Cancel
+                  </Button>
                 </div>
               )}
-            </form>
+            </div>
+          </form>
 
-            <div className="pt-6 ">
-              {!editMode && (
-                <div className="pt-6 border-t border-gray-200">
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <button
-                      type="button"
-                      onClick={() => setEditMode(true)}
-                      className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors font-medium"
-                    >
-                      Edit Profile
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowDeleteDialog(true)}
-                      className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors font-medium"
-                    >
-                      Delete Account
-                    </button>
-                  </div>
-                </div>
-              )}
+          {!editMode && (
+            <div className="mt-8 pt-6 border-t border-gray-100 space-y-4">
+              <button
+                type="button"
+                onClick={() => setShowDeleteDialog(true)}
+                className="text-sm text-red-500 hover:text-red-600 font-medium"
+              >
+                Delete Account
+              </button>
 
-              {/* Contact Info */}
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  Need to change your email address or organization?
+              <div className="p-4 bg-[#fafafa] rounded-xl">
+                <p className="text-sm text-gray-500">
+                  Need to change your email address or organization?{' '}
                   <Link
                     href="/contact-us"
-                    className="font-medium text-blue-600 hover:text-blue-500 underline ml-1"
+                    className="font-semibold text-primary-500 hover:underline"
                   >
                     Contact us for assistance
                   </Link>
                 </p>
               </div>
             </div>
-          </div>
-
-          {/* Delete Confirmation Dialog */}
-          {showDeleteDialog && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-              <div className="bg-white rounded-xl p-6 max-w-md w-full">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
-                    <svg
-                      className="w-6 h-6 text-red-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900">
-                      Delete Account
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      This action cannot be undone
-                    </p>
-                  </div>
-                </div>
-                <p className="text-gray-700 mb-6">
-                  Are you sure you want to permanently delete your account? All
-                  your data will be lost forever.
-                </p>
-                <div className="flex gap-3">
-                  <button
-                    onClick={handleDeleteAccount}
-                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium"
-                  >
-                    Delete Account
-                  </button>
-                  <button
-                    onClick={() => setShowDeleteDialog(false)}
-                    className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      {showDeleteDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                <svg
+                  className="w-6 h-6 text-red-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black">
+                  Delete Account
+                </h3>
+                <p className="text-sm text-gray-500">
+                  This action cannot be undone
+                </p>
+              </div>
+            </div>
+            <p className="text-gray-600 mb-6 text-sm">
+              Are you sure you want to permanently delete your account? All
+              your data will be lost forever.
+            </p>
+            <div className="flex gap-3">
+              <Button
+                variant="danger"
+                onClick={handleDeleteAccount}
+                className="flex-1"
+              >
+                Delete Account
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => setShowDeleteDialog(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </ProfileLayout>
   );
 };

@@ -1213,6 +1213,8 @@ const OrganizationModal = ({
             options={[
               { id: 'NGO', label: 'NGO' },
               { id: 'Company', label: 'Company' },
+              { id: 'Governmental', label: 'Governmental' },
+              { id: 'Other', label: 'Other' },
             ]}
             isMulti={false}
             value={formData.type}

@@ -88,6 +88,8 @@ export const validateAdditionalDetails = (data) => {
 
   if (!data.name || !data.name.trim()) {
     errors.name = 'Name is required';
+  } else if (/\d/.test(data.name)) {
+    errors.name = 'Name should not contain numbers';
   }
 
   if (!data.organisation && !data.org_name) {

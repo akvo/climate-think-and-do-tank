@@ -314,7 +314,7 @@ const MyConnections = () => {
       return (
         <div
           key={connection.id}
-          className="flex items-center justify-between p-4 border-b hover:bg-gray-50 cursor-pointer"
+          className="flex items-center justify-between p-4 border-b hover:bg-[#fafafa] cursor-pointer"
           onClick={() => {
             console.log('clicked', connection);
             const enhancedStakeholder = {
@@ -404,9 +404,9 @@ const MyConnections = () => {
 
   return (
     <ProfileLayout>
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="container mx-auto bg-white shadow-md rounded-lg">
-          <div className="p-6">
+      <div className="bg-white rounded-2xl border border-gray-100">
+        <div>
+          <div className="p-6 sm:p-8">
             <h2 className="text-xl font-semibold mb-6">My Connections</h2>
 
             <div className="flex border-b mb-4">
@@ -417,7 +417,7 @@ const MyConnections = () => {
                   className={`px-4 py-2 text-sm 
                     ${
                       activeTab === tab.toLowerCase()
-                        ? 'border-b-2 border-green-500 font-semibold'
+                        ? 'border-b-2 border-primary-500 text-primary-500 font-semibold'
                         : 'text-gray-600'
                     }`}
                 >

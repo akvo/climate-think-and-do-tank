@@ -12,10 +12,8 @@ const ProfilePage = () => {
 
   return (
     <ProfileLayout>
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg">
-          <ProfileNavigation />
-        </div>
+      <div className="flex items-center justify-center py-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-200 border-t-primary-500"></div>
       </div>
     </ProfileLayout>
   );
