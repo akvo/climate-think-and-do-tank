@@ -30,6 +30,7 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
           'value_chain_profile_status',
           'market_opportunity_demand',
           'investment_opportunity',
+          'investment_needs_financial',
           'enabling_environment_policies',
           'risks_mitigation',
         ];
