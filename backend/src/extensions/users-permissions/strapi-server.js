@@ -120,6 +120,84 @@ module.exports = (plugin) => {
         ctx.body.user = updatedUser;
         ctx.body.message =
           "Your account has been created but requires admin approval. You'll be notified once your account is activated.";
+
+        // Notify admin/editors about new registration
+        try {
+          const editorRole = await strapi.db
+            .query('admin::role')
+            .findOne({ where: { code: { $eq: 'strapi-editor' } } });
+
+          const editors = await strapi.db.query('admin::user').findMany({
+            where: { roles: { id: { $eq: editorRole.id } } },
+            populate: ['roles'],
+          });
+
+          const editorEmails = editors.map((editor) => editor.email);
+
+          if (editorEmails.length > 0) {
+            // Fetch organisation name if connected
+            let orgName = 'Not provided';
+            if (organisation) {
+              const org = await strapi.entityService.findOne(
+                'api::organisation.organisation',
+                organisation
+              );
+              if (org) orgName = org.name;
+            }
+
+            await Promise.all(
+              editorEmails.map(async (recipient) => {
+                await strapi.plugins.email.service('email').send({
+                  to: recipient,
+                  subject: `New User Registration: ${rest.full_name || rest.email}`,
+                  html: `
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                      <meta charset="UTF-8">
+                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                      <style>
+                        body { font-family: 'Arial', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; }
+                        .container { background-color: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 30px; border-top: 4px solid #B5654A; }
+                        .header { text-align: center; margin-bottom: 30px; color: #B5654A; }
+                        .detail { margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 5px; }
+                        .label { font-weight: bold; color: #B5654A; margin-right: 10px; display: inline-block; min-width: 100px; }
+                        .footer { text-align: center; margin-top: 30px; font-size: 0.9em; color: #888; padding-top: 20px; border-top: 1px solid #eee; }
+                        .action-note { background-color: #fef3e8; padding: 15px; border-radius: 5px; margin-top: 20px; border-left: 4px solid #B5654A; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>New User Registration</h1>
+                        </div>
+                        <div class="detail">
+                          <p><span class="label">Name:</span> ${rest.full_name || 'Not provided'}</p>
+                          <p><span class="label">Email:</span> ${rest.email}</p>
+                          <p><span class="label">Organization:</span> ${orgName}</p>
+                          <p><span class="label">Role:</span> ${rest.stakeholder_role || 'Not provided'}</p>
+                          <p><span class="label">Registered:</span> ${new Date().toLocaleString()}</p>
+                        </div>
+                        <div class="action-note">
+                          <p><strong>Action required:</strong> This user's account is pending approval. Please review and approve or reject the account in the admin panel.</p>
+                        </div>
+                        <div class="footer">
+                          <p>This is an automated notification from the Kenya Drylands Investment Hub.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+                  `,
+                });
+              })
+            );
+          }
+        } catch (emailError) {
+          strapi.log.error(
+            'Failed to send new registration notification email:',
+            emailError.message
+          );
+        }
       }
     };
 
