@@ -123,16 +123,26 @@ module.exports = (plugin) => {
 
         // Notify admin/editors about new registration
         try {
-          const editorRole = await strapi.db
-            .query('admin::role')
-            .findOne({ where: { code: { $eq: 'strapi-editor' } } });
+          const adminRoles = await strapi.db.query('admin::role').findMany({
+            where: {
+              code: { $in: ['strapi-super-admin', 'strapi-editor'] },
+            },
+          });
 
-          const editors = await strapi.db.query('admin::user').findMany({
-            where: { roles: { id: { $eq: editorRole.id } } },
+          const roleIds = adminRoles.map((role) => role.id);
+
+          const admins = await strapi.db.query('admin::user').findMany({
+            where: {
+              roles: { id: { $in: roleIds } },
+            },
             populate: ['roles'],
           });
 
-          const editorEmails = editors.map((editor) => editor.email);
+          const editorEmails = admins.map((admin) => admin.email);
+
+          strapi.log.info(
+            `New user registration: ${rest.email}. Notifying ${editorEmails.length} admin(s): ${editorEmails.join(', ')}`
+          );
 
           if (editorEmails.length > 0) {
             // Fetch organisation name if connected
@@ -195,7 +205,10 @@ module.exports = (plugin) => {
         } catch (emailError) {
           strapi.log.error(
             'Failed to send new registration notification email:',
-            emailError.message
+            {
+              error: emailError.message,
+              stack: emailError.stack,
+            }
           );
         }
       }
