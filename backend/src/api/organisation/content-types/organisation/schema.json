@@ -23,7 +23,9 @@
       "type": "enumeration",
       "enum": [
         "NGO",
-        "Company"
+        "Company",
+        "Governmental",
+        "Other"
       ]
     },
     "country": {

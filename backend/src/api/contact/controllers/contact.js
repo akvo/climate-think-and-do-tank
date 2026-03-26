@@ -1,3 +1,9 @@
+const {
+  emailTemplate,
+  detailRow,
+  detailsTable,
+} = require('../../../helpers/email-template');
+
 module.exports = ({ strapi }) => ({
   async send(ctx) {
     try {
@@ -8,12 +14,6 @@ module.exports = ({ strapi }) => ({
           'Missing required fields: email, subject, and message are required'
         );
       }
-
-      // ——— Role lookup ———
-      // Available admin roles (display name → code):
-      //  • Super Admin → 'strapi-super-admin'
-      //  • Editor      → 'strapi-editor'
-      //  • Author      → 'strapi-author'
 
       const editorRole = await strapi.db.query('admin::role').findOne({
         where: { code: { $eq: 'strapi-editor' } },
@@ -36,103 +36,32 @@ module.exports = ({ strapi }) => ({
         );
       }
 
+      const body = `
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">A new contact form submission has been received.</p>
+        ${detailsTable(
+          detailRow('Name', name) +
+          detailRow('Organization', organization) +
+          detailRow('Email', `<a href="mailto:${email}" style="color:#B5654A;text-decoration:none;">${email}</a>`) +
+          detailRow('Subject', subject) +
+          detailRow('Received', new Date().toLocaleString())
+        )}
+        <div style="background-color:#fafafa;border-radius:8px;padding:16px 20px;margin-top:16px;">
+          <p style="margin:0 0 8px;font-size:13px;color:#999999;text-transform:uppercase;letter-spacing:0.5px;">Message</p>
+          <p style="margin:0;font-size:14px;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;">${message}</p>
+        </div>
+      `;
+
+      const html = emailTemplate({
+        title: 'New Contact Form Submission',
+        body,
+      });
+
       await Promise.all(
         editorEmails.map(async (recipient) => {
-          await strapi.plugins.email.service('email').send({
+          await strapi.plugin('email').service('email').send({
             to: recipient,
             subject: `New Contact Form Submission: ${subject}`,
-            html: `
-              <!DOCTYPE html>
-              <html lang="en">
-              <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <style>
-                  body {
-                    font-family: 'Arial', sans-serif;
-                    line-height: 1.6;
-                    color: #333;
-                    max-width: 600px;
-                    margin: 0 auto;
-                    padding: 20px;
-                    background-color: #f4f7f6;
-                  }
-                  .container {
-                    background-color: white;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                    padding: 30px;
-                    border-top: 4px solid #26BDE2;
-                  }
-                  .header {
-                    text-align: center;
-                    margin-bottom: 30px;
-                    color: #26BDE2;
-                  }
-                  .detail {
-                    margin-bottom: 20px;
-                    padding: 15px;
-                    background-color: #f9f9f9;
-                    border-radius: 5px;
-                  }
-                  .label {
-                    font-weight: bold;
-                    color: #26BDE2;
-                    margin-right: 10px;
-                    display: inline-block;
-                    min-width: 100px;
-                  }
-                  .message {
-                    background-color: #f0f0f0;
-                    padding: 20px;
-                    border-radius: 5px;
-                    white-space: pre-wrap;
-                    word-wrap: break-word;
-                    margin-top: 15px;
-                  }
-                  .footer {
-                    text-align: center;
-                    margin-top: 30px;
-                    font-size: 0.9em;
-                    color: #888;
-                    padding-top: 20px;
-                    border-top: 1px solid #eee;
-                  }
-                  .reply-info {
-                    background-color: #e8f4f8;
-                    padding: 15px;
-                    border-radius: 5px;
-                    margin-top: 20px;
-                    border-left: 4px solid #26BDE2;
-                  }
-                </style>
-              </head>
-              <body>
-                <div class="container">
-                  <div class="header">
-                    <h1>📧 New Contact Form Submission</h1>
-                  </div>
-                  
-                  <div class="detail">
-                    <p><span class="label">👤 Name:</span> ${name || 'Not provided'}</p>
-                    <p><span class="label">🏢 Organization:</span> ${organization || 'Not provided'}</p>
-                    <p><span class="label">📧 Email:</span> ${email}</p>
-                    <p><span class="label">📝 Subject:</span> ${subject}</p>
-                    <p><span class="label">📅 Received:</span> ${new Date().toLocaleString()}</p>
-                  </div>
-                  
-                  <div class="message">
-                    <p><span class="label">💬 Message:</span></p>
-                    ${message}
-                  </div>
-                  
-                  <div class="footer">
-                    <p>This is an automated notification from your website's contact form.</p>
-                  </div>
-                </div>
-              </body>
-              </html>
-            `,
+            html,
           });
         })
       );
