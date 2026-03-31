@@ -206,7 +206,7 @@ export default function SignUpForm() {
               <div className="mx-auto w-full max-w-md lg:max-w-lg xl:max-w-xl">
                 <div className="mb-8 lg:mb-12">
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black mb-3 sm:mb-4 lg:mb-6">
-                    Welcome to the Think and Do Tank Network
+                    Welcome to the Kenya Drylands Investment Hub
                   </h1>
                   <p className="text-gray-600 text-sm sm:text-base">
                     Create an Account to Unlock Exclusive Features

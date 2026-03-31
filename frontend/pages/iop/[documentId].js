@@ -322,7 +322,7 @@ export default function InvestmentOpportunityProfile() {
             <div>
               <p className="text-sm text-gray-500 mb-1">Published by</p>
               <p className="font-semibold text-gray-900">
-                Resilience Think and Do Tank
+                Kenya Drylands Investment Hub
               </p>
             </div>
             <div>
