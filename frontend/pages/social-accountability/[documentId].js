@@ -126,6 +126,7 @@ export default function SocialAccountabilityPage() {
           <div className="md:w-1/2">
             <div className="rounded-lg p-4 flex items-center justify-center">
               <KenyaMap
+                showSubLocations
                 initialSelected={data.region?.name}
                 onSelect={(newSelection) =>
                   router.push('/social-accountability?regions=' + newSelection)

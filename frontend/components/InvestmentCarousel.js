@@ -114,7 +114,7 @@ const InvestmentCarousel = () => {
             return {
               id: item.id,
               documentId: item.documentId,
-              title: `${item.value_chain?.name} In ${item.regions?.[0]?.name || ''}`,
+              title: item.title || `${item.value_chain?.name} In ${item.regions?.[0]?.name || ''}`,
               region: item.regions?.[0]?.name || '',
               amount: '$0',
               period: item.publication_date
@@ -215,7 +215,7 @@ const InvestmentCarousel = () => {
               >
                 <ChevronLeft
                   size={20}
-                  className="text-gray-700 sm:w-6 sm:h-6"
+                  className="text-gray-900 sm:w-6 sm:h-6"
                 />
               </button>
               <button
@@ -225,7 +225,7 @@ const InvestmentCarousel = () => {
               >
                 <ChevronRight
                   size={20}
-                  className="text-gray-700 sm:w-6 sm:h-6"
+                  className="text-gray-900 sm:w-6 sm:h-6"
                 />
               </button>
             </>

@@ -76,6 +76,7 @@ export default function KenyaMap({
   initialSelected,
   onSelect,
   valueChain = null,
+  showSubLocations = false,
 }) {
   const router = useRouter();
   const { regions = [] } = useSelector((state) => state.auth);
@@ -153,7 +154,7 @@ export default function KenyaMap({
             (profile) => ({
               id: profile.id,
               documentId: profile.documentId,
-              title: `${profile.value_chain?.name || ''} Value Chain in ${
+              title: profile.title || `${profile.value_chain?.name || ''} Value Chain in ${
                 profile.regions?.[0]?.name || ''
               } County`,
               description: profile.description,
@@ -992,62 +993,108 @@ export default function KenyaMap({
               currentCountyDetails && (
                 <div className="bg-gray-10 border border-gray-30 rounded-xl shadow-lg overflow-hidden">
                   <div className="flex flex-col">
-                    {/* County Image */}
-                    <div className="relative">
-                      {currentCountyDetails.county_image?.url ? (
-                        <div className="relative w-full h-[200px] sm:h-[250px]">
-                          <Image
-                            src={
-                              currentCountyDetails.county_image.url.startsWith(
-                                'http'
-                              )
-                                ? currentCountyDetails.county_image.url
-                                : `${BACKEND_URL}${currentCountyDetails.county_image.url}`
-                            }
-                            alt={currentCountyDetails.name || 'County'}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-full h-[200px] sm:h-[250px] bg-gray-200 flex items-center justify-center">
-                          <MapPin className="w-12 h-12 text-gray-400" />
-                        </div>
-                      )}
-                    </div>
+                    {/* County Image - only on social accountability */}
+                    {showSubLocations && (
+                      <div className="relative">
+                        {currentCountyDetails.county_image?.url ? (
+                          <div className="relative w-full h-[200px] sm:h-[250px]">
+                            <Image
+                              src={
+                                currentCountyDetails.county_image.url.startsWith(
+                                  'http'
+                                )
+                                  ? currentCountyDetails.county_image.url
+                                  : `${BACKEND_URL}${currentCountyDetails.county_image.url}`
+                              }
+                              alt={currentCountyDetails.name || 'County'}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-full h-[200px] sm:h-[250px] bg-gray-200 flex items-center justify-center">
+                            <MapPin className="w-12 h-12 text-gray-400" />
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     {/* Content Section */}
                     <div className="p-4 sm:p-6">
-                      {/* Value Chains Row */}
+                      {/* About the county - homepage only */}
+                      {!showSubLocations && currentCountyDetails.about && (
+                        <div className="mb-4 pb-4 border-b border-gray-200">
+                          <h4 className="text-sm font-bold text-gray-900 mb-2">
+                            About the county
+                          </h4>
+                          <p className="text-sm text-gray-600 leading-relaxed">
+                            {currentCountyDetails.about}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Stats: Population, Area, Languages - homepage only */}
+                      {!showSubLocations && <div className="mb-4">
+                        {currentCountyDetails.population && (
+                          <div className="flex items-center justify-between py-3 border-b border-gray-200">
+                            <div className="flex items-center gap-2">
+                              <Users className="text-gray-900" size={16} />
+                              <span className="text-sm text-gray-900">Population</span>
+                            </div>
+                            <span className="font-semibold text-gray-900">
+                              {currentCountyDetails.population}
+                            </span>
+                          </div>
+                        )}
+
+                        {currentCountyDetails.area && (
+                          <div className="flex items-center justify-between py-3 border-b border-gray-200">
+                            <div className="flex items-center gap-2">
+                              <MapPin className="text-gray-900" size={16} />
+                              <span className="text-sm text-gray-900">Area</span>
+                            </div>
+                            <span className="font-semibold text-gray-900">
+                              {currentCountyDetails.area} km²
+                            </span>
+                          </div>
+                        )}
+
+                        {currentCountyDetails.languages && (
+                          <div className="flex items-start justify-between py-3 border-b border-gray-200">
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <Globe className="text-gray-900" size={16} />
+                              <span className="text-sm text-gray-900">Languages</span>
+                            </div>
+                            <span className="font-semibold text-gray-900 text-sm text-right max-w-[60%]">
+                              {currentCountyDetails.languages}
+                            </span>
+                          </div>
+                        )}
+
+                      </div>}
+
+                      {/* Value Chains Row - both pages */}
                       {currentCountyDetails.value_chains?.length > 0 && (
-                        <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+                        <div className="flex items-center justify-between py-3 border-b border-gray-200">
                           <div className="flex items-center gap-2">
-                            <ValueChainIcon className="w-5 h-5 text-gray-600" />
-                            <span className="text-sm text-gray-700">
+                            <ValueChainIcon className="w-4 h-4 text-gray-900" />
+                            <span className="text-sm text-gray-900">
                               Value chains
                             </span>
                           </div>
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap gap-1">
                             {currentCountyDetails.value_chains.map(
                               (vc, idx) => {
                                 const vcData = getValueChainData(vc.name);
                                 return (
-                                  <div
+                                  <Image
                                     key={idx}
-                                    className={`inline-flex items-center gap-2 pl-1 pr-3 py-1`}
-                                  >
-                                    <div
-                                      className={`flex items-center justify-center`}
-                                    >
-                                      <Image
-                                        src={vcData.image}
-                                        alt={vc.name}
-                                        width={28}
-                                        height={28}
-                                        className="h-7 w-auto"
-                                      />
-                                    </div>
-                                  </div>
+                                    src={vcData.image}
+                                    alt={vc.name}
+                                    width={28}
+                                    height={28}
+                                    className="h-7 w-auto"
+                                  />
                                 );
                               }
                             )}
@@ -1055,10 +1102,35 @@ export default function KenyaMap({
                         </div>
                       )}
 
+                      {/* GCP Section - homepage only */}
+                      {!showSubLocations && currentCountyDetails.gcp && (
+                        <div className="mb-4 pb-4 border-b border-gray-200">
+                          <p className="text-xs text-gray-500 mb-1">
+                            GCP (KSh Million)
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xl font-bold text-gray-900">
+                              KSh {currentCountyDetails.gcp}
+                            </span>
+                            {currentCountyDetails.gcp_contribution && (
+                              <span className="text-sm text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+                                {currentCountyDetails.gcp_contribution}
+                              </span>
+                            )}
+                          </div>
+                          {currentCountyDetails.gcp_contribution && (
+                            <p className="text-xs text-gray-400 mt-1">
+                              Contribution to National GDP{' '}
+                              {currentCountyDetails.gcp_contribution} (%)
+                            </p>
+                          )}
+                        </div>
+                      )}
+
                       {/* Sub-location Tabs */}
-                      {currentCountyDetails.sub_locations?.length > 0 && (
+                      {showSubLocations && currentCountyDetails.sub_locations?.length > 0 && (
                         <>
-                          <div className="flex flex-wrap gap-4 mb-4 border-b border-gray-200">
+                          <div className="flex flex-wrap gap-4 mt-4 mb-4 border-b border-gray-200">
                             {currentCountyDetails.sub_locations.map(
                               (subLoc, idx) => (
                                 <button
