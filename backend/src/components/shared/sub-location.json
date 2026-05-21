@@ -15,6 +15,12 @@
     },
     "potential_impact": {
       "type": "text"
+    },
+    "pdf_attachment": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["files"]
     }
   }
 }

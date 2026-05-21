@@ -1195,6 +1195,22 @@ export default function KenyaMap({
                               </p>
                             </div>
                           )}
+
+                          {/* PDF Attachment */}
+                          {currentCountyDetails.sub_locations[activeSubLocation]
+                            ?.pdf_attachment?.url && (
+                            <div className="mt-4">
+                              <a
+                                href={`${BACKEND_URL}${currentCountyDetails.sub_locations[activeSubLocation].pdf_attachment.url}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-100 transition-colors text-sm font-medium"
+                              >
+                                <Download className="w-4 h-4" />
+                                Download Report
+                              </a>
+                            </div>
+                          )}
                         </>
                       )}
                     </div>
