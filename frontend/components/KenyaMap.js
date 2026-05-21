@@ -1151,7 +1151,7 @@ export default function KenyaMap({
                           {/* Investment Priorities */}
                           <div className="mb-4">
                             <h4 className="text-sm sm:text-base font-bold text-gray-900 mb-3">
-                              Identified Community Investment Priorities:
+                              {currentCountyDetails.sub_locations[activeSubLocation]?.section_title || 'Identified Community Investment Priorities:'}
                             </h4>
                             {currentCountyDetails.sub_locations[
                               activeSubLocation

@@ -10,6 +10,10 @@
       "type": "string",
       "required": true
     },
+    "section_title": {
+      "type": "string",
+      "default": "Identified Community Investment Priorities:"
+    },
     "investment_priorities": {
       "type": "text"
     },
