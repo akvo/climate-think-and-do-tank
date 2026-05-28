@@ -3,7 +3,6 @@ import {
   ChevronRight,
   Download,
   Users,
-  Globe,
   X,
   CircleAlert,
   Check,
@@ -77,6 +76,7 @@ export default function KenyaMap({
   onSelect,
   valueChain = null,
   showSubLocations = false,
+  showManualDownload = false,
 }) {
   const router = useRouter();
   const { regions = [] } = useSelector((state) => state.auth);
@@ -1034,7 +1034,7 @@ export default function KenyaMap({
                       )}
 
                       {/* Stats: Population, Area, Languages - homepage only */}
-                      {!showSubLocations && <div className="mb-4">
+                      {!showSubLocations && <div>
                         {currentCountyDetails.population && (
                           <div className="flex items-center justify-between py-3 border-b border-gray-200">
                             <div className="flex items-center gap-2">
@@ -1054,23 +1054,10 @@ export default function KenyaMap({
                               <span className="text-sm text-gray-900">Area</span>
                             </div>
                             <span className="font-semibold text-gray-900">
-                              {currentCountyDetails.area} km²
+                              {currentCountyDetails.area}
                             </span>
                           </div>
                         )}
-
-                        {currentCountyDetails.languages && (
-                          <div className="flex items-start justify-between py-3 border-b border-gray-200">
-                            <div className="flex items-center gap-2 flex-shrink-0">
-                              <Globe className="text-gray-900" size={16} />
-                              <span className="text-sm text-gray-900">Languages</span>
-                            </div>
-                            <span className="font-semibold text-gray-900 text-sm text-right max-w-[60%]">
-                              {currentCountyDetails.languages}
-                            </span>
-                          </div>
-                        )}
-
                       </div>}
 
                       {/* Value Chains Row - both pages */}
@@ -1104,26 +1091,39 @@ export default function KenyaMap({
 
                       {/* GCP Section - homepage only */}
                       {!showSubLocations && currentCountyDetails.gcp && (
-                        <div className="mb-4 pb-4 border-b border-gray-200">
-                          <p className="text-xs text-gray-500 mb-1">
+                        <div className="mt-4 mb-4 rounded-xl border border-gray-200 bg-white p-4">
+                          <p className="text-sm text-gray-500 mb-3">
                             GCP (KSh Million)
                           </p>
                           <div className="flex items-center justify-between">
-                            <span className="text-xl font-bold text-gray-900">
-                              KSh {currentCountyDetails.gcp}
-                            </span>
-                            {currentCountyDetails.gcp_contribution && (
-                              <span className="text-sm text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
-                                {currentCountyDetails.gcp_contribution}
+                            <div>
+                              <span className="text-2xl font-extrabold text-gray-900">
+                                KSh {currentCountyDetails.gcp}
                               </span>
+                              {currentCountyDetails.gcp_contribution && (
+                                <p className="text-sm text-gray-400 mt-1">
+                                  Contribution to National GDP{' '}
+                                  {currentCountyDetails.gcp_contribution} (%)
+                                </p>
+                              )}
+                            </div>
+                            {currentCountyDetails.gcp_contribution && (
+                              <div className="relative w-16 h-16 flex-shrink-0">
+                                <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
+                                  <circle cx="32" cy="32" r="28" fill="none" stroke="#E5E7EB" strokeWidth="6" />
+                                  <circle
+                                    cx="32" cy="32" r="28" fill="none"
+                                    stroke="#16A34A" strokeWidth="6"
+                                    strokeLinecap="round"
+                                    strokeDasharray={`${parseFloat(currentCountyDetails.gcp_contribution) * 1.7593} 175.93`}
+                                  />
+                                </svg>
+                                <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-gray-700">
+                                  {currentCountyDetails.gcp_contribution}%
+                                </span>
+                              </div>
                             )}
                           </div>
-                          {currentCountyDetails.gcp_contribution && (
-                            <p className="text-xs text-gray-400 mt-1">
-                              Contribution to National GDP{' '}
-                              {currentCountyDetails.gcp_contribution} (%)
-                            </p>
-                          )}
                         </div>
                       )}
 
@@ -1262,25 +1262,27 @@ export default function KenyaMap({
               </>
             )}
 
-            <div className="border border-gray-200 bg-gray-10 rounded-xl shadow-lg p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-2">
-                Social Accountability Training Manual
-              </h3>
-              <p className="text-gray-600 text-sm mb-4">
-                Download our comprehensive guide on social accountability
-                practices
-              </p>
-              <a
-                href="/Social Accountability Training Manual.pdf"
-                download="Social Accountability Training Manual.pdf"
-                className="w-full"
-              >
-                <Button variant="primary" className="w-full">
-                  <Download size={16} className="mr-2" />
-                  Download Manual
-                </Button>
-              </a>
-            </div>
+            {showManualDownload && (
+              <div className="border border-gray-200 bg-gray-10 rounded-xl shadow-lg p-6">
+                <h3 className="text-lg font-bold text-gray-800 mb-2">
+                  Social Accountability Training Manual
+                </h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Download our comprehensive guide on social accountability
+                  practices
+                </p>
+                <a
+                  href="/Social Accountability Training Manual.pdf"
+                  download="Social Accountability Training Manual.pdf"
+                  className="w-full"
+                >
+                  <Button variant="primary" className="w-full">
+                    <Download size={16} className="mr-2" />
+                    Download Manual
+                  </Button>
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
