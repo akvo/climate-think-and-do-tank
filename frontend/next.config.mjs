@@ -21,6 +21,16 @@ const nextConfig = {
         hostname: '*.googleapis.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'drylandsinvest.org',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.drylandsinvest.org',
+        pathname: '/**',
+      },
     ],
   },
 };
