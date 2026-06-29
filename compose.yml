@@ -42,6 +42,7 @@ services:
       DATABASE_USERNAME: akvo
       DATABASE_PASSWORD: password
       DATABASE_SSL: false
+      FRONTEND_URL: http://localhost:3000
       EMAIL_CONFIRMATION_URL: http://localhost:3000/verify-email
       PASSWORD_RESET_URL: http://localhost:3000/reset-password
       PLUGIN_PROVIDERS: ${PLUGIN_PROVIDERS:-local}

@@ -132,7 +132,7 @@ module.exports = {
       
       <p>You can review this request and other pending connections by visiting your profile dashboard.</p>
       
-      <a href="${process.env.FRONTEND_URL || 'https://yourplatform.com'}/connections" class="button">View Connection Request</a>
+      <a href="${process.env.FRONTEND_URL || 'https://yourplatform.com'}/profile/connections" class="button">View Connection Request</a>
     </div>
     <div class="email-footer">
       <p>© ${new Date().getFullYear()} Your Platform Name. All rights reserved.</p>
@@ -151,7 +151,7 @@ You've received a new connection request from ${requester}.
 Building connections is a great way to collaborate with fellow stakeholders in your network.
 
 You can review this request and other pending connections by visiting your profile dashboard at:
-${process.env.FRONTEND_URL || 'https://yourplatform.com'}/connections
+${process.env.FRONTEND_URL || 'https://yourplatform.com'}/profile/connections
 
 Regards,
 Your Platform Team
@@ -318,7 +318,7 @@ Your Platform Team
       
       <p>You can now collaborate, share resources, and communicate directly with your new connection.</p>
       
-      <a href="${process.env.FRONTEND_URL || 'https://yourplatform.com'}/connections" class="button">View Your Connections</a>
+      <a href="${process.env.FRONTEND_URL || 'https://yourplatform.com'}/profile/connections" class="button">View Your Connections</a>
     </div>
     <div class="email-footer">
       <p>© ${new Date().getFullYear()} Your Platform Name. All rights reserved.</p>
@@ -337,7 +337,7 @@ Good news! Your connection request has been accepted by ${receiver}.
 You can now collaborate, share resources, and communicate directly with your new connection.
 
 Visit your connections page at:
-${process.env.FRONTEND_URL || 'https://yourplatform.com'}/connections
+${process.env.FRONTEND_URL || 'https://yourplatform.com'}/profile/connections
 
 Regards,
 Your Platform Team
