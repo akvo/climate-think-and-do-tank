@@ -39,6 +39,28 @@ http:
       middlewares:
         - cms-stripprefix
 
+    # Legacy domain (tdt.akvo.org) moved to drylandsinvest.org. Search engines
+    # still hold the old URLs, so we keep these routers to issue a permanent
+    # (301) redirect that preserves the path. The 443 router exists mainly so
+    # Traefik obtains a Let's Encrypt cert for the old domain; without it,
+    # HTTPS hits would fail the TLS handshake before the redirect could fire.
+    old-domain-router-80:
+      rule: "Host(\`tdt.akvo.org\`)"
+      service: frontend-service
+      entrypoints: web
+      middlewares:
+        - old-domain-redirect
+
+    old-domain-router-443:
+      entrypoints:
+        - websecure
+      rule: "Host(\`tdt.akvo.org\`)"
+      service: frontend-service
+      tls:
+        certResolver: myresolver
+      middlewares:
+        - old-domain-redirect
+
 
   middlewares:
     redirect-to-https:
@@ -49,6 +71,15 @@ http:
       stripPrefix:
         prefixes:
           - "/cms"
+    # Path-preserving 301 to the new domain. The regex captures everything
+    # after the host so /some/page lands on the same path on drylandsinvest.org,
+    # which keeps per-URL search ranking signals intact. Matching http? as well
+    # collapses plain-HTTP hits into a single redirect to the new HTTPS URL.
+    old-domain-redirect:
+      redirectRegex:
+        regex: "^https?://tdt\\.akvo\\.org/(.*)"
+        replacement: "https://drylandsinvest.org/\${1}"
+        permanent: true
 
 
   services:
