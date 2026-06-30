@@ -18,12 +18,12 @@ const menuItems = [
       { label: 'Social Accountability', path: '/social-accountability' },
     ],
   },
-  { label: 'Connect', path: '/stakeholder-directory' },
-  { label: 'Knowledge Hub', path: '/knowledge-hub' },
-  {
-    label: 'News and Events',
-    path: '/news-events',
-  },
+  // Lower-priority items: shown inline only at the `nav` breakpoint and above.
+  // Below it they collapse into the "More" dropdown (Priority+ pattern) so the
+  // bar never wraps. Keep these last so the inline order matches their priority.
+  { label: 'Connect', path: '/stakeholder-directory', secondary: true },
+  { label: 'Knowledge Hub', path: '/knowledge-hub', secondary: true },
+  { label: 'News and Events', path: '/news-events', secondary: true },
 ];
 
 export default function Header() {
@@ -48,7 +48,7 @@ export default function Header() {
         isAuthenticated ? 'py-2' : 'py-4'
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between">
+      <div className="max-w-screen-xl w-full mx-auto px-4 flex items-center justify-between">
         <Link href="/" className="relative min-w-[216px] h-[40px]">
           <Image
             src="/images/logo.svg"
@@ -59,14 +59,14 @@ export default function Header() {
           />
         </Link>
 
-        <div className="md:hidden">
+        <div className="menu:hidden">
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
         <div
-          className={`fixed top-0 right-0 h-full w-full bg-white z-50 p-6 shadow-lg transform transition-transform duration-300 ease-in-out md:hidden ${
+          className={`fixed top-0 right-0 h-full w-full bg-white z-50 p-6 shadow-lg transform transition-transform duration-300 ease-in-out menu:hidden ${
             mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
@@ -139,9 +139,12 @@ export default function Header() {
           </nav>
         </div>
 
-        <nav className="hidden md:flex items-center gap-2">
+        <nav className="hidden menu:flex items-center gap-2">
           {menuItems.map((item, idx) => (
-            <div key={idx} className="relative">
+            <div
+              key={idx}
+              className={`relative ${item.secondary ? 'hidden nav:block' : ''}`}
+            >
               {!item.dropdown ? (
                 <Link
                   href={item.path}
@@ -199,6 +202,44 @@ export default function Header() {
               )}
             </div>
           ))}
+
+          {/* Priority+ overflow: only rendered below the `nav` breakpoint, this
+              "More" menu holds the lower-priority items so the bar never wraps. */}
+          <div className="relative nav:hidden">
+            <button
+              onClick={() =>
+                setMoreDropdownOpen((prev) => (prev === 'More' ? null : 'More'))
+              }
+              className="flex items-center px-4 py-2 text-md font-bold text-black hover:text-zinc-600"
+            >
+              More
+              {moreDropdownOpen === 'More' ? (
+                <ChevronUp className="ml-1 w-4 h-4" />
+              ) : (
+                <ChevronDown className="ml-1 w-4 h-4" />
+              )}
+            </button>
+            {moreDropdownOpen === 'More' && (
+              <div className="absolute right-0 mt-1 w-48 bg-white shadow-lg rounded-md z-50 overflow-hidden">
+                {menuItems
+                  .filter((item) => item.secondary)
+                  .map((item) => (
+                    <Link
+                      key={item.path}
+                      href={item.path}
+                      onClick={() => setMoreDropdownOpen(null)}
+                      className={`block px-4 py-2 text-sm font-medium ${
+                        isActive(item.path)
+                          ? 'bg-primary-50 text-black'
+                          : 'text-black hover:bg-primary-50'
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+              </div>
+            )}
+          </div>
 
           <div className="ml-6 flex items-center gap-3">
             {isAuthenticated ? (

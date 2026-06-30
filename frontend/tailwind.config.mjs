@@ -12,6 +12,16 @@ const config = {
       mono: ['ui-monospace', 'SFMono-Regular'],
     },
     extend: {
+      // The main nav needs ~1220px to show all items on one line. Below this
+      // width the lower-priority items collapse into a "More" dropdown
+      // (Priority+ pattern) — see the `nav:` prefix usage in Header.jsx.
+      // Tune this single value to move the collapse threshold.
+      screens: {
+        // Below this width the header collapses to the hamburger drawer; at or
+        // above it the horizontal nav (with Priority+ overflow) is shown.
+        menu: '900px',
+        nav: '1200px',
+      },
       fontFamily: {
         'roboto-slab': ['"Roboto Slab"', 'serif'],
         assistant: ['Assistant', 'sans-serif'],
