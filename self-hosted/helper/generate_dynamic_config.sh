@@ -77,8 +77,11 @@ http:
     # collapses plain-HTTP hits into a single redirect to the new HTTPS URL.
     old-domain-redirect:
       redirectRegex:
-        regex: "^https?://tdt\\.akvo\\.org/(.*)"
-        replacement: "https://drylandsinvest.org/\${1}"
+        # Single-quoted YAML: backslashes pass through literally to the regex
+        # engine. Double quotes would make YAML choke on \. as an invalid
+        # escape and reject the whole dynamic config.
+        regex: '^https?://tdt\\.akvo\\.org/(.*)'
+        replacement: 'https://drylandsinvest.org/\${1}'
         permanent: true
 
 
