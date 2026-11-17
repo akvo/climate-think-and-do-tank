@@ -19,7 +19,7 @@ const config = {
       screens: {
         // Below this width the header collapses to the hamburger drawer; at or
         // above it the horizontal nav (with Priority+ overflow) is shown.
-        menu: '900px',
+        menu: '1024px',
         nav: '1200px',
       },
       fontFamily: {

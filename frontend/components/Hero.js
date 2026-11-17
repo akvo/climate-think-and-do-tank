@@ -16,25 +16,29 @@ export default function HeroSection({
 
   return (
     <div className="relative bg-gray-10 overflow-hidden">
+      {/* Capped at 30% of the width so it never reaches the max-w-2xl text
+          column; reaches its natural 375px size at 1250px and wider. */}
       <div
-        className="hidden md:block absolute inset-0"
+        className="hidden lg:block absolute inset-0"
         style={{
           backgroundImage:
             "url('/images/graphic.svg'), url('/images/cubes.svg')",
           backgroundPosition: 'right center, left center',
           backgroundRepeat: 'no-repeat, no-repeat',
-          backgroundSize: 'auto, cover',
+          backgroundSize: 'min(30%, 375px) auto, cover',
         }}
       />
 
+      {/* Tablet: graphic tucked into the top-right corner; the title block
+          below reserves matching right padding so the two never overlap. */}
       <div
-        className="hidden sm:block md:hidden absolute inset-0"
+        className="hidden sm:block lg:hidden absolute inset-0"
         style={{
           backgroundImage:
             "url('/images/graphic.svg'), url('/images/cubes.svg')",
           backgroundPosition: 'right top, left bottom',
           backgroundRepeat: 'no-repeat, no-repeat',
-          backgroundSize: '40%, 80%',
+          backgroundSize: '28%, 80%',
         }}
       />
 
@@ -48,8 +52,8 @@ export default function HeroSection({
         }}
       />
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-0 py-8 sm:py-12 md:py-16">
-        <div className="max-w-2xl">
-          <div className="mb-8 sm:mb-12">
+        <div className="max-w-2xl sm:pr-[30%] lg:pr-0">
+          <div className="mb-8 sm:mb-12 pr-[22%] sm:pr-0">
             <H2 variant="bold">{pageTitle}</H2>
             <ParagraphMD className="mt-2">{pageDescription}</ParagraphMD>
           </div>

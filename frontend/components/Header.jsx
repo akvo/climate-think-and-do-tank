@@ -120,21 +120,47 @@ export default function Header() {
               <Link
                 href="/contact-us"
                 className="bg-primary-500 text-white text-center py-3 rounded-full font-bold"
+                onClick={() => setMobileMenuOpen(false)}
               >
                 Get in Touch
               </Link>
-              <Link
-                href="/signup"
-                className="border-2 border-black text-black text-center py-3 rounded-full font-bold"
-              >
-                Sign up
-              </Link>
-              <Link
-                href="/login"
-                className="text-center py-2 font-semibold text-black"
-              >
-                Log in
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    href="/profile"
+                    className="border-2 border-black text-black text-center py-3 rounded-full font-bold"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      handleLogout();
+                    }}
+                    className="text-center py-2 font-semibold text-black"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/signup"
+                    className="border-2 border-black text-black text-center py-3 rounded-full font-bold"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Sign up
+                  </Link>
+                  <Link
+                    href="/login"
+                    className="text-center py-2 font-semibold text-black"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Log in
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
         </div>
@@ -148,7 +174,7 @@ export default function Header() {
               {!item.dropdown ? (
                 <Link
                   href={item.path}
-                  className={`px-4 py-6 text-md font-bold relative group ${
+                  className={`px-4 py-6 text-md font-bold relative group whitespace-nowrap ${
                     isActive(item.path)
                       ? 'text-black bg-primary-50'
                       : 'hover:text-zinc-600'
@@ -171,7 +197,7 @@ export default function Header() {
                         prev === item.label ? null : item.label
                       )
                     }
-                    className="flex items-center px-4 py-2 text-md font-bold text-black hover:text-zinc-600"
+                    className="flex items-center px-4 py-2 text-md font-bold text-black hover:text-zinc-600 whitespace-nowrap"
                   >
                     {item.label}
                     {moreDropdownOpen === item.label ? (
@@ -245,13 +271,14 @@ export default function Header() {
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
                 <div className="relative">
+                  {/* Avatar only: the full name doesn't fit alongside the nav
+                      and is shown in the dropdown below. */}
                   <button
                     onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="flex items-center gap-2 hover:bg-gray-100 px-3 py-2 rounded-full text-black"
+                    title={user?.full_name || 'User'}
+                    aria-label={`Account menu for ${user?.full_name || 'User'}`}
+                    className="flex items-center hover:bg-gray-100 p-1 rounded-full text-black"
                   >
-                    <span className="font-semibold">
-                      {user?.full_name || 'User'}
-                    </span>
                     <div className="w-10 h-10 rounded-full overflow-hidden">
                       {user?.profile_image?.url ? (
                         <Image
@@ -303,7 +330,7 @@ export default function Header() {
                 </div>
                 <Link
                   href="/contact-us"
-                  className="text-sm font-semibold text-white bg-primary-500 px-4 py-1.5 rounded-full hover:bg-white hover:text-primary-500 border hover:border-primary-500"
+                  className="text-sm font-semibold text-white bg-primary-500 px-4 py-1.5 rounded-full whitespace-nowrap hover:bg-white hover:text-primary-500 border hover:border-primary-500"
                 >
                   Get In Touch
                 </Link>
@@ -318,13 +345,13 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/signup"
-                  className="text-sm font-semibold text-[#6D8D55] border border-[#6D8D55] px-4 py-1.5 rounded-full hover:bg-[#6D8D55] hover:text-white"
+                  className="text-sm font-semibold whitespace-nowrap text-[#6D8D55] border border-[#6D8D55] px-4 py-1.5 rounded-full hover:bg-[#6D8D55] hover:text-white"
                 >
                   Sign Up
                 </Link>
                 <Link
                   href="/contact-us"
-                  className="text-sm font-semibold text-white bg-primary-500 px-4 py-1.5 rounded-full hover:bg-white hover:text-primary-500 border hover:border-primary-500"
+                  className="text-sm font-semibold text-white bg-primary-500 px-4 py-1.5 rounded-full whitespace-nowrap hover:bg-white hover:text-primary-500 border hover:border-primary-500"
                 >
                   Get In Touch
                 </Link>
