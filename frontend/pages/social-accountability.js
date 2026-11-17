@@ -21,6 +21,7 @@ import {
 import HeroSection from '@/components/Hero';
 import OtherMediaCarousel from '@/components/MediaCarousel';
 import CommunityVoicesSection from '@/components/CommunityVoicesSection';
+import SocialAccountabilityProcess from '@/components/SocialAccountabilityProcess';
 
 export default function SocialAccountability() {
   const router = useRouter();
@@ -191,12 +192,14 @@ export default function SocialAccountability() {
       <HeroSection
         pageTitle="Social Accountability"
         pageDescription={
-          "Through participatory tools like the Community Scorecard, local voices shape agri-food investment priorities across Kenya's drylands. This page showcases community-identified needs, investment opportunities, and personal perspectives—anchoring decisions in real, lived experiences."
+          'The Social Accountability approach uses the Community Score Card to align agri-food investments with community priorities. It builds government capacity and facilitates inclusive dialogues where communities rank investment priorities by relevance and impact. Top priorities are validated and shared with county governments for planning. This method ensures investments are responsive, inclusive, and sustainable, reflecting local needs and opportunities.'
         }
         searchTerm={searchTerm}
         setSearchTerm={handleSearch}
         showSearch={false}
       />
+
+      <SocialAccountabilityProcess />
 
       <div className="container mx-auto mt-[-31px] relative z-10">
         <FilterSection
