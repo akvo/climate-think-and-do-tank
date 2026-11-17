@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { normalizeCaps } from '@/helpers/utilities';
 
 const CommunityVoicesSection = ({ voices, county }) => {
   const [page, setPage] = useState(1);
@@ -11,7 +12,7 @@ const CommunityVoicesSection = ({ voices, county }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {voicesToShow.map((voice, idx) => (
           <div key={idx} className="bg-[#FAFAFA] rounded-xl p-6 shadow-sm">
-            <div className="font-bold mb-2">{voice.title}</div>
+            <div className="font-bold mb-2">{normalizeCaps(voice.title)}</div>
             <div className="text-gray-700 mb-4">{voice.description}</div>
             <div className="text-gray-500 text-right">
               {voice.voice_description}

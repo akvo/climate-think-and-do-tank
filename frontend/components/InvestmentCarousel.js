@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { env } from '@/helpers/env-vars';
-import { getImageUrl } from '@/helpers/utilities';
+import { getImageUrl, normalizeCaps } from '@/helpers/utilities';
 import { H3 } from './Heading';
 import { ParagraphMD } from './Text';
 
@@ -46,7 +46,7 @@ const IOPCard = ({ investment, onClick }) => {
 
         <div className="flex items-start justify-between gap-3">
           <h3 className="font-bold text-base sm:text-lg text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 flex-1">
-            {investment.title}
+            {normalizeCaps(investment.title)}
           </h3>
           <div className="flex-shrink-0 mt-1">
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gray-100 group-hover:bg-orange-100 flex items-center justify-center transition-all group-hover:translate-x-1">
@@ -117,8 +117,8 @@ const InvestmentCarousel = () => {
               title: item.title || `${item.value_chain?.name} In ${item.regions?.[0]?.name || ''}`,
               region: item.regions?.[0]?.name || '',
               amount: '$0',
-              period: item.publication_date
-                ? new Date(item.publication_date).toLocaleDateString('en-US', {
+              period: item.publication_date || item.createdAt
+                ? new Date(item.publication_date || item.createdAt).toLocaleDateString('en-US', {
                     month: 'long',
                     year: 'numeric',
                   })

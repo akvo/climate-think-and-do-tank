@@ -1,4 +1,4 @@
-import { formatDate, getImageUrl } from '@/helpers/utilities';
+import { formatDate, getImageUrl, normalizeCaps } from '@/helpers/utilities';
 import Image from 'next/image';
 import React from 'react';
 
@@ -52,7 +52,7 @@ const Card = ({ card, onClick }) => {
 
       <div className="p-6">
         <h3 className="text-lg font-semibold text-black line-clamp-2 border-b pb-4 mb-4">
-          {card.title}
+          {normalizeCaps(card.title)}
         </h3>
         <div className="flex gap-2 items-center justify-between">
           {card.author && (

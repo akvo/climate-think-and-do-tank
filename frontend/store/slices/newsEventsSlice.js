@@ -65,8 +65,8 @@ export const fetchNewsEvents = createAsyncThunk(
                 title: item.title || '',
                 description: item.description || '',
                 type: 'News',
-                publicationDate: item.publication_date || null,
-                displayDate: item.publication_date,
+                publicationDate: item.publication_date || item.createdAt || null,
+                displayDate: item.publication_date || item.createdAt,
                 regions: item.regions ? item.regions.map((r) => r.name) : [],
                 imageUrl: item.image ? item.image : '',
               }));

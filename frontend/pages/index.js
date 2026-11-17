@@ -11,9 +11,11 @@ import Button from '@/components/Button';
 import { H3 } from '@/components/Heading';
 import { ParagraphMD } from '@/components/Text';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 
 export default function HomePage() {
   const router = useRouter();
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const [data, setData] = useState({
     title: '',
@@ -31,15 +33,33 @@ export default function HomePage() {
               <div className="col-span-1 lg:col-span-5">
                 <H3
                   variant="bold"
-                  className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight"
+                  className="text-[36px] md:text-[36px] leading-[40px] md:leading-[40px] tracking-[-0.25px] text-primary-500"
                 >
-                  Convene, Connect, Catalyze
+                  <span className="block">Convene,</span>
+                  <span className="block">Connect,</span>
+                  <span className="block">Catalyze</span>
                 </H3>
               </div>
 
               <div className="col-span-1 lg:col-span-7 space-y-6 md:space-y-8">
                 <div className="text-base sm:text-lg md:text-xl">
                   <MarkdownRenderer content={data.description} />
+                </div>
+                <div className="flex flex-wrap gap-4">
+                  <Link
+                    href="/contact-us"
+                    className="px-8 py-3 rounded-full font-bold text-white bg-primary-500 border-2 border-primary-500 hover:bg-white hover:text-primary-500 transition-colors"
+                  >
+                    Get in touch
+                  </Link>
+                  {!isAuthenticated && (
+                    <Link
+                      href="/signup"
+                      className="px-8 py-3 rounded-full font-bold text-[#6D8D55] border-2 border-[#6D8D55] hover:bg-[#6D8D55] hover:text-white transition-colors"
+                    >
+                      Sign up
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
@@ -49,6 +69,8 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        <InvestmentCarousel />
 
         <section className="py-16 text-black bg-gray-10 md:block">
           <div className="container mx-auto px-4">
@@ -82,11 +104,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        <PartnersSection />
-
-        <InvestmentCarousel />
-
         <InterestedSection />
+
+        <PartnersSection />
       </main>
     </>
   );

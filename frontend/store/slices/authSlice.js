@@ -811,7 +811,7 @@ export async function searchContentAcrossTypes({ query }) {
           attributes: {
             title: inv.title || `${inv.value_chain?.name} in ${inv.regions?.[0]?.name || ''}`,
             category: inv.regions?.[0]?.name || 'Investment',
-            publication_date: inv.publication_date,
+            publication_date: inv.publication_date || inv.createdAt,
           },
         })),
       },

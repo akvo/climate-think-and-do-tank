@@ -5,7 +5,7 @@ import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import { MarkdownRenderer } from '@/components/MarkDownRenderer';
 import Link from 'next/link';
-import { getImageUrl } from '@/helpers/utilities';
+import { getImageUrl, normalizeCaps } from '@/helpers/utilities';
 import {
   Home,
   ChevronRight,
@@ -131,7 +131,7 @@ export default function InvestmentOpportunityProfile() {
   };
 
   const getTitle = () => {
-    if (profile?.title) return profile.title;
+    if (profile?.title) return normalizeCaps(profile.title);
     if (profile?.value_chain?.name) {
       return `${profile.value_chain.name} Value Chain in ${profile.regions?.[0]?.name} County`;
     }
@@ -261,7 +261,7 @@ export default function InvestmentOpportunityProfile() {
   const imageUrl = profile.picture_one
     ? getImageUrl(profile.picture_one)
     : null;
-  const formattedDate = formatDate(profile.publication_date);
+  const formattedDate = formatDate(profile.publication_date || profile.createdAt);
 
   return (
     <div className="min-h-screen bg-white">
@@ -483,7 +483,7 @@ export default function InvestmentOpportunityProfile() {
 
         {/* The Investment Case Overview Section */}
         <div className="mb-12">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <h2 className="text-3xl md:text-4xl font-bold text-primary-500">
               The Investment Case Overview
             </h2>
@@ -492,7 +492,7 @@ export default function InvestmentOpportunityProfile() {
                 href={getImageUrl(profile.investment_pdf)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 border border-primary-500 text-primary-500 rounded-full hover:bg-primary-50 transition-colors"
+                className="self-start sm:self-auto flex items-center gap-2 px-4 py-2 border border-primary-500 text-primary-500 rounded-full hover:bg-primary-50 transition-colors whitespace-nowrap flex-shrink-0"
               >
                 <span className="text-sm font-medium">
                   Investment opportunity (PDF)
@@ -745,7 +745,7 @@ export default function InvestmentOpportunityProfile() {
                                   className="bg-white rounded-xl p-6 border border-gray-200"
                                 >
                                   <h4 className="font-semibold text-gray-900 mb-2">
-                                    {card.title}
+                                    {normalizeCaps(card.title)}
                                   </h4>
                                   <p className="text-gray-600 text-sm">
                                     {card.description}
@@ -862,8 +862,8 @@ export default function InvestmentOpportunityProfile() {
 
         <InterestedSection />
 
-        <div className="bg-white rounded-2xl p-8 mt-16 border border-primary-100">
-          <div className="flex items-start gap-4">
+        <div className="bg-white rounded-2xl p-5 sm:p-8 mt-16 border border-primary-100">
+          <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
             <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center flex-shrink-0 border border-orange-200">
               <AlertCircle className="w-6 h-6 text-primary-500" />
             </div>

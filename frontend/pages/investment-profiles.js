@@ -320,7 +320,7 @@ export default function InvestmentOpportunityProfile() {
                       ...card,
                       title: card.title || `${card.valueChain} Value Chain in ${card.regions?.[0] || ''} County`,
                       focusRegions: card.regions?.length > 0 ? card.regions : ['No Region'],
-                      publishedAt: card.publicationDate || 'No Date',
+                      publishedAt: card.publicationDate,
                       topic: card.valueChain ? [card.valueChain] : [],
                       image: card.imageUrl,
                     }}

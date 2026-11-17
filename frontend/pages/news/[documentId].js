@@ -7,7 +7,7 @@ import { ChevronLeft, MapPin, Calendar, Share2, Upload } from 'lucide-react';
 import { TwitterIcon, LinkedinIcon } from '@/components/Icons';
 import axios from 'axios';
 import { env } from '@/helpers/env-vars';
-import { getImageUrl, formatRegionsDisplay } from '@/helpers/utilities';
+import { getImageUrl, formatRegionsDisplay, normalizeCaps } from '@/helpers/utilities';
 import { MarkdownRenderer } from '../../components/MarkDownRenderer';
 import Button from '@/components/Button';
 
@@ -51,7 +51,7 @@ export default function NewsDetailPage() {
             id: item.id,
             title: item.title || '',
             description: item.description || '',
-            publicationDate: item.publication_date || null,
+            publicationDate: item.publication_date || item.createdAt || null,
             regions: item.regions ? item.regions.map((r) => r.name) : [],
             imageUrl: item.image?.url ? getImageUrl(item.image) : null,
             author: item.author || null,
@@ -131,7 +131,7 @@ export default function NewsDetailPage() {
   return (
     <>
       <Head>
-        <title>{newsItem.title} | Kenya Drylands Investment Hub</title>
+        <title>{normalizeCaps(newsItem.title)} | Kenya Drylands Investment Hub</title>
         <meta
           name="description"
           content={newsItem.description.substring(0, 160)}
@@ -142,7 +142,7 @@ export default function NewsDetailPage() {
             <meta name="twitter:image" content={newsItem.imageUrl} />
           </>
         )}
-        <meta property="og:title" content={newsItem.title} />
+        <meta property="og:title" content={normalizeCaps(newsItem.title)} />
         <meta
           property="og:description"
           content={newsItem.description.substring(0, 160)}
@@ -192,7 +192,7 @@ export default function NewsDetailPage() {
           )}
 
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            {newsItem.title}
+            {normalizeCaps(newsItem.title)}
           </h1>
 
           <p className="text-lg text-gray-600 mb-8 leading-relaxed">

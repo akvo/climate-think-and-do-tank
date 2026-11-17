@@ -122,8 +122,8 @@ export const fetchKnowledgeHubs = createAsyncThunk(
         topic: hub.topic?.name || '',
         focusRegions: hub.regions?.map((r) => r.name) || [],
         webLink: hub.web_link,
-        publishedAt: hub.publication_date,
-        publishedYear: new Date(hub.publication_date).getFullYear(),
+        publishedAt: hub.publication_date || hub.createdAt,
+        publishedYear: new Date(hub.publication_date || hub.createdAt).getFullYear(),
       }));
 
       return {
@@ -177,8 +177,8 @@ export const fetchRelatedKnowledgeHubs = createAsyncThunk(
         description: hub.description,
         image: hub.image?.url,
         topic: hub.topic?.name || '',
-        publishedAt: hub.publication_date,
-        publishedYear: new Date(hub.publication_date).getFullYear(),
+        publishedAt: hub.publication_date || hub.createdAt,
+        publishedYear: new Date(hub.publication_date || hub.createdAt).getFullYear(),
       }));
 
       return {

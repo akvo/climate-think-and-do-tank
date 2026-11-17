@@ -7,7 +7,7 @@ import {
   Calendar,
   ArrowRight,
 } from 'lucide-react';
-import { getImageUrl } from '@/helpers/utilities';
+import { getImageUrl, normalizeCaps } from '@/helpers/utilities';
 
 export default function ResultCard({ result, viewMode, onClick, showLink }) {
   const isGridView = viewMode === 'grid';
@@ -91,19 +91,19 @@ export default function ResultCard({ result, viewMode, onClick, showLink }) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-1">
-                <Calendar className="w-3 sm:w-4 h-3 sm:h-4 text-gray-600 sm:text-black" />
-                <span className="text-gray-600 sm:text-black font-medium sm:font-bold">
-                  {result.publishedAt
-                    ? new Date(result.publishedAt).getFullYear()
-                    : 'No Date'}
-                </span>
-              </div>
+              {result.publishedAt && (
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-3 sm:w-4 h-3 sm:h-4 text-gray-600 sm:text-black" />
+                  <span className="text-gray-600 sm:text-black font-medium sm:font-bold">
+                    {new Date(result.publishedAt).getFullYear()}
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-2 justify-between mb-2 sm:mb-3">
               <h3 className="font-bold text-base sm:text-lg text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2">
-                {result.title}
+                {normalizeCaps(result.title)}
               </h3>
 
               <div className="flex-shrink-0">

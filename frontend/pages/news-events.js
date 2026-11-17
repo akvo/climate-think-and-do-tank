@@ -23,6 +23,7 @@ import {
   formatRegionsDisplay,
   getImageUrl,
   generatePageNumbers,
+  normalizeCaps,
 } from '@/helpers/utilities';
 import HeroSection from '@/components/Hero';
 import FilterSection from '@/components/FilterSection';
@@ -299,7 +300,7 @@ export default function NewsEventsDirectory() {
                       </div>
 
                       <h3 className="text-lg font-semibold mb-3 line-clamp-2 text-black transition-colors flex items-center gap-2 justify-between">
-                        {item.title}
+                        {normalizeCaps(item.title)}
 
                         <div className="flex justify-end">
                           <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-primary-100 transition-colors">

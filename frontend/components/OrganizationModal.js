@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { normalizeCaps } from '@/helpers/utilities';
 import {
   X,
   Download,
@@ -275,7 +276,7 @@ export default function KnowledgeHubModal({ isOpen, onClose, card }) {
           </div>
 
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
-            {card.title}
+            {normalizeCaps(card.title)}
           </h1>
 
           <div className="text-sm sm:text-base text-gray-800 mb-6 sm:mb-8 leading-relaxed">

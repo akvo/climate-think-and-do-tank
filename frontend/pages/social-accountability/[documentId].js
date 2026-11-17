@@ -85,7 +85,7 @@ export default function SocialAccountabilityPage() {
     );
   }
 
-  const formattedDate = formatDate(data.publication_date);
+  const formattedDate = formatDate(data.publication_date || data.createdAt);
 
   return (
     <div className="min-h-screen bg-white">
@@ -136,7 +136,7 @@ export default function SocialAccountabilityPage() {
           </div>
 
           <div className="md:w-1/2 flex flex-col justify-center">
-            <h3 className="text-2xl font-semibold mb-4 text-[#008A16] uppercase">
+            <h3 className="text-2xl font-semibold mb-4 text-[#008A16]">
               {`${data.region?.name} County`}
             </h3>
             <div className="prose prose-lg text-gray-700 max-w-none">

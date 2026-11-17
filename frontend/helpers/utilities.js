@@ -246,3 +246,64 @@ export const generatePageNumbers = (currentPage, totalPages) => {
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
+
+// Acronyms that stay upper-case when a shouted title is converted.
+const KEEP_UPPERCASE = new Set([
+  'ASAL', 'CIDP', 'EU', 'FAO', 'FCDC', 'GCP', 'GDP', 'II', 'III', 'IOP', 'IV',
+  'KDIH', 'NGO', 'NISIP', 'UN', 'USAID',
+]);
+const MINOR_WORDS = new Set([
+  'a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 'into', 'of', 'on',
+  'or', 'the', 'to', 'with',
+]);
+
+/**
+ * Converts ALL-CAPS text from the CMS to Title Case so titles read
+ * consistently. Only runs of two or more all-caps words are converted, so a
+ * lone acronym in normal text ("ASALs Investment Diagnostic") is left alone,
+ * as are parenthesised acronyms like "(NISIP)" and those in KEEP_UPPERCASE.
+ */
+export const normalizeCaps = (text) => {
+  if (typeof text !== 'string' || !text) return text;
+
+  const tokens = text.split(/(\s+)/);
+  const letters = (t) => t.replace(/[^A-Za-z]/g, '');
+  const isCaps = (t) => letters(t).length > 0 && letters(t) === letters(t).toUpperCase();
+
+  // Mark tokens that sit in a run of 2+ all-caps words; tokens with no
+  // letters ("-", "&", "2021") neither break nor extend a run.
+  const inRun = new Array(tokens.length).fill(false);
+  let run = [];
+  const flush = () => {
+    if (run.length >= 2) run.forEach((i) => (inRun[i] = true));
+    run = [];
+  };
+  tokens.forEach((t, i) => {
+    if (!letters(t)) return;
+    if (isCaps(t)) run.push(i);
+    else flush();
+  });
+  flush();
+
+  let startOfPhrase = true;
+  return tokens
+    .map((t, i) => {
+      if (!letters(t)) {
+        if (/[:\-–—]$/.test(t.trim())) startOfPhrase = true;
+        return t;
+      }
+      let out = t;
+      const core = letters(t);
+      const isAcronym = KEEP_UPPERCASE.has(core) || /^\([A-Z]+\)\W*$/.test(t);
+      if (inRun[i] && !isAcronym) {
+        const lower = t.toLowerCase();
+        out =
+          !startOfPhrase && MINOR_WORDS.has(letters(lower))
+            ? lower
+            : lower.replace(/(^|[-–/])([^a-z]*)([a-z])/g, (m, sep, pre, c) => sep + pre + c.toUpperCase());
+      }
+      startOfPhrase = /[:\-–—]$/.test(t);
+      return out;
+    })
+    .join('');
+};

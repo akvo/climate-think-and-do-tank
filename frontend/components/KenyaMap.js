@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, use } from 'react';
 import {
+  ArrowRight,
   ChevronRight,
   Download,
   Users,
@@ -15,7 +16,8 @@ import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import { MarkdownRenderer } from './MarkDownRenderer';
 import Image from 'next/image';
-import { getImageUrl } from '@/helpers/utilities';
+import Link from 'next/link';
+import { getImageUrl, normalizeCaps } from '@/helpers/utilities';
 import { useRouter } from 'next/router';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
@@ -158,8 +160,8 @@ export default function KenyaMap({
                 profile.regions?.[0]?.name || ''
               } County`,
               description: profile.description,
-              publicationDate: profile.publication_date,
-              publicationYear: new Date(profile.publication_date).getFullYear(),
+              publicationDate: profile.publication_date || profile.createdAt,
+              publicationYear: new Date(profile.publication_date || profile.createdAt).getFullYear(),
               valueChain: profile.value_chain?.name || '',
               region: profile.regions?.[0]?.name || '',
               imageUrl:
@@ -1217,6 +1219,83 @@ export default function KenyaMap({
                   </div>
                 </div>
               )}
+
+            {/* Investment opportunities - homepage only */}
+            {!showSubLocations && selectedCounties.length > 0 && (
+              <div className="bg-gray-10 border border-gray-30 rounded-xl shadow-lg p-4 sm:p-6">
+                <div className="flex items-start justify-between gap-4 mb-4 sm:mb-6">
+                  <h3 className="font-roboto-slab text-lg sm:text-xl font-bold text-gray-900">
+                    Investment opportunities in{' '}
+                    <span className="text-primary-500">
+                      {selectedCounties.length === 1
+                        ? selectedCounties[0]
+                        : `${selectedCounties.length} counties`}
+                    </span>
+                  </h3>
+                  <Link
+                    href={`/investment-profiles?region=${encodeURIComponent(
+                      selectedCounties.join(',')
+                    )}`}
+                    className="flex items-center gap-1 text-sm font-bold text-gray-900 hover:text-primary-500 whitespace-nowrap flex-shrink-0 mt-1"
+                  >
+                    See all
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+
+                {loading ? (
+                  <p className="text-sm sm:text-base text-gray-600 text-center py-4">
+                    Loading investment profiles...
+                  </p>
+                ) : investmentProfiles.length > 0 ? (
+                  <div className="space-y-3">
+                    {investmentProfiles.slice(0, 3).map((profile) => (
+                      <Link
+                        key={profile.id}
+                        href={`/iop/${profile.documentId}`}
+                        className="flex bg-white rounded-2xl border border-primary-50 overflow-hidden hover:shadow-lg transition-shadow group"
+                      >
+                        {profile.imageUrl && (
+                          <div className="relative w-2/5 flex-shrink-0 min-h-[140px]">
+                            <Image
+                              src={getImageUrl(profile.imageUrl)}
+                              alt={profile.title}
+                              fill
+                              unoptimized
+                              className="object-cover"
+                            />
+                          </div>
+                        )}
+                        <div className="flex-1 p-4 sm:p-5">
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="font-roboto-slab text-base sm:text-lg font-bold text-gray-900 group-hover:text-primary-500 transition-colors">
+                              {normalizeCaps(profile.title)}
+                            </h4>
+                            <ArrowRight className="w-5 h-5 text-gray-900 flex-shrink-0 mt-1" />
+                          </div>
+                          {profile.valueChain && (
+                            <div className="flex flex-wrap gap-2 mt-3">
+                              <span className="px-3 py-1 bg-primary-50 text-primary-500 rounded-full text-xs sm:text-sm">
+                                {profile.valueChain}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 text-primary-400 border-primary-50 border-8">
+                      <CircleAlert className="h-3 w-3 sm:h-4 sm:w-4" />
+                    </div>
+                    <p className="text-sm sm:text-base text-gray-600 mt-2">
+                      No investment opportunities available yet
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
 
             {selectedCounties.length === 0 && (
               <>

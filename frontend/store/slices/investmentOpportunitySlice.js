@@ -90,8 +90,8 @@ export const fetchInvestmentOpportunityProfiles = createAsyncThunk(
           documentId: profile.documentId,
           title: profile.title,
           description: profile.description,
-          publicationDate: profile.publication_date,
-          publicationYear: new Date(profile.publication_date).getFullYear(),
+          publicationDate: profile.publication_date || profile.createdAt,
+          publicationYear: new Date(profile.publication_date || profile.createdAt).getFullYear(),
           valueChain: profile.value_chain?.name || '',
           regions: profile.regions?.map(r => r.name) || [],
           imageUrl: profile.picture_one || '',
@@ -151,7 +151,7 @@ export const fetchRelatedInvestmentOpportunityProfiles = createAsyncThunk(
           id: profile.id,
           title: profile.title,
           description: profile.description,
-          publicationDate: profile.publication_date,
+          publicationDate: profile.publication_date || profile.createdAt,
           valueChain: profile.value_chain?.name || '',
         })
       );

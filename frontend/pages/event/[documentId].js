@@ -7,7 +7,7 @@ import { ChevronLeft, Clock, MapPin, Users, Share2, Upload } from 'lucide-react'
 import { TwitterIcon, LinkedinIcon } from '@/components/Icons';
 import axios from 'axios';
 import { env } from '@/helpers/env-vars';
-import { getImageUrl } from '@/helpers/utilities';
+import { getImageUrl, normalizeCaps } from '@/helpers/utilities';
 import { MarkdownRenderer } from '@/components/MarkDownRenderer';
 import Button from '@/components/Button';
 
@@ -143,12 +143,12 @@ export default function EventDetailPage() {
   return (
     <>
       <Head>
-        <title>{event.title} | Kenya Drylands Investment Hub</title>
+        <title>{normalizeCaps(event.title)} | Kenya Drylands Investment Hub</title>
         <meta
           name="description"
           content={event.description.substring(0, 160)}
         />
-        <meta property="og:title" content={event.title} />
+        <meta property="og:title" content={normalizeCaps(event.title)} />
         <meta
           property="og:description"
           content={event.description.substring(0, 160)}
@@ -189,7 +189,7 @@ export default function EventDetailPage() {
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
             <div className="flex-1">
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                {event.title}
+                {normalizeCaps(event.title)}
               </h1>
               <p className="text-lg text-gray-600 leading-relaxed">
                 {event.description.split('\n')[0] ||

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
+import { normalizeCaps } from '@/helpers/utilities';
 import { searchContentAcrossTypes } from '@/store/slices/authSlice';
 
 export default function SearchResults() {
@@ -245,12 +246,12 @@ export default function SearchResults() {
                         </span>
                       </div>
                       <h3 className="font-medium mb-2 line-clamp-2">
-                        {item.attributes.title}
+                        {normalizeCaps(item.attributes.title)}
                       </h3>
                       <div className="text-sm text-gray-600">
                         <div>Published</div>
                         <div className="font-medium text-black">
-                          {formatDate(item.attributes.publication_date) ||
+                          {formatDate(item.attributes.publication_date || item.attributes.createdAt) ||
                             'N/A'}
                         </div>
                       </div>
@@ -271,7 +272,7 @@ export default function SearchResults() {
                     </div>
                     <div className="p-4 text-black">
                       <h3 className="font-medium mb-2 line-clamp-2 h-12">
-                        {item.attributes.title}
+                        {normalizeCaps(item.attributes.title)}
                       </h3>
                       <p className="text-gray-700 text-sm line-clamp-3 mb-3">
                         {item.attributes.description ||
