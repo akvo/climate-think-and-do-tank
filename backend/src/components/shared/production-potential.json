@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_shared_production_potentials",
+  "info": {
+    "displayName": "Production Potential",
+    "icon": "chartBubble",
+    "description": "Current production compared with potential (shown as % of potential)"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "current": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "potential": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "unit": {
+      "type": "string",
+      "default": "tons/yr"
+    }
+  }
+}

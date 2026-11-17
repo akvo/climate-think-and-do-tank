@@ -14,6 +14,11 @@
       "type": "string",
       "default": "Identified Community Investment Priorities:"
     },
+    "production_potentials": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.production-potential"
+    },
     "investment_priorities": {
       "type": "text"
     },

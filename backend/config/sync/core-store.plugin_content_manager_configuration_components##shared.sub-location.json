@@ -33,6 +33,34 @@
           "sortable": true
         }
       },
+      "section_title": {
+        "edit": {
+          "label": "section_title",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "section_title",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "production_potentials": {
+        "edit": {
+          "label": "Production potentials",
+          "description": "Cards comparing current production with potential",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "production_potentials",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "investment_priorities": {
         "edit": {
           "label": "investment_priorities",
@@ -60,6 +88,20 @@
           "searchable": true,
           "sortable": true
         }
+      },
+      "pdf_attachment": {
+        "edit": {
+          "label": "pdf_attachment",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "pdf_attachment",
+          "searchable": false,
+          "sortable": false
+        }
       }
     },
     "layouts": {
@@ -84,6 +126,22 @@
           {
             "name": "potential_impact",
             "size": 6
+          },
+          {
+            "name": "section_title",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "pdf_attachment",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "production_potentials",
+            "size": 12
           }
         ]
       ]

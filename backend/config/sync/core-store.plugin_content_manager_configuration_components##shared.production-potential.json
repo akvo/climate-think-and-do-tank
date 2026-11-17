@@ -1,0 +1,115 @@
+{
+  "key": "plugin_content_manager_configuration_components::shared.production-potential",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "name",
+      "defaultSortBy": "name",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "name": {
+        "edit": {
+          "label": "Name",
+          "description": "Crop or product, e.g. Banana",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "name",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "current": {
+        "edit": {
+          "label": "Current",
+          "description": "Current production",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "current",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "potential": {
+        "edit": {
+          "label": "Potential",
+          "description": "Full potential; shown as 100%",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "potential",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "unit": {
+        "edit": {
+          "label": "Unit",
+          "description": "Shown under both figures, e.g. tons/yr",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "unit",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "name",
+        "current",
+        "potential"
+      ],
+      "edit": [
+        [
+          {
+            "name": "name",
+            "size": 6
+          },
+          {
+            "name": "unit",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "current",
+            "size": 6
+          },
+          {
+            "name": "potential",
+            "size": 6
+          }
+        ]
+      ]
+    },
+    "uid": "shared.production-potential",
+    "isComponent": true
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

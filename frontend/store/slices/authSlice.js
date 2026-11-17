@@ -5,6 +5,9 @@ import { env } from '@/helpers/env-vars';
 
 const BACKEND_URL = env('NEXT_PUBLIC_BACKEND_URL');
 
+const REGION_POPULATE =
+  'populate[0]=value_chains&populate[1]=county_image&populate[2]=sub_locations&populate[3]=sub_locations.pdf_attachment';
+
 export const getAuthToken = () => {
   const token = getCookie('token');
   if (!token) {
@@ -723,9 +726,18 @@ export const fetchOrganizationsAndRegions = createAsyncThunk(
         axios.get(
           `${BACKEND_URL}/api/organisations?status=published&pagination[pageSize]=250`
         ),
-        axios.get(
-          `${BACKEND_URL}/api/regions?status=published&pagination[pageSize]=250&populate[0]=value_chains&populate[1]=county_image&populate[2]=sub_locations&populate[3]=sub_locations.pdf_attachment`
-        ),
+        axios
+          .get(
+            `${BACKEND_URL}/api/regions?status=published&pagination[pageSize]=250&${REGION_POPULATE}&populate[4]=sub_locations.production_potentials`
+          )
+          // A CMS without the production_potentials field rejects the
+          // populate with a 400; fall back so county data still loads.
+          .catch((err) => {
+            if (err.response?.status !== 400) throw err;
+            return axios.get(
+              `${BACKEND_URL}/api/regions?status=published&pagination[pageSize]=250&${REGION_POPULATE}`
+            );
+          }),
         axios.get(
           `${BACKEND_URL}/api/looking-fors?status=published&pagination[pageSize]=250`
         ),

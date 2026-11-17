@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { env } from '@/helpers/env-vars';
 import { MarkdownRenderer } from './MarkDownRenderer';
+import ProductionPotentialCard from './ProductionPotentialCard';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getImageUrl, normalizeCaps } from '@/helpers/utilities';
@@ -124,7 +125,67 @@ export default function KenyaMap({
     }
   }, [initialSelected]);
 
-  const handleCountyClick = async (county) => {
+  // Load investment opportunities whenever the selection changes, whether
+  // from a click or from initialSelected (e.g. a ?focusRegions= URL).
+  const selectionKey = selectedCounties.join(',');
+  useEffect(() => {
+    if (selectedCounties.length === 0) {
+      setInvestmentProfiles([]);
+      return;
+    }
+
+    let cancelled = false;
+    const fetchProfiles = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const countyFilters = selectedCounties
+          .map((c) => `filters[regions][name][$in][]=${encodeURIComponent(c)}`)
+          .join('&');
+
+        const investmentProfilesResponse = await axios.get(
+          `${env(
+            'NEXT_PUBLIC_BACKEND_URL'
+          )}/api/investment-opportunity-profiles?${countyFilters}&populate[0]=value_chain&populate[1]=regions&populate[2]=picture_one`
+        );
+
+        const profiles = investmentProfilesResponse.data.data.map(
+          (profile) => ({
+            id: profile.id,
+            documentId: profile.documentId,
+            title: profile.title || `${profile.value_chain?.name || ''} Value Chain in ${
+              profile.regions?.[0]?.name || ''
+            } County`,
+            description: profile.description,
+            publicationDate: profile.publication_date || profile.createdAt,
+            publicationYear: new Date(profile.publication_date || profile.createdAt).getFullYear(),
+            valueChain: profile.value_chain?.name || '',
+            region: profile.regions?.[0]?.name || '',
+            imageUrl:
+              profile.picture_one ||
+              profile.picture_one?.formats?.small ||
+              '',
+          })
+        );
+
+        if (!cancelled) setInvestmentProfiles(profiles);
+      } catch (err) {
+        if (!cancelled) setError('Failed to load investment profiles');
+        console.error('Error fetching investment profiles:', err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    fetchProfiles();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectionKey]);
+
+  const handleCountyClick = (county) => {
     if (activeCounties.includes(county)) {
       let newSelection;
 
@@ -136,51 +197,6 @@ export default function KenyaMap({
 
       setSelectedCounties(newSelection);
       setShowCountyDetails(newSelection.length === 1);
-
-      if (newSelection.length > 0) {
-        setLoading(true);
-        setError(null);
-
-        try {
-          const countyFilters = newSelection
-            .map((c) => `filters[regions][name][$in][]=${c}`)
-            .join('&');
-
-          const investmentProfilesResponse = await axios.get(
-            `${env(
-              'NEXT_PUBLIC_BACKEND_URL'
-            )}/api/investment-opportunity-profiles?${countyFilters}&populate[0]=value_chain&populate[1]=regions&populate[2]=picture_one`
-          );
-
-          const profiles = investmentProfilesResponse.data.data.map(
-            (profile) => ({
-              id: profile.id,
-              documentId: profile.documentId,
-              title: profile.title || `${profile.value_chain?.name || ''} Value Chain in ${
-                profile.regions?.[0]?.name || ''
-              } County`,
-              description: profile.description,
-              publicationDate: profile.publication_date || profile.createdAt,
-              publicationYear: new Date(profile.publication_date || profile.createdAt).getFullYear(),
-              valueChain: profile.value_chain?.name || '',
-              region: profile.regions?.[0]?.name || '',
-              imageUrl:
-                profile.picture_one ||
-                profile.picture_one?.formats?.small ||
-                '',
-            })
-          );
-
-          setInvestmentProfiles(profiles);
-        } catch (err) {
-          setError('Failed to load investment profiles');
-          console.error('Error fetching investment profiles:', err);
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setInvestmentProfiles([]);
-      }
 
       if (typeof onSelect === 'function') {
         onSelect(newSelection);
@@ -1155,6 +1171,22 @@ export default function KenyaMap({
                             <h4 className="text-sm sm:text-base font-bold text-gray-900 mb-3">
                               {currentCountyDetails.sub_locations[activeSubLocation]?.section_title || 'Identified Community Investment Priorities:'}
                             </h4>
+                            {currentCountyDetails.sub_locations[activeSubLocation]
+                              ?.production_potentials?.length > 0 && (
+                              <div className="space-y-4 mb-4">
+                                {currentCountyDetails.sub_locations[
+                                  activeSubLocation
+                                ].production_potentials.map((item) => (
+                                  <ProductionPotentialCard
+                                    key={item.id}
+                                    name={item.name}
+                                    current={item.current}
+                                    potential={item.potential}
+                                    unit={item.unit}
+                                  />
+                                ))}
+                              </div>
+                            )}
                             {currentCountyDetails.sub_locations[
                               activeSubLocation
                             ]?.investment_priorities && (
@@ -1220,8 +1252,8 @@ export default function KenyaMap({
                 </div>
               )}
 
-            {/* Investment opportunities - homepage only */}
-            {!showSubLocations && selectedCounties.length > 0 && (
+            {/* Investment opportunities in the selected counties */}
+            {selectedCounties.length > 0 && (
               <div className="bg-gray-10 border border-gray-30 rounded-xl shadow-lg p-4 sm:p-6">
                 <div className="flex items-start justify-between gap-4 mb-4 sm:mb-6">
                   <h3 className="font-roboto-slab text-lg sm:text-xl font-bold text-gray-900">
