@@ -104,7 +104,7 @@ export default function About() {
       />
 
       <section className="relative py-20 overflow-hidden pb-0">
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative h-[400px] lg:h-[500px] rounded-lg overflow-hidden">
               {about.banner ? (
@@ -156,13 +156,13 @@ export default function About() {
       </section>
 
       <section className="relative overflow-hidden">
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto relative z-10">
           <StatsGrid />
         </div>
       </section>
 
       <section className="py-20 relative overflow-hidden">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-primary-50 rounded-2xl">
             <div className="p-12">
               <H3 variant="bold" className="text-primary-500 mb-4">
@@ -187,21 +187,33 @@ export default function About() {
         </div>
       </section>
 
-      <section className="bg-white relative overflow-hidden py-20">
+      <section className="bg-gray-10 relative overflow-hidden pt-24 pb-20">
         <div
           className="hidden md:block absolute inset-0"
           style={{
-            backgroundImage:
-              "url('/images/graphic.svg'), url('/images/cubes.svg')",
-            backgroundPosition: 'top right, left center',
-            backgroundRepeat: 'no-repeat, no-repeat',
-            backgroundSize: '200px auto, cover',
+            backgroundImage: "url('/images/cubes.svg')",
+            backgroundPosition: 'left center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+          }}
+        />
+        {/* Cropped corner graphic (bottom-right of graphic.svg) tucked into
+            the section's top-right corner. Only from 1440px, where the margin
+            beside the container leaves room; narrower, it covers the cards. */}
+        <div
+          aria-hidden="true"
+          className="hidden min-[1440px]:block absolute top-0 right-0 w-[200px] h-[200px]"
+          style={{
+            backgroundImage: "url('/images/graphic.svg')",
+            backgroundPosition: 'right bottom',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: '230px auto',
           }}
         />
 
-        <div className="container mx-auto px-4 relative z-10 ">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            <div className="lg:col-span-1">
+        <div className="container mx-auto relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <div>
               <H3 variant="bold" className="text-primary-500 mb-4">
                 What we do
               </H3>
@@ -230,9 +242,9 @@ export default function About() {
               </Link>
             </div>
 
-            <div className="lg:col-span-2">
+            <div>
               {about.what_we_do && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 lg:gap-y-16">
                   {(() => {
                     const content = about.what_we_do;
                     const sections = content.split(/\*\*([^*]+)\*\*/g);
@@ -316,12 +328,14 @@ export default function About() {
         </div>
       </section>
 
-      <InterestedSection
-        title="Join Us"
-        description={<MarkdownRenderer content={about.join_us} />}
-        buttonText="Sign up now"
-        buttonLink="/signup"
-      />
+      <div className="pt-12 md:pt-16">
+        <InterestedSection
+          title="Join Us"
+          description={<MarkdownRenderer content={about.join_us} />}
+          buttonText="Sign up now"
+          buttonLink="/signup"
+        />
+      </div>
     </div>
   );
 }
