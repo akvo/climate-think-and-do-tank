@@ -981,7 +981,7 @@
       "locale": null
     },
     {
-      "documentId": "m8kv6v2fs5x8uymrv9djdqau",
+      "documentId": "f900yvcp7g5xyyvqtsnsxxey",
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::region.region",
@@ -999,8 +999,16 @@
           "about",
           "county_image",
           "sub_locations.name",
+          "sub_locations.section_title",
+          "sub_locations.production_potentials.name",
+          "sub_locations.production_potentials.current",
+          "sub_locations.production_potentials.potential",
+          "sub_locations.production_potentials.unit",
           "sub_locations.investment_priorities",
-          "sub_locations.potential_impact"
+          "sub_locations.potential_impact",
+          "sub_locations.pdf_attachment",
+          "gcp",
+          "gcp_contribution"
         ]
       },
       "conditions": [],
@@ -1025,7 +1033,7 @@
       "locale": null
     },
     {
-      "documentId": "wzf138tn4fx5y10bnm1fjrls",
+      "documentId": "b6styt9m6i3jzvw826rgx8p3",
       "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
       "subject": "api::region.region",
@@ -1043,15 +1051,23 @@
           "about",
           "county_image",
           "sub_locations.name",
+          "sub_locations.section_title",
+          "sub_locations.production_potentials.name",
+          "sub_locations.production_potentials.current",
+          "sub_locations.production_potentials.potential",
+          "sub_locations.production_potentials.unit",
           "sub_locations.investment_priorities",
-          "sub_locations.potential_impact"
+          "sub_locations.potential_impact",
+          "sub_locations.pdf_attachment",
+          "gcp",
+          "gcp_contribution"
         ]
       },
       "conditions": [],
       "locale": null
     },
     {
-      "documentId": "lul4ib2i12r5277icjdflvbt",
+      "documentId": "muvsgkzague97y8a9ghw4zi2",
       "action": "plugin::content-manager.explorer.update",
       "actionParameters": {},
       "subject": "api::region.region",
@@ -1069,8 +1085,16 @@
           "about",
           "county_image",
           "sub_locations.name",
+          "sub_locations.section_title",
+          "sub_locations.production_potentials.name",
+          "sub_locations.production_potentials.current",
+          "sub_locations.production_potentials.potential",
+          "sub_locations.production_potentials.unit",
           "sub_locations.investment_priorities",
-          "sub_locations.potential_impact"
+          "sub_locations.potential_impact",
+          "sub_locations.pdf_attachment",
+          "gcp",
+          "gcp_contribution"
         ]
       },
       "conditions": [],
