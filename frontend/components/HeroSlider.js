@@ -101,13 +101,13 @@ const HeroSlider = ({ setData }) => {
       }}
     >
       {/* Text always sits in the page container, lined up with the logo.
-          lg up to 1440px: the media fills the right half of the screen,
-          edge to edge. From 1440px: it stays inside the container too, so
+          lg up to 2xl (1536px): the media fills the right half of the screen,
+          edge to edge. From 1536px: it stays inside the container too, so
           it isn't oversized on wide screens. */}
-      <div className="container mx-auto py-8 lg:py-0 min-[1440px]:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center lg:min-h-[600px] min-[1440px]:min-h-0">
+      <div className="container mx-auto py-8 lg:py-0 2xl:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center lg:min-h-[600px] 2xl:min-h-0">
           {/* Text Content */}
-          <div className="w-full lg:py-12 min-[1440px]:py-0">
+          <div className="w-full lg:py-12 2xl:py-0">
             <div className="max-w-2xl">
               <div className="mb-8 lg:mb-12">
                 <H2 className="font-extrabold text-primary-500 text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
@@ -146,9 +146,9 @@ const HeroSlider = ({ setData }) => {
             </div>
           </div>
 
-          <div className="w-full lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 min-[1440px]:static min-[1440px]:w-full">
+          <div className="w-full lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 2xl:static 2xl:w-full">
             {videoUrl ? (
-              <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-full min-[1440px]:h-[480px] overflow-hidden rounded-lg min-[1440px]:rounded-2xl">
+              <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-full 2xl:h-[480px] overflow-hidden rounded-lg 2xl:rounded-2xl">
                 <video
                   ref={(ref) => setVideoRef(ref)}
                   className="w-full h-full object-cover"
@@ -180,7 +180,7 @@ const HeroSlider = ({ setData }) => {
                 </div>
               </div>
             ) : (
-              <div className="h-[300px] sm:h-[400px] md:h-[500px] lg:h-full min-[1440px]:h-[480px] bg-gradient-to-br from-primary-100 to-primary-200 rounded-lg min-[1440px]:rounded-2xl flex items-center justify-center shadow-2xl">
+              <div className="h-[300px] sm:h-[400px] md:h-[500px] lg:h-full 2xl:h-[480px] bg-gradient-to-br from-primary-100 to-primary-200 rounded-lg 2xl:rounded-2xl flex items-center justify-center shadow-2xl">
                 {loading ? (
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
