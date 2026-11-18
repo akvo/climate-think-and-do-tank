@@ -192,6 +192,34 @@
           "sortable": false
         }
       },
+      "gcp": {
+        "edit": {
+          "label": "gcp",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "gcp",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "gcp_contribution": {
+        "edit": {
+          "label": "gcp_contribution",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "gcp_contribution",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -319,6 +347,16 @@
           {
             "name": "sub_locations",
             "size": 12
+          }
+        ],
+        [
+          {
+            "name": "gcp",
+            "size": 6
+          },
+          {
+            "name": "gcp_contribution",
+            "size": 6
           }
         ]
       ]
