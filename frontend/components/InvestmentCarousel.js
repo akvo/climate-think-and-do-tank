@@ -182,7 +182,7 @@ const InvestmentCarousel = () => {
   }
 
   return (
-    <section className="py-8 sm:py-12 lg:py-16">
+    <section className="pb-8 sm:pb-12 lg:pb-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 border-t border-gray-200 pt-8 sm:pt-12 lg:pt-16">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 sm:mb-8 lg:mb-10">
           <div className="mb-6 lg:mb-0">

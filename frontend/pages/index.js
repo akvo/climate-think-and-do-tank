@@ -104,7 +104,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        <InterestedSection />
+        <div className="pt-12 md:pt-16">
+          <InterestedSection />
+        </div>
 
         <PartnersSection />
       </main>

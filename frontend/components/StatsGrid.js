@@ -43,7 +43,7 @@ const StatsGrid = ({}) => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 pt-12">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
       <StatBlock
         value={formatNumber(stats.investmentOpportunities)}
         label="Investment Opportunities Posted"
