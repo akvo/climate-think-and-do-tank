@@ -209,7 +209,7 @@ export default function StakeholderDirectory() {
       </div>
 
       <div className="py-8">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div className="text-gray-600">
               <span className="font-bold text-primary-600">{totalResults}</span>

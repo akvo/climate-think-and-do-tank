@@ -51,7 +51,7 @@ export default function HeroSection({
           backgroundSize: '20%',
         }}
       />
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-0 py-8 sm:py-12 md:py-16">
+      <div className="relative z-10 container mx-auto py-8 sm:py-12 md:py-16">
         <div className="max-w-2xl sm:pr-[30%] lg:pr-0">
           <div className="mb-8 sm:mb-12 pr-[22%] sm:pr-0">
             <H2 variant="bold">{pageTitle}</H2>

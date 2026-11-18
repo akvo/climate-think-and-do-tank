@@ -17,7 +17,7 @@ const STEPS = [
 export default function SocialAccountabilityProcess() {
   return (
     <section className="bg-white">
-      <div className="container mx-auto px-4 pt-14 sm:pt-20 pb-16 sm:pb-20">
+      <div className="container mx-auto pt-14 sm:pt-20 pb-16 sm:pb-20">
         <div className="text-center mb-10 sm:mb-16">
           <H3 variant="bold">Social Accountability process</H3>
           <ParagraphMD className="mt-3 text-gray-600">

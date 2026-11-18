@@ -151,7 +151,7 @@ export default function NewsDetailPage() {
 
       <div className="min-h-screen bg-white">
         <div className="bg-white">
-          <div className="container mx-auto px-4 py-4">
+          <div className="container mx-auto py-4">
             <nav className="flex items-center gap-2 text-sm">
               <Link href="/" className="text-gray-500 hover:text-gray-700">
                 <svg
@@ -179,7 +179,7 @@ export default function NewsDetailPage() {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto py-8">
           {newsItem.regions && newsItem.regions.length > 0 && (
             <div className="flex items-center gap-2 mb-6">
               <div className="flex items-center bg-primary-50 text-primary-600 px-3 py-1.5 rounded-full">

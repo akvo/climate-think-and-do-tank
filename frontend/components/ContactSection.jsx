@@ -10,11 +10,14 @@ const InterestedSection = ({
   buttonLink = '/contact-us',
   backgroundColor = 'bg-gray-10',
   buttonColor = 'bg-primary-500 hover:bg-primary-600',
+  // Pass false when already inside a page container, so the box isn't
+  // inset by a second layer of container padding.
+  contained = true,
 }) => {
   return (
-    <section>
+    <section className={contained ? 'container' : ''}>
       <div
-        className={`container mx-auto relative overflow-hidden ${backgroundColor} mb-12 rounded-3xl`}
+        className={`relative overflow-hidden ${backgroundColor} mb-12 rounded-3xl`}
         style={{
           backgroundImage:
             "url('/images/graphic.svg'), url('/images/graphic.svg')",
@@ -23,7 +26,9 @@ const InterestedSection = ({
           backgroundSize: '15%, 15%',
         }}
       >
-        <div className="container mx-auto px-4  py-16  max-w-4xl relative z-10">
+        {/* Side padding (16%) keeps the text clear of the 15%-wide corner
+            graphics. */}
+        <div className="px-4 sm:px-[16%] py-16 relative z-10">
           <div className="text-center">
             <H4 variant="bold" className="mb-6">
               {title}

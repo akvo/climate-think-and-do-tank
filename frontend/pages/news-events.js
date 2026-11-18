@@ -204,7 +204,7 @@ export default function NewsEventsDirectory() {
         />
       </div>
 
-      <div className="min-h-screen py-8 px-4 md:px-0">
+      <div className="min-h-screen py-8">
         <div className="container mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div className="text-gray-600">

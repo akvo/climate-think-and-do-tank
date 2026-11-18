@@ -44,11 +44,11 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b border-gray-200 bg-white text-black px-2 md:px-0 ${
+      className={`sticky top-0 z-50 border-b border-gray-200 bg-white text-black ${
         isAuthenticated ? 'py-2' : 'py-4'
       }`}
     >
-      <div className="max-w-screen-xl w-full mx-auto px-4 flex items-center justify-between">
+      <div className="container mx-auto flex items-center justify-between">
         <Link href="/" className="relative min-w-[216px] h-[40px]">
           <Image
             src="/images/logo.svg"

@@ -266,7 +266,7 @@ export default function InvestmentOpportunityProfile() {
   return (
     <div className="min-h-screen bg-white">
       <div className="">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto py-4">
           <div className="flex items-center gap-2 text-sm">
             <Link
               href="/investment-profiles"
@@ -281,7 +281,7 @@ export default function InvestmentOpportunityProfile() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 pt-2">
+      <div className="container mx-auto py-8 pt-2">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-2 flex-wrap">
             {profile.regions?.map((region, index) => (
@@ -860,7 +860,7 @@ export default function InvestmentOpportunityProfile() {
           </div>
         </div>
 
-        <InterestedSection />
+        <InterestedSection contained={false} />
 
         <div className="bg-white rounded-2xl p-5 sm:p-8 mt-16 border border-primary-100">
           <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">

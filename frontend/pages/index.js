@@ -28,7 +28,7 @@ export default function HomePage() {
         <HeroSlider setData={setData} />
 
         <section className="bg-white py-12 md:py-16 lg:py-20 text-gray-800 border-t border-gray-100">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="container mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 lg:gap-16">
               <div className="col-span-1 lg:col-span-5">
                 <H3
@@ -73,7 +73,7 @@ export default function HomePage() {
         <InvestmentCarousel />
 
         <section className="py-16 text-black bg-gray-10 md:block">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto">
             <div className="flex flex-col md:flex-row items-start justify-between gap-6">
               <div>
                 <H3 variant="bold" className="mb-4">

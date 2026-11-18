@@ -76,7 +76,7 @@ export default function Footer() {
   return (
     <footer className="bg-white text-black rounded-t-lg">
       <div className="bg-gray-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+        <div className="container mx-auto py-8 sm:py-12 lg:py-16">
           <div className="grid grid-cols-6 sm:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
             <div className="col-span-6 sm:col-span-12 lg:col-span-3">
               <Link href="/" className="inline-flex items-center gap-2">
@@ -120,7 +120,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="container mx-auto py-6 sm:py-8">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="order-2 lg:order-1">
             <p className="text-black mb-2 text-sm sm:text-base">

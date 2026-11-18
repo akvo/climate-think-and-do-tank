@@ -210,7 +210,7 @@ export default function SocialAccountability() {
         />
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <KenyaMap
           showSubLocations
           showManualDownload
@@ -225,7 +225,7 @@ export default function SocialAccountability() {
       </div>
 
       {filters.region.length > 0 && (
-        <div className="max-w-7xl mx-auto py-8 px-4 text-black">
+        <div className="container mx-auto py-8 text-black">
           <div className="flex items-center justify-start">
             <div className="flex gap-6 mb-8">
               <button

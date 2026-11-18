@@ -11,6 +11,13 @@ const config = {
       serif: ['"Roboto Slab"', 'ui-serif', 'Georgia'],
       mono: ['ui-monospace', 'SFMono-Regular'],
     },
+    // One page grid: every `container` gets the same side padding, so the logo
+    // and all page content start on the same line. Don't add px-* to
+    // containers; the padding comes from here.
+    container: {
+      center: true,
+      padding: { DEFAULT: '1rem', sm: '1.5rem', lg: '2rem' },
+    },
     extend: {
       // The main nav needs ~1220px to show all items on one line. Below this
       // width the lower-priority items collapse into a "More" dropdown
